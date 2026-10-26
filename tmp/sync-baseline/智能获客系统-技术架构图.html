@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能获客系统 · 技术架构设计图</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#020617; --card:#0b1220; --border:#1e293b;
+    --text:#e2e8f0; --muted:#94a3b8; --dim:#64748b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'JetBrains Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',ui-monospace,monospace;
+    padding:32px 24px 44px;
+  }
+  .wrap{max-width:1560px;margin:0 auto}
+  header{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px}
+  .dot{
+    width:10px;height:10px;border-radius:50%;background:#34d399;margin-top:10px;flex:0 0 auto;
+    animation:pulse 2.4s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}
+    70%{box-shadow:0 0 0 12px rgba(52,211,153,0)}
+    100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}
+  }
+  h1{font-size:22px;font-weight:700;letter-spacing:.4px}
+  .sub{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.8}
+  .sub b{color:#cbd5e1;font-weight:600}
+  .diagram{
+    border:1px solid var(--border);border-radius:14px;
+    background:linear-gradient(180deg,#070d1b 0%,#040814 100%);
+    padding:16px 14px;overflow-x:auto;
+  }
+  svg{display:block;width:100%;height:auto;min-width:1200px}
+  svg text{font-family:'JetBrains Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace}
+  .cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:20px}
+  .card{border:1px solid var(--border);border-radius:10px;background:var(--card);padding:15px 15px 17px}
+  .card h3{font-size:11.5px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px;letter-spacing:.2px;line-height:1.5}
+  .card p{font-size:10px;color:var(--muted);line-height:1.95}
+  .card p em{color:#cbd5e1;font-style:normal}
+  .tag{width:8px;height:8px;border-radius:2px;display:inline-block;flex:0 0 auto;margin-top:4px}
+  footer{
+    margin-top:22px;font-size:10px;color:var(--dim);
+    border-top:1px solid var(--border);padding-top:14px;line-height:1.9;
+  }
+  @media(max-width:1420px){.cards{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="dot"></span>
+    <div>
+      <h1>智能获客系统 · 技术架构设计图</h1>
+      <div class="sub">
+        分层架构 <b>前端 Web → API 网关(BFF) → 业务服务层 → 数据层 / 腾道适配层(ACL) → 腾道开放 API</b>&nbsp;+&nbsp;横切 <b>可观测性与告警 · KMS 密钥管理</b><br>
+        数据源：腾道开放 API <b>open-api.tendata.cn</b>（全部接口 V2）&nbsp;·&nbsp;图版本 v1.1&nbsp;·&nbsp;依据 <b>PRD v1.0 + 技术设计文档 v1.0</b> 全量交叉核对&nbsp;·&nbsp;2026-10-24
+      </div>
+    </div>
+  </header>
+
+  <div class="diagram">
+  <svg viewBox="0 0 1440 1150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="智能获客系统技术架构图">
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+      </pattern>
+      <marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+      </marker>
+    </defs>
+
+    <rect x="0" y="0" width="1440" height="1150" fill="#020617"/>
+    <rect x="0" y="0" width="1440" height="1150" fill="url(#grid)"/>
+
+    <!-- ============ 连接线（先绘制，置于组件之下） ============ -->
+    <g stroke="#475569" stroke-width="1.4" fill="none" marker-end="url(#ah)">
+      <line x1="720" y1="134" x2="720" y2="162"/>
+      <line x1="720" y1="262" x2="720" y2="290"/>
+      <line x1="270" y1="620" x2="270" y2="648"/>
+      <line x1="700" y1="620" x2="700" y2="648"/>
+      <line x1="1160" y1="620" x2="1160" y2="648"/>
+      <line x1="1160" y1="904" x2="1160" y2="956"/>
+      <line x1="508" y1="716" x2="482" y2="716"/>
+      <line x1="892" y1="716" x2="918" y2="716"/>
+    </g>
+    <g fill="#64748b" font-size="8">
+      <text x="730" y="152">HTTPS / JSON</text>
+      <text x="730" y="280">REST / JSON</text>
+      <text x="280" y="636">读写 · 检索</text>
+      <text x="710" y="636">任务投递</text>
+      <text x="1170" y="636">受控调用</text>
+      <text x="1170" y="934">HTTPS · Bearer Token</text>
+    </g>
+
+    <!-- ============ L1 前端 Web ============ -->
+    <rect x="390" y="56" width="660" height="76" rx="6" fill="#0f172a"/>
+    <rect x="390" y="56" width="660" height="76" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+    <text x="720" y="88" fill="#ffffff" font-size="13" font-weight="600" text-anchor="middle">前端 Web · 深色科技风</text>
+    <text x="720" y="110" fill="#94a3b8" font-size="9.5" text-anchor="middle">React + TypeScript + Vite · Three.js / Cesium 3D 地球 · 四组分类导航</text>
+
+    <!-- ============ L2 API 网关层（BFF） ============ -->
+    <rect x="300" y="168" width="840" height="92" rx="6" fill="#0f172a"/>
+    <rect x="300" y="168" width="840" height="92" rx="6" fill="rgba(136,19,55,0.28)" stroke="#fb7185" stroke-width="1.5"/>
+    <text x="720" y="192" fill="#ffffff" font-size="13" font-weight="600" text-anchor="middle">API 网关层（BFF）</text>
+
+    <rect x="320" y="204" width="185" height="40" rx="5" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1"/>
+    <text x="412" y="221" fill="#ffffff" font-size="10" font-weight="600" text-anchor="middle">统一鉴权</text>
+    <text x="412" y="236" fill="#94a3b8" font-size="8" text-anchor="middle">JWT · 多租户识别</text>
+
+    <rect x="525" y="204" width="185" height="40" rx="5" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1"/>
+    <text x="617" y="221" fill="#ffffff" font-size="10" font-weight="600" text-anchor="middle">全局限流</text>
+    <text x="617" y="236" fill="#94a3b8" font-size="8" text-anchor="middle">单用户 QPS · 防占满配额</text>
+
+    <rect x="730" y="204" width="185" height="40" rx="5" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1"/>
+    <text x="822" y="221" fill="#ffffff" font-size="10" font-weight="600" text-anchor="middle">数据权限过滤</text>
+    <text x="822" y="236" fill="#94a3b8" font-size="8" text-anchor="middle">SQL 层强制注入 tenant_id</text>
+
+    <rect x="935" y="204" width="185" height="40" rx="5" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1"/>
+    <text x="1027" y="221" fill="#ffffff" font-size="10" font-weight="600" text-anchor="middle">请求审计</text>
+    <text x="1027" y="236" fill="#94a3b8" font-size="8" text-anchor="middle">导出管控 · 操作留痕</text>
+
+    <!-- ============ L3 业务服务层（9 服务 + 1 暂缓） ============ -->
+    <rect x="60" y="296" width="1340" height="322" rx="12" fill="none" stroke="#34d399" stroke-width="1.2" stroke-dasharray="8,4" opacity="0.75"/>
+    <text x="80" y="322" fill="#34d399" font-size="12" font-weight="600">业务服务层</text>
+    <text x="1380" y="322" fill="#64748b" font-size="9" text-anchor="end">9 个领域服务 + 1 个暂缓模块 · 无状态 · 可水平扩展</text>
+
+    <!-- 行1：核心链路 P0 -->
+    <rect x="80" y="342" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="80" y="342" width="248" height="118" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="204" y="368" fill="#ffffff" font-size="11.5" font-weight="600" text-anchor="middle">用户权限服务</text>
+    <text x="204" y="390" fill="#94a3b8" font-size="8" text-anchor="middle">多租户隔离 · RBAC 三角色</text>
+    <text x="204" y="408" fill="#94a3b8" font-size="8" text-anchor="middle">本人 / 部门 / 全公司数据范围</text>
+    <text x="204" y="426" fill="#94a3b8" font-size="8" text-anchor="middle">数据模型层实现，非前端隐藏</text>
+    <text x="204" y="444" fill="#64748b" font-size="8" text-anchor="middle">U-01 ~ U-06 · P0</text>
+
+    <rect x="343" y="342" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="343" y="342" width="248" height="118" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="467" y="368" fill="#ffffff" font-size="11.5" font-weight="600" text-anchor="middle">获客检索服务</text>
+    <text x="467" y="390" fill="#94a3b8" font-size="8" text-anchor="middle">贸易记录 / 海关数据多条件检索</text>
+    <text x="467" y="408" fill="#94a3b8" font-size="8" text-anchor="middle">头部进出口商 · HS 品类分析</text>
+    <text x="467" y="426" fill="#94a3b8" font-size="8" text-anchor="middle">过滤货代与空公司字段</text>
+    <text x="467" y="444" fill="#64748b" font-size="8" text-anchor="middle">T-01 ~ T-11 · H-03 ~ H-06 · P0</text>
+
+    <rect x="606" y="342" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="606" y="342" width="248" height="118" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="730" y="368" fill="#ffffff" font-size="11.5" font-weight="600" text-anchor="middle">线索池服务</text>
+    <text x="730" y="390" fill="#94a3b8" font-size="8" text-anchor="middle">挖掘结果暂存 · lead 表</text>
+    <text x="730" y="408" fill="#94a3b8" font-size="8" text-anchor="middle">公共池认领 / 主管分配</text>
+    <text x="730" y="426" fill="#94a3b8" font-size="8" text-anchor="middle">防撞单 · 轻量跟进时间线</text>
+    <text x="730" y="444" fill="#64748b" font-size="8" text-anchor="middle">T-09 · K-08 · C-07 · P0</text>
+
+    <rect x="869" y="342" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="869" y="342" width="248" height="118" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="993" y="368" fill="#ffffff" font-size="11.5" font-weight="600" text-anchor="middle">企业档案服务</text>
+    <text x="993" y="390" fill="#94a3b8" font-size="8" text-anchor="middle">企业详情 + 关键人挖掘</text>
+    <text x="993" y="408" fill="#94a3b8" font-size="8" text-anchor="middle">名称归一化去重 · 写法保真</text>
+    <text x="993" y="426" fill="#94a3b8" font-size="8" text-anchor="middle">联系人归属校验 ownership_match</text>
+    <text x="993" y="444" fill="#64748b" font-size="8" text-anchor="middle">C-01 ~ C-10 · K-01 ~ K-09 · P0</text>
+
+    <rect x="1132" y="342" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="1132" y="342" width="248" height="118" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="1256" y="368" fill="#ffffff" font-size="11.5" font-weight="600" text-anchor="middle">邮件营销服务</text>
+    <text x="1256" y="390" fill="#94a3b8" font-size="8" text-anchor="middle">营销计划 · 多轮触达状态机</text>
+    <text x="1256" y="408" fill="#94a3b8" font-size="8" text-anchor="middle">多邮箱轮流 · 群发单显</text>
+    <text x="1256" y="426" fill="#94a3b8" font-size="8" text-anchor="middle">退订名单全局屏蔽不可绕过</text>
+    <text x="1256" y="444" fill="#64748b" font-size="8" text-anchor="middle">M-01 ~ M-11 · P0</text>
+
+    <!-- 行2：智能与成本 P1-P2 -->
+    <rect x="80" y="476" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="80" y="476" width="248" height="118" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="204" y="502" fill="#ffffff" font-size="11.5" font-weight="600" text-anchor="middle">AI 分析服务</text>
+    <text x="204" y="524" fill="#94a3b8" font-size="8" text-anchor="middle">企业画像 · 推荐指数 + 归因</text>
+    <text x="204" y="542" fill="#94a3b8" font-size="8" text-anchor="middle">获客漏斗看板（含日增量）</text>
+    <text x="204" y="560" fill="#94a3b8" font-size="8" text-anchor="middle">异步任务 · 结果缓存 3 天</text>
+    <text x="204" y="578" fill="#64748b" font-size="8" text-anchor="middle">A-01 ~ A-08 · P1</text>
+
+    <rect x="343" y="476" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="343" y="476" width="248" height="118" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="467" y="502" fill="#ffffff" font-size="11.5" font-weight="600" text-anchor="middle">送达检测服务</text>
+    <text x="467" y="524" fill="#94a3b8" font-size="8" text-anchor="middle">SMTP 探测 · 批量异步验证</text>
+    <text x="467" y="542" fill="#94a3b8" font-size="8" text-anchor="middle">域名信誉 SPF/DKIM/DMARC</text>
+    <text x="467" y="560" fill="#94a3b8" font-size="8" text-anchor="middle">独立检测配额 · 保护发信 IP</text>
+    <text x="467" y="578" fill="#64748b" font-size="8" text-anchor="middle">S-01 ~ S-06 · P1 差异化模块</text>
+
+    <rect x="606" y="476" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="606" y="476" width="248" height="118" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="730" y="502" fill="#ffffff" font-size="11.5" font-weight="600" text-anchor="middle">成本计量服务</text>
+    <text x="730" y="524" fill="#94a3b8" font-size="8" text-anchor="middle">查询前点数预估 → 用户确认</text>
+    <text x="730" y="542" fill="#94a3b8" font-size="8" text-anchor="middle">point_ledger 记账 · 按月对账</text>
+    <text x="730" y="560" fill="#94a3b8" font-size="8" text-anchor="middle">预估 vs 实际扣点偏差监控</text>
+    <text x="730" y="578" fill="#64748b" font-size="8" text-anchor="middle">B-01 ~ B-07 · D-03 · P0</text>
+
+    <rect x="869" y="476" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="869" y="476" width="248" height="118" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="984" y="502" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">智能化 Agent 服务</text>
+    <text x="993" y="524" fill="#94a3b8" font-size="8" text-anchor="middle">定时监控 · 自动化获客流水线</text>
+    <text x="993" y="542" fill="#94a3b8" font-size="8" text-anchor="middle">点数预算守卫（超限自动暂停）</text>
+    <text x="993" y="560" fill="#94a3b8" font-size="8" text-anchor="middle">执行日志可回溯 · 每步可介入</text>
+    <text x="993" y="578" fill="#64748b" font-size="8" text-anchor="middle">G-01 ~ G-05 · agent_task 表已建</text>
+    <rect x="1046" y="482" width="62" height="18" rx="9" fill="rgba(100,116,139,0.35)" stroke="#64748b" stroke-width="1"/>
+    <text x="1077" y="495" fill="#cbd5e1" font-size="8" text-anchor="middle">P2 预留</text>
+
+    <rect x="1132" y="476" width="248" height="118" rx="6" fill="#0f172a"/>
+    <rect x="1132" y="476" width="248" height="118" rx="6" fill="rgba(15,23,42,0.55)" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <text x="1247" y="502" fill="#cbd5e1" font-size="11" font-weight="600" text-anchor="middle">WhatsApp 公开联系人</text>
+    <text x="1256" y="524" fill="#94a3b8" font-size="8" text-anchor="middle">腾道社媒仅 linkedin/facebook</text>
+    <text x="1256" y="542" fill="#94a3b8" font-size="8" text-anchor="middle">/twitter，不含 WhatsApp 号码</text>
+    <text x="1256" y="560" fill="#94a3b8" font-size="8" text-anchor="middle">需另接数据源 · 合规评估前置</text>
+    <text x="1256" y="578" fill="#64748b" font-size="8" text-anchor="middle">W-01 ~ W-04 · 暂缓开发</text>
+    <rect x="1310" y="482" width="60" height="18" rx="9" fill="rgba(100,116,139,0.35)" stroke="#64748b" stroke-width="1"/>
+    <text x="1340" y="495" fill="#cbd5e1" font-size="8" text-anchor="middle">暂缓</text>
+
+    <!-- ============ L4-A 数据层 ============ -->
+    <rect x="60" y="650" width="420" height="252" rx="12" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="8,4" opacity="0.75"/>
+    <text x="80" y="678" fill="#a78bfa" font-size="12" font-weight="600">数据层</text>
+    <text x="460" y="678" fill="#64748b" font-size="8.5" text-anchor="end">落库 + 缓存双轨</text>
+
+    <rect x="80" y="692" width="180" height="76" rx="6" fill="#0f172a"/>
+    <rect x="80" y="692" width="180" height="76" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="170" y="712" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">PostgreSQL 主库</text>
+    <text x="170" y="730" fill="#94a3b8" font-size="7.5" text-anchor="middle">企业 · 联系人 · 贸易 · 线索</text>
+    <text x="170" y="745" fill="#94a3b8" font-size="7.5" text-anchor="middle">JSONB 兜底专有字段</text>
+    <text x="170" y="760" fill="#94a3b8" font-size="7.5" text-anchor="middle">trade_date 月分区</text>
+
+    <rect x="280" y="692" width="180" height="76" rx="6" fill="#0f172a"/>
+    <rect x="280" y="692" width="180" height="76" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="370" y="712" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">Redis</text>
+    <text x="370" y="730" fill="#94a3b8" font-size="7.5" text-anchor="middle">令牌缓存 · 分布式锁</text>
+    <text x="370" y="745" fill="#94a3b8" font-size="7.5" text-anchor="middle">令牌桶限流（Lua）</text>
+    <text x="370" y="760" fill="#94a3b8" font-size="7.5" text-anchor="middle">幂等去重 · 日配额计数</text>
+
+    <rect x="80" y="796" width="180" height="76" rx="6" fill="#0f172a"/>
+    <rect x="80" y="796" width="180" height="76" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="170" y="816" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">Elasticsearch</text>
+    <text x="170" y="834" fill="#94a3b8" font-size="7.5" text-anchor="middle">企业名 / 产品描述模糊检索</text>
+    <text x="170" y="849" fill="#94a3b8" font-size="7.5" text-anchor="middle">多条件聚合 · 分面筛选</text>
+    <text x="170" y="864" fill="#94a3b8" font-size="7.5" text-anchor="middle">由 PostgreSQL 同步</text>
+
+    <rect x="280" y="796" width="180" height="76" rx="6" fill="#0f172a"/>
+    <rect x="280" y="796" width="180" height="76" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="370" y="816" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">对象存储</text>
+    <text x="370" y="834" fill="#94a3b8" font-size="7.5" text-anchor="middle">附件 · 导出文件（可选水印）</text>
+    <text x="370" y="849" fill="#94a3b8" font-size="7.5" text-anchor="middle">任务状态 · 断点续跑</text>
+    <text x="370" y="864" fill="#94a3b8" font-size="7.5" text-anchor="middle">分片进度与 traceId</text>
+
+    <!-- ============ L4-B 异步任务与外部依赖 ============ -->
+    <rect x="510" y="650" width="380" height="252" rx="12" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-dasharray="8,4" opacity="0.75"/>
+    <text x="530" y="678" fill="#fb923c" font-size="12" font-weight="600">异步任务与外部依赖</text>
+    <text x="870" y="678" fill="#64748b" font-size="8.5" text-anchor="end">长耗时链路解耦</text>
+
+    <rect x="530" y="692" width="340" height="48" rx="6" fill="#0f172a"/>
+    <rect x="530" y="692" width="340" height="48" rx="6" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1.5"/>
+    <text x="700" y="712" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">异步任务队列</text>
+    <text x="700" y="730" fill="#94a3b8" font-size="7.5" text-anchor="middle">邮件发送 · AI 画像 · 批量拉取分片 · 断点续跑</text>
+
+    <g stroke="#475569" stroke-width="1.2" fill="none" marker-end="url(#ah)">
+      <line x1="611" y1="742" x2="611" y2="754"/>
+      <line x1="788" y1="742" x2="788" y2="754"/>
+      <line x1="611" y1="822" x2="611" y2="834"/>
+      <line x1="788" y1="822" x2="788" y2="834"/>
+    </g>
+
+    <rect x="530" y="756" width="163" height="64" rx="6" fill="#0f172a"/>
+    <rect x="530" y="756" width="163" height="64" rx="6" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1.5"/>
+    <text x="611" y="778" fill="#ffffff" font-size="10.5" font-weight="600" text-anchor="middle">邮件发送 Worker</text>
+    <text x="611" y="796" fill="#94a3b8" font-size="7.5" text-anchor="middle">频控 · 随机抖动间隔</text>
+    <text x="611" y="811" fill="#94a3b8" font-size="7.5" text-anchor="middle">多邮箱轮询 · 群发单显</text>
+
+    <rect x="707" y="756" width="163" height="64" rx="6" fill="#0f172a"/>
+    <rect x="707" y="756" width="163" height="64" rx="6" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1.5"/>
+    <text x="788" y="778" fill="#ffffff" font-size="10.5" font-weight="600" text-anchor="middle">AI 画像 Worker</text>
+    <text x="788" y="796" fill="#94a3b8" font-size="7.5" text-anchor="middle">LLM 异步调用</text>
+    <text x="788" y="811" fill="#94a3b8" font-size="7.5" text-anchor="middle">异常降级为规则基础版</text>
+
+    <rect x="530" y="836" width="163" height="52" rx="6" fill="#0f172a"/>
+    <rect x="530" y="836" width="163" height="52" rx="6" fill="rgba(30,41,59,0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="611" y="858" fill="#ffffff" font-size="10.5" font-weight="600" text-anchor="middle">SMTP / IMAP</text>
+    <text x="611" y="876" fill="#94a3b8" font-size="7.5" text-anchor="middle">发信 · 退信 · 打开点击追踪</text>
+
+    <rect x="707" y="836" width="163" height="52" rx="6" fill="#0f172a"/>
+    <rect x="707" y="836" width="163" height="52" rx="6" fill="rgba(30,41,59,0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="788" y="858" fill="#ffffff" font-size="10.5" font-weight="600" text-anchor="middle">LLM 服务</text>
+    <text x="788" y="876" fill="#94a3b8" font-size="7.5" text-anchor="middle">画像 · 开发信文案 · 归因</text>
+
+    <!-- ============ L4-C 腾道适配层（ACL） ============ -->
+    <rect x="920" y="650" width="480" height="252" rx="12" fill="none" stroke="#fb7185" stroke-width="1.4" stroke-dasharray="8,4" opacity="0.85"/>
+    <text x="940" y="676" fill="#fb7185" font-size="11.5" font-weight="600">腾道适配层 · Anti-Corruption Layer（ACL）</text>
+    <text x="1380" y="676" fill="#64748b" font-size="8" text-anchor="end">拦截「静默失败」</text>
+
+    <rect x="940" y="688" width="215" height="56" rx="6" fill="#0f172a"/>
+    <rect x="940" y="688" width="215" height="56" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+    <text x="1047" y="710" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">令牌管理</text>
+    <text x="1047" y="728" fill="#94a3b8" font-size="7.5" text-anchor="middle">Redis 缓存 · 分布式锁 · 提前刷新</text>
+
+    <rect x="1165" y="688" width="215" height="56" rx="6" fill="#0f172a"/>
+    <rect x="1165" y="688" width="215" height="56" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+    <text x="1272" y="710" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">参数构造</text>
+    <text x="1272" y="728" fill="#94a3b8" font-size="7.5" text-anchor="middle">分隔符查表 · Alpha-3 · 区间双元素</text>
+
+    <rect x="940" y="758" width="215" height="56" rx="6" fill="#0f172a"/>
+    <rect x="940" y="758" width="215" height="56" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+    <text x="1047" y="780" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">响应解析</text>
+    <text x="1047" y="798" fill="#94a3b8" font-size="7.5" text-anchor="middle">success → code(String) → data 判空</text>
+
+    <rect x="1165" y="758" width="215" height="56" rx="6" fill="#0f172a"/>
+    <rect x="1165" y="758" width="215" height="56" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+    <text x="1272" y="780" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">配额守卫</text>
+    <text x="1272" y="798" fill="#94a3b8" font-size="7.5" text-anchor="middle">180 次/分 · 日 30000 · 翻页双上限</text>
+
+    <rect x="940" y="828" width="215" height="56" rx="6" fill="#0f172a"/>
+    <rect x="940" y="828" width="215" height="56" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+    <text x="1047" y="850" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">重试与错误码分派</text>
+    <text x="1047" y="868" fill="#94a3b8" font-size="7.5" text-anchor="middle">40302 重试 1 次 · 40102 退避 60s</text>
+
+    <rect x="1165" y="828" width="215" height="56" rx="6" fill="#0f172a"/>
+    <rect x="1165" y="828" width="215" height="56" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+    <text x="1272" y="850" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">点数记账</text>
+    <text x="1272" y="868" fill="#94a3b8" font-size="7.5" text-anchor="middle">point_ledger · traceId 对账</text>
+
+    <!-- ============ L5-A 平台横切能力 ============ -->
+    <rect x="60" y="958" width="830" height="96" rx="12" fill="none" stroke="#60a5fa" stroke-width="1.2" stroke-dasharray="8,4" opacity="0.8"/>
+    <text x="80" y="980" fill="#60a5fa" font-size="12" font-weight="600">平台横切能力</text>
+    <text x="870" y="980" fill="#64748b" font-size="8.5" text-anchor="end">贯穿各层 · 采集与配置，非业务数据流</text>
+
+    <rect x="80" y="988" width="385" height="58" rx="6" fill="#0f172a"/>
+    <rect x="80" y="988" width="385" height="58" rx="6" fill="rgba(30,58,138,0.4)" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="272" y="1007" fill="#ffffff" font-size="10.5" font-weight="600" text-anchor="middle">可观测性与告警</text>
+    <text x="272" y="1024" fill="#94a3b8" font-size="7.5" text-anchor="middle">api_usage_log 全链路 traceId · 调用量 / 成功率 / P95-P99</text>
+    <text x="272" y="1039" fill="#94a3b8" font-size="7.5" text-anchor="middle">日配额消耗曲线 vs 30000 · 余额 · 40102 突增 · 错误率 &gt;5%</text>
+
+    <rect x="485" y="988" width="385" height="58" rx="6" fill="#0f172a"/>
+    <rect x="485" y="988" width="385" height="58" rx="6" fill="rgba(30,58,138,0.4)" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="677" y="1007" fill="#ffffff" font-size="10.5" font-weight="600" text-anchor="middle">KMS / 密钥管理</text>
+    <text x="677" y="1024" fill="#94a3b8" font-size="7.5" text-anchor="middle">apiKey · accessToken · 邮箱授权码经密钥服务存储</text>
+    <text x="677" y="1039" fill="#94a3b8" font-size="7.5" text-anchor="middle">环境变量注入 · 禁止硬编码入库 · 日志强制脱敏</text>
+
+    <!-- ============ L5-B 腾道开放 API ============ -->
+    <rect x="920" y="958" width="480" height="96" rx="6" fill="#0f172a"/>
+    <rect x="920" y="958" width="480" height="96" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="1160" y="984" fill="#ffffff" font-size="13" font-weight="600" text-anchor="middle">腾道开放 API</text>
+    <text x="1160" y="1005" fill="#cbd5e1" font-size="8.5" text-anchor="middle">open-api.tendata.cn · 全部接口 V2 · 165 个数据源编码 · 228 个国家地区</text>
+    <text x="1160" y="1024" fill="#94a3b8" font-size="8" text-anchor="middle">HTTP 恒返回 200 · 业务成败只看 success · 按返回条数扣点</text>
+    <text x="1160" y="1042" fill="#94a3b8" font-size="8" text-anchor="middle">⚠ 无配额查询接口，日请求数必须自行统计</text>
+
+    <!-- ============ 图例（置于所有边界框之外） ============ -->
+    <line x1="60" y1="1084" x2="1400" y2="1084" stroke="#1e293b" stroke-width="1"/>
+    <g font-size="9.5" fill="#94a3b8">
+      <rect x="80" y="1104" width="18" height="12" rx="3" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.2"/>
+      <text x="106" y="1114">前端层</text>
+
+      <rect x="226" y="1104" width="18" height="12" rx="3" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.2"/>
+      <text x="252" y="1114">安全 / 守卫层</text>
+
+      <rect x="372" y="1104" width="18" height="12" rx="3" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.2"/>
+      <text x="398" y="1114">业务服务</text>
+
+      <rect x="518" y="1104" width="18" height="12" rx="3" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.2"/>
+      <text x="544" y="1114">数据与存储</text>
+
+      <rect x="664" y="1104" width="18" height="12" rx="3" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1.2"/>
+      <text x="690" y="1114">异步任务 / 队列</text>
+
+      <rect x="810" y="1104" width="18" height="12" rx="3" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.2"/>
+      <text x="836" y="1114">外部数据服务</text>
+
+      <rect x="956" y="1104" width="18" height="12" rx="3" fill="rgba(30,41,59,0.5)" stroke="#94a3b8" stroke-width="1.2"/>
+      <text x="982" y="1114">第三方服务</text>
+
+      <rect x="1102" y="1104" width="18" height="12" rx="3" fill="rgba(30,58,138,0.4)" stroke="#60a5fa" stroke-width="1.2"/>
+      <text x="1128" y="1114">横切能力</text>
+
+      <rect x="1248" y="1104" width="18" height="12" rx="3" fill="rgba(15,23,42,0.55)" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <text x="1274" y="1114">暂缓 / 架构预留</text>
+    </g>
+  </svg>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3><span class="tag" style="background:#fb7185"></span>防腐层是最高技术风险点</h3>
+      <p>腾道的坑几乎全是<em>「静默失败」</em>：HTTP 200、success=true，但数据是错的或空的。六道守卫集中在 ACL 拦截，<em>严禁业务代码直接拼装腾道请求</em>。Request DTO 与 Response DTO 完全分离，禁止反射自动映射跨用。</p>
+    </div>
+    <div class="card">
+      <h3><span class="tag" style="background:#a78bfa"></span>成本控制双轨</h3>
+      <p>腾道按点数计费，重复查询＝重复扣钱。<em>落库 + 缓存双轨</em>：企业/联系人 7 天、贸易记录 30 天、画像 3 天、条件→结果映射 1 小时。计费前强制走<em>免费 row-count 探数</em>并等确认；total &gt; 10,000 强制分片。Agent 上线则叠加<em>点数预算守卫</em>，超限自动暂停。</p>
+    </div>
+    <div class="card">
+      <h3><span class="tag" style="background:#fb923c"></span>配额与限流</h3>
+      <p>Redis + Lua 令牌桶全局 <em>≤180 次/分钟</em>（腾道上限 200，留余量，按账号跨接口合并计数）；日请求 <em>≤30,000</em>，90% 告警、100% 拒绝顺延次日。<em>40101 与 40304 必须分别处理</em>——前者次日自动恢复，后者必须充值。</p>
+    </div>
+    <div class="card">
+      <h3><span class="tag" style="background:#34d399"></span>数据质量与流转防线</h3>
+      <p>企业以 <em>(name_normalized, country_code3)</em> 复合唯一去重，名称按数据源原始写法存储；联系人以 <em>mailsouId</em> 为键（腾道 id 恒为 null），逐条核对生成 <em>ownership_match</em>，前端默认过滤 MISMATCH。<em>线索池</em>承接「找到→触达」，避免链路断裂与撞单。</p>
+    </div>
+    <div class="card">
+      <h3><span class="tag" style="background:#60a5fa"></span>横切能力与架构预留</h3>
+      <p><em>可观测性</em>：api_usage_log 记录 traceId，腾道排障强依赖此值；监控日配额消耗曲线、预估与实际扣点偏差、MISMATCH 占比。<em>KMS</em>：凭据经密钥服务注入，严禁硬编码。<em>Agent</em> 表已建、服务层预留；<em>WhatsApp</em> 暂缓待合规与数据源确认。</p>
+    </div>
+  </div>
+
+  <footer>
+    依据文档：02-产品需求文档PRD.md（v1.0）+ 03-技术设计文档.md（v1.0）+ spec.md，全量交叉核对&nbsp;|&nbsp;图版本 v1.1&nbsp;·&nbsp;2026-10-24<br>
+    关键架构决策：适配层独立成模块（ACL）· 数据落库 + 缓存双轨 · PostgreSQL 主库 · Elasticsearch 检索 · 邮件发送独立异步服务 + 队列 · AI 分析异步任务 + 结果缓存<br>
+    本版新增：线索池服务、智能化 Agent 服务（P2 预留）、送达检测域名信誉与独立配额、可观测性与告警、KMS 密钥管理、WhatsApp 暂缓标注
+  </footer>
+
+</div>
+</body>
+</html>
