@@ -1,6 +1,6 @@
 # 第一阶段 tickets 拆分评审草案
 
-日期：2026-10-26。状态：等待用户批准拆分，尚未发布 GitHub tickets。
+日期：2026-10-26。状态：用户已确认拆分，32张 GitHub tickets 已发布（#2～#33），46条原生阻塞关系已建立并回读验证，所有票标记 ready-for-agent，父Issue未修改。完整索引见同目录 phase1-published-index.md；本文件保留批准的拆分及追溯。
 
 Tracker：BenXueYou/ai-research-company GitHub Issues。父规格：https://github.com/BenXueYou/ai-research-company/issues/1 。已读取父 Issue 全文并分页检查评论（0 条）；正文与本地 Spec 去除首尾空白后相同。基线：Spec v1.0、PRD v3.1、技术设计 v3.1、CONTEXT 领域术语、用户提供的全局业务契约约束。
 
