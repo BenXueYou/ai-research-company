@@ -38,6 +38,46 @@ export class OrganizationService {
     return { parentName: actor.name, allowedKinds: permittedKinds(actor), children: children.rows };
   }
 
+  async setActive(identity: Identity, token: string, input: Record<string, unknown>) {
+    if (!input || Array.isArray(input) || Object.keys(input).sort().join(',') !== 'active,organizationId' ||
+      typeof input.organizationId !== 'string' ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.organizationId) ||
+      typeof input.active !== 'boolean') throw new BadRequestException('组织状态参数无效');
+    return transaction(this.pool, async client => {
+      const actor = (await client.query('SELECT * FROM accounts WHERE id=$1 FOR UPDATE', [identity.id])).rows[0];
+      const live = await client.query(`SELECT 1 FROM sessions WHERE token_hash=$1 AND account_id=$2
+        AND expires_at>clock_timestamp() AND last_seen_at>clock_timestamp()-interval '30 minutes'`, [digest(token), identity.id]);
+      if (!actor?.active || !live.rowCount) throw new UnauthorizedException('请重新登录');
+      if (actor.must_change) throw new ForbiddenException('必须先修改密码');
+      const parent = (await client.query('SELECT * FROM organizations WHERE id=$1 FOR SHARE', [actor.organization_id])).rows[0];
+      if (!parent?.active || !permittedKinds({ ...parent, role: actor.role }).length)
+        throw new ForbiddenException('无直属组织管理权限');
+      const target = (await client.query('SELECT * FROM organizations WHERE id=$1 FOR UPDATE', [input.organizationId])).rows[0];
+      if (!target || target.parent_id !== parent.id) throw new ForbiddenException('仅可管理直属下级组织');
+      if (target.active === input.active) return { organizationId: target.id, active: target.active, changed: false };
+      await client.query('UPDATE organizations SET active=$2 WHERE id=$1', [target.id, input.active]);
+      let pausedRecipients = 0;
+      if (!input.active) {
+        await client.query('DELETE FROM sessions WHERE account_id IN (SELECT id FROM accounts WHERE organization_id=$1)', [target.id]);
+        const queued = (await client.query(`SELECT r.id,coalesce(r.retry_usage_day,b.usage_day) AS usage_day
+          FROM email_recipients r JOIN email_batches b ON b.id=r.batch_id
+          WHERE r.organization_id=$1 AND r.status='queued' ORDER BY r.id FOR UPDATE OF r`, [target.id])).rows;
+        for (const row of queued) {
+          await client.query(`UPDATE email_recipients SET status='paused',resolved_at=clock_timestamp(),
+            detail='组织停用，未执行邮件须恢复后重新确认' WHERE id=$1`, [row.id]);
+          await client.query('UPDATE email_daily_usage SET reserved=reserved-1 WHERE organization_id=$1 AND usage_day=$2',
+            [target.id, row.usage_day]);
+          await client.query(`INSERT INTO email_usage_events(recipient_id,event,usage_day)
+            VALUES($1,'released',$2) ON CONFLICT DO NOTHING`, [row.id, row.usage_day]);
+        }
+        pausedRecipients = queued.length;
+      }
+      await client.query(`INSERT INTO organization_state_events(organization_id,actor_id,active,paused_recipients)
+        VALUES($1,$2,$3,$4)`, [target.id, actor.id, input.active, pausedRecipients]);
+      return { organizationId: target.id, active: input.active, changed: true, pausedRecipients };
+    });
+  }
+
   async open(identity: Identity, token: string, input: Record<string, unknown>) {
     try {
       return await this.create(identity, token, input);

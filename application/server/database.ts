@@ -17,6 +17,7 @@ import { migrateUpstreamMonitor } from './upstream-monitor-schema.js';
 import { migrateEmailPreview } from './email-preview-schema.js';
 import { migrateCoefficient } from './coefficient-schema.js';
 import { migrateEmailSend } from './email-send-schema.js';
+import { migrateOrganizationState } from './organization-state-schema.js';
 
 export function database(url = process.env.DATABASE_URL): pg.Pool {
   if (!url)
@@ -129,6 +130,7 @@ export async function migrate(pool: pg.Pool): Promise<void> {
     await migrateSmtpChannels(client);
     await migrateUMail(client);
     await migrateEmailSend(client);
+    await migrateOrganizationState(client);
     // The migration lock covers schema and seed together, including concurrent deployments.
     // This release targets new databases, not the earlier disposable email-only schema.
     await client.query('SELECT username FROM accounts LIMIT 0');

@@ -173,7 +173,8 @@ export class EmailSendService {
         WHERE id=ANY($1::uuid[]) AND cleaned_at IS NULL AND expires_at>clock_timestamp() AND content IS NOT NULL`,
       [preview.attachment_ids])).rows[0];
       if (attachments.count !== preview.attachment_ids.length) throw new ConflictException('预设附件已到期');
-      await db.query('SELECT id FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id]);
+      const organization = (await db.query('SELECT active FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id])).rows[0];
+      if (!organization?.active) throw new ForbiddenException('企业已停用');
       const resource = channel.kind === 'UMAIL' ? (await db.query(`SELECT external_resource_id FROM umail_resources
         WHERE organization_id=$1 AND resource_status='available' FOR UPDATE`, [identity.organization_id])).rows[0] : null;
       if (channel.kind === 'UMAIL' && !resource) throw new ConflictException('本企业 U-Mail 资源尚未验证可用');
@@ -239,6 +240,9 @@ export class EmailSendService {
       AND ($2::uuid IS NULL OR id=$2) ORDER BY id`, [batchId, recipientId ?? null])).rows;
     for (const entry of queued) {
       const claimed = await transaction(this.pool, async db => {
+        const organization = (await db.query('SELECT active FROM organizations WHERE id=$1 FOR SHARE',
+          [identity.organization_id])).rows[0];
+        if (!organization?.active) return null;
         const row = (await db.query(`SELECT r.*,coalesce(r.retry_usage_day,b.usage_day) AS usage_day,b.attachment_ids,b.reply_to,b.channel_id,
           b.channel_kind,b.umail_resource_id,b.umail_sender_address AS batch_sender_address FROM email_recipients r
           JOIN email_batches b ON b.id=r.batch_id WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
@@ -386,6 +390,8 @@ export class EmailSendService {
     const recipientId = identifier(input.recipientId);
     if (input.confirmPossibleDuplicate !== true) throw new BadRequestException('须明确确认可能重复发送');
     const created = await transaction(this.pool, async db => {
+      const organization = (await db.query('SELECT active FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id])).rows[0];
+      if (!organization?.active) throw new ForbiddenException('企业已停用');
       const original = (await db.query(`SELECT r.*,b.actor_id,b.usage_day,b.channel_id,b.channel_kind,b.reply_to,
         b.umail_resource_id,b.umail_sender_address FROM email_recipients r
         JOIN email_batches b ON b.id=r.batch_id WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
@@ -408,7 +414,6 @@ export class EmailSendService {
         if (resource?.external_resource_id !== original.umail_resource_id)
           throw new ConflictException('原 U-Mail 企业资源已变化');
       }
-      await db.query('SELECT id FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id]);
       const day = (await db.query(`SELECT ${daySql()} AS day`)).rows[0].day;
       await db.query(`INSERT INTO email_daily_usage(organization_id,usage_day) VALUES($1,$2)
         ON CONFLICT DO NOTHING`, [identity.organization_id, day]);
@@ -440,6 +445,8 @@ export class EmailSendService {
     if (input.confirmUnsubscribeNotice !== true || input.confirmQuota !== true)
       throw new BadRequestException('须重新确认退订提示与今日企业额度');
     return transaction(this.pool, async db => {
+      const organization = (await db.query('SELECT active FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id])).rows[0];
+      if (!organization?.active) throw new ForbiddenException('企业已停用');
       const row = (await db.query(`SELECT r.*,b.actor_id,b.preview_id,b.usage_day,b.channel_id,b.channel_kind,
         b.reply_to,b.attachment_ids,b.umail_resource_id,b.umail_sender_address
         FROM email_recipients r JOIN email_batches b ON b.id=r.batch_id
@@ -447,10 +454,11 @@ export class EmailSendService {
       [recipientId, identity.organization_id])).rows[0];
       if (!row) throw new NotFoundException('收件人记录不存在');
       if (row.actor_id !== identity.id) throw new ForbiddenException('仅原发送人可重新确认');
-      if (row.status !== 'paused') throw new ConflictException('仅跨日暂停的收件人可重新确认');
+      if (row.status !== 'paused') throw new ConflictException('仅暂停的收件人可重新确认');
       const oldDay = row.retry_usage_day ?? row.usage_day;
       const today = (await db.query(`SELECT ${daySql()} AS day`)).rows[0].day;
-      if (String(today).slice(0, 10) <= String(oldDay).slice(0, 10))
+      if (!String(row.detail ?? '').startsWith('组织停用') &&
+        String(today).slice(0, 10) <= String(oldDay).slice(0, 10))
         throw new ConflictException('须在后续日期重新确认');
       const channel = (await db.query(`SELECT verification_state,reply_to,umail_sender_address
         FROM team_sending_channels WHERE id=$1 AND organization_id=$2 AND kind=$3`,
@@ -481,7 +489,6 @@ export class EmailSendService {
       if (contacts.length !== snapshot.sourceContactIds.length || contacts.some(contact =>
         contact.unsubscribed && !snapshot.unsubscribedContactIds.includes(contact.id)))
         throw new ConflictException('联系人退订状态已变化，请重新预览确认');
-      await db.query('SELECT id FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id]);
       await db.query(`INSERT INTO email_daily_usage(organization_id,usage_day) VALUES($1,$2)
         ON CONFLICT DO NOTHING`, [identity.organization_id, today]);
       const usage = (await db.query(`SELECT reserved,used FROM email_daily_usage
@@ -495,7 +502,7 @@ export class EmailSendService {
       await db.query(`UPDATE email_daily_usage SET reserved=reserved+1
         WHERE organization_id=$1 AND usage_day=$2`, [identity.organization_id, today]);
       await db.query(`INSERT INTO email_usage_events(recipient_id,event,usage_day)
-        VALUES($1,'reserved',$2)`, [recipientId, today]);
+        VALUES($1,'reserved',$2) ON CONFLICT DO NOTHING`, [recipientId, today]);
       return { recipientId, batchId: row.batch_id, queued: true, usageDay: today };
     });
   }

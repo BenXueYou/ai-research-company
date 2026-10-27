@@ -108,6 +108,8 @@
           <summary>下级详情</summary>
           <p>组织：{{ child.name }} · 管理员登录邮箱：{{ child.email }}</p>
           <el-button :disabled="busy || !!credentials" @click="resetAdministrator(child.accountId)">重置管理员密码</el-button>
+          <el-button :disabled="busy" @click="setActive(child)">{{ child.active ? '停用组织' : '恢复组织' }}</el-button>
+          <p class="hint">停用保留余额和历史；已收款未划拨订单暂停且保留预留。在途查询与邮件继续核对，未执行邮件暂停。</p>
         </details>
       </article>
     </div>
@@ -139,7 +141,7 @@ interface Child {
   email: string;
 }
 const props = defineProps<{
-  request: (path: string, body?: Record<string, string>) => Promise<unknown>;
+  request: (path: string, body?: Record<string, unknown>) => Promise<unknown>;
 }>();
 const parentName = ref('');
 const allowedKinds = shallowRef<string[]>([]);
@@ -225,6 +227,19 @@ async function resetAdministrator(accountId: string) {
     credentials.value = result;
   } catch (failure) {
     error.value = failure instanceof Error ? failure.message : '重置结果不确定，请先核实账号状态，再决定是否再次重置';
+  } finally {
+    busy.value = false;
+  }
+}
+async function setActive(child: Child) {
+  if (busy.value) return;
+  busy.value = true;
+  error.value = '';
+  try {
+    await props.request('organizations/state', { organizationId: child.id, active: !child.active });
+    await refresh();
+  } catch (failure) {
+    error.value = failure instanceof Error ? failure.message : '组织状态调整失败，请刷新核对';
   } finally {
     busy.value = false;
   }

@@ -39,9 +39,11 @@ export class IdentityService {
         : 'SELECT * FROM accounts WHERE email=$1 FOR UPDATE', [email]);
       const account = found.rows[0];
       const verified = await verifyPassword(password, account?.password_hash ?? await this.dummyHash);
+      const organization = account ? (await client.query('SELECT active FROM organizations WHERE id=$1 FOR SHARE',
+        [account.organization_id])).rows[0] : null;
       const validity = account && await client.query(`SELECT active AND (NOT must_change OR temporary_expires_at > clock_timestamp()) AS valid
         FROM accounts WHERE id=$1 AND EXISTS (SELECT 1 FROM organizations o WHERE o.id=accounts.organization_id AND o.active)`, [account.id]);
-      if (!verified || !validity?.rows[0]?.valid) {
+      if (!verified || !organization?.active || !validity?.rows[0]?.valid) {
         await client.query("INSERT INTO audit_events(event,account_id) VALUES('login_failed',$1)", [account?.id ?? null]);
         return null;
       }

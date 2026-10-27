@@ -21,6 +21,7 @@ import { bindContactKey, contactKey, OrganizationService } from './organizations
 import { ProcurementService } from './procurement.js';
 import { CoefficientService } from './coefficient.js';
 import { PointOrderService } from './orders.js';
+import { ReportingService } from './reporting.js';
 import { MemberService } from './members.js';
 import { PasswordResetService } from './password-resets.js';
 import { ServiceUnavailableException } from '@nestjs/common';
@@ -112,6 +113,7 @@ export async function createApplication(
   const procurement = new ProcurementService(pool, production);
   const coefficient = new CoefficientService(pool, accountClient);
   const pointOrders = new PointOrderService(pool);
+  const reporting = new ReportingService(pool);
   const members = new MemberService(pool);
   const passwordResets = new PasswordResetService(pool);
   const companySearch = new CompanySearchService(pool, tengdao);
@@ -166,6 +168,17 @@ export async function createApplication(
     @Get('workspace')
     workspace(@Req() request: AuthRequest) {
       return { title: '工作台', email: request.identity.email, message: '身份验证已完成。后续业务模块尚未开放。' };
+    }
+    @Get('reports')
+    reports(@Req() request: AuthRequest) {
+      return reporting.overview(request.identity);
+    }
+    @Get('reports/own-ledger.csv')
+    async ownLedgerCsv(@Req() request: AuthRequest, @Res() response: Response) {
+      const csv = await reporting.exportOwnLedger(request.identity);
+      response.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      response.setHeader('Content-Disposition', 'attachment; filename="own-ledger.csv"');
+      response.send('\uFEFF' + csv);
     }
     @Get('upstream-monitor')
     upstreamOverview(@Req() request: AuthRequest) {
@@ -541,6 +554,10 @@ export async function createApplication(
     @Post('organizations')
     openOrganization(@Req() request: AuthRequest) {
       return organizations.open(request.identity, request.sessionToken, request.body ?? {});
+    }
+    @Post('organizations/state')
+    organizationState(@Req() request: AuthRequest) {
+      return organizations.setActive(request.identity, request.sessionToken, request.body ?? {});
     }
   }
   @Module({ controllers: [IdentityController] })

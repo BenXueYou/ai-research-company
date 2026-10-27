@@ -143,6 +143,7 @@
           <DetailReconciliation v-if="session.role === 'platform'" :request="request" />
           <UpstreamMonitor v-if="session.role === 'platform'" :request="request" />
           <PointOrders v-if="['platform', 'distributor'].includes(session.role)" :request="request" />
+          <UsageReports :request="request" />
           <UMailResourceSettings v-if="session.role === 'platform'" :request="request" />
           <PlatformEmailQuota v-if="session.role === 'platform'" :request="request" />
         </section>
@@ -164,6 +165,7 @@ import CoefficientNotice from './CoefficientNotice.vue';
 import DetailReconciliation from './DetailReconciliation.vue';
 import UpstreamMonitor from './UpstreamMonitor.vue';
 import PointOrders from './PointOrders.vue';
+import UsageReports from './UsageReports.vue';
 import TeamSmtpSettings from './TeamSmtpSettings.vue';
 import EmailSendRecords from './EmailSendRecords.vue';
 import PlatformEmailQuota from './PlatformEmailQuota.vue';

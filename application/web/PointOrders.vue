@@ -23,13 +23,14 @@
     </el-form>
     <div v-for="order in snapshot?.orders ?? []" :key="order.id" class="workspace-card">
       <h3>{{ order.buyerName }} · {{ order.status === 'transferred' ? '已划拨' : order.status === 'refunded' ? '已整单退款' : order.status === 'reserved' ? '已收款并预留' : '待收款' }}</h3>
+      <p v-if="!order.buyerActive && order.status === 'reserved'">买方组织已停用，划拨暂停；预留继续保留。</p>
       <p>数量 {{ order.quantity }} × 单价 {{ order.unitPrice }} = {{ order.amount }} 元</p>
       <template v-if="order.status === 'unpaid'">
         <el-button :disabled="busy" @click="selectReprice(order)">调整数量或售价</el-button>
         <el-button :disabled="busy" @click="selectConfirm(order)">确认足额收款</el-button>
       </template>
       <p v-else>收款凭证：{{ order.receiptReference }}</p>
-      <el-button v-if="order.status === 'reserved'" :disabled="busy" @click="transfer(order)">完整划拨</el-button>
+      <el-button v-if="order.status === 'reserved'" :disabled="busy || !order.buyerActive" @click="transfer(order)">完整划拨</el-button>
       <el-button v-if="order.status === 'reserved'" :disabled="busy" @click="selectRefund(order)">确认线下整单退款</el-button>
       <p v-if="order.status === 'transferred'">历史销售成本 {{ order.salesCost }} 元，毛利 {{ order.grossProfit }} 元</p>
       <p v-if="order.status === 'refunded'">退款 {{ order.refundAmount }} 元；依据：{{ order.refundEvidence }}</p>
@@ -68,7 +69,7 @@ import {
   ElInput
 } from 'element-plus';
 
-type Order = { id: string; buyerId: string; buyerName: string; quantity: string; unitPrice: string; amount: string; status: string; receiptReference: string | null; salesCost: string | null; grossProfit: string | null; refundAmount: string | null; refundEvidence: string | null };
+type Order = { id: string; buyerId: string; buyerName: string; buyerActive: boolean; quantity: string; unitPrice: string; amount: string; status: string; receiptReference: string | null; salesCost: string | null; grossProfit: string | null; refundAmount: string | null; refundEvidence: string | null };
 type Snapshot = { children: { id: string; name: string; kind: string }[]; inventory: { balance: string; reserved: string; average_cost: string }; pricing: { minimum_markup: string }; orders: Order[] };
 const props = defineProps<{ request: (path: string, body?: Record<string, unknown>) => Promise<any> }>();
 const snapshot = shallowRef<Snapshot>();

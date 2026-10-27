@@ -44,7 +44,7 @@ export class PointOrderService {
         : (await client.query('SELECT balance,frozen,reserved,average_cost FROM distributor_inventory WHERE organization_id=$1', [seller.id])).rows[0]
           ?? { balance:'0', frozen:'0', reserved:'0', average_cost:'0' };
       const pricing = (await client.query('SELECT minimum_markup FROM platform_pricing')).rows[0];
-      const orders = (await client.query(`SELECT p.id,p.buyer_id AS "buyerId",o.name AS "buyerName",p.quantity,
+      const orders = (await client.query(`SELECT p.id,p.buyer_id AS "buyerId",o.name AS "buyerName",o.active AS "buyerActive",p.quantity,
         p.unit_price AS "unitPrice",p.amount,p.status,p.receipt_reference AS "receiptReference",
         p.created_at AS "createdAt",p.confirmed_at AS "confirmedAt",
         t.gross_profit AS "grossProfit",t.sales_cost AS "salesCost",
@@ -94,6 +94,9 @@ export class PointOrderService {
             const current = (await client.query('SELECT * FROM point_orders WHERE id=$1 AND seller_id=$2 FOR UPDATE', [orderId,seller.id])).rows[0];
             if (!current) throw new ForbiddenException('订单不在直属卖方范围');
             if (current.status!=='unpaid') throw new ConflictException('已确认收款，数量与售价不可变更');
+            const buyer = (await client.query('SELECT active FROM organizations WHERE id=$1 AND parent_id=$2 FOR SHARE',
+              [current.buyer_id,seller.id])).rows[0];
+            if (!buyer?.active) throw new ConflictException('买方已停用，直属交易暂停');
           }
           const amount = (await client.query(`SELECT round($1::numeric*$2::numeric,4) AS amount,
             $2::numeric >= average_cost*(1+$3::numeric) AS price_ok FROM

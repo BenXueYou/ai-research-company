@@ -97,6 +97,9 @@ export class CompanyDetailService {
     await this.authorize(identity);
     const queryId = exact(body, 'queryId');
     const reserved = await transaction(this.pool, async db => {
+      const organization = (await db.query('SELECT active FROM organizations WHERE id=$1 FOR SHARE',
+        [identity.organization_id])).rows[0];
+      if (!organization?.active) throw new ForbiddenException('终端企业已停用');
       const query = (await db.query('SELECT * FROM company_detail_queries WHERE id=$1 AND organization_id=$2 FOR UPDATE', [queryId, identity.organization_id])).rows[0];
       if (!query) throw new NotFoundException('查询授权不存在');
       if (query.state === 'expired') throw new ConflictException('报价系数已变化，请重新报价确认');
