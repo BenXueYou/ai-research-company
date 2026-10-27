@@ -80,10 +80,9 @@ test('T06 real HTTP/PostgreSQL accounting, pricing, permissions and concurrency'
       const loss = await losses[0].json();
       assert.equal((await losses[1].json()).id,loss.id);
       assert.equal((await post('expenses',{...lossInput,requestId: randomUUID()})).status,409);
-      assert.equal((await post('purchases',purchase({purpose: 'failure',amount: '6',expenseId: loss.id}))).status,400);
       assert.equal((await post('purchases',purchase({purpose: 'excess',amount: '5',expenseId: loss.id}))).status,400);
       assert.equal((await post('purchases',purchase({purpose: 'failure',amount: '5',expenseId: randomUUID()}))).status,400);
-      const input = purchase({purpose: 'failure',amount: '5',upstreamPoints: '10',expenseId: loss.id});
+      const input = purchase({purpose: 'failure',amount: '2',upstreamPoints: '4',expenseId: loss.id});
       assert.equal((await post('purchases',purchase({purpose: 'failure',amount: '5'}))).status,400);
       const credited = await post('purchases',input);
       assert.equal(credited.status,201);
@@ -91,7 +90,12 @@ test('T06 real HTTP/PostgreSQL accounting, pricing, permissions and concurrency'
       assert.equal(creditedBody.expenseId,loss.id);
       assert.notEqual(creditedBody.id,loss.id);
       assert.equal(creditedBody.generatedInternalPoints,'0.0000');
-      assert.equal((await post('purchases',purchase({purpose: 'failure',amount: '5',expenseId: loss.id}))).status,409);
+      const partial = await overview();
+      assert.equal(partial.expenses.find((item: {id: string}) => item.id===loss.id).reconciliation_difference,'-3.0000');
+      const secondCredit = await post('purchases',purchase({purpose: 'failure',amount: '3',upstreamPoints: '6',expenseId: loss.id}));
+      assert.equal(secondCredit.status,201);
+      const secondCreditBody = await secondCredit.json();
+      assert.equal((await post('purchases',{...input,requestId: randomUUID()})).status,409);
       const excessResponse = await post('expenses',expense({purpose: 'excess',amount: '2'}));
       const excess = await excessResponse.json();
       await Promise.all([
@@ -107,7 +111,9 @@ test('T06 real HTTP/PostgreSQL accounting, pricing, permissions and concurrency'
       assert.equal(after.totals.recorded_upstream_credits,'171.0001');
       assert.equal(after.expenses.length,3);
       const linked = after.expenses.find((item: {id: string}) => item.id===loss.id);
-      assert.equal(linked.purchase_id,creditedBody.id);
+      assert.deepEqual(new Set(linked.purchase_ids),new Set([creditedBody.id,secondCreditBody.id]));
+      assert.equal(linked.replenished_amount,'5.0000');
+      assert.equal(linked.reconciliation_difference,'0.0000');
     });
     await t.test('concurrent distinct purchases use serialized moving cost and append-only accounting', async () => {
       await pool.query('UPDATE platform_pricing SET coefficient=1');
@@ -157,11 +163,14 @@ test('T06 real HTTP/PostgreSQL accounting, pricing, permissions and concurrency'
     });
     await t.test('other roles, forged organization/account and inactive platform cannot write or read', async () => {
       const baseline = await overview();
-      for (const role of ['distributor','admin','sales']) {
+      for (const role of ['distributor','admin','sales','forged-platform']) {
         const accountId = randomUUID();
         const orgId = randomUUID();
-        await pool.query("INSERT INTO organizations(id,name,kind) VALUES($1,'T06 isolated role fixture','platform')",[orgId]);
-        await pool.query('INSERT INTO accounts(id,organization_id,email,password_hash,role,must_change) VALUES($1,$2,$3,$4,$5,false)',[accountId,orgId,`${role}@t06.test`,await hashPassword(password),role]);
+        const root = (await pool.query("SELECT organization_id FROM accounts WHERE username='super_admin'")).rows[0].organization_id;
+        await pool.query(`INSERT INTO organizations(id,name,kind,parent_id,distributor_level,phone_encrypted,phone_key,phone_masked)
+          VALUES($1,'T06 isolated role fixture',$2,$3,$4,'explicit fixture only',$5,'+86 ****')`,
+        [orgId,role==='distributor' ? 'distributor' : 'terminal',root,role==='distributor' ? 1 : 0,randomUUID()]);
+        await pool.query('INSERT INTO accounts(id,organization_id,email,password_hash,role,must_change) VALUES($1,$2,$3,$4,$5,false)',[accountId,orgId,`${role}@t06.test`,await hashPassword(password),role==='forged-platform' ? 'platform' : role]);
         assert.notEqual(accountId,orgId);
         const session = await login(`${role}@t06.test`,password);
         assert.equal((await http('procurement',undefined,session)).status,403);

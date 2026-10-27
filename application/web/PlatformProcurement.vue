@@ -36,7 +36,10 @@ const expense = reactive({
   purpose: 'failure',
   amount: '',
   sourceReference: '',
-  evidence: ''
+  evidence: '',
+  detailLossQueryId: '',
+  contactLossQueryId: '',
+  productLossPageId: ''
 });
 const pricing = reactive({
   minimumMarkup: '',
@@ -156,14 +159,22 @@ onMounted(reload);
             <select id="purchase-expense" v-model="purchase.expenseId" :disabled="busy">
               <option value="">{{ purchase.purpose === 'coverage' ? '本次确认新费用' : '请先登记费用并选择关联' }}</option>
               <template v-for="item in snapshot.expenses" :key="item.id">
-                <option v-if="!item.purchase_id && item.purpose === purchase.purpose" :value="item.id">{{ item.source_reference }} · {{ item.amount }}元</option>
+                <option v-if="item.purpose === purchase.purpose" :value="item.id">{{ item.source_reference }} · {{ item.amount }}元</option>
               </template>
             </select>
           </ElFormItem>
-          <p>关联费用须与采购用途、金额一致；已记费用充值后只增加资金支出与上游点数。</p>
+          <p>关联费用须与采购用途一致；已记费用可关联多笔充值，只增加资金支出与上游点数。充值合计与费用的差额单独展示供核对。</p>
           <ElButton native-type="submit" :disabled="busy">确认采购入账</ElButton>
         </ElForm>
-        <ElForm label-position="top" @submit.prevent="submit('expense', { ...expense })">
+        <ElForm label-position="top" @submit.prevent="submit('expense', {
+          purpose: expense.purpose,
+          amount: expense.amount,
+          sourceReference: expense.sourceReference,
+          evidence: expense.evidence,
+          ...(expense.detailLossQueryId ? { detailLossQueryId: expense.detailLossQueryId } : {}),
+          ...(expense.contactLossQueryId ? { contactLossQueryId: expense.contactLossQueryId } : {}),
+          ...(expense.productLossPageId ? { productLossPageId: expense.productLossPageId } : {})
+        })">
           <h3>平台承担费用</h3>
           <ElFormItem label="费用用途" for="expense-purpose">
             <select id="expense-purpose" v-model="expense.purpose" :disabled="busy">
@@ -173,6 +184,9 @@ onMounted(reload);
           <ElFormItem label="费用人民币金额" for="expense-amount"><ElInput id="expense-amount" v-model="expense.amount" required /></ElFormItem>
           <ElFormItem label="费用来源编号" for="expense-reference"><ElInput id="expense-reference" v-model="expense.sourceReference" required /></ElFormItem>
           <ElFormItem label="费用核对依据" for="expense-evidence"><ElInput id="expense-evidence" v-model="expense.evidence" required /></ElFormItem>
+          <ElFormItem label="关联企业详情损耗查询标识" for="expense-detail-loss"><ElInput id="expense-detail-loss" v-model="expense.detailLossQueryId" :disabled="busy" /></ElFormItem>
+          <ElFormItem label="关联联系人页损耗查询标识" for="expense-contact-loss"><ElInput id="expense-contact-loss" v-model="expense.contactLossQueryId" :disabled="busy" /></ElFormItem>
+          <ElFormItem label="关联产品名单损耗页标识" for="expense-product-loss"><ElInput id="expense-product-loss" v-model="expense.productLossPageId" :disabled="busy" /></ElFormItem>
           <ElButton native-type="submit" :disabled="busy">确认费用</ElButton>
         </ElForm>
         <ElForm label-position="top" @submit.prevent="submitPricing">
@@ -197,8 +211,8 @@ onMounted(reload);
       <ul><li v-for="item in snapshot.prices" :key="item.interface_path">{{ item.interface_path }}：{{ item.upstream_unit_price }} 上游点数/计费单位；本页最大 {{ item.maximum_billable_units }}；版本 {{ item.version }}</li></ul>
       <h3>费用来源与核对</h3>
       <div class="procurement-scroll"><table>
-        <thead><tr><th>费用记录 / 来源</th><th>用途</th><th>人民币</th><th>核对依据</th><th>关联采购</th></tr></thead>
-        <tbody><tr v-for="item in snapshot.expenses" :key="item.id"><td>{{ item.id }} / {{ item.source_reference }}</td><td>{{ purposes[item.purpose] }}</td><td>{{ item.amount }}</td><td>{{ item.evidence }}</td><td>{{ item.purchase_id || '尚未关联充值' }}</td></tr></tbody>
+        <thead><tr><th>费用记录 / 来源</th><th>用途</th><th>人民币</th><th>核对依据</th><th>关联采购</th><th>充值合计 / 与费用差额</th></tr></thead>
+        <tbody><tr v-for="item in snapshot.expenses" :key="item.id"><td>{{ item.id }} / {{ item.source_reference }}</td><td>{{ purposes[item.purpose] }}</td><td>{{ item.amount }}</td><td>{{ item.evidence }}</td><td>{{ item.purchase_ids.join('、') || '尚未关联充值' }}</td><td>{{ item.replenished_amount }} / {{ item.reconciliation_difference }}</td></tr></tbody>
       </table></div>
       <h3>采购及费用关联</h3>
       <div class="procurement-scroll"><table>

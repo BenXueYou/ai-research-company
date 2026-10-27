@@ -105,6 +105,7 @@
           </el-form>
         </section>
         <section v-else class="workspace">
+          <CoefficientNotice :request="request" />
           <div class="page-heading">
             <p class="eyebrow">WORKSPACE</p>
             <h1>工作台</h1>
@@ -117,8 +118,33 @@
             <el-button class="primary-button" @click="openSettings">账号设置 → 修改密码</el-button>
           </div>
           <OrganizationOpening v-if="['platform', 'distributor'].includes(session.role)" :request="request" />
-          <MemberManagement v-if="session.role === 'admin'" :request="request" />
+          <MemberManagement v-if="session.role === 'admin'" :request="request" :current-account-id="session.id" />
+          <ProductSearch v-if="['admin', 'sales'].includes(session.role)" :request="request" @profile-created="profileRefresh += 1" />
+          <CompanySearch
+            v-if="['admin', 'sales'].includes(session.role)"
+            :key="profileRefresh"
+            :current-account-id="session.id"
+            :can-delete-timeline="session.role === 'admin'"
+            :request="request"
+          />
+          <TeamSmtpSettings
+            v-if="['admin', 'sales'].includes(session.role)"
+            :can-maintain="session.role === 'admin'"
+            :request="request"
+          />
+          <EmailSendRecords v-if="['admin', 'sales'].includes(session.role)" :request="request" />
+          <TeamUMailSettings
+            v-if="['admin', 'sales'].includes(session.role)"
+            :can-maintain="session.role === 'admin'"
+            :request="request"
+          />
           <PlatformProcurement v-if="session.role === 'platform'" :request="request" />
+          <CoefficientChanges v-if="session.role === 'platform'" :request="request" />
+          <DetailReconciliation v-if="session.role === 'platform'" :request="request" />
+          <UpstreamMonitor v-if="session.role === 'platform'" :request="request" />
+          <PointOrders v-if="['platform', 'distributor'].includes(session.role)" :request="request" />
+          <UMailResourceSettings v-if="session.role === 'platform'" :request="request" />
+          <PlatformEmailQuota v-if="session.role === 'platform'" :request="request" />
         </section>
       </template>
     </main>
@@ -130,7 +156,19 @@
 import { onMounted, ref } from 'vue';
 import OrganizationOpening from './OrganizationOpening.vue';
 import MemberManagement from './MemberManagement.vue';
+import CompanySearch from './CompanySearch.vue';
+import ProductSearch from './ProductSearch.vue';
 import PlatformProcurement from './PlatformProcurement.vue';
+import CoefficientChanges from './CoefficientChanges.vue';
+import CoefficientNotice from './CoefficientNotice.vue';
+import DetailReconciliation from './DetailReconciliation.vue';
+import UpstreamMonitor from './UpstreamMonitor.vue';
+import PointOrders from './PointOrders.vue';
+import TeamSmtpSettings from './TeamSmtpSettings.vue';
+import EmailSendRecords from './EmailSendRecords.vue';
+import PlatformEmailQuota from './PlatformEmailQuota.vue';
+import TeamUMailSettings from './TeamUMailSettings.vue';
+import UMailResourceSettings from './UMailResourceSettings.vue';
 import {
   ElAlert,
   ElButton,
@@ -139,6 +177,7 @@ import {
   ElInput
 } from 'element-plus';
 interface Session {
+  id: string;
   email: string | null;
   loginName: string;
   role: string;
@@ -156,13 +195,14 @@ const currentPassword = ref('');
 const newPassword = ref('');
 const confirmPassword = ref('');
 const workspaceMessage = ref('');
+const profileRefresh = ref(0);
 function clearPasswords() {
   loginPassword.value = '';
   currentPassword.value = '';
   newPassword.value = '';
   confirmPassword.value = '';
 }
-async function request(path: string, body?: Record<string, string>) {
+async function request(path: string, body?: Record<string, unknown>) {
   const csrf = document.cookie.split('; ').find(item =>
     item.startsWith('identity_csrf=')
   )?.slice(14) ?? '';

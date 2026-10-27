@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { resolve } from 'node:path';
 import { procurementHttp } from '../procurement-helpers.js';
 
-test('T06 browser real purchasing, expense selection provenance, pricing, and role isolation', async ({ page }) => {
+test('T06 browser real purchasing, expense selection provenance and pricing', async ({ page }) => {
   const previousCwd = process.cwd();
   process.chdir(resolve(previousCwd,'.t06-runtime'));
   const { pool, name, app } = await procurementHttp(3096);
@@ -103,6 +103,7 @@ test('T06 browser real purchasing, expense selection provenance, pricing, and ro
     await expect(page.getByTestId('inventory-balance')).toHaveText('200.0000');
     await expect(page.getByTestId('borne-expenses')).toHaveText('5.0000');
     expect(errors).toEqual([]);
+    await page.screenshot({path: resolve(process.cwd(),'procurement-ui.png'),fullPage: true});
     console.log('T06 UI provenance verified: organizationId != accountId != salePurchaseId != expenseId != topupPurchaseId; selected option value = POST.expenseId = stored expense_id; actor_id from session.');
   } finally {
     await app.close();

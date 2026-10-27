@@ -12,7 +12,7 @@
       :closable="false"
     />
     <section v-if="credentials" class="identity-card" aria-label="成员凭据">
-      <h3>成员创建成功</h3>
+      <h3>{{ credentialAction === 'reset' ? '成员密码重置成功' : '成员创建成功' }}</h3>
       <p>临时密码有效期72小时，首次登录必须改密。关闭后无法查询原密码。</p>
       <dl class="handoff-values">
         <dt>登录邮箱</dt><dd data-testid="member-email">{{ credentials.email }}</dd>
@@ -67,6 +67,11 @@
         <h4>{{ member.name || '首位管理员' }}</h4>
         <p>{{ member.email }} · {{ member.role === 'admin' ? '终端企业管理员' : '业务员' }} · {{ member.active ? '启用' : '停用' }}</p>
         <el-button
+          v-if="member.id !== currentAccountId"
+          :disabled="busy"
+          @click="resetMember(member.id)"
+        >重置 {{ member.email }} 密码</el-button>
+        <el-button
           v-if="member.canDisable"
           :disabled="busy"
           @click="disableMember(member.id)"
@@ -87,9 +92,10 @@ import {
 } from 'element-plus';
 interface Credentials { email: string; temporaryPassword: string; expiresAt: string }
 interface Member { id: string; name: string | null; email: string; role: string; active: boolean; canDisable: boolean }
-const props = defineProps<{ request: (path: string, body?: Record<string, string>) => Promise<unknown> }>();
+const props = defineProps<{ request: (path: string, body?: Record<string, string>) => Promise<unknown>; currentAccountId: string }>();
 const members = shallowRef<Member[]>([]);
 const credentials = shallowRef<Credentials | null>(null);
+const credentialAction = ref<'create' | 'reset'>('create');
 const name = ref('');
 const email = ref('');
 const role = ref('sales');
@@ -115,6 +121,7 @@ async function createMember() {
   }
   busy.value = true;
   try {
+    credentialAction.value = 'create';
     credentials.value = await props.request('members', {
       name: name.value,
       email: email.value,
@@ -146,6 +153,20 @@ function closeCredentials() {
   name.value = '';
   email.value = '';
   requestId.value = crypto.randomUUID();
+}
+async function resetMember(accountId: string) {
+  if (busy.value || credentials.value) return;
+  busy.value = true;
+  error.value = '';
+  try {
+    const result = await props.request('password-resets', { accountId, requestId: crypto.randomUUID() }) as Credentials;
+    credentialAction.value = 'reset';
+    credentials.value = result;
+  } catch (failure) {
+    error.value = failure instanceof Error ? failure.message : '重置结果不确定，请先核实账号状态，再决定是否再次重置';
+  } finally {
+    busy.value = false;
+  }
 }
 async function disableMember(accountId: string) {
   if (busy.value) return;

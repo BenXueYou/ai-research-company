@@ -39,7 +39,7 @@ export async function migrateProcurement(client: PoolClient) {
       coefficient_snapshot numeric(20,4) NOT NULL CHECK(coefficient_snapshot>0),
       generated_internal_points numeric(20,4) NOT NULL CHECK(generated_internal_points>=0),
       amount numeric(20,4) NOT NULL CHECK(amount>0), receipt_reference text NOT NULL UNIQUE,
-      evidence text NOT NULL, expense_id uuid UNIQUE REFERENCES platform_expenses(id),
+      evidence text NOT NULL, expense_id uuid REFERENCES platform_expenses(id),
       actor_id uuid NOT NULL REFERENCES accounts(id), created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
       CHECK((purpose='sale' AND generated_internal_points>0 AND expense_id IS NULL) OR
         (purpose<>'sale' AND generated_internal_points=0 AND expense_id IS NOT NULL))

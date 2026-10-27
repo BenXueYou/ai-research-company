@@ -6,6 +6,11 @@
   background: #f4f6fc;
   font-synthesis: none;
 }
+
+.company-search { margin-top: 1.25rem; }
+.search-summary, .pager { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; }
+.candidate-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; }
+.candidate-row small { display: block; margin-top: .3rem; color: #667085; }
 * {
   box-sizing: border-box;
 }
@@ -182,6 +187,29 @@ footer {
   padding: 20px;
   color: #8a91a8;
   font-size: 12px;
+}
+.email-composer {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid #d9e2eb;
+  border-radius: 12px;
+}
+.email-contact {
+  display: grid;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e5e7f1;
+}
+.email-contact small {
+  display: block;
+}
+.email-preview {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f4f8fb;
+}
+.email-preview pre {
+  white-space: pre-wrap;
 }
 @media (max-width: 760px) {
   .identity-layout {

@@ -12,7 +12,7 @@
       :closable="false"
     />
     <section v-if="credentials" class="identity-card" aria-label="开户凭据">
-      <h2>开户成功</h2>
+      <h2>{{ credentialAction === 'reset' ? '管理员密码重置成功' : '开户成功' }}</h2>
       <p>请在关闭前交付凭据。临时密码有效期72小时，首次登录必须改密。</p>
       <dl class="handoff-values">
         <dt>登录邮箱</dt><dd data-testid="handoff-email">{{ credentials.email }}</dd>
@@ -22,7 +22,7 @@
       <p v-if="copyMessage" role="status">{{ copyMessage }}</p>
       <el-button class="primary-button" :disabled="copying" @click="copyCredentials">一键复制账号信息</el-button>
       <el-button @click="closeCredentials">已保存，关闭凭据</el-button>
-      <p class="hint">关闭后无法查询原密码。凭据补发由后续管理员重置功能提供。</p>
+      <p class="hint">关闭后无法查询本次密码；需要补发时请再次重置。</p>
     </section>
     <el-form
       v-else
@@ -104,6 +104,11 @@
         <h4>{{ child.name }}</h4>
         <p>{{ child.kind === 'terminal' ? '终端企业' : `${child.distributorLevel}级分销` }} · {{ child.active ? '启用' : '停用' }}</p>
         <p>联系号码：{{ child.phoneMasked }} · 管理员：{{ child.email }}</p>
+        <details>
+          <summary>下级详情</summary>
+          <p>组织：{{ child.name }} · 管理员登录邮箱：{{ child.email }}</p>
+          <el-button :disabled="busy || !!credentials" @click="resetAdministrator(child.accountId)">重置管理员密码</el-button>
+        </details>
       </article>
     </div>
   </section>
@@ -125,6 +130,7 @@ interface Credentials {
 }
 interface Child {
   id: string;
+  accountId: string;
   name: string;
   kind: string;
   distributorLevel: number;
@@ -139,6 +145,7 @@ const parentName = ref('');
 const allowedKinds = shallowRef<string[]>([]);
 const children = shallowRef<Child[]>([]);
 const credentials = shallowRef<Credentials | null>(null);
+const credentialAction = ref<'open' | 'reset'>('open');
 const name = ref('');
 const kind = ref('terminal');
 const countryCode = ref('+86');
@@ -172,6 +179,7 @@ async function openOrganization() {
   }
   busy.value = true;
   try {
+    credentialAction.value = 'open';
     credentials.value = await props.request('organizations', {
       name: name.value,
       kind: kind.value,
@@ -206,6 +214,20 @@ function closeCredentials() {
   phone.value = '';
   email.value = '';
   requestId.value = crypto.randomUUID();
+}
+async function resetAdministrator(accountId: string) {
+  if (busy.value || credentials.value) return;
+  busy.value = true;
+  error.value = '';
+  try {
+    const result = await props.request('password-resets', { accountId, requestId: crypto.randomUUID() }) as Credentials;
+    credentialAction.value = 'reset';
+    credentials.value = result;
+  } catch (failure) {
+    error.value = failure instanceof Error ? failure.message : '重置结果不确定，请先核实账号状态，再决定是否再次重置';
+  } finally {
+    busy.value = false;
+  }
 }
 onMounted(refresh);
 </script>

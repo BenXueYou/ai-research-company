@@ -10,13 +10,16 @@ export async function procurementDatabase() {
   finally { await admin.end(); }
   const pool = database(`postgresql://postgres@127.0.0.1:55436/${name}`);
   process.env.ORG_CONTACT_KEY = randomBytes(32).toString('hex');
+  process.env.SMTP_CREDENTIAL_KEY = randomBytes(32).toString('hex');
   await migrate(pool);
   return { pool, name };
 }
 export async function procurementHttp(port = 3095) {
   const { pool, name } = await procurementDatabase();
   const origin = `http://127.0.0.1:${port}`;
-  const app = await createApplication(pool, origin);
+  let app;
+  try { app = await createApplication(pool, origin); }
+  catch (error) { await pool.end(); throw error; }
   await app.listen(port, '127.0.0.1');
   type Session = { cookie: string; csrf: string };
   const anonymous: Session = { cookie: '', csrf: '' };

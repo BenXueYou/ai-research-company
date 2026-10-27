@@ -35,7 +35,7 @@ export class MemberService {
     try {
       if (Array.isArray(input) || Object.keys(input).some(key => !['name', 'email', 'role', 'requestId'].includes(key)))
         throw new BadRequestException('成员字段无效；组织及密码由服务端确定');
-      if (typeof input.name !== 'string' || !input.name.trim() || !['sales', 'admin'].includes(String(input.role)) || !uuid(input.requestId))
+      if (typeof input.name !== 'string' || !input.name.trim() || typeof input.role !== 'string' || !['sales', 'admin'].includes(input.role) || !uuid(input.requestId))
         throw new BadRequestException('姓名、角色及请求标识无效');
       let email: string;
       try { email = normalizeEmail(input.email); } catch { throw new BadRequestException('请填写有效登录邮箱'); }

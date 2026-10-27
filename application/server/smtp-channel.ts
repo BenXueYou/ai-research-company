@@ -64,7 +64,8 @@ function uuid(value: unknown): value is string {
   return typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu.test(value);
 }
 function serialize(row: ChannelRow | undefined) {
-  if (!row) return { channel: null };
+  if (!row)
+    return { channel: null };
   return {
     channel: {
       id: row.id,
@@ -151,6 +152,20 @@ export class SmtpChannelService {
       credential: input.credential,
       replyTo: input.replyTo
     };
+    const fingerprint = createHmac('sha256', this.key).update(JSON.stringify({
+      ...settings,
+      defaultChannel: input.defaultChannel
+    })).digest('hex');
+    const previous = await this.pool.query(`SELECT input_fingerprint,channel_id FROM smtp_configuration_requests
+      WHERE actor_id=$1 AND request_id=$2`, [actor.id, input.requestId]);
+    if (previous.rowCount) {
+      if (previous.rows[0].input_fingerprint !== fingerprint)
+        throw new ConflictException('请求标识已用于不同的团队发信设置');
+      const existing = await this.pool.query(`SELECT id,smtp_host,smtp_port,smtp_security,smtp_username,reply_to,
+        verification_state,verification_detail,default_flag,verified_at,updated_at
+        FROM team_sending_channels WHERE id=$1 AND organization_id=$2`, [previous.rows[0].channel_id, actor.organization_id]);
+      return serialize(existing.rows[0] as ChannelRow | undefined);
+    }
     let verification: SmtpVerificationResult;
     try {
       verification = await this.adapter.verify(settings);
@@ -160,10 +175,6 @@ export class SmtpChannelService {
     if (!['available', 'unavailable', 'not_live_verified'].includes(verification.state) ||
       !validText(verification.detail, 300))
       throw new Error('SMTP适配器返回了无效验证结果');
-    const fingerprint = createHmac('sha256', this.key).update(JSON.stringify({
-      ...settings,
-      defaultChannel: input.defaultChannel
-    })).digest('hex');
     return transaction(this.pool, async client => {
       const prior = await client.query(`SELECT input_fingerprint,channel_id FROM smtp_configuration_requests
         WHERE actor_id=$1 AND request_id=$2`, [actor.id, input.requestId]);
@@ -177,6 +188,8 @@ export class SmtpChannelService {
       }
       const id = randomUUID();
       const encrypted = encryptCredential(this.key, actor.organization_id, settings.credential);
+      if (input.defaultChannel)
+        await client.query('UPDATE team_sending_channels SET default_flag=false WHERE organization_id=$1 AND default_flag', [actor.organization_id]);
       const saved = await client.query(`INSERT INTO team_sending_channels(
           id,organization_id,kind,smtp_host,smtp_port,smtp_security,smtp_username,credential_encrypted,
           reply_to,verification_state,verification_detail,default_flag,verified_at,updated_by)

@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import type pg from 'pg';
 import type { Identity } from './identity.js';
@@ -46,7 +46,7 @@ export class CompanySearchService {
       throw error;
     }
     const searchId = randomUUID();
-    const candidates = page.content.map(item => ({ candidateId: randomUUID(), sourceId: item.id, name: item.name, country: item.country, verificationStatus: 'pending' as const, canQueryContacts: false, canSendEmail: false }));
+    const candidates = page.content.map(item => ({ candidateId: randomUUID(), sourceId: item.id, name: item.name, country: item.country, verificationStatus: 'pending' as const, identityGateBlocksContacts: true, identityGateBlocksEmail: true }));
     await transaction(this.pool, async db => {
       await db.query(`INSERT INTO company_searches(id,organization_id,actor_id,name,country_codes,page_no,page_size,total,trace_id,status)
         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'pending_verification')`, [searchId, identity.organization_id, identity.id, input.name, input.countryCodes, input.pageNo, input.pageSize, page.total, page.traceId ?? null]);
@@ -67,13 +67,19 @@ export class CompanySearchService {
         WHERE c.id=$1 AND c.organization_id=$2 FOR UPDATE OF c,s`, [input.candidateId, identity.organization_id]);
       const candidate = found.rows[0];
       if (!candidate) throw new NotFoundException('候选不存在');
+      const productCountry = (await db.query(`SELECT p.buyer_country_code3 FROM product_candidate_checks pc
+        JOIN product_search_candidates c ON c.id=pc.product_candidate_id
+        JOIN product_search_pages p ON p.id=c.page_id WHERE pc.company_search_id=$1 LIMIT 1`,
+      [candidate.search_id])).rows[0]?.buyer_country_code3;
+      if (productCountry && candidate.source_country !== productCountry)
+        throw new ConflictException('返回企业国家与所选采购企业所在国不一致');
       if (candidate.verification_status !== 'verified') {
         await db.query(`UPDATE company_candidates SET verification_status='not_selected'
           WHERE search_id=$1 AND id<>$2 AND verification_status='pending'`, [candidate.search_id, candidate.id]);
         await db.query(`UPDATE company_candidates SET verification_status='verified',verified_by=$1,verified_at=clock_timestamp() WHERE id=$2`, [identity.id, candidate.id]);
         await db.query("UPDATE company_searches SET status='verified' WHERE id=$1", [candidate.search_id]);
       }
-      return { candidateId: candidate.id, sourceId: candidate.source_id, name: candidate.source_name, country: candidate.source_country, verificationStatus: 'verified', canQueryContacts: true, canSendEmail: true };
+      return { candidateId: candidate.id, sourceId: candidate.source_id, name: candidate.source_name, country: candidate.source_country, verificationStatus: 'verified', identityGateBlocksContacts: false, identityGateBlocksEmail: false };
     });
   }
   async assertVerifiedCandidate(organizationId: string, candidateId: string) {

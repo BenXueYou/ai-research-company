@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { createApplication } from '../server/app.js';
 import { migrate } from '../server/database.js';
 import { MemberService } from '../server/members.js';
-import { digest } from '../server/identity.js';
+import { digest, IdentityService } from '../server/identity.js';
 import { testDatabase } from './helpers.js';
 
 test('T03 真实HTTP/PostgreSQL成员创建、交付、停用及竞争', async t => {
@@ -55,6 +55,10 @@ test('T03 真实HTTP/PostgreSQL成员创建、交付、停用及竞争', async t
     const owner = await activate(company);
     const otherCompany = await open(platform);
     const otherOwner = await activate(otherCompany);
+    const distributorResponse = await http(platform, 'organizations', { name: '分销权限验证', kind: 'distributor', countryCode: '+86', phone: '13997770001', email: 'Distributor@example.com', requestId: randomUUID() });
+    assert.equal(distributorResponse.status, 201);
+    const distributor = await activate(await distributorResponse.json() as Created);
+    t.beforeEach(async () => { await pool.query('DELETE FROM login_throttles'); });
     let member: Created;
     let admin: Created;
     let adminSession: Session;
@@ -95,9 +99,13 @@ test('T03 真实HTTP/PostgreSQL成员创建、交付、停用及竞争', async t
         assert.equal((await http(owner, 'members', { ...data(), email })).status, 400);
       for (const role of ['platform', 'distributor', 'ADMIN'])
         assert.equal((await http(owner, 'members', data(role))).status, 400);
+      for (const role of [['sales'], null, {}, 1])
+        assert.equal((await http(owner, 'members', { ...data(), role })).status, 400);
       assert.equal((await http(empty, 'members', data())).status, 401);
       assert.equal((await http({ ...owner, csrf: 'bad' }, 'members', data())).status, 403);
       assert.equal((await http(platform, 'members', data())).status, 403);
+      assert.equal((await http(distributor, 'members', data())).status, 403);
+      assert.equal((await http(distributor, 'members/disable', { accountId: member!.accountId })).status, 403);
       const sales = await login(member!.email, next);
       assert.equal((await http(sales, 'members')).status, 403);
       assert.equal((await http(sales, 'members', data())).status, 403);
@@ -128,6 +136,19 @@ test('T03 真实HTTP/PostgreSQL成员创建、交付、停用及竞争', async t
       assert.equal((await pool.query('SELECT 1 FROM member_creations WHERE request_id=$1', [input.requestId])).rowCount, 0);
       await create(owner, input);
     });
+    await t.test('停用审计故障回滚启用状态及会话，重试成功且重复停用安全', async () => {
+      const created = await create(owner);
+      const active = await activate(created);
+      await pool.query(`CREATE FUNCTION fail_disable_audit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.action='disable' AND NEW.result='success' THEN RAISE EXCEPTION 'test fault'; END IF; RETURN NEW; END $$;
+        CREATE TRIGGER fail_disable_audit BEFORE INSERT ON member_audit FOR EACH ROW EXECUTE FUNCTION fail_disable_audit()`);
+      try { assert.equal((await http(owner, 'members/disable', { accountId: created.accountId })).status, 500); }
+      finally { await pool.query('DROP TRIGGER fail_disable_audit ON member_audit; DROP FUNCTION fail_disable_audit()'); }
+      assert.equal((await http(active, 'workspace')).status, 200);
+      assert.equal((await pool.query('SELECT active FROM accounts WHERE id=$1', [created.accountId])).rows[0].active, true);
+      assert.equal((await http(owner, 'members/disable', { accountId: created.accountId })).status, 201);
+      assert.equal((await http(owner, 'members/disable', { accountId: created.accountId })).status, 201);
+      assert.equal((await http(active, 'workspace')).status, 401);
+    });
     await t.test('本人/首位/跨企业停用拒绝；其他管理员可停用，保留历史并撤销全设备', async () => {
       assert.equal((await http(owner, 'members/disable', { accountId: company.accountId })).status, 403);
       assert.equal((await http(adminSession!, 'members/disable', { accountId: company.accountId })).status, 403);
@@ -157,7 +178,7 @@ test('T03 真实HTTP/PostgreSQL成员创建、交付、停用及竞争', async t
       const created = await create(owner, data('admin'));
       const active = await activate(created);
       const token = active.cookie.match(/identity_session=([^;]+)/)![1];
-      const identity = await (await import('../server/identity.js')).IdentityService.prototype.authenticate.call({ pool }, token);
+      const identity = await new IdentityService(pool).authenticate(token);
       const blocker = await pool.connect();
       await blocker.query('BEGIN');
       await blocker.query('SELECT id FROM accounts WHERE id=$1 FOR UPDATE', [created.accountId]);
@@ -168,6 +189,55 @@ test('T03 真实HTTP/PostgreSQL成员创建、交付、停用及竞争', async t
       assert.equal(await pending, true);
       assert.equal((await pool.query('SELECT 1 FROM member_creations WHERE actor_id=$1', [created.accountId])).rowCount, 0);
       assert.equal((await pool.query('SELECT 1 FROM sessions WHERE token_hash=$1', [digest(token)])).rowCount, 0);
+    });
+    await t.test('真实停用与登录/改密两种锁顺序竞争，最终均停用且无会话', async () => {
+      const identities = new IdentityService(pool);
+      const members = new MemberService(pool);
+      const ownerToken = owner.cookie.match(/identity_session=([^;]+)/)![1];
+      const ownerIdentity = await identities.authenticate(ownerToken);
+      async function waitForWaiters(count: number) {
+        for (let attempt = 0; attempt < 100; attempt++) {
+          const waiting = await pool.query("SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock'");
+          if (Number(waiting.rows[0].count) >= count) return;
+          await new Promise(resolve => setTimeout(resolve, 20));
+        }
+        assert.fail('未观察到预期数据库锁等待');
+      }
+      for (const operation of ['login', 'password', 'create']) {
+        for (const disableFirst of [true, false]) {
+          // Each scenario has a fresh source budget; throttling is covered by T01.
+          await pool.query('DELETE FROM login_throttles');
+          const created = await create(owner, data('admin'));
+          const active = await activate(created);
+          const token = active.cookie.match(/identity_session=([^;]+)/)![1];
+          const identity = await identities.authenticate(token);
+          const blocker = await pool.connect();
+          await blocker.query('BEGIN');
+          await blocker.query('SELECT id FROM accounts WHERE id=$1 FOR UPDATE', [created.accountId]);
+          const observed = <T>(promise: Promise<T>) => promise.then(() => true, () => false);
+          const mutate = () => operation === 'login'
+            ? observed(identities.login({ email: created.email, password: next }, `race-${serial}`))
+            : operation === 'password'
+              ? observed(identities.changePassword(token, { currentPassword: next, newPassword: next + '2', confirmPassword: next + '2' }))
+              : observed(members.create(identity, token, data()));
+          const disable = () => observed(members.disable(ownerIdentity, ownerToken, { accountId: created.accountId }));
+          let first: Promise<boolean>;
+          let second: Promise<boolean>;
+          try {
+            first = disableFirst ? disable() : mutate();
+            await waitForWaiters(1);
+            second = disableFirst ? mutate() : disable();
+            await waitForWaiters(2);
+          } finally {
+            await blocker.query('COMMIT'); blocker.release();
+          }
+          assert.equal(await first!, true);
+          assert.equal(await second!, !disableFirst);
+          assert.equal((await pool.query('SELECT active FROM accounts WHERE id=$1', [created.accountId])).rows[0].active, false);
+          assert.equal((await pool.query('SELECT 1 FROM sessions WHERE account_id=$1', [created.accountId])).rowCount, 0);
+          assert.equal((await pool.query('SELECT count(*) FROM member_creations WHERE actor_id=$1', [created.accountId])).rows[0].count, disableFirst || operation !== 'create' ? '0' : '1');
+        }
+      }
     });
   } finally { await app.close(); await pool.end(); }
 });

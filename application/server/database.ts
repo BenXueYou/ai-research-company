@@ -3,7 +3,19 @@ import { hashPassword } from './policy.js';
 import pg, { type PoolClient } from 'pg';
 import { migrateProcurement } from './procurement-schema.js';
 import { migrateMembers } from './members-schema.js';
+import { migratePasswordResets } from './password-resets-schema.js';
+import { migrateCompanySearch } from './company-search-schema.js';
+import { migrateProductSearch } from './product-search-schema.js';
+import { migrateCompanyDetail } from './company-detail-schema.js';
+import { migrateCompanyTimeline } from './company-timeline-schema.js';
+import { migrateCompanyContacts } from './company-contacts-schema.js';
 import { migrateSmtpChannels } from './smtp-channel-schema.js';
+import { migrateUMail } from './umail-schema.js';
+import { migrateOrders } from './orders-schema.js';
+import { migrateUpstreamMonitor } from './upstream-monitor-schema.js';
+import { migrateEmailPreview } from './email-preview-schema.js';
+import { migrateCoefficient } from './coefficient-schema.js';
+import { migrateEmailSend } from './email-send-schema.js';
 
 export function database(url = process.env.DATABASE_URL): pg.Pool {
   if (!url)
@@ -101,8 +113,20 @@ export async function migrate(pool: pg.Pool): Promise<void> {
         FOR EACH ROW EXECUTE FUNCTION enforce_organization_tree();
     `);
     await migrateProcurement(client);
+    await migrateOrders(client);
     await migrateMembers(client);
+    await migratePasswordResets(client);
+    await migrateCompanySearch(client);
+    await migrateCompanyDetail(client);
+    await migrateCompanyTimeline(client);
+    await migrateProductSearch(client);
+    await migrateCompanyContacts(client);
+    await migrateCoefficient(client);
+    await migrateEmailPreview(client);
+    await migrateUpstreamMonitor(client);
     await migrateSmtpChannels(client);
+    await migrateUMail(client);
+    await migrateEmailSend(client);
     // The migration lock covers schema and seed together, including concurrent deployments.
     // This release targets new databases, not the earlier disposable email-only schema.
     await client.query('SELECT username FROM accounts LIMIT 0');

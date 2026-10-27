@@ -8,7 +8,7 @@ const url = new URL(process.env.TEST_DATABASE_URL);
 assert.ok(url.pathname.endsWith('_deploy_test'), '部署验收必须使用独立的空库 *_deploy_test');
 const pool = new pg.Pool({ connectionString: url.href });
 const origin = 'http://127.0.0.1:3093';
-const env = { ...process.env, ORG_CONTACT_KEY: randomBytes(32).toString('hex'), DATABASE_URL: url.href, APP_ORIGIN: origin, PORT: '3093', NODE_ENV: 'test' };
+const env = { ...process.env, ORG_CONTACT_KEY: randomBytes(32).toString('hex'), SMTP_CREDENTIAL_KEY: randomBytes(32).toString('hex'), DATABASE_URL: url.href, APP_ORIGIN: origin, PORT: '3093', NODE_ENV: 'test' };
 let server;
 function command(script) {
   const result = spawnSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', ['run', script], {
@@ -70,7 +70,31 @@ try {
   command('bootstrap');
   assert.equal((await pool.query('SELECT * FROM accounts')).rowCount, 2);
   assert.equal((await fetch(`${origin}/api/organizations`, { method: 'POST', headers: openingHeaders, body: JSON.stringify(request) })).status, 409);
-  console.log('PASS：部署脚本、新库内置账号、真实进程登录/改密与开户、重复初始化及重复开户保护。');
+  async function memberLogin(email, password) {
+    const response = await fetch(`${origin}/api/auth/login`, { method: 'POST', headers: openingHeaders, body: JSON.stringify({ email, password }) });
+    assert.equal(response.status, 200, '部署成员登录失败（不输出凭据）');
+    const pairs = response.headers.getSetCookie().map(value => value.split(';')[0]);
+    return { ...openingHeaders, Cookie: pairs.join('; '), 'X-CSRF-Token': pairs.find(value => value.startsWith('identity_csrf=')).slice(14) };
+  }
+  const ownerRestricted = await memberLogin(child.email, child.temporaryPassword);
+  assert.equal((await fetch(`${origin}/api/auth/password`, { method: 'POST', headers: ownerRestricted,
+    body: JSON.stringify({ currentPassword: child.temporaryPassword, newPassword: next, confirmPassword: next }) })).status, 200);
+  const ownerHeaders = await memberLogin(child.email, next);
+  const memberInput = { name: '部署成员甲', email: 'Deploy.Member+tag@EXAMPLE.COM', role: 'sales', requestId: randomUUID() };
+  const memberResponse = await fetch(`${origin}/api/members`, { method: 'POST', headers: ownerHeaders, body: JSON.stringify(memberInput) });
+  assert.equal(memberResponse.status, 201);
+  const member = await memberResponse.json();
+  assert.equal(member.email, 'Deploy.Member+tag@example.com');
+  assert.equal(member.organizationId, child.organizationId);
+  const restrictedMember = await memberLogin(member.email, member.temporaryPassword);
+  assert.equal((await fetch(`${origin}/api/workspace`, { headers: restrictedMember })).status, 403);
+  command('bootstrap');
+  assert.equal((await pool.query('SELECT count(*) FROM accounts')).rows[0].count, '3');
+  assert.equal((await fetch(`${origin}/api/members`, { method: 'POST', headers: ownerHeaders, body: JSON.stringify(memberInput) })).status, 409);
+  assert.equal((await fetch(`${origin}/api/members/disable`, { method: 'POST', headers: ownerHeaders, body: JSON.stringify({ accountId: member.accountId }) })).status, 201);
+  assert.equal((await fetch(`${origin}/api/auth/session`, { headers: restrictedMember })).status, 401);
+  assert.equal((await pool.query('SELECT active FROM accounts WHERE id=$1', [member.accountId])).rows[0].active, false);
+  console.log('PASS：真实部署、T01/T02初始化及开户、T03成员创建/登录/停用与重复初始化。');
 } finally {
   if (server && server.exitCode === null) {
     const exited = once(server, 'exit');

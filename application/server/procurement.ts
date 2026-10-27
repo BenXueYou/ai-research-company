@@ -40,8 +40,11 @@ export class ProcurementService {
       return { currency: 'CNY', pricing, inventory, totals,
         prices: (await client.query(`SELECT * FROM interface_prices WHERE NOT $1::boolean OR evidence_type='supplier_verified' ORDER BY interface_path`, [this.production])).rows,
         purchases: (await client.query('SELECT * FROM point_purchases ORDER BY created_at,id')).rows,
-        expenses: (await client.query(`SELECT e.*,p.id AS purchase_id FROM platform_expenses e
-          LEFT JOIN point_purchases p ON p.expense_id=e.id ORDER BY e.created_at,e.id`)).rows,
+        expenses: (await client.query(`SELECT e.*,
+          ARRAY(SELECT p.id FROM point_purchases p WHERE p.expense_id=e.id ORDER BY p.created_at,p.id) AS purchase_ids,
+          coalesce((SELECT sum(p.amount) FROM point_purchases p WHERE p.expense_id=e.id),0)::numeric(20,4) AS replenished_amount,
+          (coalesce((SELECT sum(p.amount) FROM point_purchases p WHERE p.expense_id=e.id),0)-e.amount)::numeric(20,4) AS reconciliation_difference
+          FROM platform_expenses e ORDER BY e.created_at,e.id`)).rows,
         ledger: (await client.query('SELECT * FROM procurement_ledger ORDER BY id')).rows };
     });
   }
@@ -52,7 +55,7 @@ export class ProcurementService {
         await this.authorize(client, identity, token);
         const allowed = operation==='purchase'
           ? ['requestId','purpose','upstreamPoints','amount','receiptReference','evidence','expenseId']
-          : operation==='expense' ? ['requestId','purpose','amount','sourceReference','evidence']
+          : operation==='expense' ? ['requestId','purpose','amount','sourceReference','evidence','detailLossQueryId','contactLossQueryId','productLossPageId']
             : ['requestId','minimumMarkup','interfacePath','upstreamUnitPrice','maximumBillableUnits','evidence','evidenceType'];
         if (!input || Array.isArray(input) || Object.keys(input).some(key => !allowed.includes(key)) || !uuid.test(String(input.requestId)))
           throw new BadRequestException('请求字段或幂等标识无效；系数仅可通过生效流程修改');
@@ -93,19 +96,43 @@ export class ProcurementService {
           const evidence = text(input.evidence,'核对依据');
           if (operation==='purchase' && ['failure','excess'].includes(purpose) && !input.expenseId)
             throw new BadRequestException('失败或超额充值须先登记费用来源，再选择对应费用关联核对');
+          let detailLossQueryId: string | null = null;
+          let contactLossQueryId: string | null = null;
+          let productLossPageId: string | null = null;
+          if ([input.detailLossQueryId,input.contactLossQueryId,input.productLossPageId].filter(Boolean).length > 1)
+            throw new BadRequestException('费用只能关联一笔查询损耗');
+          if (operation === 'expense' && input.detailLossQueryId !== undefined) {
+            if (!uuid.test(String(input.detailLossQueryId))) throw new BadRequestException('查询损耗标识无效');
+            const loss = (await client.query('SELECT purpose FROM company_detail_losses WHERE query_id=$1', [input.detailLossQueryId])).rows[0];
+            if (!loss || loss.purpose !== purpose) throw new BadRequestException('查询损耗不存在或用途不一致');
+            detailLossQueryId = String(input.detailLossQueryId);
+          }
+          if (operation === 'expense' && input.contactLossQueryId !== undefined) {
+            if (!uuid.test(String(input.contactLossQueryId))) throw new BadRequestException('联系人查询损耗标识无效');
+            const loss = (await client.query('SELECT purpose FROM company_contact_losses WHERE query_id=$1', [input.contactLossQueryId])).rows[0];
+            if (!loss || loss.purpose !== purpose) throw new BadRequestException('联系人查询损耗不存在或用途不一致');
+            contactLossQueryId = String(input.contactLossQueryId);
+          }
+          if (operation === 'expense' && input.productLossPageId !== undefined) {
+            if (!uuid.test(String(input.productLossPageId))) throw new BadRequestException('产品名单损耗标识无效');
+            const loss = (await client.query('SELECT purpose FROM product_search_losses WHERE page_id=$1', [input.productLossPageId])).rows[0];
+            if (!loss || loss.purpose !== purpose) throw new BadRequestException('产品名单损耗不存在或用途不一致');
+            productLossPageId = String(input.productLossPageId);
+          }
           let expenseId: string | null = null;
           if (operation==='expense' || purpose!=='sale') {
             if (operation==='purchase' && input.expenseId) {
               if (!uuid.test(String(input.expenseId))) throw new BadRequestException('费用标识无效');
               const expense = (await client.query(`SELECT * FROM platform_expenses WHERE id=$1
-                AND purpose=$2 AND amount=round($3::numeric,4) FOR UPDATE`, [input.expenseId,purpose,amount])).rows[0];
-              if (!expense) throw new BadRequestException('关联费用不存在或用途、金额不一致');
+                AND purpose=$2 FOR UPDATE`, [input.expenseId,purpose])).rows[0];
+              if (!expense) throw new BadRequestException('关联费用不存在或用途不一致');
               expenseId = expense.id;
             } else {
               expenseId = operation==='expense' ? id : randomUUID();
               const reference = operation==='expense' ? text(input.sourceReference,'费用来源') : text(input.receiptReference,'充值凭证');
-              await client.query(`INSERT INTO platform_expenses(id,purpose,source_reference,amount,evidence,actor_id)
-                VALUES($1,$2,$3,round($4::numeric,4),$5,$6)`, [expenseId,purpose,reference,amount,evidence,identity.id]);
+              await client.query(`INSERT INTO platform_expenses(id,purpose,source_reference,amount,evidence,actor_id,detail_loss_query_id,contact_loss_query_id,product_loss_page_id)
+                VALUES($1,$2,$3,round($4::numeric,4),$5,$6,$7,$8,$9)`,
+              [expenseId,purpose,reference,amount,evidence,identity.id,detailLossQueryId,contactLossQueryId,productLossPageId]);
               await client.query(`INSERT INTO procurement_ledger(event,reference,actor_id,expense_delta,balance_after,average_cost_after,details)
                 VALUES('expense',$1,$2,round($3::numeric,4),$4,$5,$6)`, [expenseId,identity.id,amount,inventory.balance,inventory.average_cost,JSON.stringify({purpose,evidence})]);
             }
