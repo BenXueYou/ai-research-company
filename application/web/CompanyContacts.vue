@@ -2,6 +2,8 @@
   <section class="contact-panel">
     <h3>联系人</h3>
     <p class="hint">每页须单独确认费用；单企业最多返回 200 条，达到上限不代表企业实际联系人总数。无邮箱的联系人仍可能计费。</p>
+    <p>联系人最近获取：{{ fetchedAt ?? '尚未获取' }}</p>
+    <el-button :disabled="busy" @click="quoteRefresh">主动更新当前职位第 1 页</el-button>
     <el-form label-position="top" @submit.prevent="quotePage(1)">
       <el-form-item label="职位标签">
         <el-select v-model="positionTags" multiple placeholder="不筛选职位">
@@ -23,7 +25,7 @@
     />
     <div v-if="quote && 'queryId' in quote" class="search-summary">
       <span>{{ profile.name }} · 第 {{ quote.pageNo }} 页 · 最高扣点 {{ quote.maximumPoints }} · 系数 {{ quote.coefficient }}</span>
-      <el-button :disabled="busy" @click="executePage">确认费用并查询本页</el-button>
+      <el-button :disabled="busy" @click="executePage">{{ refreshPending ? '再次确认费用并更新本页' : '确认费用并查询本页' }}</el-button>
       <el-button :disabled="busy" @click="quote = null">取消</el-button>
     </div>
     <p v-if="status" role="status">{{ status }}</p>
@@ -37,6 +39,7 @@
         <strong>{{ contact.mailsouId }}</strong>
         <small>返回企业 {{ contact.returnedCompanyName }} · 职位 {{ contact.positionTag || '未提供' }} · 邮箱可信度 {{ contact.credibility || '未提供' }}</small>
         <small>企业邮箱 {{ contact.email || '未提供' }} · 个人邮箱 {{ contact.personalEmail || '未提供' }}</small>
+        <small v-if="contact.notReturnedInLastUpdate">本次更新未返回；仅表示本次查询结果，不代表离职或邮箱失效</small>
       </div>
       <span v-if="contact.ownershipStatus === 'pending'" class="status-pill">归属待核实，默认不选</span>
       <span v-else class="status-pill">归属一致</span>
@@ -62,6 +65,7 @@ interface Contact {
   credibility: string | null;
   unsubscribed: boolean;
   ownershipReason: string | null;
+  notReturnedInLastUpdate: boolean;
 }
 interface Quote { queryId: string; pageNo: number; pageSize: number; coefficient: string; maximumPoints: string }
 interface Page { state: string; pageNo: number; pageSize: number; total: number; chargedPoints: string; contacts: Contact[] }
@@ -88,9 +92,12 @@ const status = ref('');
 const quote = ref<Quote | { localPage: Page } | null>(null);
 const page = ref<Page | null>(null);
 const contacts = ref<Contact[]>([]);
+const fetchedAt = ref<string | null>(null);
+const refreshPending = ref(false);
 async function loadLocal() {
-  const local = await props.request('company-contacts/profile', { profileId: props.profile.id }) as { contacts: Contact[] };
+  const local = await props.request('company-contacts/profile', { profileId: props.profile.id }) as { contacts: Contact[]; fetchedAt: string | null };
   contacts.value = local.contacts;
+  fetchedAt.value = local.fetchedAt;
 }
 async function run(action: () => Promise<void>) {
   if (busy.value) return;
@@ -106,6 +113,7 @@ async function run(action: () => Promise<void>) {
 }
 function quotePage(pageNo: number) {
   void run(async () => {
+    refreshPending.value = false;
     quote.value = await props.request('company-contacts/quote', {
       profileId: props.profile.id,
       positionTags: [...positionTags.value],
@@ -120,6 +128,17 @@ function quotePage(pageNo: number) {
     }
   });
 }
+function quoteRefresh() {
+  void run(async () => {
+    quote.value = await props.request('company-contacts/refresh-quote', {
+      profileId: props.profile.id,
+      positionTags: [...positionTags.value],
+      pageNo: 1,
+      pageSize: 20
+    }) as Quote;
+    refreshPending.value = true;
+  });
+}
 function executePage() {
   if (!quote.value || !('queryId' in quote.value)) return;
   const queryId = quote.value.queryId;
@@ -128,6 +147,7 @@ function executePage() {
     status.value = page.value.state === 'pending' ? '结果确认中，冻结保留；请勿重复发起' :
       page.value.state === 'zero' ? '本页真实零结果，冻结已全部释放' : `本页已结算，扣点 ${page.value.chargedPoints}`;
     quote.value = null;
+    refreshPending.value = false;
     await loadLocal();
     emit('updated');
   });

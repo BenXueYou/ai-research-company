@@ -29,6 +29,12 @@ export class CompanyContactService {
     if (org?.kind !== 'terminal' || !org.active) throw new ForbiddenException('终端企业不可用');
   }
   async quote(identity: Identity, body: unknown) {
+    return this.quotePage(identity, body, false);
+  }
+  async quoteRefresh(identity: Identity, body: unknown) {
+    return this.quotePage(identity, body, true);
+  }
+  private async quotePage(identity: Identity, body: unknown, refresh: boolean) {
     await this.authorize(identity);
     if (!body || typeof body !== 'object' || Array.isArray(body)) throw new BadRequestException('请求参数无效');
     const input = body as Record<string, unknown>;
@@ -43,15 +49,23 @@ export class CompanyContactService {
     return transaction(this.pool, async db => {
       const profile = (await db.query(`SELECT p.id,p.name,p.detail_id,p.query_id FROM company_profiles p
         JOIN company_detail_queries q ON q.id=p.query_id AND q.state='settled'
-        WHERE p.id=$1 AND p.organization_id=$2 FOR UPDATE OF p`, [input.profileId, identity.organization_id])).rows[0];
+        WHERE p.id=$1 AND p.organization_id=$2 AND p.deleted_at IS NULL FOR UPDATE OF p`, [input.profileId, identity.organization_id])).rows[0];
       if (!profile) throw new NotFoundException('已确认档案不存在');
       const previous = (await db.query(`SELECT q.id AS "queryId",q.state,q.company_name AS "companyName",
         q.position_tags AS "positionTags",q.page_no AS "pageNo",q.page_size AS "pageSize",
         q.coefficient,q.maximum_points AS "maximumPoints" FROM company_contact_queries q
         WHERE q.organization_id=$1 AND q.profile_id=$2 AND q.position_tags=$3 AND q.page_no=$4 AND q.page_size=$5
-        AND (q.state='pending' OR (q.state='quoted' AND q.coefficient=(SELECT coefficient FROM platform_pricing)))`, [identity.organization_id, profile.id, positionTags, input.pageNo, input.pageSize])).rows[0];
+        AND q.refresh_requested=$6
+        AND (q.state='pending' OR (q.state='quoted' AND q.coefficient=(SELECT coefficient FROM platform_pricing)))`,
+      [identity.organization_id, profile.id, positionTags, input.pageNo, input.pageSize, refresh])).rows[0];
       if (previous) return previous;
-      const local = (await db.query(`SELECT q.id AS "queryId",q.state,q.charged_points AS "chargedPoints",q.total
+      if (refresh) {
+        const otherActive = (await db.query(`SELECT 1 FROM company_contact_queries WHERE organization_id=$1 AND profile_id=$2
+          AND position_tags=$3 AND page_no=$4 AND page_size=$5 AND state IN ('quoted','pending') LIMIT 1`,
+        [identity.organization_id, profile.id, positionTags, input.pageNo, input.pageSize])).rowCount;
+        if (otherActive) throw new ConflictException('本页已有待确认联系人查询');
+      }
+      const local = !refresh && (await db.query(`SELECT q.id AS "queryId",q.state,q.charged_points AS "chargedPoints",q.total
         FROM company_contact_queries q WHERE q.organization_id=$1 AND q.profile_id=$2 AND q.position_tags=$3
         AND q.page_no=$4 AND q.page_size=$5 AND q.state IN ('settled','zero') ORDER BY q.created_at DESC LIMIT 1`,
       [identity.organization_id, profile.id, positionTags, input.pageNo, input.pageSize])).rows[0];
@@ -65,9 +79,9 @@ export class CompanyContactService {
       if (Number(maximum) <= 0) throw new ConflictException('联系人本页最高扣点额度不可证明');
       const id = randomUUID();
       await db.query(`INSERT INTO company_contact_queries(id,organization_id,actor_id,profile_id,company_name,
-        position_tags,page_no,page_size,coefficient,maximum_points,price_version,state)
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'quoted')`,
-      [id, identity.organization_id, identity.id, profile.id, profile.name, positionTags, input.pageNo, input.pageSize, coefficient, maximum, price.version]);
+        position_tags,page_no,page_size,coefficient,maximum_points,price_version,state,refresh_requested)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'quoted',$12)`,
+      [id, identity.organization_id, identity.id, profile.id, profile.name, positionTags, input.pageNo, input.pageSize, coefficient, maximum, price.version, refresh]);
       return { queryId: id, companyName: profile.name, positionTags, pageNo: input.pageNo,
         pageSize: input.pageSize, coefficient, maximumPoints: maximum };
     });
@@ -103,7 +117,7 @@ export class CompanyContactService {
       const currentCoefficient = (await db.query('SELECT coefficient FROM platform_pricing')).rows[0].coefficient as string;
       if (Number(query.coefficient) !== Number(currentCoefficient)) throw new ConflictException('报价系数已变化，请重新报价确认');
       const profile = (await db.query(`SELECT p.name FROM company_profiles p JOIN company_detail_queries q
-        ON q.id=p.query_id AND q.state='settled' WHERE p.id=$1 AND p.organization_id=$2`,
+        ON q.id=p.query_id AND q.state='settled' WHERE p.id=$1 AND p.organization_id=$2 AND p.deleted_at IS NULL`,
       [query.profile_id, identity.organization_id])).rows[0];
       if (!profile || profile.name !== query.company_name) throw new ConflictException('已确认档案发生变化');
       const account = (await db.query('SELECT * FROM internal_point_accounts WHERE organization_id=$1 FOR UPDATE',
@@ -165,6 +179,14 @@ export class CompanyContactService {
         const zero = data.total === 0;
         const charge = zero ? '0.0000' : (await db.query(`SELECT least(round($1::numeric*$2::numeric,4),$3::numeric)::numeric(20,4) AS amount`,
           [page.actualUpstreamPoints, query.coefficient, query.maximum_points])).rows[0].amount as string;
+        if (query.refresh_requested) {
+          await db.query(`UPDATE company_contacts c SET not_returned_in_last_update=true
+            FROM company_contact_page_items i JOIN company_contact_queries old ON old.id=i.query_id
+            WHERE c.id=i.contact_id AND c.organization_id=$1 AND c.profile_id=$2
+              AND old.position_tags=$3 AND old.page_no=$4 AND old.page_size=$5
+              AND old.state='settled'`,
+          [query.organization_id, query.profile_id, query.position_tags, query.page_no, query.page_size]);
+        }
         for (const item of data.list) {
           const mailsouId = item.mailsouId as string;
           const returnedCompanyName = item.companyName as string;
@@ -176,13 +198,17 @@ export class CompanyContactService {
             query_id=EXCLUDED.query_id,query_company_name=EXCLUDED.query_company_name,
             returned_company_name=EXCLUDED.returned_company_name,ownership_status=EXCLUDED.ownership_status,
             email=EXCLUDED.email,personal_email=EXCLUDED.personal_email,position_tag=EXCLUDED.position_tag,
-            credibility=EXCLUDED.credibility,source_payload=EXCLUDED.source_payload,fetched_at=clock_timestamp()
+            credibility=EXCLUDED.credibility,source_payload=EXCLUDED.source_payload,fetched_at=clock_timestamp(),
+            not_returned_in_last_update=false
             RETURNING id`, [contactId, query.organization_id, query.profile_id, id, mailsouId, query.company_name,
             returnedCompanyName, returnedCompanyName === query.company_name ? 'matched' : 'pending',
             item.email ?? null, item.personalEmail ?? null, item.positionTag ?? null, item.credibility ?? null,
             JSON.stringify(item)])).rows[0];
           await db.query('INSERT INTO company_contact_page_items(query_id,contact_id) VALUES($1,$2) ON CONFLICT DO NOTHING',
             [id, stored.id]);
+          await db.query(`INSERT INTO company_contact_source_history(query_id,contact_id,mailsou_id,source_payload,returned_company_name)
+            VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING`,
+          [id, stored.id, mailsouId, JSON.stringify(item), returnedCompanyName]);
         }
         const after = (await db.query(`UPDATE internal_point_accounts SET balance=balance-$2::numeric,
           query_frozen=query_frozen-$3::numeric WHERE organization_id=$1 RETURNING balance,query_frozen`,
@@ -207,17 +233,21 @@ export class CompanyContactService {
       throw new BadRequestException('档案标识无效');
     const profileId = (body as Record<string, unknown>).profileId;
     if (typeof profileId !== 'string' || !uuid.test(profileId)) throw new BadRequestException('档案标识无效');
-    const profile = (await this.pool.query('SELECT id,name FROM company_profiles WHERE id=$1 AND organization_id=$2',
+    const profile = (await this.pool.query('SELECT id,name FROM company_profiles WHERE id=$1 AND organization_id=$2 AND deleted_at IS NULL',
       [profileId, identity.organization_id])).rows[0];
     if (!profile) throw new NotFoundException('档案不存在');
     const contacts = (await this.pool.query(`SELECT c.id,c.mailsou_id AS "mailsouId",c.query_company_name AS "queryCompanyName",
       c.returned_company_name AS "returnedCompanyName",c.ownership_status AS "ownershipStatus",c.email,
       c.personal_email AS "personalEmail",c.position_tag AS "positionTag",c.credibility,c.unsubscribed,
+      c.fetched_at AS "fetchedAt",c.not_returned_in_last_update AS "notReturnedInLastUpdate",
       x.reason AS "ownershipReason" FROM company_contacts c
       LEFT JOIN contact_ownership_confirmations x ON x.contact_id=c.id
         AND x.source_returned_company_name=c.returned_company_name
       WHERE c.organization_id=$1 AND c.profile_id=$2 ORDER BY c.fetched_at DESC,c.id`, [identity.organization_id, profileId])).rows;
-    return { profile, contacts };
+    const latest = (await this.pool.query(`SELECT max(updated_at) AS "fetchedAt" FROM company_contact_queries
+      WHERE organization_id=$1 AND profile_id=$2 AND state IN ('settled','zero')`,
+    [identity.organization_id, profileId])).rows[0];
+    return { profile, contacts, fetchedAt: latest.fetchedAt };
   }
   async finalFailure(identity: Identity, body: unknown) {
     if (identity.role !== 'platform') throw new ForbiddenException('仅平台可核对最终失败');

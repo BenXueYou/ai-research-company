@@ -48,11 +48,13 @@ export async function migrateEmailSend(client: PoolClient) {
       mailsou_id text,
       subject text NOT NULL,
       content text NOT NULL,
-      status text NOT NULL CHECK(status IN ('queued','submitting','accepted','not_submitted','uncertain','paused')),
+      status text NOT NULL CHECK(status IN ('queued','submitting','accepted','not_submitted','uncertain','paused','delivered')),
+      parent_recipient_id uuid REFERENCES email_recipients(id),
+      checked_at timestamptz,
+      retry_usage_day date,
       submitted_at timestamptz,
       resolved_at timestamptz,
-      detail text,
-      UNIQUE(batch_id,email_key)
+      detail text
     );
     CREATE TABLE IF NOT EXISTS email_usage_events (
       id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -60,7 +62,7 @@ export async function migrateEmailSend(client: PoolClient) {
       event text NOT NULL CHECK(event IN ('reserved','used','released')),
       usage_day date NOT NULL,
       happened_at timestamptz NOT NULL DEFAULT clock_timestamp(),
-      UNIQUE(recipient_id,event)
+      UNIQUE(recipient_id,event,usage_day)
     );
   `);
   await client.query(`
@@ -72,6 +74,32 @@ export async function migrateEmailSend(client: PoolClient) {
     ALTER TABLE email_batches ADD CONSTRAINT email_batches_umail_resource_check CHECK (
       (channel_kind='SMTP' AND umail_resource_id IS NULL AND umail_sender_address IS NULL) OR
       (channel_kind='UMAIL' AND umail_resource_id IS NOT NULL AND umail_sender_address IS NOT NULL)
+    );
+  `);
+  await client.query(`
+    ALTER TABLE email_recipients ADD COLUMN IF NOT EXISTS parent_recipient_id uuid REFERENCES email_recipients(id);
+    ALTER TABLE email_recipients ADD COLUMN IF NOT EXISTS checked_at timestamptz;
+    ALTER TABLE email_recipients ADD COLUMN IF NOT EXISTS retry_usage_day date;
+    ALTER TABLE email_usage_events DROP CONSTRAINT IF EXISTS email_usage_events_recipient_id_event_key;
+    CREATE UNIQUE INDEX IF NOT EXISTS email_usage_events_recipient_event_day_unique
+      ON email_usage_events(recipient_id,event,usage_day);
+    ALTER TABLE email_recipients DROP CONSTRAINT IF EXISTS email_recipients_batch_id_email_key_key;
+    ALTER TABLE email_recipients DROP CONSTRAINT IF EXISTS email_recipients_status_check;
+    ALTER TABLE email_recipients ADD CONSTRAINT email_recipients_status_check
+      CHECK(status IN ('queued','submitting','accepted','not_submitted','uncertain','paused','delivered'));
+    CREATE UNIQUE INDEX IF NOT EXISTS email_recipients_initial_address_unique
+      ON email_recipients(batch_id,email_key) WHERE parent_recipient_id IS NULL;
+    CREATE UNIQUE INDEX IF NOT EXISTS email_recipients_one_retry_per_parent
+      ON email_recipients(parent_recipient_id) WHERE parent_recipient_id IS NOT NULL;
+    CREATE TABLE IF NOT EXISTS email_evidence_checks (
+      id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      recipient_id uuid NOT NULL REFERENCES email_recipients(id),
+      actor_id uuid NOT NULL REFERENCES accounts(id),
+      evidence_id text,
+      finding text NOT NULL CHECK(finding IN ('unknown','accepted','not_submitted','delivered')),
+      detail text NOT NULL,
+      checked_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+      UNIQUE(recipient_id,evidence_id)
     );
   `);
 }

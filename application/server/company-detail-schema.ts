@@ -54,6 +54,27 @@ export async function migrateCompanyDetail(client: PoolClient) {
       UNIQUE(organization_id,detail_id)
     );
     ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS fetched_at timestamptz;
+    ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS main_products text NOT NULL DEFAULT '';
+    ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS purchasing_needs text NOT NULL DEFAULT '';
+    ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS cooperation_intent text NOT NULL DEFAULT '';
+    ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS next_follow_up_at timestamptz;
+    ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS customer_status text NOT NULL DEFAULT 'lead';
+    ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS star_rating integer;
+    ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS tags text[] NOT NULL DEFAULT '{}';
+    ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS deleted_at timestamptz;
+    ALTER TABLE company_profiles ADD COLUMN IF NOT EXISTS deleted_by uuid REFERENCES accounts(id);
+    CREATE TABLE IF NOT EXISTS company_profile_events (
+      id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      profile_id uuid NOT NULL REFERENCES company_profiles(id),
+      organization_id uuid NOT NULL REFERENCES organizations(id),
+      actor_id uuid NOT NULL REFERENCES accounts(id),
+      event text NOT NULL CHECK(event IN ('update','delete','restore')),
+      before_value jsonb,
+      after_value jsonb,
+      created_at timestamptz NOT NULL DEFAULT clock_timestamp()
+    );
+    CREATE INDEX IF NOT EXISTS company_profile_events_profile ON company_profile_events(organization_id,profile_id,id DESC);
+    ALTER TABLE company_detail_queries ADD COLUMN IF NOT EXISTS refresh_profile_id uuid REFERENCES company_profiles(id);
     CREATE TABLE IF NOT EXISTS company_detail_reconciliations (
       query_id uuid PRIMARY KEY REFERENCES company_detail_queries(id),
       actor_id uuid NOT NULL REFERENCES accounts(id),

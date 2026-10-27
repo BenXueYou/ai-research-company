@@ -27,6 +27,7 @@ import { ServiceUnavailableException } from '@nestjs/common';
 import { CompanySearchService } from './company-search.js';
 import { ProductSearchService, type ImporterNameClient } from './product-search.js';
 import { CompanyDetailService, type CompanyDetailClient } from './company-detail.js';
+import { CompanyProfileService } from './company-profiles.js';
 import { CompanyTimelineService } from './company-timeline.js';
 import { CompanyAttachmentService } from './company-attachments.js';
 import { DetailReconciliationService } from './detail-reconciliation.js';
@@ -34,7 +35,7 @@ import { ContactReconciliationService } from './contact-reconciliation.js';
 import { ProductReconciliationService } from './product-reconciliation.js';
 import { CompanyContactService, type CompanyContactClient } from './company-contacts.js';
 import { EmailPreviewService } from './email-preview.js';
-import { EmailSendService, type DomesticSmtpSender, type UMailSender } from './email-send.js';
+import { EmailSendService, type DeliveryEvidenceProvider, type DomesticSmtpSender, type UMailSender } from './email-send.js';
 import type { TengdaoCompanyClient } from './tengdao.js';
 import { UpstreamMonitorService, type UpstreamAccountClient } from './upstream-monitor.js';
 import {
@@ -98,7 +99,8 @@ export async function createApplication(
   importerAdapter?: ImporterNameClient,
   smtpSender?: DomesticSmtpSender,
   umailSender?: UMailSender,
-  webRoot = resolve('dist/web')
+  webRoot = resolve('dist/web'),
+  evidenceProvider?: DeliveryEvidenceProvider
 ) {
   const parsed = new URL(origin);
   if (parsed.origin !== origin || (production && parsed.protocol !== 'https:'))
@@ -115,6 +117,7 @@ export async function createApplication(
   const companySearch = new CompanySearchService(pool, tengdao);
   const productSearch = new ProductSearchService(pool, importerAdapter, companySearch, production);
   const companyDetail = new CompanyDetailService(pool, detailAdapter, production);
+  const companyProfiles = new CompanyProfileService(pool);
   const companyTimeline = new CompanyTimelineService(pool, key);
   const companyAttachments = new CompanyAttachmentService(pool);
   const detailReconciliation = new DetailReconciliationService(pool);
@@ -126,7 +129,7 @@ export async function createApplication(
   const smtpKey = smtpCredentialKey();
   await bindSmtpCredentialKey(pool, smtpKey);
   const smtpChannels = new SmtpChannelService(pool, smtpKey, smtpAdapter);
-  const emailSend = new EmailSendService(pool, smtpKey, smtpSender, umailSender);
+  const emailSend = new EmailSendService(pool, smtpKey, smtpSender, umailSender, evidenceProvider);
   const umail = new UMailService(pool, umailAdapter);
   const cookieOptions = { secure: production, sameSite: 'strict' as const, path: '/', maxAge: 8 * 60 * 60 * 1000 };
   @Controller('api')
@@ -294,6 +297,11 @@ export async function createApplication(
     quoteCompanyDetail(@Req() request: AuthRequest) {
       return companyDetail.quote(request.identity, request.body ?? {});
     }
+    @Post('company-details/refresh-quote')
+    @HttpCode(200)
+    quoteCompanyDetailRefresh(@Req() request: AuthRequest) {
+      return companyDetail.quoteRefresh(request.identity, request.body ?? {});
+    }
     @Post('company-details/execute')
     @HttpCode(200)
     executeCompanyDetail(@Req() request: AuthRequest) {
@@ -302,6 +310,31 @@ export async function createApplication(
     @Get('company-profiles')
     companyProfiles(@Req() request: AuthRequest) {
       return companyDetail.profiles(request.identity);
+    }
+    @Post('company-profiles/list')
+    @HttpCode(200)
+    listCompanyProfiles(@Req() request: AuthRequest) {
+      return companyProfiles.list(request.identity, request.body ?? {});
+    }
+    @Post('company-profiles/update')
+    @HttpCode(200)
+    updateCompanyProfile(@Req() request: AuthRequest) {
+      return companyProfiles.update(request.identity, request.body ?? {});
+    }
+    @Post('company-profiles/delete')
+    @HttpCode(200)
+    deleteCompanyProfile(@Req() request: AuthRequest) {
+      return companyProfiles.setDeleted(request.identity, request.body ?? {}, true);
+    }
+    @Post('company-profiles/restore')
+    @HttpCode(200)
+    restoreCompanyProfile(@Req() request: AuthRequest) {
+      return companyProfiles.setDeleted(request.identity, request.body ?? {}, false);
+    }
+    @Post('company-profiles/history')
+    @HttpCode(200)
+    companyProfileHistory(@Req() request: AuthRequest) {
+      return companyProfiles.history(request.identity, request.body ?? {});
     }
     @Post('company-timeline/list')
     @HttpCode(200)
@@ -352,6 +385,11 @@ export async function createApplication(
     @HttpCode(200)
     quoteCompanyContacts(@Req() request: AuthRequest) {
       return companyContacts.quote(request.identity, request.body ?? {});
+    }
+    @Post('company-contacts/refresh-quote')
+    @HttpCode(200)
+    quoteCompanyContactsRefresh(@Req() request: AuthRequest) {
+      return companyContacts.quoteRefresh(request.identity, request.body ?? {});
     }
     @Post('company-contacts/execute')
     @HttpCode(200)
@@ -415,6 +453,24 @@ export async function createApplication(
     @Post('email-batches/detail')
     emailBatch(@Req() request: AuthRequest) {
       return emailSend.batch(request.identity, request.body?.batchId);
+    }
+    @Post('email-recipients/reconcile')
+    @HttpCode(200)
+    reconcileEmailRecipient(@Req() request: AuthRequest) {
+      return emailSend.reconcile(request.identity, request.body ?? {});
+    }
+    @Post('email-recipients/retry')
+    @HttpCode(200)
+    retryEmailRecipient(@Req() request: AuthRequest) {
+      return emailSend.retry(request.identity, request.body ?? {});
+    }
+    @Post('email-recipients/reconfirm')
+    reconfirmEmailRecipient(@Req() request: AuthRequest) {
+      return emailSend.reconfirm(request.identity, request.body ?? {});
+    }
+    @Post('email-recipients/execute')
+    executeReconfirmedRecipient(@Req() request: AuthRequest) {
+      return emailSend.executeRecipient(request.identity, request.body ?? {});
     }
     @Post('company-contacts/final-failure')
     @HttpCode(200)
@@ -503,5 +559,17 @@ export async function createApplication(
   app.use(express.static(webRoot, { index: 'index.html' }));
   // No SPA fallback for /api: unknown endpoints never become publicly accessible business routes.
   app.enableShutdownHooks();
+  await emailSend.pauseExpired();
+  let midnightTimer: NodeJS.Timeout;
+  const scheduleMidnight = () => {
+    const shanghaiOffset = 8 * 60 * 60 * 1000;
+    const nextDay = Math.floor((Date.now() + shanghaiOffset) / 86400000 + 1) * 86400000 - shanghaiOffset;
+    midnightTimer = setTimeout(() => {
+      void emailSend.pauseExpired().catch(() => undefined).finally(scheduleMidnight);
+    }, Math.max(1, nextDay - Date.now()));
+    midnightTimer.unref();
+  };
+  scheduleMidnight();
+  app.getHttpServer().on('close', () => clearTimeout(midnightTimer));
   return app;
 }

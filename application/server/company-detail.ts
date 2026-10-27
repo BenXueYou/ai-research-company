@@ -35,10 +35,11 @@ export class CompanyDetailService {
         WHERE id=$1 AND organization_id=$2 AND verification_status='verified' FOR UPDATE`, [candidateId, identity.organization_id])).rows[0];
       if (!candidate) throw new NotFoundException('已核实候选不存在');
       if (!/^[A-Z]{3}$/.test(candidate.source_country)) throw new ConflictException('候选国家需要核实');
-      const existing = (await db.query(`SELECT p.id,p.name,p.country_code3 FROM company_profiles p
+      const existing = (await db.query(`SELECT p.id,p.name,p.country_code3,p.deleted_at FROM company_profiles p
         JOIN company_detail_queries q ON q.id=p.query_id WHERE q.candidate_id=$1 AND p.organization_id=$2`,
       [candidateId, identity.organization_id])).rows[0];
-      if (existing) return { localProfile: existing, chargedPoints: '0.0000' };
+      if (existing?.deleted_at) throw new ConflictException('档案已删除，请企业管理员恢复');
+      if (existing) return { localProfile: { id: existing.id, name: existing.name, country_code3: existing.country_code3 }, chargedPoints: '0.0000' };
       const active = (await db.query(`SELECT id AS "queryId",name,country_code3 AS "countryCode3",coefficient,
         maximum_points AS "maximumPoints",state FROM company_detail_queries
         WHERE organization_id=$1 AND candidate_id=$2 AND (state='pending' OR
@@ -58,6 +59,40 @@ export class CompanyDetailService {
       return { queryId: id, name: candidate.source_name, countryCode3: candidate.source_country, coefficient, maximumPoints: maximum };
     });
   }
+  async quoteRefresh(identity: Identity, body: unknown) {
+    await this.authorize(identity);
+    const profileId = exact(body, 'profileId');
+    return transaction(this.pool, async db => {
+      const profile = (await db.query(`SELECT p.id,p.name,p.country_code3,p.query_id,q.candidate_id
+        FROM company_profiles p JOIN company_detail_queries q ON q.id=p.query_id
+        WHERE p.id=$1 AND p.organization_id=$2 AND p.deleted_at IS NULL FOR UPDATE OF p`, [profileId, identity.organization_id])).rows[0];
+      if (!profile) throw new NotFoundException('本企业档案不存在');
+      const active = (await db.query(`SELECT id AS "queryId",name,country_code3 AS "countryCode3",coefficient,
+        maximum_points AS "maximumPoints",state FROM company_detail_queries
+        WHERE organization_id=$1 AND candidate_id=$2 AND refresh_profile_id=$3 AND
+        (state='pending' OR (state='quoted' AND coefficient=(SELECT coefficient FROM platform_pricing)))`,
+      [identity.organization_id, profile.candidate_id, profile.id])).rows[0];
+      if (active) return active;
+      const otherActive = (await db.query(`SELECT 1 FROM company_detail_queries
+        WHERE organization_id=$1 AND candidate_id=$2 AND state IN ('quoted','pending') LIMIT 1`,
+      [identity.organization_id, profile.candidate_id])).rowCount;
+      if (otherActive) throw new ConflictException('该企业已有待确认详情查询');
+      const price = (await db.query(`SELECT upstream_unit_price,maximum_billable_units,version FROM interface_prices
+        WHERE interface_path='/v2/company' AND (NOT $1::boolean OR evidence_type='supplier_verified')`, [this.production])).rows[0];
+      if (!price) throw new ConflictException('企业详情尚无已核实的单价及最高计费量');
+      const coefficient = (await db.query('SELECT coefficient FROM platform_pricing FOR SHARE')).rows[0].coefficient as string;
+      const maximum = (await db.query('SELECT round($1::numeric*$2::numeric*$3::numeric,4) AS amount',
+        [price.upstream_unit_price, price.maximum_billable_units, coefficient])).rows[0].amount as string;
+      if (Number(maximum) <= 0) throw new ConflictException('企业详情最高扣点额度不可证明');
+      const id = randomUUID();
+      await db.query(`INSERT INTO company_detail_queries(id,organization_id,actor_id,candidate_id,name,country_code3,
+        coefficient,maximum_points,price_version,state,refresh_profile_id)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'quoted',$10)`,
+      [id, identity.organization_id, identity.id, profile.candidate_id, profile.name, profile.country_code3,
+        coefficient, maximum, price.version, profile.id]);
+      return { queryId: id, name: profile.name, countryCode3: profile.country_code3, coefficient, maximumPoints: maximum };
+    });
+  }
   async execute(identity: Identity, body: unknown) {
     await this.authorize(identity);
     const queryId = exact(body, 'queryId');
@@ -72,6 +107,12 @@ export class CompanyDetailService {
         WHERE id=$1 AND organization_id=$2`, [query.candidate_id, identity.organization_id])).rows[0];
       if (!candidate || candidate.verification_status !== 'verified' || candidate.source_name !== query.name || candidate.source_country !== query.country_code3)
         throw new ConflictException('已确认候选发生变化');
+      if (query.refresh_profile_id) {
+        const profile = (await db.query('SELECT name,country_code3 FROM company_profiles WHERE id=$1 AND organization_id=$2 AND deleted_at IS NULL',
+          [query.refresh_profile_id, identity.organization_id])).rows[0];
+        if (!profile || profile.name !== query.name || profile.country_code3 !== query.country_code3)
+          throw new ConflictException('待更新档案发生变化');
+      }
       const account = (await db.query('SELECT * FROM internal_point_accounts WHERE organization_id=$1 FOR UPDATE', [identity.organization_id])).rows[0];
       if (!account || Number(account.balance) - Number(account.query_frozen) - Number(account.sales_reserved) < Number(query.maximum_points))
         throw new ConflictException('可用点数不足');
@@ -132,7 +173,11 @@ export class CompanyDetailService {
         await db.query(`INSERT INTO query_point_ledger(query_id,organization_id,actor_id,event,amount,balance_after,frozen_after)
           VALUES($1,$2,$3,'release',round($4::numeric-$5::numeric,4),$6,$7)`,
         [queryId, query.organization_id, identity.id, query.maximum_points, charge, after.balance, after.query_frozen]);
-        if (!zero) await db.query(`INSERT INTO company_profiles(id,organization_id,detail_id,name,country_code3,detail,query_id,fetched_at)
+        if (!zero && query.refresh_profile_id) {
+          await db.query(`UPDATE company_profiles SET detail_id=$3,detail=$4,query_id=$5,fetched_at=clock_timestamp()
+            WHERE id=$1 AND organization_id=$2`, [query.refresh_profile_id, query.organization_id, detail.data!.id,
+            JSON.stringify(detail.data), queryId]);
+        } else if (!zero) await db.query(`INSERT INTO company_profiles(id,organization_id,detail_id,name,country_code3,detail,query_id,fetched_at)
           VALUES($1,$2,$3,$4,$5,$6,$7,clock_timestamp()) ON CONFLICT(organization_id,detail_id) DO NOTHING`,
         [randomUUID(), query.organization_id, detail.data!.id, query.name, query.country_code3, JSON.stringify(detail.data), queryId]);
       });
@@ -154,7 +199,7 @@ export class CompanyDetailService {
   async profiles(identity: Identity) {
     await this.authorize(identity);
     const profiles = (await this.pool.query(`SELECT id,name,country_code3 AS "countryCode3",detail,fetched_at AS "fetchedAt"
-      FROM company_profiles WHERE organization_id=$1 ORDER BY name,id`, [identity.organization_id])).rows;
+      FROM company_profiles WHERE organization_id=$1 AND deleted_at IS NULL ORDER BY name,id`, [identity.organization_id])).rows;
     const account = (await this.pool.query(`SELECT balance,query_frozen AS "queryFrozen",sales_reserved AS "salesReserved",
       balance-query_frozen-sales_reserved AS available FROM internal_point_accounts WHERE organization_id=$1`, [identity.organization_id])).rows[0];
     const ledger = (await this.pool.query(`SELECT l.query_id AS "queryId",l.event,l.amount,l.balance_after AS "balanceAfter",

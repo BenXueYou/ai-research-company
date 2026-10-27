@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { createDecipheriv, randomUUID } from 'node:crypto';
 import type pg from 'pg';
 import { transaction } from './database.js';
@@ -53,6 +53,23 @@ export class DeferredUMailSender implements UMailSender {
     };
   }
 }
+export interface DeliveryEvidenceRequest {
+  organizationId: string; recipientId: string; channelKind: 'SMTP' | 'UMAIL';
+  resourceId: string | null; to: string; submittedAt: Date | null;
+}
+export interface DeliveryEvidence {
+  organizationId: string; recipientId: string; resourceId: string | null;
+  finding: 'unknown' | 'accepted' | 'not_submitted' | 'delivered';
+  evidenceId: string | null; detail: string;
+}
+export interface DeliveryEvidenceProvider {
+  check(request: DeliveryEvidenceRequest): Promise<DeliveryEvidence>;
+}
+export class DeferredDeliveryEvidenceProvider implements DeliveryEvidenceProvider {
+  async check(): Promise<DeliveryEvidence> {
+    throw new ServiceUnavailableException('渠道证据接口尚未配置，不能确认核对完成');
+  }
+}
 function inputObject(value: unknown, keys: string[]) {
   if (!value || typeof value !== 'object' || Array.isArray(value) ||
     Object.keys(value).sort().join(',') !== keys.sort().join(',')) throw new BadRequestException('发送参数字段无效');
@@ -66,7 +83,27 @@ function daySql() { return "(clock_timestamp() AT TIME ZONE 'Asia/Shanghai')::da
 export class EmailSendService {
   constructor(private readonly pool: pg.Pool, private readonly key: Buffer,
     private readonly sender: DomesticSmtpSender = new DeferredDomesticSmtpSender(),
-    private readonly umailSender: UMailSender = new DeferredUMailSender()) {}
+    private readonly umailSender: UMailSender = new DeferredUMailSender(),
+    private readonly evidenceProvider: DeliveryEvidenceProvider = new DeferredDeliveryEvidenceProvider()) {}
+  async pauseExpired(organizationId?: string) {
+    return transaction(this.pool, async db => {
+      const today = (await db.query(`SELECT ${daySql()} AS day`)).rows[0].day;
+      const stale = (await db.query(`SELECT r.id,r.organization_id,coalesce(r.retry_usage_day,b.usage_day) AS usage_day
+        FROM email_recipients r JOIN email_batches b ON b.id=r.batch_id
+        WHERE r.status='queued' AND coalesce(r.retry_usage_day,b.usage_day)<$1::date
+          AND ($2::uuid IS NULL OR r.organization_id=$2)
+        ORDER BY r.id FOR UPDATE OF r`, [today, organizationId ?? null])).rows;
+      for (const row of stale) {
+        await db.query(`UPDATE email_recipients SET status='paused',resolved_at=clock_timestamp(),
+          detail='跨日未执行，须重新确认今日额度' WHERE id=$1`, [row.id]);
+        await db.query(`UPDATE email_daily_usage SET reserved=reserved-1
+          WHERE organization_id=$1 AND usage_day=$2`, [row.organization_id, row.usage_day]);
+        await db.query(`INSERT INTO email_usage_events(recipient_id,event,usage_day)
+          VALUES($1,'released',$2) ON CONFLICT DO NOTHING`, [row.id, row.usage_day]);
+      }
+      return stale.length;
+    });
+  }
   private async terminal(identity: Identity) {
     if (!['admin', 'sales'].includes(identity.role)) throw new ForbiddenException('仅终端企业成员可发送');
     const org = (await this.pool.query('SELECT kind,active FROM organizations WHERE id=$1', [identity.organization_id])).rows[0];
@@ -74,6 +111,7 @@ export class EmailSendService {
   }
   async quota(identity: Identity) {
     await this.terminal(identity);
+    await this.pauseExpired(identity.organization_id);
     const row = (await this.pool.query(`SELECT coalesce(l.daily_limit,2000) AS "dailyLimit",
       coalesce(u.reserved,0) AS reserved,coalesce(u.used,0) AS used,${daySql()} AS day
       FROM organizations o LEFT JOIN organization_email_limits l ON l.organization_id=o.id
@@ -100,6 +138,7 @@ export class EmailSendService {
   }
   async confirm(identity: Identity, body: unknown) {
     await this.terminal(identity);
+    await this.pauseExpired(identity.organization_id);
     const input = inputObject(body, ['previewId', 'channelId', 'confirmUnsubscribeNotice', 'confirmQuota']);
     const previewId = identifier(input.previewId);
     const channelId = identifier(input.channelId);
@@ -176,15 +215,31 @@ export class EmailSendService {
   }
   async execute(identity: Identity, body: unknown) {
     await this.terminal(identity);
+    await this.pauseExpired(identity.organization_id);
     const input = inputObject(body, ['batchId']);
     const batchId = identifier(input.batchId);
+    return this.executeRows(identity, batchId);
+  }
+  async executeRecipient(identity: Identity, body: unknown) {
+    await this.terminal(identity);
+    const input = inputObject(body, ['recipientId']);
+    const recipientId = identifier(input.recipientId);
+    const row = (await this.pool.query(`SELECT batch_id FROM email_recipients
+      WHERE id=$1 AND organization_id=$2 AND retry_usage_day IS NOT NULL`,
+    [recipientId, identity.organization_id])).rows[0];
+    if (!row) throw new NotFoundException('重新确认的收件人不存在');
+    return this.executeRows(identity, row.batch_id, recipientId);
+  }
+  private async executeRows(identity: Identity, batchId: string, recipientId?: string) {
+    await this.pauseExpired(identity.organization_id);
     const batch = (await this.pool.query('SELECT id FROM email_batches WHERE id=$1 AND organization_id=$2 AND actor_id=$3',
       [batchId, identity.organization_id, identity.id])).rows[0];
     if (!batch) throw new NotFoundException('本人的发送批次不存在');
-    const queued = (await this.pool.query("SELECT id FROM email_recipients WHERE batch_id=$1 AND status='queued' ORDER BY id", [batchId])).rows;
+    const queued = (await this.pool.query(`SELECT id FROM email_recipients WHERE batch_id=$1 AND status='queued'
+      AND ($2::uuid IS NULL OR id=$2) ORDER BY id`, [batchId, recipientId ?? null])).rows;
     for (const entry of queued) {
       const claimed = await transaction(this.pool, async db => {
-        const row = (await db.query(`SELECT r.*,b.usage_day,b.attachment_ids,b.reply_to,b.channel_id,
+        const row = (await db.query(`SELECT r.*,coalesce(r.retry_usage_day,b.usage_day) AS usage_day,b.attachment_ids,b.reply_to,b.channel_id,
           b.channel_kind,b.umail_resource_id,b.umail_sender_address AS batch_sender_address FROM email_recipients r
           JOIN email_batches b ON b.id=r.batch_id WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
         [entry.id, identity.organization_id])).rows[0];
@@ -270,23 +325,199 @@ export class EmailSendService {
     }
     return this.batch(identity, batchId);
   }
+  async reconcile(identity: Identity, body: unknown) {
+    await this.terminal(identity);
+    const input = inputObject(body, ['recipientId']);
+    const recipientId = identifier(input.recipientId);
+    const row = (await this.pool.query(`SELECT r.*,b.channel_kind,b.umail_resource_id
+      FROM email_recipients r JOIN email_batches b ON b.id=r.batch_id
+      WHERE r.id=$1 AND r.organization_id=$2`, [recipientId, identity.organization_id])).rows[0];
+    if (!row) throw new NotFoundException('收件人记录不存在');
+    if (!['submitting', 'uncertain', 'accepted', 'delivered', 'not_submitted'].includes(row.status))
+      throw new ConflictException('当前状态无需证据核对');
+    const request: DeliveryEvidenceRequest = { organizationId: identity.organization_id,
+      recipientId, channelKind: row.channel_kind, resourceId: row.umail_resource_id,
+      to: row.email, submittedAt: row.submitted_at };
+    let evidence: DeliveryEvidence;
+    try { evidence = await this.evidenceProvider.check(request); }
+    catch { throw new ServiceUnavailableException('渠道证据核对失败或尚未配置'); }
+    if (evidence.organizationId !== request.organizationId || evidence.recipientId !== recipientId ||
+      evidence.resourceId !== request.resourceId ||
+      !['unknown', 'accepted', 'not_submitted', 'delivered'].includes(evidence.finding) ||
+      typeof evidence.detail !== 'string' ||
+      (evidence.evidenceId !== null && (typeof evidence.evidenceId !== 'string' || !evidence.evidenceId.trim())))
+      throw new ConflictException('渠道证据归属或格式无效');
+    if (evidence.finding !== 'unknown' && !evidence.evidenceId)
+      throw new ConflictException('可靠结论须包含渠道证据标识');
+    return transaction(this.pool, async db => {
+      const current = (await db.query(`SELECT r.status,r.checked_at,coalesce(r.retry_usage_day,b.usage_day) AS usage_day FROM email_recipients r
+        JOIN email_batches b ON b.id=r.batch_id WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
+      [recipientId, identity.organization_id])).rows[0];
+      if (!current) throw new NotFoundException('收件人记录不存在');
+      const prior = evidence.evidenceId ? (await db.query(`SELECT finding FROM email_evidence_checks
+        WHERE recipient_id=$1 AND evidence_id=$2`, [recipientId, evidence.evidenceId])).rows[0] : null;
+      if (prior && prior.finding !== evidence.finding) throw new ConflictException('同一渠道证据结论冲突');
+      if (!prior) await db.query(`INSERT INTO email_evidence_checks(recipient_id,actor_id,evidence_id,finding,detail)
+        VALUES($1,$2,$3,$4,$5)`, [recipientId, identity.id, evidence.evidenceId,
+        evidence.finding, evidence.detail.slice(0, 500)]);
+      if (['delivered', 'not_submitted'].includes(current.status) ||
+        (current.status === 'accepted' && evidence.finding !== 'delivered'))
+        return { recipientId, status: current.status, checked: true };
+      const next = evidence.finding === 'unknown' ? 'uncertain' : evidence.finding;
+      if (current.status === 'accepted' && next !== 'delivered')
+        return { recipientId, status: current.status, checked: true };
+      if (current.status !== next || !current.checked_at) await db.query(`UPDATE email_recipients
+        SET status=$2,checked_at=clock_timestamp(),resolved_at=clock_timestamp(),detail=$3 WHERE id=$1`,
+      [recipientId, next, evidence.detail.slice(0, 500)]);
+      if (['submitting', 'uncertain'].includes(current.status) && next !== 'uncertain') {
+        const used = next !== 'not_submitted';
+        await db.query(`UPDATE email_daily_usage SET reserved=reserved-1,used=used+$3
+          WHERE organization_id=$1 AND usage_day=$2`, [identity.organization_id, current.usage_day, used ? 1 : 0]);
+        await db.query(`INSERT INTO email_usage_events(recipient_id,event,usage_day) VALUES($1,$2,$3)
+          ON CONFLICT DO NOTHING`, [recipientId, used ? 'used' : 'released', current.usage_day]);
+      }
+      return { recipientId, status: next, checked: true };
+    });
+  }
+  async retry(identity: Identity, body: unknown) {
+    await this.terminal(identity);
+    await this.pauseExpired(identity.organization_id);
+    const input = inputObject(body, ['recipientId', 'confirmPossibleDuplicate']);
+    const recipientId = identifier(input.recipientId);
+    if (input.confirmPossibleDuplicate !== true) throw new BadRequestException('须明确确认可能重复发送');
+    const created = await transaction(this.pool, async db => {
+      const original = (await db.query(`SELECT r.*,b.actor_id,b.usage_day,b.channel_id,b.channel_kind,b.reply_to,
+        b.umail_resource_id,b.umail_sender_address FROM email_recipients r
+        JOIN email_batches b ON b.id=r.batch_id WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
+      [recipientId, identity.organization_id])).rows[0];
+      if (!original) throw new NotFoundException('收件人记录不存在');
+      if (original.actor_id !== identity.id) throw new ForbiddenException('仅原发送人可决定重发');
+      const prior = (await db.query('SELECT id FROM email_recipients WHERE parent_recipient_id=$1', [recipientId])).rows[0];
+      if (prior) return { id: prior.id, batchId: original.batch_id, created: false };
+      if (original.status !== 'uncertain' || !original.checked_at)
+        throw new ConflictException('须先核对渠道证据且结果仍不明确');
+      const channel = (await db.query(`SELECT verification_state,reply_to,umail_sender_address FROM team_sending_channels
+        WHERE id=$1 AND organization_id=$2 AND kind=$3`,
+      [original.channel_id, identity.organization_id, original.channel_kind])).rows[0];
+      if (!channel || channel.verification_state !== 'available' || channel.reply_to !== original.reply_to ||
+        (original.channel_kind === 'UMAIL' && channel.umail_sender_address !== original.umail_sender_address))
+        throw new ConflictException('原渠道设置已变化，请重新确认');
+      if (original.channel_kind === 'UMAIL') {
+        const resource = (await db.query(`SELECT external_resource_id FROM umail_resources
+          WHERE organization_id=$1 AND resource_status='available'`, [identity.organization_id])).rows[0];
+        if (resource?.external_resource_id !== original.umail_resource_id)
+          throw new ConflictException('原 U-Mail 企业资源已变化');
+      }
+      await db.query('SELECT id FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id]);
+      const day = (await db.query(`SELECT ${daySql()} AS day`)).rows[0].day;
+      await db.query(`INSERT INTO email_daily_usage(organization_id,usage_day) VALUES($1,$2)
+        ON CONFLICT DO NOTHING`, [identity.organization_id, day]);
+      const usage = (await db.query(`SELECT reserved,used FROM email_daily_usage
+        WHERE organization_id=$1 AND usage_day=$2 FOR UPDATE`, [identity.organization_id, day])).rows[0];
+      const limit = (await db.query('SELECT daily_limit FROM organization_email_limits WHERE organization_id=$1',
+        [identity.organization_id])).rows[0]?.daily_limit ?? 2000;
+      if (Number(usage.reserved) + Number(usage.used) + 1 > Number(limit))
+        throw new ConflictException('企业今日邮件额度不足');
+      const id = randomUUID();
+      await db.query(`INSERT INTO email_recipients(id,batch_id,organization_id,profile_id,email,email_key,contact_id,
+        mailsou_id,subject,content,status,parent_recipient_id,retry_usage_day)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'queued',$11,$12)`,
+      [id, original.batch_id, identity.organization_id, original.profile_id, original.email, original.email_key,
+        original.contact_id, original.mailsou_id, original.subject, original.content, recipientId, day]);
+      await db.query("INSERT INTO email_usage_events(recipient_id,event,usage_day) VALUES($1,'reserved',$2)", [id, day]);
+      await db.query('UPDATE email_daily_usage SET reserved=reserved+1 WHERE organization_id=$1 AND usage_day=$2',
+        [identity.organization_id, day]);
+      return { id, batchId: original.batch_id, created: true };
+    });
+    await this.executeRows(identity, created.batchId, created.id);
+    return { ...created, result: await this.batch(identity, created.batchId) };
+  }
+  async reconfirm(identity: Identity, body: unknown) {
+    await this.terminal(identity);
+    await this.pauseExpired(identity.organization_id);
+    const input = inputObject(body, ['recipientId', 'confirmUnsubscribeNotice', 'confirmQuota']);
+    const recipientId = identifier(input.recipientId);
+    if (input.confirmUnsubscribeNotice !== true || input.confirmQuota !== true)
+      throw new BadRequestException('须重新确认退订提示与今日企业额度');
+    return transaction(this.pool, async db => {
+      const row = (await db.query(`SELECT r.*,b.actor_id,b.preview_id,b.usage_day,b.channel_id,b.channel_kind,
+        b.reply_to,b.attachment_ids,b.umail_resource_id,b.umail_sender_address
+        FROM email_recipients r JOIN email_batches b ON b.id=r.batch_id
+        WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
+      [recipientId, identity.organization_id])).rows[0];
+      if (!row) throw new NotFoundException('收件人记录不存在');
+      if (row.actor_id !== identity.id) throw new ForbiddenException('仅原发送人可重新确认');
+      if (row.status !== 'paused') throw new ConflictException('仅跨日暂停的收件人可重新确认');
+      const oldDay = row.retry_usage_day ?? row.usage_day;
+      const today = (await db.query(`SELECT ${daySql()} AS day`)).rows[0].day;
+      if (String(today).slice(0, 10) <= String(oldDay).slice(0, 10))
+        throw new ConflictException('须在后续日期重新确认');
+      const channel = (await db.query(`SELECT verification_state,reply_to,umail_sender_address
+        FROM team_sending_channels WHERE id=$1 AND organization_id=$2 AND kind=$3`,
+      [row.channel_id, identity.organization_id, row.channel_kind])).rows[0];
+      if (!channel || channel.verification_state !== 'available' || channel.reply_to !== row.reply_to ||
+        (row.channel_kind === 'UMAIL' && channel.umail_sender_address !== row.umail_sender_address))
+        throw new ConflictException('原渠道设置已变化，请重新建立发送预览');
+      if (row.channel_kind === 'UMAIL') {
+        const resource = (await db.query(`SELECT external_resource_id FROM umail_resources
+          WHERE organization_id=$1 AND resource_status='available'`, [identity.organization_id])).rows[0];
+        if (resource?.external_resource_id !== row.umail_resource_id)
+          throw new ConflictException('原 U-Mail 企业资源已变化');
+      }
+      const attachments = (await db.query(`SELECT count(*)::int AS count FROM public_template_attachments
+        WHERE id=ANY($1::uuid[]) AND cleaned_at IS NULL AND expires_at>clock_timestamp() AND content IS NOT NULL`,
+      [row.attachment_ids])).rows[0];
+      if (attachments.count !== row.attachment_ids.length) throw new ConflictException('预设附件已不可用');
+      const preview = (await db.query('SELECT preview_snapshot FROM email_previews WHERE id=$1', [row.preview_id])).rows[0];
+      const snapshot = (preview?.preview_snapshot as RecipientSnapshot[] | undefined)?.find(item =>
+        item.emailKey === row.email_key && item.contactId === row.contact_id);
+      const contact = (await db.query(`SELECT unsubscribed FROM company_contacts
+        WHERE id=$1 AND organization_id=$2 AND profile_id=$3`,
+      [row.contact_id, identity.organization_id, row.profile_id])).rows[0];
+      if (!snapshot || !contact || (contact.unsubscribed && !snapshot.unsubscribedContactIds.includes(row.contact_id)))
+        throw new ConflictException('联系人退订状态已变化，请重新预览确认');
+      await db.query('SELECT id FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id]);
+      await db.query(`INSERT INTO email_daily_usage(organization_id,usage_day) VALUES($1,$2)
+        ON CONFLICT DO NOTHING`, [identity.organization_id, today]);
+      const usage = (await db.query(`SELECT reserved,used FROM email_daily_usage
+        WHERE organization_id=$1 AND usage_day=$2 FOR UPDATE`, [identity.organization_id, today])).rows[0];
+      const limit = (await db.query('SELECT daily_limit FROM organization_email_limits WHERE organization_id=$1',
+        [identity.organization_id])).rows[0]?.daily_limit ?? 2000;
+      if (Number(usage.reserved) + Number(usage.used) + 1 > Number(limit))
+        throw new ConflictException('企业今日邮件额度不足');
+      await db.query(`UPDATE email_recipients SET status='queued',retry_usage_day=$2,
+        resolved_at=NULL,detail='已重新确认，等待手动执行' WHERE id=$1`, [recipientId, today]);
+      await db.query(`UPDATE email_daily_usage SET reserved=reserved+1
+        WHERE organization_id=$1 AND usage_day=$2`, [identity.organization_id, today]);
+      await db.query(`INSERT INTO email_usage_events(recipient_id,event,usage_day)
+        VALUES($1,'reserved',$2)`, [recipientId, today]);
+      return { recipientId, batchId: row.batch_id, queued: true, usageDay: today };
+    });
+  }
   async batch(identity: Identity, batchId: string) {
     await this.terminal(identity);
+    await this.pauseExpired(identity.organization_id);
     identifier(batchId);
     const batch = (await this.pool.query(`SELECT id,preview_id AS "previewId",profile_id AS "profileId",channel_kind AS channel,
       reply_to AS "replyTo",usage_day AS "usageDay",created_at AS "createdAt" FROM email_batches
       WHERE id=$1 AND organization_id=$2`, [batchId, identity.organization_id])).rows[0];
     if (!batch) throw new NotFoundException('发送批次不存在');
-    const recipients = (await this.pool.query(`SELECT id,email,mailsou_id AS "mailsouId",subject,content,status,detail,
-      submitted_at AS "submittedAt",resolved_at AS "resolvedAt" FROM email_recipients WHERE batch_id=$1 ORDER BY id`, [batchId])).rows;
+    const recipients = (await this.pool.query(`SELECT r.id,r.email,r.mailsou_id AS "mailsouId",r.subject,r.content,r.status,r.detail,
+      r.parent_recipient_id AS "parentRecipientId",r.checked_at AS "checkedAt",
+      r.retry_usage_day AS "reconfirmedUsageDay",
+      coalesce(r.retry_usage_day,b.usage_day) AS "usageDay",
+      r.submitted_at AS "submittedAt",r.resolved_at AS "resolvedAt" FROM email_recipients r
+      JOIN email_batches b ON b.id=r.batch_id WHERE r.batch_id=$1 ORDER BY r.id`, [batchId])).rows;
     return { batch, recipients };
   }
   async list(identity: Identity) {
     await this.terminal(identity);
+    await this.pauseExpired(identity.organization_id);
     const rows = (await this.pool.query(`SELECT b.id,b.profile_id AS "profileId",b.channel_kind AS channel,
       b.reply_to AS "replyTo",b.usage_day AS "usageDay",b.created_at AS "createdAt",
       count(r.id)::int AS count,
       count(r.id) FILTER(WHERE r.status='accepted')::int AS accepted,
+      count(r.id) FILTER(WHERE r.status='delivered')::int AS delivered,
       count(r.id) FILTER(WHERE r.status IN ('uncertain','submitting'))::int AS uncertain,
       count(r.id) FILTER(WHERE r.status='paused')::int AS paused
       FROM email_batches b JOIN email_recipients r ON r.batch_id=b.id WHERE b.organization_id=$1

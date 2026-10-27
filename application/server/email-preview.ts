@@ -180,7 +180,7 @@ export class EmailPreviewService {
     }
     if (new Set(selections.map(item => item.contactId)).size !== selections.length) throw new BadRequestException('同一联系人不能重复选择');
     return transaction(this.pool, async db => {
-      const profile = (await db.query('SELECT id FROM company_profiles WHERE id=$1 AND organization_id=$2',
+      const profile = (await db.query('SELECT id FROM company_profiles WHERE id=$1 AND organization_id=$2 AND deleted_at IS NULL',
         [input.profileId, identity.organization_id])).rows[0];
       if (!profile) throw new NotFoundException('档案不存在');
       const template = (await db.query('SELECT 1 FROM public_template_versions WHERE template_id=$1 AND version=$2',
@@ -210,7 +210,7 @@ export class EmailPreviewService {
       const draft = (await db.query('SELECT * FROM email_drafts WHERE id=$1 AND organization_id=$2 AND actor_id=$3 FOR UPDATE',
         [input.draftId, identity.organization_id, identity.id])).rows[0];
       if (!draft) throw new NotFoundException('本人的草稿不存在');
-      const profile = (await db.query('SELECT name FROM company_profiles WHERE id=$1 AND organization_id=$2',
+      const profile = (await db.query('SELECT name FROM company_profiles WHERE id=$1 AND organization_id=$2 AND deleted_at IS NULL',
         [draft.profile_id, identity.organization_id])).rows[0];
       if (!profile) throw new NotFoundException('档案不存在');
       const version = (await db.query('SELECT attachment_ids FROM public_template_versions WHERE template_id=$1 AND version=$2',

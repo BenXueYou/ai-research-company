@@ -37,7 +37,7 @@ export class CompanyTimelineService {
   private async authorize(identity: Identity, profileId: string) {
     if (!['admin', 'sales'].includes(identity.role)) throw new ForbiddenException('仅终端企业成员可访问档案');
     const profile = (await this.pool.query(`SELECT p.id FROM company_profiles p JOIN organizations o ON o.id=p.organization_id
-      WHERE p.id=$1 AND p.organization_id=$2 AND o.kind='terminal' AND o.active`, [profileId, identity.organization_id])).rows[0];
+      WHERE p.id=$1 AND p.organization_id=$2 AND p.deleted_at IS NULL AND o.kind='terminal' AND o.active`, [profileId, identity.organization_id])).rows[0];
     if (!profile) throw new NotFoundException('档案不存在');
   }
   private protect(recordId: string, organizationId: string, contact: string | null) {
@@ -66,7 +66,14 @@ export class CompanyTimelineService {
     [identity.organization_id, profileId, input.type ?? null])).rows;
     const emails = input.type && input.type !== 'email' ? [] : (await this.pool.query(`
       SELECT r.id,'email' AS type,coalesce(r.submitted_at,b.created_at) AS "eventTime",
-        r.email AS "contactOrPhone",r.subject || ' · ' || r.status AS content,
+        r.email AS "contactOrPhone",r.subject || ' · ' || CASE r.status
+          WHEN 'delivered' THEN '有证据送达'
+          WHEN 'accepted' THEN '已提交发信服务'
+          WHEN 'uncertain' THEN '结果待确认'
+          WHEN 'not_submitted' THEN '发送失败'
+          WHEN 'paused' THEN '跨日暂停'
+          WHEN 'submitting' THEN '提交中待核对'
+          ELSE '排队中' END AS content,
         b.actor_id AS "createdBy",b.created_at AS "createdAt",r.resolved_at AS "updatedAt"
       FROM email_recipients r JOIN email_batches b ON b.id=r.batch_id
       WHERE r.organization_id=$1 AND r.profile_id=$2 ORDER BY b.created_at DESC LIMIT 500`,

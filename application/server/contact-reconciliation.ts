@@ -88,6 +88,13 @@ export class ContactReconciliationService {
         ? (await db.query('SELECT least(round($1::numeric*$2::numeric,4),$3::numeric)::numeric(20,4) AS amount',
           [input.upstreamPoints, query.coefficient, query.maximum_points])).rows[0].amount as string
         : '0.0000';
+      if (query.refresh_requested && input.outcome !== 'failed') {
+        await db.query(`UPDATE company_contacts c SET not_returned_in_last_update=true
+          FROM company_contact_page_items i JOIN company_contact_queries old ON old.id=i.query_id
+          WHERE c.id=i.contact_id AND c.organization_id=$1 AND c.profile_id=$2
+            AND old.position_tags=$3 AND old.page_no=$4 AND old.page_size=$5 AND old.state='settled'`,
+        [query.organization_id, query.profile_id, query.position_tags, query.page_no, query.page_size]);
+      }
       if (input.outcome === 'settled') {
         const page = data as NonNullable<ContactPageResult['data']>;
         for (const item of page.list) {
@@ -99,13 +106,17 @@ export class ContactReconciliationService {
             query_id=EXCLUDED.query_id,query_company_name=EXCLUDED.query_company_name,
             returned_company_name=EXCLUDED.returned_company_name,ownership_status=EXCLUDED.ownership_status,
             email=EXCLUDED.email,personal_email=EXCLUDED.personal_email,position_tag=EXCLUDED.position_tag,
-            credibility=EXCLUDED.credibility,source_payload=EXCLUDED.source_payload,fetched_at=clock_timestamp()
+            credibility=EXCLUDED.credibility,source_payload=EXCLUDED.source_payload,fetched_at=clock_timestamp(),
+            not_returned_in_last_update=false
             RETURNING id`, [contactId, query.organization_id, query.profile_id, query.id, item.mailsouId,
             query.company_name, item.companyName, item.companyName === query.company_name ? 'matched' : 'pending',
             item.email ?? null, item.personalEmail ?? null, item.positionTag ?? null, item.credibility ?? null,
             JSON.stringify(item)])).rows[0];
           await db.query('INSERT INTO company_contact_page_items(query_id,contact_id) VALUES($1,$2) ON CONFLICT DO NOTHING',
             [query.id, stored.id]);
+          await db.query(`INSERT INTO company_contact_source_history(query_id,contact_id,mailsou_id,source_payload,returned_company_name)
+            VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING`,
+          [query.id, stored.id, item.mailsouId, JSON.stringify(item), item.companyName]);
         }
       }
       const after = (await db.query(`UPDATE internal_point_accounts SET balance=balance-$2::numeric,

@@ -93,7 +93,11 @@ export class DetailReconciliationService {
       await db.query(`INSERT INTO company_detail_reconciliations(query_id,actor_id,evidence,outcome,billing_reference,trace_id,result_evidence)
         VALUES($1,$2,$3,$4,$5,$6,$7)`,
       [query.id, identity.id, evidence, input.outcome, billingReference, traceId, result ? JSON.stringify(result) : null]);
-      if (input.outcome === 'settled') await db.query(`INSERT INTO company_profiles(id,organization_id,detail_id,name,country_code3,detail,query_id,fetched_at)
+      if (input.outcome === 'settled' && query.refresh_profile_id) {
+        await db.query(`UPDATE company_profiles SET detail_id=$3,detail=$4,query_id=$5,fetched_at=clock_timestamp()
+          WHERE id=$1 AND organization_id=$2`, [query.refresh_profile_id, query.organization_id,
+          result!.id, JSON.stringify(result), query.id]);
+      } else if (input.outcome === 'settled') await db.query(`INSERT INTO company_profiles(id,organization_id,detail_id,name,country_code3,detail,query_id,fetched_at)
         VALUES($1,$2,$3,$4,$5,$6,$7,clock_timestamp()) ON CONFLICT(organization_id,detail_id) DO NOTHING`,
       [randomUUID(), query.organization_id, result!.id, query.name, query.country_code3, JSON.stringify(result), query.id]);
       const loss = input.outcome === 'settled'

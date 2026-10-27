@@ -1,11 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID, createCipheriv, randomBytes } from 'node:crypto';
-import { EmailSendService, type DomesticSmtpSender, type UMailMessage, type UMailSender } from '../server/email-send.js';
+import { EmailSendService, type DeliveryEvidenceProvider, type DomesticSmtpSender, type UMailMessage, type UMailSender } from '../server/email-send.js';
+import { CompanyTimelineService } from '../server/company-timeline.js';
 import { testDatabase } from './helpers.js';
 import type { Identity } from '../server/identity.js';
 
-test('T22 snapshot identifiers, atomic quota, outcomes, idempotence and overnight pause', async () => {
+test('T22/T23/T24 snapshots, quota, evidence, retry, idempotence and overnight pause', async () => {
   const { pool } = await testDatabase();
   const platformOrg = randomUUID();
   const platformId = randomUUID();
@@ -245,6 +246,153 @@ test('T22 snapshot identifiers, atomic quota, outcomes, idempotence and overnigh
     assert.equal((await outcomes.quota(identity)).reserved, 3);
     assert.equal((await outcomes.quota(identity)).used, 2);
     assert.equal(resultCount, 2);
+    const smtpUncertain = (await pool.query(`SELECT id FROM email_recipients WHERE batch_id=$1 AND status='uncertain'`,
+      [queued.batchId])).rows[0].id;
+    const smtpAccepted = (await pool.query(`SELECT id FROM email_recipients WHERE batch_id=$1 AND status='accepted'`,
+      [queued.batchId])).rows[0].id;
+    const originalUncertain = (await pool.query('SELECT email,mailsou_id FROM email_recipients WHERE id=$1',
+      [smtpUncertain])).rows[0];
+    const umailUncertain = (await pool.query(`SELECT id FROM email_recipients WHERE batch_id=$1`,
+      [secondOutcome.batchId])).rows[0].id;
+    const umailAccepted = umailResult.recipients[0].id;
+    await assert.rejects(service.reconcile(identity, { recipientId: smtpUncertain }));
+    assert.equal((await service.batch(identity, queued.batchId)).recipients.find(item => item.id === smtpUncertain)?.checkedAt,
+      null);
+    const evidenceFindings = new Map<string, 'unknown' | 'accepted' | 'not_submitted' | 'delivered'>([
+      [smtpUncertain, 'unknown'], [smtpAccepted, 'delivered'], [umailUncertain, 'accepted'],
+      [umailAccepted, 'unknown']]);
+    const evidence: DeliveryEvidenceProvider = { async check(request) {
+      return { organizationId: request.organizationId, recipientId: request.recipientId,
+        resourceId: request.resourceId, finding: evidenceFindings.get(request.recipientId) ?? 'unknown',
+        evidenceId: evidenceFindings.get(request.recipientId) === 'unknown' ? null : `proof-${request.recipientId}`,
+        detail: 'controlled channel evidence' };
+    } };
+    const checked = new EmailSendService(pool, key, sender, umailSender, evidence);
+    await assert.rejects(checked.retry(identity, { recipientId: smtpUncertain, confirmPossibleDuplicate: true }));
+    await checked.reconcile(identity, { recipientId: smtpUncertain });
+    assert.equal((await checked.batch(identity, queued.batchId)).recipients.find(item => item.id === smtpUncertain)?.status, 'uncertain');
+    await checked.reconcile(identity, { recipientId: smtpAccepted });
+    await checked.reconcile(identity, { recipientId: smtpAccepted });
+    evidenceFindings.set(smtpAccepted, 'unknown');
+    await checked.reconcile(identity, { recipientId: smtpAccepted });
+    assert.equal((await checked.batch(identity, queued.batchId)).recipients.find(item => item.id === smtpAccepted)?.status, 'delivered');
+    const timelineAfterProof = await new CompanyTimelineService(pool, Buffer.from(process.env.ORG_CONTACT_KEY!, 'hex'))
+      .list(identity, { profileId, type: 'email' });
+    assert.ok(timelineAfterProof.records.some(item => item.id === smtpAccepted && item.content.includes('有证据送达')));
+    assert.ok(timelineAfterProof.records.every(item => item.type === 'email'));
+    assert.equal((await pool.query(`SELECT count(*)::int AS n FROM email_usage_events WHERE recipient_id=$1 AND event='used'`,
+      [smtpAccepted])).rows[0].n, 1);
+    await checked.reconcile(identity, { recipientId: umailUncertain });
+    await checked.reconcile(identity, { recipientId: umailUncertain });
+    evidenceFindings.set(umailUncertain, 'unknown');
+    await checked.reconcile(identity, { recipientId: umailUncertain });
+    assert.equal((await checked.batch(identity, secondOutcome.batchId)).recipients[0].status, 'accepted');
+    assert.equal((await checked.quota(identity)).reserved, 2);
+    assert.equal((await checked.quota(identity)).used, 3);
+    await checked.reconcile(identity, { recipientId: umailAccepted });
+    assert.equal((await checked.batch(identity, umailBatch.batchId)).recipients[0].status, 'accepted');
+    await checked.configureLimit(platform, { organizationId: org, dailyLimit: 5 });
+    await assert.rejects(checked.retry(identity, { recipientId: smtpUncertain, confirmPossibleDuplicate: true }));
+    await checked.configureLimit(platform, { organizationId: org, dailyLimit: 7 });
+    const beforeRetryCalls = senderCalls.length;
+    const retried = await checked.retry(identity, { recipientId: smtpUncertain, confirmPossibleDuplicate: true });
+    assert.equal(retried.created, true);
+    assert.equal(senderCalls.length, beforeRetryCalls + 1);
+    const retryRow = retried.result.recipients.find(item => item.id === retried.id)!;
+    assert.equal(retryRow.parentRecipientId, smtpUncertain);
+    assert.equal(retryRow.email, originalUncertain.email);
+    assert.equal(retryRow.mailsouId, originalUncertain.mailsou_id);
+    assert.equal(retryRow.status, 'uncertain');
+    await checked.retry(identity, { recipientId: smtpUncertain, confirmPossibleDuplicate: true });
+    assert.equal(senderCalls.length, beforeRetryCalls + 1);
+    await assert.rejects(checked.retry(identity, { recipientId: retried.id, confirmPossibleDuplicate: false }));
+    evidenceFindings.set(retried.id, 'not_submitted');
+    await checked.reconcile(identity, { recipientId: retried.id });
+    await checked.reconcile(identity, { recipientId: retried.id });
+    assert.equal((await checked.batch(identity, queued.batchId)).recipients.find(item => item.id === retried.id)?.status,
+      'not_submitted');
+    assert.equal((await checked.quota(identity)).reserved, 2);
+    assert.equal((await checked.quota(identity)).used, 3);
+    assert.equal((await pool.query(`SELECT count(*)::int AS n FROM email_usage_events WHERE recipient_id=$1 AND event='reserved'`,
+      [retried.id])).rows[0].n, 1);
+    assert.equal((await pool.query(`SELECT count(*)::int AS n FROM email_usage_events WHERE recipient_id=$1 AND event='released'`,
+      [retried.id])).rows[0].n, 1);
+    const badEvidence = new EmailSendService(pool, key, sender, umailSender, { async check(request) {
+      return { organizationId: foreignOrg, recipientId: request.recipientId, resourceId: request.resourceId,
+        finding: 'delivered', evidenceId: 'foreign-proof', detail: 'foreign' };
+    } });
+    await assert.rejects(badEvidence.reconcile(identity, { recipientId: smtpUncertain }));
+    assert.equal((await pool.query(`SELECT count(*)::int AS n FROM email_evidence_checks WHERE recipient_id=$1`,
+      [smtpUncertain])).rows[0].n, 1);
+    await assert.rejects(checked.retry(otherIdentity, { recipientId: smtpUncertain, confirmPossibleDuplicate: true }));
+    assert.equal((await pool.query('SELECT count(*)::int AS n FROM company_contact_point_ledger')).rows[0].n, 0);
+    const crossDayBody = { recipientId: queuedRecipient, confirmUnsubscribeNotice: true, confirmQuota: true };
+    await assert.rejects(checked.reconfirm(identity, { ...crossDayBody, confirmQuota: false }));
+    await assert.rejects(checked.reconfirm(otherIdentity, crossDayBody));
+    await checked.configureLimit(platform, { organizationId: org, dailyLimit: 6 });
+    const beforeCrossDayCalls = senderCalls.length;
+    const crossDayResults = await Promise.allSettled([
+      checked.reconfirm(identity, crossDayBody), checked.reconfirm(identity, crossDayBody)
+    ]);
+    assert.equal(crossDayResults.filter(item => item.status === 'fulfilled').length, 1);
+    assert.equal(crossDayResults.filter(item => item.status === 'rejected').length, 1);
+    assert.equal(senderCalls.length, beforeCrossDayCalls);
+    assert.equal((await checked.quota(identity)).reserved, 3);
+    const crossDayRow = (await checked.batch(identity, nextBatch)).recipients[0];
+    assert.equal(crossDayRow.email, 'dup@example.com');
+    assert.equal(crossDayRow.mailsouId, 'mailsou-1');
+    assert.equal(new Date(crossDayRow.usageDay).toISOString(), new Date((await checked.quota(identity)).day).toISOString());
+    assert.equal((await pool.query(`SELECT count(*)::int AS n FROM email_usage_events
+      WHERE recipient_id=$1 AND event='reserved'`, [queuedRecipient])).rows[0].n, 2);
+    assert.equal((await pool.query(`SELECT count(*)::int AS n FROM email_usage_events
+      WHERE recipient_id=$1 AND event='released'`, [queuedRecipient])).rows[0].n, 1);
+    await checked.execute(identity, { batchId: nextBatch });
+    assert.equal(senderCalls.length, beforeCrossDayCalls + 1);
+    assert.equal((await checked.quota(identity)).reserved, 3);
+    assert.equal((await pool.query(`SELECT reserved FROM email_daily_usage WHERE organization_id=$1
+      AND usage_day=(CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Shanghai')::date-1`, [org])).rows[0].reserved, 0);
+    const mixedPreviewId = randomUUID();
+    const mixedBatchId = randomUUID();
+    const mixedQueuedId = randomUUID();
+    const lateId = randomUUID();
+    await pool.query(`INSERT INTO email_previews(id,draft_id,organization_id,actor_id,profile_id,template_id,
+      template_version,subject,content,attachment_ids,recipient_snapshot,preview_snapshot,confirmed_at)
+      SELECT $1,draft_id,organization_id,actor_id,profile_id,template_id,template_version,subject,content,
+        attachment_ids,recipient_snapshot,$2,clock_timestamp() FROM email_previews WHERE id=$3`,
+    [mixedPreviewId, JSON.stringify(recipients.slice(1)), previewId]);
+    await pool.query(`INSERT INTO email_batches(id,preview_id,organization_id,actor_id,profile_id,channel_id,
+      channel_kind,reply_to,usage_day,attachment_ids)
+      SELECT $1,$2,organization_id,actor_id,profile_id,channel_id,channel_kind,reply_to,
+        (clock_timestamp() AT TIME ZONE 'Asia/Shanghai')::date-1,attachment_ids
+      FROM email_batches WHERE id=$3`, [mixedBatchId, mixedPreviewId, queued.batchId]);
+    for (const [id, item, status] of [[mixedQueuedId, recipients[1], 'queued'],
+      [lateId, recipients[2], 'uncertain']] as const) {
+      await pool.query(`INSERT INTO email_recipients(id,batch_id,organization_id,profile_id,email,email_key,
+        contact_id,mailsou_id,subject,content,status,submitted_at)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
+          CASE WHEN $11='uncertain' THEN clock_timestamp()-interval '1 day' ELSE NULL END)`,
+      [id, mixedBatchId, org, profileId, item.email, item.emailKey, item.contactId,
+        item.mailsouId, item.subject, item.content, status]);
+      await pool.query(`INSERT INTO email_usage_events(recipient_id,event,usage_day)
+        VALUES($1,'reserved',(clock_timestamp() AT TIME ZONE 'Asia/Shanghai')::date-1)`, [id]);
+    }
+    await pool.query(`UPDATE email_daily_usage SET reserved=reserved+2 WHERE organization_id=$1
+      AND usage_day=(clock_timestamp() AT TIME ZONE 'Asia/Shanghai')::date-1`, [org]);
+    assert.equal(await checked.pauseExpired(org), 1);
+    assert.equal(await checked.pauseExpired(org), 0);
+    assert.deepEqual((await checked.batch(identity, mixedBatchId)).recipients.map(item => item.status).sort(),
+      ['paused', 'uncertain']);
+    evidenceFindings.set(lateId, 'accepted');
+    const todayBeforeLate = await checked.quota(identity);
+    await checked.reconcile(identity, { recipientId: lateId });
+    await checked.reconcile(identity, { recipientId: lateId });
+    const todayAfterLate = await checked.quota(identity);
+    assert.deepEqual([todayAfterLate.reserved, todayAfterLate.used], [todayBeforeLate.reserved, todayBeforeLate.used]);
+    assert.deepEqual((await pool.query(`SELECT reserved,used FROM email_daily_usage WHERE organization_id=$1
+      AND usage_day=(clock_timestamp() AT TIME ZONE 'Asia/Shanghai')::date-1`, [org])).rows[0],
+      { reserved: 0, used: 1 });
+    assert.equal((await pool.query(`SELECT count(*)::int AS n FROM email_usage_events
+      WHERE recipient_id=$1 AND event='used'`, [lateId])).rows[0].n, 1);
   } finally {
     await pool.end();
   }

@@ -93,7 +93,7 @@ export class CompanyAttachmentService {
   private async authorize(identity: Identity, profileId: string) {
     if (!['admin', 'sales'].includes(identity.role)) throw new ForbiddenException('仅终端企业成员可访问附件');
     const result = await this.pool.query(`SELECT p.id FROM company_profiles p JOIN organizations o ON o.id=p.organization_id
-      WHERE p.id=$1 AND p.organization_id=$2 AND o.kind='terminal' AND o.active`, [profileId, identity.organization_id]);
+      WHERE p.id=$1 AND p.organization_id=$2 AND p.deleted_at IS NULL AND o.kind='terminal' AND o.active`, [profileId, identity.organization_id]);
     if (!result.rowCount) throw new NotFoundException('档案不存在');
   }
   async list(identity: Identity, body: unknown) {

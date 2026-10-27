@@ -46,6 +46,20 @@ export async function migrateCompanyContacts(client: PoolClient) {
       contact_id uuid NOT NULL REFERENCES company_contacts(id),
       PRIMARY KEY(query_id,contact_id)
     );
+    ALTER TABLE company_contact_queries ADD COLUMN IF NOT EXISTS refresh_requested boolean NOT NULL DEFAULT false;
+    ALTER TABLE company_contacts ADD COLUMN IF NOT EXISTS not_returned_in_last_update boolean NOT NULL DEFAULT false;
+    CREATE TABLE IF NOT EXISTS company_contact_source_history (
+      query_id uuid NOT NULL REFERENCES company_contact_queries(id),
+      contact_id uuid NOT NULL REFERENCES company_contacts(id),
+      mailsou_id text NOT NULL,
+      source_payload jsonb NOT NULL,
+      returned_company_name text NOT NULL,
+      fetched_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+      PRIMARY KEY(query_id,contact_id)
+    );
+    INSERT INTO company_contact_source_history(query_id,contact_id,mailsou_id,source_payload,returned_company_name,fetched_at)
+      SELECT query_id,id,mailsou_id,source_payload,returned_company_name,fetched_at FROM company_contacts
+      ON CONFLICT DO NOTHING;
     CREATE TABLE IF NOT EXISTS company_contact_point_ledger (
       id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
       query_id uuid NOT NULL REFERENCES company_contact_queries(id),

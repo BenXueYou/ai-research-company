@@ -7,8 +7,14 @@ tests/
 !application/tests/
 application/tests/*
 !application/tests/email-send.test.ts
+!application/tests/email-evidence.spec.ts
 !application/tests/company-attachments.test.ts
 !application/tests/browser/
 application/tests/browser/*
 !application/tests/browser/email-send.spec.ts
 !application/tests/browser/company-attachments.spec.ts
+application/.scratch/t18-dist/
+application/.scratch/t18-playwright-results/
+application/.scratch/t24-dist/
+application/.scratch/t24-web/
+application/.scratch/t24-playwright-results/
