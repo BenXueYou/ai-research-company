@@ -1,0 +1,39 @@
+{
+  "name": "acquisition-identity",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.server.json watch server/main.ts",
+    "dev:web": "vite --host 127.0.0.1",
+    "start": "node --env-file-if-exists=.env dist/server/main.js",
+    "build": "vue-tsc --noEmit && tsc -p tsconfig.server.json && vite build",
+    "typecheck": "vue-tsc --noEmit && tsc -p tsconfig.server.json --noEmit",
+    "db:migrate": "node --env-file-if-exists=.env node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.server.json server/cli.ts migrate",
+    "bootstrap": "node --env-file-if-exists=.env node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.server.json server/cli.ts bootstrap",
+    "test": "tsx --test tests/policy.test.ts",
+    "test:integration": "tsc -p tsconfig.server.json && node --env-file-if-exists=.env.test --test --test-concurrency=1 dist/tests/identity.test.js",
+    "test:e2e": "npm run build && node --env-file-if-exists=.env.test node_modules/@playwright/test/cli.js test"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.0",
+    "@nestjs/core": "^11.1.0",
+    "@nestjs/platform-express": "^11.1.0",
+    "express": "^5.1.0",
+    "pg": "^8.16.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.15.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.0",
+    "vite": "^7.1.0",
+    "vue-tsc": "^3.1.0"
+  }
+}
