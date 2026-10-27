@@ -441,10 +441,14 @@ export class EmailSendService {
             if (attachments.count !== row.attachment_ids.length)
                 throw new ConflictException('预设附件已不可用');
             const preview = (await db.query('SELECT preview_snapshot FROM email_previews WHERE id=$1', [row.preview_id])).rows[0];
-            const snapshot = preview?.preview_snapshot?.find(item => item.emailKey === row.email_key && item.contactId === row.contact_id);
-            const contact = (await db.query(`SELECT unsubscribed FROM company_contacts
-        WHERE id=$1 AND organization_id=$2 AND profile_id=$3`, [row.contact_id, identity.organization_id, row.profile_id])).rows[0];
-            if (!snapshot || !contact || (contact.unsubscribed && !snapshot.unsubscribedContactIds.includes(row.contact_id)))
+            const snapshot = preview?.preview_snapshot?.find(item => item.emailKey === row.email_key && item.email === row.email && item.contactId === row.contact_id &&
+                item.mailsouId === row.mailsou_id);
+            if (!snapshot || !Array.isArray(snapshot.sourceContactIds) ||
+                !snapshot.sourceContactIds.includes(row.contact_id))
+                throw new ConflictException('原收件人快照已不可核对，请重新预览确认');
+            const contacts = (await db.query(`SELECT id,unsubscribed FROM company_contacts
+        WHERE id=ANY($1::uuid[]) AND organization_id=$2 AND profile_id=$3`, [snapshot.sourceContactIds, identity.organization_id, row.profile_id])).rows;
+            if (contacts.length !== snapshot.sourceContactIds.length || contacts.some(contact => contact.unsubscribed && !snapshot.unsubscribedContactIds.includes(contact.id)))
                 throw new ConflictException('联系人退订状态已变化，请重新预览确认');
             await db.query('SELECT id FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id]);
             await db.query(`INSERT INTO email_daily_usage(organization_id,usage_day) VALUES($1,$2)

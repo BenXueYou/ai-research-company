@@ -59,8 +59,7 @@ export async function migrateEmailSend(client) {
       recipient_id uuid NOT NULL REFERENCES email_recipients(id),
       event text NOT NULL CHECK(event IN ('reserved','used','released')),
       usage_day date NOT NULL,
-      happened_at timestamptz NOT NULL DEFAULT clock_timestamp(),
-      UNIQUE(recipient_id,event,usage_day)
+      happened_at timestamptz NOT NULL DEFAULT clock_timestamp()
     );
   `);
     await client.query(`

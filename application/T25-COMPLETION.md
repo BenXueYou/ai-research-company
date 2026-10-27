@@ -10,8 +10,8 @@
 
 ## 已执行的业务验收
 
-- 独立数据库 `acquisition_t25_final_test`：真实 PostgreSQL 测试覆盖原批 SMTP 受理/失败/不明、U-Mail 共用额度、次日暂停、重复扫描、并发重确认、原发送人权限、拒绝缺少确认、重确认不自动调用发送适配器、手动执行、同批暂停与不明混合状态、迟到证据只结算原日及重复证据幂等。测试中列表 `source_id=list-111`、详情 `data.id=detail-222`、联系人源 `id=source-id-1`、`fileId=file-id-1`、`mailsouId=mailsou-1`、内部联系人 UUID 均不同；最终收件人沿用明确选择的邮箱与联系人 UUID、`mailsouId`。
-- 独立数据库 `acquisition_t25_browserb_test`、端口 3145、独立编译与浏览器输出：Chromium 从企业选择、联系人归属说明、个人邮箱选择、预览与发送到证据核对、T24 重发，再对旧日 U-Mail 收件人查看暂停、确认今日额度、核对 HTTP 请求体中的收件人标识、确认后零额外发送、手动执行一次。旧日预占为 0；今日原不明预占仍为 1，已用由 1 增至 2；最终邮箱、联系人 UUID、`mailsouId` 保持一致。浏览器测试使用受控供应商适配器，本地鉴权、HTTP 和 PostgreSQL 均为真实实现。
+- 独立数据库 `acquisition_t25_verified_test`：真实 PostgreSQL 测试覆盖原批 SMTP 受理/失败/不明、U-Mail 共用额度、次日暂停、重复扫描、并发重确认、原发送人权限、拒绝缺少确认、同邮箱另一来源联系人新增退订时拒绝沿用旧预览、重确认不自动调用发送适配器、手动执行、同批暂停与不明混合状态、迟到证据只结算原日及重复证据幂等。测试中列表 `source_id=list-111`、详情 `data.id=detail-222`、联系人源 `id=source-id-1`、`fileId=file-id-1`、`mailsouId=mailsou-1`、内部联系人 UUID 均不同；最终收件人沿用明确选择的邮箱与联系人 UUID、`mailsouId`。
+- 独立数据库 `acquisition_t25_browserc_test`、端口 3145、独立编译与浏览器输出：Chromium 从企业选择、联系人归属说明、个人邮箱选择、预览与发送到证据核对、T24 重发，再对旧日 U-Mail 收件人查看暂停、确认今日额度、核对 HTTP 请求体中的收件人标识、确认后零额外发送、手动执行一次。旧日预占为 0；今日原不明预占仍为 1，已用由 1 增至 2；最终邮箱、联系人 UUID、`mailsouId` 保持一致。浏览器测试使用受控供应商适配器，本地鉴权、HTTP 和 PostgreSQL 均为真实实现。
 - `npm run typecheck`、独立 `tsc` 与 `vite build --outDir .scratch/t25-web` 通过。
 
 ## 尚未验证

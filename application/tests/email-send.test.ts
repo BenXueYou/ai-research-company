@@ -6,7 +6,7 @@ import { CompanyTimelineService } from '../server/company-timeline.js';
 import { testDatabase } from './helpers.js';
 import type { Identity } from '../server/identity.js';
 
-test('T22/T23/T24 snapshots, quota, evidence, retry, idempotence and overnight pause', async () => {
+test('T22/T23/T24/T25 snapshots, quota, evidence, retry, cross-day confirmation and late results', async () => {
   const { pool } = await testDatabase();
   const platformOrg = randomUUID();
   const platformId = randomUUID();
@@ -66,10 +66,11 @@ test('T22/T23/T24 snapshots, quota, evidence, retry, idempotence and overnight p
       VALUES($1,$2,$3,$4,$5,1,'Subject','Body','[]')`, [draftId, org, actor, profileId, templateId]);
     const recipients = [
       { email: 'dup@example.com', emailKey: 'dup@example.com', contactId: contacts[1], mailsouId: 'mailsou-1',
-        subject: 'Chosen source', content: 'selected mailsou-1', unsubscribedContactIds: [] },
+        subject: 'Chosen source', content: 'selected mailsou-1', sourceContactIds: [contacts[0], contacts[1]],
+        unsubscribedContactIds: [] },
       ...[2, 3].map(i => ({ email: `unique-${i}@example.com`, emailKey: `unique-${i}@example.com`,
         contactId: contacts[i], mailsouId: `mailsou-${i}`, subject: `Subject ${i}`, content: `Body ${i}`,
-        unsubscribedContactIds: [] }))
+        sourceContactIds: [contacts[i]], unsubscribedContactIds: [] }))
     ];
     await pool.query(`INSERT INTO email_previews(id,draft_id,organization_id,actor_id,profile_id,template_id,template_version,
       subject,content,attachment_ids,recipient_snapshot,preview_snapshot,confirmed_at)
@@ -329,6 +330,9 @@ test('T22/T23/T24 snapshots, quota, evidence, retry, idempotence and overnight p
     const crossDayBody = { recipientId: queuedRecipient, confirmUnsubscribeNotice: true, confirmQuota: true };
     await assert.rejects(checked.reconfirm(identity, { ...crossDayBody, confirmQuota: false }));
     await assert.rejects(checked.reconfirm(otherIdentity, crossDayBody));
+    await pool.query('UPDATE company_contacts SET unsubscribed=true WHERE id=$1', [contacts[0]]);
+    await assert.rejects(checked.reconfirm(identity, crossDayBody));
+    await pool.query('UPDATE company_contacts SET unsubscribed=false WHERE id=$1', [contacts[0]]);
     await checked.configureLimit(platform, { organizationId: org, dailyLimit: 6 });
     const beforeCrossDayCalls = senderCalls.length;
     const crossDayResults = await Promise.allSettled([
