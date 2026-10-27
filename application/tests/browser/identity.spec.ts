@@ -1,18 +1,23 @@
 ﻿import { test, expect } from '@playwright/test';
 import { createApplication } from '../../server/app.js';
-import { testDatabase } from '../helpers.js';
+import { migrate } from '../../server/database.js';
+import { testDatabase, ordinaryAccount } from '../helpers.js';
 
-test('真实UI：临时登录、强改密、重登录、主动改密、退出及窄屏', async ({ page, browser }) => {
-  const { pool, service } = await testDatabase();
+for (const kind of ['platform', 'email']) {
+test(`真实UI ${kind}：临时登录、强改密、重登录、主动改密、退出及窄屏`, async ({ page, browser }) => {
+  const { pool } = await testDatabase();
   const app = await createApplication(pool, 'http://127.0.0.1:3092');
   await app.listen(3092, '127.0.0.1');
-  const account = await service.bootstrap('Browser@example.com', '浏览器测试平台');
+  if (kind === 'platform') await migrate(pool);
+  const account = kind === 'platform'
+    ? { email: 'super_admin', password: 'init@Base123' }
+    : await ordinaryAccount(pool, 'Browser@example.com');
   const next = ' 浏览器新密码😀安全十二个字符 ';
   const final = ' 第二次密码😀安全十二个字符 ';
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   async function login(password: string) {
-    await page.getByLabel('登录邮箱', { exact: true }).fill(account.email);
+    await page.getByLabel('登录账号', { exact: true }).fill(account.email);
     await page.getByLabel('密码', { exact: true }).fill(password);
     await page.getByRole('button', { name: '登录', exact: true }).click();
   }
@@ -44,7 +49,7 @@ test('真实UI：临时登录、强改密、重登录、主动改密、退出及
     const other = await browser.newContext();
     const otherPage = await other.newPage();
     await otherPage.goto('http://127.0.0.1:3092/');
-    await otherPage.getByLabel('登录邮箱', { exact: true }).fill(account.email);
+    await otherPage.getByLabel('登录账号', { exact: true }).fill(account.email);
     await otherPage.getByLabel('密码', { exact: true }).fill(next);
     await otherPage.getByRole('button', { name: '登录', exact: true }).click();
     await expect(otherPage.getByRole('heading', { name: '工作台', exact: true })).toBeVisible();
@@ -65,3 +70,4 @@ test('真实UI：临时登录、强改密、重登录、主动改密、退出及
     await pool.end();
   }
 });
+}

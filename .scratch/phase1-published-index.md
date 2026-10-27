@@ -2,7 +2,7 @@
 
 父规格：https://github.com/BenXueYou/ai-research-company/issues/1
 
-状态：32张已发布并验证，父Issue保持不变。
+状态：32张已于原发布轮次发布并验证。2026-10-27本地实施基线已修订为Spec v1.2、PRD v3.2、技术设计v3.3及已批准身份决策，见[拆票实施基线](./phase1-ticket-plan.md)。线上父Issue及子票仍为旧基线，尚待同步；本次未修改线上正文、状态或依赖。
 
 | 草案编号 | GitHub Issue | 阻塞项 |
 |---|---|---|
@@ -39,7 +39,7 @@
 | T31 | [#32 国内 SMTP 正式联调：投递、回复实收及失败证据](https://github.com/BenXueYou/ai-research-company/issues/32) | #25、#26 |
 | T32 | [#33 U-Mail 正式联调：资源隔离、内容生效与回执](https://github.com/BenXueYou/ai-research-company/issues/33) | #24、#25、#26 |
 
-所有票均标记ready-for-agent，外部未决项仍保留。
-原生阻塞关系：全部建立并回读验证。
+原发布时所有票均标记ready-for-agent。2026-10-27用户取消平台管理员恢复：本地T05已撤出一期，线上#6尚未更新，保留历史编号不代表当前需实施。旧发布脚本仍按32张活动票及旧验收生成正文，未经更新不得用于本轮同步；其解析器当前不接受T05撤销状态。
+原生阻塞关系：原发布轮次全部建立并回读验证；本次文档修订不改变票间依赖，也未重新验证原生关系。
 
 本次只发布tickets，未实现代码、运行生产验收、真实扣费查询或发信。

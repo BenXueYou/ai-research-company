@@ -17,6 +17,16 @@ import { resolve } from 'node:path';
 import { timingSafeEqual } from 'node:crypto';
 import type pg from 'pg';
 import { digest, IdentityService, type Identity } from './identity.js';
+import { bindContactKey, contactKey, OrganizationService } from './organizations.js';
+import { ProcurementService } from './procurement.js';
+import { MemberService } from './members.js';
+import {
+  bindSmtpCredentialKey,
+  DeferredDomesticSmtpAdapter,
+  type DomesticSmtpAdapter,
+  smtpCredentialKey,
+  SmtpChannelService
+} from './smtp-channel.js';
 
 interface AuthRequest extends Request { identity: Identity; sessionToken: string }
 function cookie(request: Request, name: string): string {
@@ -46,11 +56,24 @@ class IdentityGuard implements CanActivate {
     return true;
   }
 }
-export async function createApplication(pool: pg.Pool, origin: string, production = false) {
+export async function createApplication(
+  pool: pg.Pool,
+  origin: string,
+  production = false,
+  smtpAdapter: DomesticSmtpAdapter = new DeferredDomesticSmtpAdapter()
+) {
   const parsed = new URL(origin);
   if (parsed.origin !== origin || (production && parsed.protocol !== 'https:'))
     throw new Error('APP_ORIGIN 必须是精确源；生产环境要求 HTTPS');
   const service = new IdentityService(pool);
+  const key = contactKey();
+  await bindContactKey(pool, key);
+  const organizations = new OrganizationService(pool, key);
+  const procurement = new ProcurementService(pool, production);
+  const members = new MemberService(pool);
+  const smtpKey = smtpCredentialKey();
+  await bindSmtpCredentialKey(pool, smtpKey);
+  const smtpChannels = new SmtpChannelService(pool, smtpKey, smtpAdapter);
   const cookieOptions = { secure: production, sameSite: 'strict' as const, path: '/', maxAge: 8 * 60 * 60 * 1000 };
   @Controller('api')
   class IdentityController {
@@ -64,8 +87,8 @@ export async function createApplication(pool: pg.Pool, origin: string, productio
     }
     @Get('auth/session')
     session(@Req() request: AuthRequest) {
-      const { id, email, role, organization_id, must_change } = request.identity;
-      return { id, email, role, organizationId: organization_id, mustChange: must_change };
+      const { id, email, username, role, organization_id, must_change } = request.identity;
+      return { id, email, loginName: username ?? email, role, organizationId: organization_id, mustChange: must_change };
     }
     @Post('auth/password')
     @HttpCode(200)
@@ -86,6 +109,50 @@ export async function createApplication(pool: pg.Pool, origin: string, productio
     @Get('workspace')
     workspace(@Req() request: AuthRequest) {
       return { title: '工作台', email: request.identity.email, message: '身份验证已完成。后续业务模块尚未开放。' };
+    }
+    @Get('procurement')
+    procurementOverview(@Req() request: AuthRequest) {
+      return procurement.overview(request.identity, request.sessionToken);
+    }
+    @Post('procurement/purchases')
+    purchase(@Req() request: AuthRequest) {
+      return procurement.mutate(request.identity, request.sessionToken, 'purchase', request.body ?? {});
+    }
+    @Post('procurement/expenses')
+    expense(@Req() request: AuthRequest) {
+      return procurement.mutate(request.identity, request.sessionToken, 'expense', request.body ?? {});
+    }
+    @Post('procurement/pricing')
+    pricing(@Req() request: AuthRequest) {
+      return procurement.mutate(request.identity, request.sessionToken, 'pricing', request.body ?? {});
+    }
+    @Get('members')
+    members(@Req() request: AuthRequest) {
+      return members.list(request.identity, request.sessionToken);
+    }
+    @Post('members')
+    createMember(@Req() request: AuthRequest) {
+      return members.create(request.identity, request.sessionToken, request.body ?? {});
+    }
+    @Post('members/disable')
+    disableMember(@Req() request: AuthRequest) {
+      return members.disable(request.identity, request.sessionToken, request.body ?? {});
+    }
+    @Get('sending-channels/smtp')
+    smtpChannel(@Req() request: AuthRequest) {
+      return smtpChannels.get(request.identity);
+    }
+    @Post('sending-channels/smtp')
+    configureSmtpChannel(@Req() request: AuthRequest) {
+      return smtpChannels.configure(request.identity, request.body ?? {});
+    }
+    @Get('organizations')
+    organizations(@Req() request: AuthRequest) {
+      return organizations.list(request.identity);
+    }
+    @Post('organizations')
+    openOrganization(@Req() request: AuthRequest) {
+      return organizations.open(request.identity, request.sessionToken, request.body ?? {});
     }
   }
   @Module({ controllers: [IdentityController] })

@@ -5,4 +5,7 @@ dist/
 !.env.example
 playwright-report/
 test-results/
+dist-t06/
+.t06-runtime/
+test-results-t06/
 *.log

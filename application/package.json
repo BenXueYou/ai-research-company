@@ -12,15 +12,19 @@
     "db:migrate": "node --env-file-if-exists=.env node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.server.json server/cli.ts migrate",
     "bootstrap": "node --env-file-if-exists=.env node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.server.json server/cli.ts bootstrap",
     "test": "tsx --test tests/policy.test.ts",
-    "test:integration": "tsc -p tsconfig.server.json && node --env-file-if-exists=.env.test --test --test-concurrency=1 dist/tests/identity.test.js",
-    "test:e2e": "npm run build && node --env-file-if-exists=.env.test node_modules/@playwright/test/cli.js test"
+    "test:integration": "tsc -p tsconfig.server.json && node --env-file-if-exists=.env.test --test --test-concurrency=1 dist/tests/identity.test.js dist/tests/organizations.test.js dist/tests/smtp-channel.test.js",
+    "test:e2e": "npm run build && node --env-file-if-exists=.env.test node_modules/@playwright/test/cli.js test",
+    "deploy": "node scripts/deploy.mjs",
+    "test:deployment": "node --env-file-if-exists=.env.test tests/deployment.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.0",
     "@nestjs/core": "^11.1.0",
     "@nestjs/platform-express": "^11.1.0",
+    "element-plus": "2.14.7",
     "express": "^5.1.0",
     "pg": "^8.16.0",
+    "redis": "^5.9.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "vue": "^3.5.0"

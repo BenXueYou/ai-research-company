@@ -1,4 +1,6 @@
 ﻿:root {
+  --el-color-primary: #6e5bc8;
+  --el-border-radius-base: 8px;
   font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
   color: #263052;
   background: #f4f6fc;
@@ -9,22 +11,6 @@
 }
 body {
   margin: 0;
-}
-button,
-input {
-  font: inherit;
-}
-button {
-  cursor: pointer;
-  border: 1px solid #dce1ef;
-  border-radius: 9px;
-  padding: 11px 16px;
-  background: white;
-  color: #454f72;
-}
-button:disabled {
-  opacity: 0.6;
-  cursor: wait;
 }
 button:focus-visible,
 a:focus-visible {
@@ -130,18 +116,14 @@ p {
   margin-top: 8px;
   font-weight: 600;
 }
-input {
-  width: 100%;
-  min-height: 46px;
-  padding: 10px 13px;
-  border: 1px solid #dce1ed;
-  border-radius: 8px;
-  background: #fcfcff;
-  color: #263052;
+.identity-card .el-input {
+  --el-input-height: 46px;
 }
-input:focus {
-  outline: 2px solid #c6bdf4;
-  border-color: #8671d8;
+.identity-card .el-button + .el-button {
+  margin-left: 0;
+}
+.el-button {
+  min-height: 42px;
 }
 .primary-button {
   color: white;

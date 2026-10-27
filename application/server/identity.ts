@@ -1,13 +1,14 @@
-import { createHash, randomBytes, randomUUID } from 'node:crypto';
-import { BadRequestException, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { createHash, randomBytes } from 'node:crypto';
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import type pg from 'pg';
 import { transaction } from './database.js';
-import { hashPassword, normalizeEmail, temporaryPassword, validNewPassword, verifyPassword } from './policy.js';
+import { hashPassword, normalizeEmail, validNewPassword, verifyPassword } from './policy.js';
 
 export const digest = (value: string): string => createHash('sha256').update(value).digest('hex');
 export interface Identity {
   id: string;
-  email: string;
+  email: string | null;
+  username: string | null;
   role: string;
   organization_id: string;
   must_change: boolean;
@@ -18,31 +19,9 @@ export class IdentityService {
   private readonly dummyHash = hashPassword(randomBytes(32).toString('hex'));
   constructor(readonly pool: pg.Pool) {}
 
-  async bootstrap(emailInput: unknown, organizationName: string): Promise<{ email: string; password: string }> {
-    const email = normalizeEmail(emailInput);
-    if (!organizationName.trim() || organizationName.length > 120)
-      throw new BadRequestException('组织名称无效');
-    const password = temporaryPassword();
-    const hash = await hashPassword(password);
-    await transaction(this.pool, async client => {
-      await client.query('SELECT pg_advisory_xact_lock(712011)');
-      const marker = await client.query('SELECT 1 FROM bootstrap_marker');
-      if (marker.rowCount)
-        throw new ConflictException('初始引导已完成');
-      const org = randomUUID();
-      const id = randomUUID();
-      await client.query("INSERT INTO organizations(id,name,kind) VALUES($1,$2,'platform')", [org, organizationName]);
-      await client.query(`INSERT INTO accounts(id,organization_id,email,password_hash,role,temporary_expires_at)
-        VALUES($1,$2,$3,$4,'platform',clock_timestamp() + interval '72 hours')`, [id, org, email, hash]);
-      await client.query('INSERT INTO bootstrap_marker(account_id) VALUES($1)', [id]);
-      await client.query("INSERT INTO audit_events(event,account_id) VALUES('bootstrap',$1)", [id]);
-    });
-    return { email, password };
-  }
-
   async login(input: Record<string, unknown>, address: string): Promise<{ token: string; csrf: string }> {
     let email: string;
-    try { email = normalizeEmail(input.email); } catch { throw loginFailure(); }
+    try { email = input.email === 'super_admin' ? 'super_admin' : normalizeEmail(input.email); } catch { throw loginFailure(); }
     if (typeof input.password !== 'string' || Buffer.byteLength(input.password) > 1024)
       throw loginFailure();
     // A persistent, atomic per-source budget bounds KDF work without logging source addresses.
@@ -55,12 +34,14 @@ export class IdentityService {
       throw loginFailure();
     const password = input.password;
     const result = await transaction(this.pool, async client => {
-      const found = await client.query('SELECT * FROM accounts WHERE email=$1 FOR UPDATE', [email]);
+      const found = await client.query(email === 'super_admin'
+        ? "SELECT * FROM accounts WHERE username=$1 AND role='platform' FOR UPDATE"
+        : 'SELECT * FROM accounts WHERE email=$1 FOR UPDATE', [email]);
       const account = found.rows[0];
       const verified = await verifyPassword(password, account?.password_hash ?? await this.dummyHash);
       const validity = account && await client.query(`SELECT active AND (NOT must_change OR temporary_expires_at > clock_timestamp()) AS valid
-        FROM accounts WHERE id=$1`, [account.id]);
-      if (!verified || !validity?.rows[0].valid) {
+        FROM accounts WHERE id=$1 AND EXISTS (SELECT 1 FROM organizations o WHERE o.id=accounts.organization_id AND o.active)`, [account.id]);
+      if (!verified || !validity?.rows[0]?.valid) {
         await client.query("INSERT INTO audit_events(event,account_id) VALUES('login_failed',$1)", [account?.id ?? null]);
         return null;
       }
@@ -78,9 +59,10 @@ export class IdentityService {
   async authenticate(token: string): Promise<Identity> {
     const result = await this.pool.query(`UPDATE sessions s SET last_seen_at=clock_timestamp() FROM accounts a
       WHERE s.token_hash=$1 AND a.id=s.account_id AND a.active
+      AND EXISTS (SELECT 1 FROM organizations o WHERE o.id=a.organization_id AND o.active)
       AND s.expires_at > clock_timestamp() AND s.last_seen_at > clock_timestamp() - interval '30 minutes'
       AND (NOT a.must_change OR a.temporary_expires_at > clock_timestamp())
-      RETURNING a.id,a.email,a.role,a.organization_id,a.must_change,s.csrf_hash`, [digest(token)]);
+      RETURNING a.id,a.email,a.username,a.role,a.organization_id,a.must_change,s.csrf_hash`, [digest(token)]);
     if (!result.rowCount)
       throw new UnauthorizedException('请重新登录');
     return result.rows[0] as Identity;
@@ -102,8 +84,8 @@ export class IdentityService {
       const account = found.rows[0];
       const live = await client.query(`SELECT 1 FROM sessions WHERE token_hash=$1
         AND expires_at > clock_timestamp() AND last_seen_at > clock_timestamp() - interval '30 minutes'`, [digest(token)]);
-      const valid = await client.query(`SELECT active AND (NOT must_change OR temporary_expires_at > clock_timestamp()) AS valid FROM accounts WHERE id=$1`, [account.id]);
-      if (!live.rowCount || !valid.rows[0].valid)
+      const valid = await client.query(`SELECT active AND (NOT must_change OR temporary_expires_at > clock_timestamp()) AS valid FROM accounts WHERE id=$1 AND EXISTS (SELECT 1 FROM organizations o WHERE o.id=accounts.organization_id AND o.active)`, [account.id]);
+      if (!live.rowCount || !valid.rows[0]?.valid)
         throw new UnauthorizedException('请重新登录');
       if (!await verifyPassword(current, account.password_hash) || next === current) {
         await client.query("INSERT INTO audit_events(event,account_id) VALUES('password_rejected',$1)", [account.id]);

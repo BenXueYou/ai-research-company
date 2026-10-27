@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { createApplication } from '../server/app.js';
 import { digest } from '../server/identity.js';
-import { testDatabase } from './helpers.js';
+import { migrate } from '../server/database.js';
+import { testDatabase, ordinaryAccount } from './helpers.js';
 
 test('真实 PostgreSQL / HTTP 身份闭环与安全边界', async t => {
   const { pool, service } = await testDatabase();
@@ -29,13 +30,9 @@ test('真实 PostgreSQL / HTTP 身份闭环与安全边界', async t => {
     });
   }
   try {
-    await t.test('并发引导只有一个成功，组织管理员原子创建；无公开引导接口', async () => {
-      const results = await Promise.allSettled([service.bootstrap('Admin@EXAMPLE.COM', '测试平台'), service.bootstrap('Other@example.com', '并发平台')]);
-      assert.equal(results.filter(result => result.status === 'fulfilled').length, 1);
-      account = results.find(result => result.status === 'fulfilled')!.value;
+    await t.test('普通邮箱夹具与真实服务；无公开引导接口', async () => {
+      account = await ordinaryAccount(pool, 'Admin@EXAMPLE.COM');
       assert.equal(account.password.length, 24);
-      assert.equal((await pool.query('SELECT * FROM organizations')).rowCount, 1);
-      assert.equal((await pool.query('SELECT * FROM accounts')).rowCount, 1);
       assert.equal((await http('bootstrap', {})).status, 404);
     });
     await t.test('未认证拒绝、错误密码与未知邮箱统一提示，邮箱域名折叠/本地敏感', async () => {
@@ -133,6 +130,48 @@ test('真实 PostgreSQL / HTTP 身份闭环与安全边界', async t => {
     });
   } finally {
     await app.close();
+    await pool.end();
+  }
+});
+
+test('数据库内置平台账号：并发初始化、登录、改密、重复初始化及到期', async () => {
+  const { pool, service } = await testDatabase();
+  const initial = { email: 'super_admin', password: 'init@Base123' };
+  const next = '平台管理员新密码😀安全十二字符';
+  try {
+    await Promise.all([migrate(pool), migrate(pool)]);
+    const rows = await pool.query('SELECT * FROM accounts');
+    assert.equal(rows.rowCount, 1);
+    assert.equal((await pool.query('SELECT * FROM organizations')).rowCount, 1);
+    assert.equal((await pool.query('SELECT * FROM bootstrap_marker')).rowCount, 1);
+    assert.equal(rows.rows[0].email, null);
+    assert.equal(rows.rows[0].username, 'super_admin');
+    assert.equal(rows.rows[0].must_change, true);
+    assert.notEqual(rows.rows[0].password_hash, initial.password);
+    for (const email of ['SUPER_ADMIN', ' super_admin', 'someone', 'super_admin@example.com'])
+      await assert.rejects(service.login({ ...initial, email }, 'invalid-name'));
+    const first = await service.login(initial, 'platform-a');
+    const second = await service.login(initial, 'platform-b');
+    assert.equal((await service.authenticate(first.token)).email, null);
+    await service.changePassword(first.token, { currentPassword: initial.password, newPassword: next, confirmPassword: next });
+    await assert.rejects(service.authenticate(second.token));
+    const before = (await pool.query('SELECT * FROM accounts')).rows[0];
+    const session = await service.login({ ...initial, password: next }, 'platform-c');
+    await Promise.all([migrate(pool), migrate(pool)]);
+    const after = (await pool.query('SELECT * FROM accounts')).rows[0];
+    assert.deepEqual(after, before);
+    assert.equal((await service.authenticate(session.token)).must_change, false);
+    await assert.rejects(service.login(initial, 'old-password'));
+    assert.equal((await pool.query("SELECT * FROM audit_events WHERE event='bootstrap'")).rowCount, 1);
+    await pool.query("UPDATE accounts SET must_change=true,temporary_expires_at=clock_timestamp()-interval '1 second'");
+    await assert.rejects(service.authenticate(session.token));
+    await assert.rejects(service.login({ ...initial, password: next }, 'expired'));
+    await migrate(pool);
+    await assert.rejects(service.login(initial, 'expired-initial'));
+    const audit = JSON.stringify((await pool.query('SELECT * FROM audit_events')).rows);
+    for (const secret of [initial.password, next, after.password_hash, first.token])
+      assert.ok(!audit.includes(secret));
+  } finally {
     await pool.end();
   }
 });

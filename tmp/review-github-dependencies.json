@@ -1,0 +1,348 @@
+[
+  {
+    "ticket": 1,
+    "expected": [],
+    "actual": [],
+    "matches": true
+  },
+  {
+    "ticket": 2,
+    "expected": [
+      2
+    ],
+    "actual": [
+      2
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 3,
+    "expected": [
+      3
+    ],
+    "actual": [
+      3
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 4,
+    "expected": [
+      4
+    ],
+    "actual": [
+      4
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 5,
+    "expected": [
+      2
+    ],
+    "actual": [
+      2
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 6,
+    "expected": [
+      2
+    ],
+    "actual": [
+      2
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 7,
+    "expected": [
+      3,
+      7
+    ],
+    "actual": [
+      3,
+      7
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 8,
+    "expected": [
+      8
+    ],
+    "actual": [
+      8
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 9,
+    "expected": [
+      8
+    ],
+    "actual": [
+      8
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 10,
+    "expected": [
+      3
+    ],
+    "actual": [
+      3
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 11,
+    "expected": [
+      7,
+      11
+    ],
+    "actual": [
+      7,
+      11
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 12,
+    "expected": [
+      12
+    ],
+    "actual": [
+      12
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 13,
+    "expected": [
+      12
+    ],
+    "actual": [
+      12
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 14,
+    "expected": [
+      12
+    ],
+    "actual": [
+      12
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 15,
+    "expected": [
+      15
+    ],
+    "actual": [
+      15
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 16,
+    "expected": [
+      12
+    ],
+    "actual": [
+      12
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 17,
+    "expected": [
+      12
+    ],
+    "actual": [
+      12
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 18,
+    "expected": [
+      18
+    ],
+    "actual": [
+      18
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 19,
+    "expected": [
+      3
+    ],
+    "actual": [
+      3
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 20,
+    "expected": [
+      3
+    ],
+    "actual": [
+      3
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 21,
+    "expected": [
+      15
+    ],
+    "actual": [
+      15
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 22,
+    "expected": [
+      20,
+      22
+    ],
+    "actual": [
+      20,
+      22
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 23,
+    "expected": [
+      21,
+      23
+    ],
+    "actual": [
+      21,
+      23
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 24,
+    "expected": [
+      23
+    ],
+    "actual": [
+      23
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 25,
+    "expected": [
+      23
+    ],
+    "actual": [
+      23
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 26,
+    "expected": [
+      8,
+      12,
+      23
+    ],
+    "actual": [
+      8,
+      12,
+      23
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 27,
+    "expected": [
+      9,
+      12
+    ],
+    "actual": [
+      9,
+      12
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 28,
+    "expected": [
+      9,
+      14,
+      23
+    ],
+    "actual": [
+      9,
+      14,
+      23
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 29,
+    "expected": [
+      11
+    ],
+    "actual": [
+      11
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 30,
+    "expected": [
+      13,
+      14,
+      15,
+      30
+    ],
+    "actual": [
+      13,
+      14,
+      15,
+      30
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 31,
+    "expected": [
+      25,
+      26
+    ],
+    "actual": [
+      25,
+      26
+    ],
+    "matches": true
+  },
+  {
+    "ticket": 32,
+    "expected": [
+      24,
+      25,
+      26
+    ],
+    "actual": [
+      24,
+      25,
+      26
+    ],
+    "matches": true
+  }
+]
