@@ -8,6 +8,7 @@ import { migrateCompanySearch } from './company-search-schema.js';
 import { migrateProductSearch } from './product-search-schema.js';
 import { migrateCompanyDetail } from './company-detail-schema.js';
 import { migrateCompanyTimeline } from './company-timeline-schema.js';
+import { migrateCompanyAttachments } from './company-attachments-schema.js';
 import { migrateCompanyContacts } from './company-contacts-schema.js';
 import { migrateSmtpChannels } from './smtp-channel-schema.js';
 import { migrateUMail } from './umail-schema.js';
@@ -119,6 +120,7 @@ export async function migrate(pool: pg.Pool): Promise<void> {
     await migrateCompanySearch(client);
     await migrateCompanyDetail(client);
     await migrateCompanyTimeline(client);
+    await migrateCompanyAttachments(client);
     await migrateProductSearch(client);
     await migrateCompanyContacts(client);
     await migrateCoefficient(client);

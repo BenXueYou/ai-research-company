@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID, createCipheriv, randomBytes } from 'node:crypto';
-import { EmailSendService, type DomesticSmtpSender } from '../server/email-send.js';
+import { EmailSendService, type DomesticSmtpSender, type UMailMessage, type UMailSender } from '../server/email-send.js';
 import { testDatabase } from './helpers.js';
 import type { Identity } from '../server/identity.js';
 
@@ -137,6 +137,114 @@ test('T22 snapshot identifiers, atomic quota, outcomes, idempotence and overnigh
     const timeline = (await pool.query(`SELECT count(*)::int AS n FROM email_recipients WHERE profile_id=$1 AND organization_id=$2`,
       [profileId, org])).rows[0].n;
     assert.equal(timeline, 4);
+    const resourceId = 'resource-for-target-only';
+    const umailChannelId = randomUUID();
+    const attachmentId = randomUUID();
+    await pool.query(`INSERT INTO umail_resources(organization_id,external_resource_id,resource_status,verification_detail,
+      checked_at,configured_by) VALUES($1,$2,'available','controlled',clock_timestamp(),$3)`, [org, resourceId, platformId]);
+    await pool.query(`INSERT INTO team_sending_channels(id,organization_id,kind,reply_to,verification_state,
+      verification_detail,verified_at,updated_by,umail_domain,umail_sender_address,umail_domain_status,
+      umail_account_status,umail_dns_records) VALUES($1,$2,'UMAIL','umail-reply@example.net','available',
+      'controlled',clock_timestamp(),$3,'send.example.com','sender@send.example.com','verified','available','[]')`,
+    [umailChannelId, org, actor]);
+    await pool.query(`INSERT INTO public_template_attachments(id,sha256,file_name,mime_type,byte_size,content,scanned_at,created_by)
+      VALUES($1,'test-hash','approved.pdf','application/pdf',3,$2,clock_timestamp(),$3)`,
+    [attachmentId, Buffer.from('PDF'), platformId]);
+    const umailPreviewId = randomUUID();
+    await pool.query(`INSERT INTO email_previews(id,draft_id,organization_id,actor_id,profile_id,template_id,
+      template_version,subject,content,attachment_ids,recipient_snapshot,preview_snapshot,confirmed_at)
+      SELECT $1,draft_id,organization_id,actor_id,profile_id,template_id,template_version,
+        'edited subject','edited content',ARRAY[$2]::uuid[],recipient_snapshot,$3,clock_timestamp()
+      FROM email_previews WHERE id=$4`, [umailPreviewId, attachmentId, JSON.stringify([recipients[0]]), previewId]);
+    const calls: UMailMessage[] = [];
+    const umailSender: UMailSender = { async send(message) {
+      calls.push(message);
+      return { state: 'accepted', detail: 'controlled accepted', organizationId: message.organizationId,
+        resourceId: message.resourceId, recipientId: message.recipientId };
+    } };
+    const shared = new EmailSendService(pool, key, sender, umailSender);
+    await shared.configureLimit(platform, { organizationId: org, dailyLimit: 3 });
+    const umailBatch = await shared.confirm(identity, { ...body, previewId: umailPreviewId, channelId: umailChannelId });
+    assert.equal((await shared.quota(identity)).remaining, 0);
+    const overLimitPreviewId = randomUUID();
+    await pool.query(`INSERT INTO email_previews(id,draft_id,organization_id,actor_id,profile_id,template_id,
+      template_version,subject,content,attachment_ids,recipient_snapshot,preview_snapshot,confirmed_at)
+      SELECT $1,draft_id,organization_id,actor_id,profile_id,template_id,template_version,subject,content,
+        attachment_ids,recipient_snapshot,$2,clock_timestamp() FROM email_previews WHERE id=$3`,
+    [overLimitPreviewId, JSON.stringify([recipients[0]]), previewId]);
+    await assert.rejects(shared.confirm(identity, { ...body, previewId: overLimitPreviewId, channelId }));
+    const umailResult = await shared.execute(identity, { batchId: umailBatch.batchId });
+    assert.equal(umailResult.batch.channel, 'UMAIL');
+    assert.equal(umailResult.recipients[0].status, 'accepted');
+    assert.equal(calls.length, 1);
+    assert.deepEqual({ organizationId: calls[0].organizationId, resourceId: calls[0].resourceId,
+      to: calls[0].to, subject: calls[0].subject, content: calls[0].content,
+      reply: calls[0].relpy_to, attachmentId: calls[0].attachments[0].id },
+    { organizationId: org, resourceId, to: 'dup@example.com', subject: 'Chosen source',
+      content: 'selected mailsou-1', reply: 'umail-reply@example.net', attachmentId });
+    assert.equal('tpl_id' in calls[0], false);
+    assert.equal(calls[0].attachments[0].bytes.toString(), 'PDF');
+    await shared.execute(identity, { batchId: umailBatch.batchId });
+    assert.equal(calls.length, 1);
+    assert.deepEqual([(await shared.quota(identity)).reserved, (await shared.quota(identity)).used], [1, 2]);
+    const otherIdentity = { ...identity, id: otherActor, email: 'other@example.com' };
+    const otherDraftId = randomUUID();
+    await pool.query(`INSERT INTO email_drafts(id,organization_id,actor_id,profile_id,template_id,template_version,
+      subject,content,selections) SELECT $1,organization_id,$2,profile_id,template_id,template_version,
+      subject,content,selections FROM email_drafts WHERE id=$3`, [otherDraftId, otherActor, draftId]);
+    const memberPreviews = [randomUUID(), randomUUID()];
+    for (const id of memberPreviews) {
+      await pool.query(`INSERT INTO email_previews(id,draft_id,organization_id,actor_id,profile_id,template_id,
+        template_version,subject,content,attachment_ids,recipient_snapshot,preview_snapshot,confirmed_at)
+        SELECT $1,$2,organization_id,$3,profile_id,template_id,template_version,subject,content,
+          ARRAY[$4]::uuid[],recipient_snapshot,$5,clock_timestamp() FROM email_previews WHERE id=$6`,
+      [id, otherDraftId, otherActor, attachmentId, JSON.stringify([recipients[0]]), previewId]);
+    }
+    await shared.configureLimit(platform, { organizationId: org, dailyLimit: 4 });
+    const competition = await Promise.allSettled([
+      shared.confirm(otherIdentity, { ...body, previewId: memberPreviews[0], channelId }),
+      shared.confirm(otherIdentity, { ...body, previewId: memberPreviews[1], channelId: umailChannelId })
+    ]);
+    assert.equal(competition.filter(item => item.status === 'fulfilled').length, 1);
+    assert.equal(competition.filter(item => item.status === 'rejected').length, 1);
+    assert.equal((await shared.quota(identity)).remaining, 0);
+    assert.equal((await pool.query('SELECT count(*)::int AS n FROM company_contact_point_ledger')).rows[0].n, 0);
+    const foreignOrg = randomUUID();
+    const foreignChannel = randomUUID();
+    await pool.query("INSERT INTO organizations(id,name,kind,parent_id,phone_encrypted,phone_key,phone_masked) VALUES($1,'Other team','terminal',$2,'enc','other-key','***')",
+      [foreignOrg, platformOrg]);
+    await pool.query(`INSERT INTO umail_resources(organization_id,external_resource_id,resource_status,verification_detail,
+      checked_at,configured_by) VALUES($1,'foreign-resource','available','controlled',clock_timestamp(),$2)`,
+    [foreignOrg, platformId]);
+    await pool.query(`INSERT INTO team_sending_channels(id,organization_id,kind,reply_to,verification_state,
+      verification_detail,verified_at,updated_by,umail_domain,umail_sender_address,umail_domain_status,
+      umail_account_status,umail_dns_records) VALUES($1,$2,'UMAIL','foreign-reply@example.net','available',
+      'controlled',clock_timestamp(),$3,'foreign.example.com','sender@foreign.example.com','verified','available','[]')`,
+    [foreignChannel, foreignOrg, platformId]);
+    await assert.rejects(shared.confirm(identity, { ...body, previewId: overLimitPreviewId, channelId: foreignChannel }));
+    await shared.configureLimit(platform, { organizationId: org, dailyLimit: 6 });
+    const outcomePreviews = [randomUUID(), randomUUID()];
+    for (const id of outcomePreviews) {
+      await pool.query(`INSERT INTO email_previews(id,draft_id,organization_id,actor_id,profile_id,template_id,
+        template_version,subject,content,attachment_ids,recipient_snapshot,preview_snapshot,confirmed_at)
+        SELECT $1,draft_id,organization_id,actor_id,profile_id,template_id,template_version,subject,content,
+          attachment_ids,recipient_snapshot,$2,clock_timestamp() FROM email_previews WHERE id=$3`,
+      [id, JSON.stringify([recipients[0]]), previewId]);
+    }
+    let resultCount = 0;
+    const outcomes = new EmailSendService(pool, key, sender, { async send(message) {
+      resultCount++;
+      return { state: resultCount === 1 ? 'not_submitted' : 'accepted', detail: 'controlled',
+        organizationId: message.organizationId, resourceId: resultCount === 1 ? message.resourceId : 'foreign-resource',
+        recipientId: message.recipientId };
+    } });
+    const firstOutcome = await outcomes.confirm(identity, { ...body, previewId: outcomePreviews[0], channelId: umailChannelId });
+    const secondOutcome = await outcomes.confirm(identity, { ...body, previewId: outcomePreviews[1], channelId: umailChannelId });
+    assert.equal((await outcomes.execute(identity, { batchId: firstOutcome.batchId })).recipients[0].status, 'not_submitted');
+    assert.equal((await outcomes.execute(identity, { batchId: secondOutcome.batchId })).recipients[0].status, 'uncertain');
+    assert.equal((await outcomes.quota(identity)).reserved, 3);
+    assert.equal((await outcomes.quota(identity)).used, 2);
+    assert.equal(resultCount, 2);
   } finally {
     await pool.end();
   }

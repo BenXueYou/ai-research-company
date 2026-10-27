@@ -87,8 +87,17 @@
         {{ confirmedPreviewId === preview.previewId ? '本次快照已确认' : '确认本次内容与收件人（不发送）' }}
       </el-button>
       <div v-if="confirmedPreviewId === preview.previewId" class="email-send-confirmation">
-        <el-select v-model="channelId" placeholder="选择本批国内 SMTP 渠道">
-          <el-option v-if="smtpChannel" :label="`国内 SMTP · ${smtpChannel.replyTo}`" :value="smtpChannel.id" />
+        <el-select v-model="channelId" placeholder="选择本批发送渠道">
+          <el-option
+            v-if="smtpChannel?.verificationState === 'available'"
+            :label="`国内 SMTP · ${smtpChannel.replyTo}`"
+            :value="smtpChannel.id"
+          />
+          <el-option
+            v-if="umailChannel?.verificationState === 'available' && umailResource?.resourceStatus === 'available'"
+            :label="`U-Mail 域名 · ${umailChannel.replyAddress}`"
+            :value="umailChannel.id"
+          />
         </el-select>
         <p>本批 {{ preview.recipients.length }} 个去重邮箱；今日额度 {{ quota?.dailyLimit ?? '加载中' }}，已用 {{ quota?.used ?? 0 }}，预占 {{ quota?.reserved ?? 0 }}。</p>
         <el-checkbox v-model="confirmUnsubscribeNotice">已核对本批退订提示</el-checkbox>
@@ -141,6 +150,8 @@ interface Preview {
 }
 interface Quota { dailyLimit: number; used: number; reserved: number }
 interface SmtpChannel { id: string; replyTo: string; verificationState: string }
+interface UMailChannel { id: string; replyAddress: string; verificationState: string; defaultChannel: boolean }
+interface UMailResource { resourceStatus: string }
 const props = defineProps<{
   profile: { id: string; name: string };
   contacts: Contact[];
@@ -157,6 +168,8 @@ const confirmedPreviewId = ref('');
 const batchId = ref('');
 const channelId = ref('');
 const smtpChannel = ref<SmtpChannel | null>(null);
+const umailChannel = ref<UMailChannel | null>(null);
+const umailResource = ref<UMailResource | null>(null);
 const quota = ref<Quota | null>(null);
 const confirmUnsubscribeNotice = ref(false);
 const confirmQuota = ref(false);
@@ -270,12 +283,19 @@ function confirmPreview() {
   void run(async () => {
     await props.request('email-previews/confirm', { previewId });
     confirmedPreviewId.value = previewId;
-    const [channelResult, quotaResult] = await Promise.all([
+    const [channelResult, umailResult, quotaResult] = await Promise.all([
       props.request('sending-channels/smtp'),
+      props.request('sending-channels/umail'),
       props.request('email-quota')
     ]);
     smtpChannel.value = (channelResult as { channel: SmtpChannel | null }).channel;
-    channelId.value = smtpChannel.value?.verificationState === 'available' ? smtpChannel.value.id : '';
+    const umail = umailResult as { channel: UMailChannel | null; resource: UMailResource | null };
+    umailChannel.value = umail.channel;
+    umailResource.value = umail.resource;
+    channelId.value = umailChannel.value?.defaultChannel &&
+      umailChannel.value.verificationState === 'available' && umailResource.value?.resourceStatus === 'available'
+      ? umailChannel.value.id
+      : smtpChannel.value?.verificationState === 'available' ? smtpChannel.value.id : '';
     quota.value = quotaResult as Quota;
     status.value = '本次内容与收件人已确认；尚未发送或占用日额度';
   });

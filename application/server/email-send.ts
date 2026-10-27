@@ -26,6 +26,33 @@ export class DeferredDomesticSmtpSender implements DomesticSmtpSender {
     return { state: 'not_submitted', detail: '正式 SMTP 发送适配器尚未配置' };
   }
 }
+export interface UMailMessage {
+  organizationId: string;
+  resourceId: string;
+  recipientId: string;
+  senderAddress: string;
+  relpy_to: string;
+  to: string;
+  subject: string;
+  content: string;
+  attachments: Array<{ id: string; fileName: string; mimeType: string; bytes: Buffer }>;
+}
+export interface UMailSendResult extends SmtpSendResult {
+  organizationId: string;
+  resourceId: string;
+  recipientId: string;
+}
+export interface UMailSender {
+  send(message: UMailMessage): Promise<UMailSendResult>;
+}
+export class DeferredUMailSender implements UMailSender {
+  async send(message: UMailMessage): Promise<UMailSendResult> {
+    return {
+      state: 'not_submitted', detail: '正式 U-Mail 任务适配器尚未配置',
+      organizationId: message.organizationId, resourceId: message.resourceId, recipientId: message.recipientId
+    };
+  }
+}
 function inputObject(value: unknown, keys: string[]) {
   if (!value || typeof value !== 'object' || Array.isArray(value) ||
     Object.keys(value).sort().join(',') !== keys.sort().join(',')) throw new BadRequestException('发送参数字段无效');
@@ -38,7 +65,8 @@ function identifier(value: unknown) {
 function daySql() { return "(clock_timestamp() AT TIME ZONE 'Asia/Shanghai')::date"; }
 export class EmailSendService {
   constructor(private readonly pool: pg.Pool, private readonly key: Buffer,
-    private readonly sender: DomesticSmtpSender = new DeferredDomesticSmtpSender()) {}
+    private readonly sender: DomesticSmtpSender = new DeferredDomesticSmtpSender(),
+    private readonly umailSender: UMailSender = new DeferredUMailSender()) {}
   private async terminal(identity: Identity) {
     if (!['admin', 'sales'].includes(identity.role)) throw new ForbiddenException('仅终端企业成员可发送');
     const org = (await this.pool.query('SELECT kind,active FROM organizations WHERE id=$1', [identity.organization_id])).rows[0];
@@ -86,10 +114,10 @@ export class EmailSendService {
       if (prior) return { batchId: prior.id, queued: false };
       if (!preview.confirmed_at || new Date(preview.updated_at).getTime() > new Date(preview.created_at).getTime())
         throw new ConflictException('预览尚未确认或草稿已修改');
-      const channel = (await db.query(`SELECT id,reply_to,verification_state FROM team_sending_channels
-        WHERE id=$1 AND organization_id=$2 AND kind='SMTP'`, [channelId, identity.organization_id])).rows[0];
-      if (!channel) throw new NotFoundException('本企业国内 SMTP 渠道不存在');
-      if (channel.verification_state !== 'available') throw new ConflictException('国内 SMTP 渠道尚未验证可用');
+      const channel = (await db.query(`SELECT id,kind,reply_to,umail_sender_address,verification_state FROM team_sending_channels
+        WHERE id=$1 AND organization_id=$2 AND kind IN ('SMTP','UMAIL')`, [channelId, identity.organization_id])).rows[0];
+      if (!channel) throw new NotFoundException('本企业发送渠道不存在');
+      if (channel.verification_state !== 'available') throw new ConflictException('本批发送渠道尚未验证可用');
       const recipients = preview.preview_snapshot as RecipientSnapshot[];
       if (!Array.isArray(recipients) || recipients.length < 1 ||
         new Set(recipients.map(item => item.emailKey)).size !== recipients.length ||
@@ -107,6 +135,9 @@ export class EmailSendService {
       [preview.attachment_ids])).rows[0];
       if (attachments.count !== preview.attachment_ids.length) throw new ConflictException('预设附件已到期');
       await db.query('SELECT id FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id]);
+      const resource = channel.kind === 'UMAIL' ? (await db.query(`SELECT external_resource_id FROM umail_resources
+        WHERE organization_id=$1 AND resource_status='available' FOR UPDATE`, [identity.organization_id])).rows[0] : null;
+      if (channel.kind === 'UMAIL' && !resource) throw new ConflictException('本企业 U-Mail 资源尚未验证可用');
       const day = (await db.query(`SELECT ${daySql()} AS day`)).rows[0].day;
       await db.query(`INSERT INTO email_daily_usage(organization_id,usage_day) VALUES($1,$2)
         ON CONFLICT DO NOTHING`, [identity.organization_id, day]);
@@ -118,9 +149,11 @@ export class EmailSendService {
         throw new ConflictException('企业今日邮件额度不足');
       const batchId = randomUUID();
       await db.query(`INSERT INTO email_batches(id,preview_id,organization_id,actor_id,profile_id,channel_id,channel_kind,
-        reply_to,usage_day,attachment_ids) VALUES($1,$2,$3,$4,$5,$6,'SMTP',$7,$8,$9)`,
+        reply_to,usage_day,attachment_ids,umail_resource_id,umail_sender_address)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
       [batchId, previewId, identity.organization_id, identity.id, preview.profile_id, channelId,
-        channel.reply_to, day, preview.attachment_ids]);
+        channel.kind, channel.reply_to, day, preview.attachment_ids, resource?.external_resource_id ?? null,
+        channel.kind === 'UMAIL' ? channel.umail_sender_address : null]);
       for (const item of recipients) {
         const recipientId = randomUUID();
         await db.query(`INSERT INTO email_recipients(id,batch_id,organization_id,profile_id,email,email_key,contact_id,
@@ -151,7 +184,8 @@ export class EmailSendService {
     const queued = (await this.pool.query("SELECT id FROM email_recipients WHERE batch_id=$1 AND status='queued' ORDER BY id", [batchId])).rows;
     for (const entry of queued) {
       const claimed = await transaction(this.pool, async db => {
-        const row = (await db.query(`SELECT r.*,b.usage_day,b.attachment_ids,b.reply_to,b.channel_id FROM email_recipients r
+        const row = (await db.query(`SELECT r.*,b.usage_day,b.attachment_ids,b.reply_to,b.channel_id,
+          b.channel_kind,b.umail_resource_id,b.umail_sender_address AS batch_sender_address FROM email_recipients r
           JOIN email_batches b ON b.id=r.batch_id WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
         [entry.id, identity.organization_id])).rows[0];
         if (!row || row.status !== 'queued') return null;
@@ -164,30 +198,57 @@ export class EmailSendService {
           return null;
         }
         const channel = (await db.query(`SELECT smtp_host,smtp_port,smtp_security,smtp_username,credential_encrypted,reply_to,
-          verification_state FROM team_sending_channels WHERE id=$1 AND organization_id=$2 AND kind='SMTP'`,
-        [row.channel_id, identity.organization_id])).rows[0];
-        if (!channel || channel.verification_state !== 'available' || channel.reply_to !== row.reply_to)
+          umail_sender_address,verification_state FROM team_sending_channels
+          WHERE id=$1 AND organization_id=$2 AND kind=$3`,
+        [row.channel_id, identity.organization_id, row.channel_kind])).rows[0];
+        if (!channel || channel.verification_state !== 'available' || channel.reply_to !== row.reply_to ||
+          (row.channel_kind === 'UMAIL' && channel.umail_sender_address !== row.batch_sender_address))
           throw new ConflictException('渠道设置已变化，未执行收件人保留待处理');
-        const attachments = (await db.query(`SELECT file_name AS "fileName",mime_type AS "mimeType",content AS bytes
+        if (row.channel_kind === 'UMAIL') {
+          const resource = (await db.query(`SELECT external_resource_id FROM umail_resources
+            WHERE organization_id=$1 AND resource_status='available'`, [identity.organization_id])).rows[0];
+          if (!resource || resource.external_resource_id !== row.umail_resource_id)
+            throw new ConflictException('U-Mail 企业资源已变化，未执行收件人保留待处理');
+        }
+        const attachments = (await db.query(`SELECT id,file_name AS "fileName",mime_type AS "mimeType",content AS bytes
           FROM public_template_attachments WHERE id=ANY($1::uuid[]) AND cleaned_at IS NULL
           AND expires_at>clock_timestamp() AND content IS NOT NULL`, [row.attachment_ids])).rows;
         if (attachments.length !== row.attachment_ids.length) throw new ConflictException('预设附件已不可用，未执行收件人保留待处理');
+        const attachmentsById = new Map(attachments.map(attachment => [attachment.id, attachment]));
+        const orderedAttachments = (row.attachment_ids as string[]).map(id => attachmentsById.get(id));
+        if (orderedAttachments.some(item => !item)) throw new ConflictException('预设附件映射无效');
         await db.query("UPDATE email_recipients SET status='submitting',submitted_at=clock_timestamp() WHERE id=$1", [row.id]);
         return {
           id: row.id,
           usageDay: row.usage_day,
-          settings: {
+          channelKind: row.channel_kind as 'SMTP' | 'UMAIL',
+          settings: row.channel_kind === 'SMTP' ? {
             host: channel.smtp_host, port: channel.smtp_port, security: channel.smtp_security,
             username: channel.smtp_username, credential: this.credential(identity.organization_id, channel.credential_encrypted),
             replyTo: row.reply_to
-          } as DomesticSmtpSettings,
-          message: { recipientId: row.id, to: row.email, subject: row.subject, content: row.content, attachments } as SmtpMessage
+          } as DomesticSmtpSettings : null,
+          message: { recipientId: row.id, to: row.email, subject: row.subject, content: row.content, attachments: orderedAttachments } as SmtpMessage,
+          umailMessage: row.channel_kind === 'UMAIL' ? {
+            organizationId: identity.organization_id, resourceId: row.umail_resource_id, recipientId: row.id,
+            senderAddress: channel.umail_sender_address, relpy_to: row.reply_to,
+            to: row.email, subject: row.subject, content: row.content, attachments: orderedAttachments
+          } as UMailMessage : null
         };
       });
       if (!claimed) continue;
       let result: SmtpSendResult;
       try {
-        result = await this.sender.send(claimed.settings, claimed.message);
+        if (claimed.channelKind === 'UMAIL' && claimed.umailMessage) {
+          const response = await this.umailSender.send(claimed.umailMessage);
+          result = response.organizationId === claimed.umailMessage.organizationId &&
+            response.resourceId === claimed.umailMessage.resourceId &&
+            response.recipientId === claimed.umailMessage.recipientId ? response :
+            { state: 'uncertain', detail: 'U-Mail 返回归属不一致，保留原日额度等待核对' };
+        } else if (claimed.settings) {
+          result = await this.sender.send(claimed.settings, claimed.message);
+        } else {
+          result = { state: 'uncertain', detail: '发送渠道无效，保留原日额度等待核对' };
+        }
         if (!['accepted', 'not_submitted', 'uncertain'].includes(result.state) || typeof result.detail !== 'string')
           result = { state: 'uncertain', detail: '适配器返回无效结果' };
       } catch {

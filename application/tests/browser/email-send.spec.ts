@@ -1,14 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
+import { resolve } from 'node:path';
 import { createApplication } from '../../server/app.js';
 import { EmailPreviewService } from '../../server/email-preview.js';
 import { SmtpChannelService } from '../../server/smtp-channel.js';
 import { hashPassword } from '../../server/policy.js';
 import { testDatabase } from '../helpers.js';
 
-test('T22 从档案预览到渠道额度确认、入队与发送记录', async ({ page }) => {
+test('T23 从档案预览明确选择 U-Mail 域名渠道并共享额度', async ({ page }) => {
   const { pool } = await testDatabase();
-  const origin = 'http://127.0.0.1:3122';
+  const origin = 'http://127.0.0.1:3133';
   const platformOrg = randomUUID();
   const platformActor = randomUUID();
   const org = randomUUID();
@@ -21,8 +22,9 @@ test('T22 从档案预览到渠道额度确认、入队与发送记录', async (
   const contact = randomUUID();
   const templateName = `Browser Intro ${randomUUID()}`;
   const password = 'browser-preview-password-2026';
-  const app = await createApplication(pool, origin);
-  await app.listen(3122, '127.0.0.1');
+  const app = await createApplication(pool, origin, false, undefined, undefined, undefined,
+    undefined, undefined, undefined, undefined, undefined, undefined, resolve('.scratch/t23-web'));
+  await app.listen(3133, '127.0.0.1');
   try {
     await pool.query("INSERT INTO organizations(id,name,kind) VALUES($1,'Platform','platform')", [platformOrg]);
     await pool.query("INSERT INTO accounts(id,organization_id,username,password_hash,role,must_change) VALUES($1,$2,'super_admin',$3,'platform',false)",
@@ -40,6 +42,15 @@ test('T22 从档案预览到渠道额度确认、入队与发送记录', async (
       host: 'smtp.example.com', port: 465, security: 'tls', username: 'sender@example.com',
       credential: 'controlled-secret', replyTo: 'reply@example.net', defaultChannel: true, requestId: randomUUID()
     });
+    const umailChannelId = randomUUID();
+    await pool.query(`INSERT INTO umail_resources(organization_id,external_resource_id,resource_status,
+      verification_detail,checked_at,configured_by) VALUES($1,'browser-resource','available','controlled',clock_timestamp(),$2)`,
+    [org, platformActor]);
+    await pool.query(`INSERT INTO team_sending_channels(id,organization_id,kind,reply_to,verification_state,
+      verification_detail,verified_at,updated_by,umail_domain,umail_sender_address,umail_domain_status,
+      umail_account_status,umail_dns_records) VALUES($1,$2,'UMAIL','umail-reply@example.net','available',
+      'controlled',clock_timestamp(),$3,'send.example.com','sender@send.example.com','verified','available','[]')`,
+    [umailChannelId, org, actor]);
     const service = new EmailPreviewService(pool);
     await service.provision({ id: platformActor, organization_id: platformOrg, email: null, username: 'super_admin',
       role: 'platform', must_change: false, csrf_hash: '' },
@@ -83,15 +94,20 @@ test('T22 从档案预览到渠道额度确认、入队与发送记录', async (
     await page.getByRole('button', { name: '确认本次内容与收件人（不发送）' }).click();
     await expect(page.getByText('本次内容与收件人已确认；尚未发送或占用日额度')).toBeVisible();
     await expect(page.getByText('本批 1 个去重邮箱；今日额度 2000')).toBeVisible();
+    await page.locator('.email-send-confirmation .el-select').click();
+    await page.getByText('U-Mail 域名 · umail-reply@example.net').last().click();
     await page.getByText('已核对本批退订提示').click();
     await page.getByText('确认使用本企业今日额度').click();
     await page.getByRole('button', { name: '确认并执行本次单轮发送' }).click();
     await expect(page.getByText('本次已执行，1 个收件人结果已记录；受理不代表送达')).toBeVisible();
     await page.getByRole('button', { name: '刷新记录' }).click();
-    await expect(page.getByText('SMTP · 1 封')).toBeVisible();
+    await expect(page.getByText('UMAIL · 1 封')).toBeVisible();
     const sent = (await pool.query('SELECT email,mailsou_id,contact_id,status FROM email_recipients')).rows[0];
     expect(sent).toMatchObject({ email: 'personal@browser.example', mailsou_id: 'mailsou-browser',
       contact_id: contact, status: 'not_submitted' });
+    const batch = (await pool.query('SELECT channel_id,channel_kind,umail_resource_id,reply_to FROM email_batches')).rows[0];
+    expect(batch).toMatchObject({ channel_id: umailChannelId, channel_kind: 'UMAIL',
+      umail_resource_id: 'browser-resource', reply_to: 'umail-reply@example.net' });
     const usage = (await pool.query('SELECT reserved,used FROM email_daily_usage WHERE organization_id=$1', [org])).rows[0];
     expect(usage).toMatchObject({ reserved: 0, used: 0 });
     const saved = (await pool.query('SELECT recipient_snapshot,preview_snapshot FROM email_previews')).rows[0];

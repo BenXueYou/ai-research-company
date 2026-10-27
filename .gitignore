@@ -7,6 +7,8 @@ tests/
 !application/tests/
 application/tests/*
 !application/tests/email-send.test.ts
+!application/tests/company-attachments.test.ts
 !application/tests/browser/
 application/tests/browser/*
 !application/tests/browser/email-send.spec.ts
+!application/tests/browser/company-attachments.spec.ts

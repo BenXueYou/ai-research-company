@@ -28,12 +28,13 @@ import { CompanySearchService } from './company-search.js';
 import { ProductSearchService, type ImporterNameClient } from './product-search.js';
 import { CompanyDetailService, type CompanyDetailClient } from './company-detail.js';
 import { CompanyTimelineService } from './company-timeline.js';
+import { CompanyAttachmentService } from './company-attachments.js';
 import { DetailReconciliationService } from './detail-reconciliation.js';
 import { ContactReconciliationService } from './contact-reconciliation.js';
 import { ProductReconciliationService } from './product-reconciliation.js';
 import { CompanyContactService, type CompanyContactClient } from './company-contacts.js';
 import { EmailPreviewService } from './email-preview.js';
-import { EmailSendService, type DomesticSmtpSender } from './email-send.js';
+import { EmailSendService, type DomesticSmtpSender, type UMailSender } from './email-send.js';
 import type { TengdaoCompanyClient } from './tengdao.js';
 import { UpstreamMonitorService, type UpstreamAccountClient } from './upstream-monitor.js';
 import {
@@ -95,7 +96,9 @@ export async function createApplication(
     contacts: async () => { throw new ServiceUnavailableException('腾道联系人尚未配置'); }
   },
   importerAdapter?: ImporterNameClient,
-  smtpSender?: DomesticSmtpSender
+  smtpSender?: DomesticSmtpSender,
+  umailSender?: UMailSender,
+  webRoot = resolve('dist/web')
 ) {
   const parsed = new URL(origin);
   if (parsed.origin !== origin || (production && parsed.protocol !== 'https:'))
@@ -113,6 +116,7 @@ export async function createApplication(
   const productSearch = new ProductSearchService(pool, importerAdapter, companySearch, production);
   const companyDetail = new CompanyDetailService(pool, detailAdapter, production);
   const companyTimeline = new CompanyTimelineService(pool, key);
+  const companyAttachments = new CompanyAttachmentService(pool);
   const detailReconciliation = new DetailReconciliationService(pool);
   const contactReconciliation = new ContactReconciliationService(pool);
   const productReconciliation = new ProductReconciliationService(pool);
@@ -122,7 +126,7 @@ export async function createApplication(
   const smtpKey = smtpCredentialKey();
   await bindSmtpCredentialKey(pool, smtpKey);
   const smtpChannels = new SmtpChannelService(pool, smtpKey, smtpAdapter);
-  const emailSend = new EmailSendService(pool, smtpKey, smtpSender);
+  const emailSend = new EmailSendService(pool, smtpKey, smtpSender, umailSender);
   const umail = new UMailService(pool, umailAdapter);
   const cookieOptions = { secure: production, sameSite: 'strict' as const, path: '/', maxAge: 8 * 60 * 60 * 1000 };
   @Controller('api')
@@ -319,6 +323,31 @@ export async function createApplication(
     deleteCompanyTimeline(@Req() request: AuthRequest) {
       return companyTimeline.remove(request.identity, request.body ?? {});
     }
+    @Post('company-attachments/list')
+    @HttpCode(200)
+    listCompanyAttachments(@Req() request: AuthRequest) {
+      return companyAttachments.list(request.identity, request.body ?? {});
+    }
+    @Post('company-attachments/upload')
+    @HttpCode(200)
+    uploadCompanyAttachment(@Req() request: AuthRequest) {
+      return companyAttachments.upload(request.identity, request.body ?? {});
+    }
+    @Post('company-attachments/download')
+    @HttpCode(200)
+    downloadCompanyAttachment(@Req() request: AuthRequest) {
+      return companyAttachments.download(request.identity, request.body ?? {});
+    }
+    @Post('company-attachments/delete')
+    @HttpCode(200)
+    deleteCompanyAttachment(@Req() request: AuthRequest) {
+      return companyAttachments.remove(request.identity, request.body ?? {});
+    }
+    @Post('company-attachments/clean-expired')
+    @HttpCode(200)
+    cleanExpiredCompanyAttachment(@Req() request: AuthRequest) {
+      return companyAttachments.cleanExpired(request.identity, request.body ?? {});
+    }
     @Post('company-contacts/quote')
     @HttpCode(200)
     quoteCompanyContacts(@Req() request: AuthRequest) {
@@ -468,9 +497,10 @@ export async function createApplication(
     if (request.path.startsWith('/api')) response.setHeader('Cache-Control', 'no-store');
     next();
   });
+  app.use('/api/company-attachments/upload', express.json({ limit: '28mb', strict: true }));
   app.use(express.json({ limit: '8kb', strict: true }));
   app.useGlobalGuards(new IdentityGuard(service, origin));
-  app.use(express.static(resolve('dist/web'), { index: 'index.html' }));
+  app.use(express.static(webRoot, { index: 'index.html' }));
   // No SPA fallback for /api: unknown endpoints never become publicly accessible business routes.
   app.enableShutdownHooks();
   return app;

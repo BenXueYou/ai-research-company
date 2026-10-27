@@ -29,7 +29,9 @@ export async function migrateEmailSend(client: PoolClient) {
       actor_id uuid NOT NULL REFERENCES accounts(id),
       profile_id uuid NOT NULL REFERENCES company_profiles(id),
       channel_id uuid NOT NULL REFERENCES team_sending_channels(id),
-      channel_kind text NOT NULL CHECK(channel_kind='SMTP'),
+      channel_kind text NOT NULL CHECK(channel_kind IN ('SMTP','UMAIL')),
+      umail_resource_id text,
+      umail_sender_address text,
       reply_to text NOT NULL,
       usage_day date NOT NULL,
       attachment_ids uuid[] NOT NULL,
@@ -59,6 +61,17 @@ export async function migrateEmailSend(client: PoolClient) {
       usage_day date NOT NULL,
       happened_at timestamptz NOT NULL DEFAULT clock_timestamp(),
       UNIQUE(recipient_id,event)
+    );
+  `);
+  await client.query(`
+    ALTER TABLE email_batches ADD COLUMN IF NOT EXISTS umail_resource_id text;
+    ALTER TABLE email_batches ADD COLUMN IF NOT EXISTS umail_sender_address text;
+    ALTER TABLE email_batches DROP CONSTRAINT IF EXISTS email_batches_channel_kind_check;
+    ALTER TABLE email_batches ADD CONSTRAINT email_batches_channel_kind_check CHECK(channel_kind IN ('SMTP','UMAIL'));
+    ALTER TABLE email_batches DROP CONSTRAINT IF EXISTS email_batches_umail_resource_check;
+    ALTER TABLE email_batches ADD CONSTRAINT email_batches_umail_resource_check CHECK (
+      (channel_kind='SMTP' AND umail_resource_id IS NULL AND umail_sender_address IS NULL) OR
+      (channel_kind='UMAIL' AND umail_resource_id IS NOT NULL AND umail_sender_address IS NOT NULL)
     );
   `);
 }
