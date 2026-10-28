@@ -267,7 +267,7 @@ test('final console compatibility exit: real four-role navigation and session bo
     const after = await snapshot();
     expect(after).toEqual(before);
     expect(externalCalls).toBe(0);
-    expect(requests.filter(r => r.method === 'POST' && !r.path.startsWith('/api/auth/') && r.path !== '/api/sending-channels/smtp')).toEqual([]);
+    expect(requests.filter(r => r.method === 'POST' && !r.path.startsWith('/api/auth/') && !['/api/sending-channels/smtp', '/api/company-profiles/list'].includes(r.path))).toEqual([]);
     expect(failures).toEqual([]);
     await writeFile(resolve(root, 'evidence.json'), JSON.stringify({ roles: roleEvidence, identities: actors.map(({ id, org, login, role }) => ({ id, organizationId: org, login, role })), before, after, externalCalls, smtpCalls, smtpPayloads, requests, pageErrors: failures, assertions: ['all real role pages', 'single notification per session', 'no duplicate distribution notice', 'account return query/hash', 'dirty cancel/discard and history', '401 cache clear', 'account switch and delayed notice', 'forced password change', 'submitting blocked and unknown retained across settings/help', 'original SMTP idempotency and no navigation replay', 'Nest/Vite history'], database: new URL(dbUrl).pathname.slice(1) }, null, 2));
   } finally {

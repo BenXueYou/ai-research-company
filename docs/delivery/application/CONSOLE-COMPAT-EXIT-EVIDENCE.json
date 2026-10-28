@@ -1,0 +1,1462 @@
+{
+  "roles": [
+    {
+      "role": "platform",
+      "routes": [
+        "/platform/overview",
+        "/platform/organizations?view=accounts",
+        "/platform/ledger",
+        "/platform/ledger/procurement",
+        "/platform/ledger/profit",
+        "/platform/ledger/flows",
+        "/platform/reconciliation",
+        "/platform/reconciliation/upstream",
+        "/platform/settings",
+        "/platform/settings/umail",
+        "/platform/settings/email-quota",
+        "/platform/organizations/business-data"
+      ],
+      "sameSessionNoticeRequests": 1
+    },
+    {
+      "role": "distributor",
+      "routes": [
+        "/distribution/organizations?view=accounts",
+        "/distribution/orders",
+        "/distribution/profit"
+      ],
+      "sameSessionNoticeRequests": 1
+    },
+    {
+      "role": "admin",
+      "routes": [
+        "/terminal/search",
+        "/terminal/profiles",
+        "/terminal/emails",
+        "/terminal/sending-settings",
+        "/terminal/members",
+        "/terminal/usage"
+      ],
+      "sameSessionNoticeRequests": 1
+    },
+    {
+      "role": "sales",
+      "routes": [
+        "/terminal/search",
+        "/terminal/profiles",
+        "/terminal/emails",
+        "/terminal/sending-settings",
+        "/terminal/members",
+        "/terminal/usage"
+      ],
+      "sameSessionNoticeRequests": 1
+    }
+  ],
+  "identities": [
+    {
+      "id": "65b6b2c0-d5d1-400f-8566-bea6c4bd85ba",
+      "organizationId": "02cb777a-1e0c-4447-aab6-78cf260c0048",
+      "login": "super_admin",
+      "role": "platform"
+    },
+    {
+      "id": "6d3e1579-696a-46cf-a775-05f5e53b32c8",
+      "organizationId": "a72ed35a-2f57-4490-8690-3ee485bb33fa",
+      "login": "distribution@compat.test",
+      "role": "distributor"
+    },
+    {
+      "id": "f6c128a2-0b57-4bba-92d6-50aaaca93e80",
+      "organizationId": "38875f4c-f6e0-4e5d-9456-a3c9c9e7e37d",
+      "login": "admin@compat.test",
+      "role": "admin"
+    },
+    {
+      "id": "2f4cfbd1-89a1-4fe6-baac-7916eb8aae4e",
+      "organizationId": "38875f4c-f6e0-4e5d-9456-a3c9c9e7e37d",
+      "login": "sales@compat.test",
+      "role": "sales"
+    }
+  ],
+  "before": {
+    "internal_point_accounts": [
+      {
+        "organization_id": "38875f4c-f6e0-4e5d-9456-a3c9c9e7e37d",
+        "balance": "123.4567",
+        "query_frozen": "2.0001",
+        "sales_reserved": "3.0002"
+      }
+    ],
+    "platform_inventory": [
+      {
+        "singleton": true,
+        "balance": "0.0000",
+        "frozen": "0.0000",
+        "reserved": "0.0000",
+        "average_cost": "0.0000"
+      }
+    ],
+    "distributor_inventory": [],
+    "query_point_ledger": [],
+    "point_orders": [],
+    "email_daily_usage": [],
+    "email_batches": [],
+    "email_recipients": [],
+    "company_detail_queries": [],
+    "company_contact_queries": [],
+    "product_search_pages": []
+  },
+  "after": {
+    "internal_point_accounts": [
+      {
+        "organization_id": "38875f4c-f6e0-4e5d-9456-a3c9c9e7e37d",
+        "balance": "123.4567",
+        "query_frozen": "2.0001",
+        "sales_reserved": "3.0002"
+      }
+    ],
+    "platform_inventory": [
+      {
+        "singleton": true,
+        "balance": "0.0000",
+        "frozen": "0.0000",
+        "reserved": "0.0000",
+        "average_cost": "0.0000"
+      }
+    ],
+    "distributor_inventory": [],
+    "query_point_ledger": [],
+    "point_orders": [],
+    "email_daily_usage": [],
+    "email_batches": [],
+    "email_recipients": [],
+    "company_detail_queries": [],
+    "company_contact_queries": [],
+    "product_search_pages": []
+  },
+  "externalCalls": 0,
+  "smtpCalls": 1,
+  "smtpPayloads": [
+    {
+      "host": "smtp.compat.test",
+      "port": "587",
+      "security": "starttls",
+      "username": "distinct-authentication",
+      "credential": "[REDACTED]",
+      "replyTo": "distinct-reply@compat.test",
+      "defaultChannel": false,
+      "requestId": "425502e7-9820-408c-9def-0b5aa182ad7a"
+    },
+    {
+      "host": "smtp.compat.test",
+      "port": "587",
+      "security": "starttls",
+      "username": "distinct-authentication",
+      "credential": "[REDACTED]",
+      "replyTo": "distinct-reply@compat.test",
+      "defaultChannel": false,
+      "requestId": "425502e7-9820-408c-9def-0b5aa182ad7a"
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-details/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-contacts/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/procurement",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-details/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-contacts/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/procurement",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient",
+      "method": "GET"
+    },
+    {
+      "path": "/api/umail/resources",
+      "method": "GET"
+    },
+    {
+      "path": "/api/umail/resources",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-details/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-contacts/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-details/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-contacts/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/procurement",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/procurement",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-details/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-contacts/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-details/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-contacts/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/procurement",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/procurement",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/umail/resources",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/umail/resources",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/umail/resources",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/umail/resources",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-details/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-contacts/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-details/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-contacts/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "method": "POST"
+    },
+    {
+      "path": "/api/email-batches",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/members",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "method": "POST"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "method": "POST"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/email-batches",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/email-batches",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/members",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/members",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "method": "POST"
+    },
+    {
+      "path": "/api/email-batches",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "method": "POST"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "method": "POST"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/email-batches",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/email-batches",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/organizations",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "POST"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/password",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "method": "POST"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/company-profiles",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET"
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET"
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    }
+  ],
+  "pageErrors": [],
+  "assertions": [
+    "all real role pages",
+    "single notification per session",
+    "no duplicate distribution notice",
+    "account return query/hash",
+    "dirty cancel/discard and history",
+    "401 cache clear",
+    "account switch and delayed notice",
+    "forced password change",
+    "submitting blocked and unknown retained across settings/help",
+    "original SMTP idempotency and no navigation replay",
+    "Nest/Vite history"
+  ],
+  "database": "compat_1ac4eb5f702646e18617e1e52f0852ed_test"
+}

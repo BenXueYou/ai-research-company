@@ -1,10 +1,12 @@
 # 分销跨页面集成验收（#48 / #49 / #50 / #51）
 
-日期：2026-10-28（Asia/Shanghai）。当前状态：独立组合场景通过，等待公共兼容退出会话完成后最终复验。
+日期：2026-10-28（Asia/Shanghai）。**分销跨页面组合专项已完成，公共兼容退出会话 completed 后最终复验 1/1 通过。整批仍受终端 T-INT-01 阻塞，不宣布全局放行。**
 
 ## 范围及基线
 
 HEAD `2bf193c186d40c939494d317d40eafb459d9dd0e`。本批在共享本地目录执行，原有未提交成果全部保留，未使用 worktree、reset、stash、提交、推送、远端工单更新、部署或用户服务重启。
+
+最终收尾观察到共享 HEAD 已推进至 `376a75c956d6783c599496a22109c8119b7c29da`（`feat: 完成部分页面样式的提交`），部分本批文件也已被外部 Git 操作纳入索引/提交。本会话没有执行 git add/commit，也未回退或调整该索引；实际验收版本以本轮源码 SHA-256 为准。
 
 已读工程脚手架、应用 README、控制台迁移 Spec v1.2、第一阶段 Spec 的身份/停用/点数/售价与 AT-05/22、PRD R38–43/R67、技术设计中的组织权限与库存成本，以及 #48/#49/#50/#51 最终记录和测试。#57 经 `wait_threads` 确认为 completed，已读其最终回复及 ISSUE-57-COMPLETION.md；其正式供应商边界不转写为本批通过。
 
@@ -49,9 +51,13 @@ runner 比较编译/构建前与测试结束后的 web/server/专项源码 SHA-2
 - 独立基线：`bb82b86ea708`，真实浏览器1 passed（17.1s）。
 - 增加历史成本/SQL逐列CSV后：`07b6ed66a6d7`，1 passed（19.1s），源码manifest stable=true。
 - 增加收款期间买方未到账及14表只读快照后：`ce2aaf421f26`，1 passed（18.4s），源码manifest stable=true。
+- 增加直属详情→订单入口及原详情后退后：`fb3007c9d470`，1 passed（17.8s），源码manifest stable=true。
+- **公共会话 completed 后最终重建/复验**：`241c9e990f4c`，随机库 `integration_distribution_553d47be45b40ce4_test`，HTTP端口53644；限定 TypeScript 编译、Vite构建通过，真实专项 **1 passed（17.8s，浏览器场景15.5s）**，完整runner退出0，源码manifest stable=true。
 - 中途失败均为专项自身问题：误用开户响应不存在的name、账号设置按钮名称与实际不符、停用撤销后复用旧API会话、调整夹具后未使用变量类型检查失败。均只修改本专项并新建随机库复验，未修改业务规则，也未把失败运行算作通过。
 
-最终公共代码复验及证据发布待补。Vite已有大chunk提示不阻断构建，未扩大拆包范围。
+经有界 wait_threads 确认公共会话 `01a18303-e0b4-7bf3-9344-e8d3683c58a2` 的 turn `01a18303-e2c1-76b0-b155-21a407e15364` 已 completed，读取其最终回复、[公共退出交付](CONSOLE-COMPAT-EXIT-COMPLETION.md)、稳定变更清单和源码证据后，才启动上述最终重建。App、router、formLeave、ConsoleNotices、通知所有权key、全局通知组件和分销通知适配共7个文件的最终哈希与公共 SOURCE 完全一致；本轮所有 web/server/专项源文件前后哈希稳定。
+
+最终实际标识、提交值及来源、报表、CSV、账务、供应商计数、源码哈希与验收范围已发布为 [DISTRIBUTION-INTEGRATION-EVIDENCE.json](DISTRIBUTION-INTEGRATION-EVIDENCE.json)。结构化证据秘密字段检查0；不包含密码、临时凭据、Cookie、CSRF、密钥或连接串。Vite已有大chunk提示不阻断构建，未扩大拆包范围。
 
 ## 覆盖取舍与未验证范围
 
@@ -60,3 +66,5 @@ runner 比较编译/构建前与测试结束后的 web/server/专项源码 SHA-2
 未执行正式供应商调用、真实扣费查询/邮件投递、部署、生产HTTPS及反向代理、多实例压力、其他浏览器、所有角色排列、跨刷新未知上下文恢复、全量测试。原业务不承诺未知表单跨整页刷新恢复；本专项在未知状态使用客户端路由切页，解决后才整页刷新。类型编译和构建结果仅作为工程验证，不代替上表实际业务结果。
 
 当前未发现需修改业务源文件的真实组合缺陷。最终全角色全局集成仍需同时核对公共和终端会话交付，本记录不代表其他会话自动完成。
+
+已只读核对 [终端组合交付](TERMINAL-INTEGRATION-COMPLETION.md)：终端专项保留 `1 passed / 1 failed`，T-INT-01 为产品入口新候选独立详情已成功结算、返回已有 detail.id 时，没有进入该内部档案的链接。其失败断言及最小复现由终端会话保留。本批不修改终端业务、不改变其收费或标识规则；分销专项通过不解除该整批验收阻塞。

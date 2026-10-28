@@ -1,6 +1,6 @@
 {
-  "database": "integration_terminal_1fab61d0f61745ea846b12eeb9b7f675_test",
-  "origin": "http://127.0.0.1:57706",
+  "database": "integration_terminal_f5d42861ab274e5fab3812a9f53c51d9_test",
+  "origin": "http://127.0.0.1:53611",
   "mode": "real Chromium/Nest/PostgreSQL; controlled vendors only",
   "countryMappingBlock": {
     "status": 409,
@@ -11,9 +11,9 @@
     }
   },
   "crossDay": {
-    "queuedRecipientId": "954d68b7-eca0-492a-b40f-a3ff1da65e7e",
-    "laterBatchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094",
-    "originalUncertainId": "bfcfd7ca-71a3-4535-a511-a668f72c990a",
+    "queuedRecipientId": "22363f0a-24fa-4042-a188-4941406c8e9a",
+    "laterBatchId": "420799e3-3244-4210-8268-e34e06cc6bba",
+    "originalUncertainId": "c53d363e-a51d-42f3-a383-8d75133f261b",
     "usage": [
       {
         "usage_day": "2026-10-27",
@@ -31,20 +31,20 @@
     "linkCount": 0,
     "profileCount": 1,
     "queryState": "settled",
-    "queryId": "0f2a9676-035a-47f6-8d76-387a0b2864be",
-    "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+    "queryId": "bf681f35-3600-4c98-a73c-5a870f785fe5",
+    "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
   },
-  "productPageId": "4289e68c-1568-4b18-93a9-7d43870245ce",
+  "productPageId": "40b7a893-c59b-485b-8ea6-670a6fee807e",
   "pointSnapshot": {
     "internal_point_accounts": [
       {
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
         "balance": "18.7179",
         "query_frozen": "0.5000",
         "sales_reserved": "0.0000"
       },
       {
-        "organization_id": "f278a4de-685b-4f00-8886-cfc62a7cc6ed",
+        "organization_id": "9d47ec8c-7be1-4824-b1e6-d539186726ef",
         "balance": "90.0000",
         "query_frozen": "0.0000",
         "sales_reserved": "0.0000"
@@ -62,163 +62,163 @@
     "query_point_ledger": [
       {
         "id": "1",
-        "query_id": "1713d429-2e91-4fe5-940b-deddf2faa170",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "query_id": "ba2e9ea1-4543-4a3b-a7a2-c8250cccce9b",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "dbafce44-0ded-4c60-b638-1b6d4facd15f",
         "event": "freeze",
         "amount": "1.0000",
         "balance_after": "20.0000",
         "frozen_after": "1.0000",
-        "created_at": "2026-10-28T15:15:40.620Z"
+        "created_at": "2026-10-28T15:18:07.422Z"
       },
       {
         "id": "2",
-        "query_id": "1713d429-2e91-4fe5-940b-deddf2faa170",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "query_id": "ba2e9ea1-4543-4a3b-a7a2-c8250cccce9b",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "dbafce44-0ded-4c60-b638-1b6d4facd15f",
         "event": "settle",
         "amount": "0.3000",
         "balance_after": "19.7000",
         "frozen_after": "0.0000",
-        "created_at": "2026-10-28T15:15:40.637Z"
+        "created_at": "2026-10-28T15:18:07.441Z"
       },
       {
         "id": "3",
-        "query_id": "1713d429-2e91-4fe5-940b-deddf2faa170",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "query_id": "ba2e9ea1-4543-4a3b-a7a2-c8250cccce9b",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "dbafce44-0ded-4c60-b638-1b6d4facd15f",
         "event": "release",
         "amount": "0.7000",
         "balance_after": "19.7000",
         "frozen_after": "0.0000",
-        "created_at": "2026-10-28T15:15:40.639Z"
+        "created_at": "2026-10-28T15:18:07.442Z"
       },
       {
         "id": "4",
-        "query_id": "0f2a9676-035a-47f6-8d76-387a0b2864be",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "query_id": "bf681f35-3600-4c98-a73c-5a870f785fe5",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "1ea4b72e-7376-4208-8e63-6ea9f46f1f84",
         "event": "freeze",
         "amount": "1.0000",
         "balance_after": "19.0179",
         "frozen_after": "1.5000",
-        "created_at": "2026-10-28T15:15:53.771Z"
+        "created_at": "2026-10-28T15:18:19.630Z"
       },
       {
         "id": "5",
-        "query_id": "0f2a9676-035a-47f6-8d76-387a0b2864be",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "query_id": "bf681f35-3600-4c98-a73c-5a870f785fe5",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "1ea4b72e-7376-4208-8e63-6ea9f46f1f84",
         "event": "settle",
         "amount": "0.3000",
         "balance_after": "18.7179",
         "frozen_after": "0.5000",
-        "created_at": "2026-10-28T15:15:53.788Z"
+        "created_at": "2026-10-28T15:18:19.645Z"
       },
       {
         "id": "6",
-        "query_id": "0f2a9676-035a-47f6-8d76-387a0b2864be",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "query_id": "bf681f35-3600-4c98-a73c-5a870f785fe5",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "1ea4b72e-7376-4208-8e63-6ea9f46f1f84",
         "event": "release",
         "amount": "0.7000",
         "balance_after": "18.7179",
         "frozen_after": "0.5000",
-        "created_at": "2026-10-28T15:15:53.789Z"
+        "created_at": "2026-10-28T15:18:19.646Z"
       }
     ],
     "company_contact_point_ledger": [
       {
         "id": "1",
-        "query_id": "054c9824-d9fe-47c2-864d-eac7f37b376b",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "query_id": "ad8457a4-c744-4e68-b31e-3ede6efdebe3",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "dbafce44-0ded-4c60-b638-1b6d4facd15f",
         "event": "freeze",
         "amount": "0.5000",
         "balance_after": "19.7000",
         "frozen_after": "0.5000",
-        "created_at": "2026-10-28T15:15:41.035Z"
+        "created_at": "2026-10-28T15:18:07.819Z"
       },
       {
         "id": "2",
-        "query_id": "054c9824-d9fe-47c2-864d-eac7f37b376b",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "query_id": "ad8457a4-c744-4e68-b31e-3ede6efdebe3",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "dbafce44-0ded-4c60-b638-1b6d4facd15f",
         "event": "settle",
         "amount": "0.2500",
         "balance_after": "19.4500",
         "frozen_after": "0.0000",
-        "created_at": "2026-10-28T15:15:41.062Z"
+        "created_at": "2026-10-28T15:18:07.847Z"
       },
       {
         "id": "3",
-        "query_id": "054c9824-d9fe-47c2-864d-eac7f37b376b",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "query_id": "ad8457a4-c744-4e68-b31e-3ede6efdebe3",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "dbafce44-0ded-4c60-b638-1b6d4facd15f",
         "event": "release",
         "amount": "0.2500",
         "balance_after": "19.4500",
         "frozen_after": "0.0000",
-        "created_at": "2026-10-28T15:15:41.063Z"
+        "created_at": "2026-10-28T15:18:07.848Z"
       },
       {
         "id": "4",
-        "query_id": "89aa1801-339b-4b4b-bfd3-46478fafa8b2",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "query_id": "c05de1c5-f2e9-49e2-aa91-606598ad3e25",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "1ea4b72e-7376-4208-8e63-6ea9f46f1f84",
         "event": "freeze",
         "amount": "0.5000",
         "balance_after": "19.4500",
         "frozen_after": "0.5000",
-        "created_at": "2026-10-28T15:15:49.249Z"
+        "created_at": "2026-10-28T15:18:15.667Z"
       }
     ],
     "product_search_ledger": [
       {
         "id": "1",
-        "page_id": "4289e68c-1568-4b18-93a9-7d43870245ce",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "page_id": "40b7a893-c59b-485b-8ea6-670a6fee807e",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "1ea4b72e-7376-4208-8e63-6ea9f46f1f84",
         "event": "freeze",
         "amount": "1.0000",
         "balance_after": "19.4500",
         "frozen_after": "1.5000",
-        "created_at": "2026-10-28T15:15:53.304Z"
+        "created_at": "2026-10-28T15:18:19.129Z"
       },
       {
         "id": "2",
-        "page_id": "4289e68c-1568-4b18-93a9-7d43870245ce",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "page_id": "40b7a893-c59b-485b-8ea6-670a6fee807e",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "1ea4b72e-7376-4208-8e63-6ea9f46f1f84",
         "event": "settle",
         "amount": "0.4321",
         "balance_after": "19.0179",
         "frozen_after": "0.5000",
-        "created_at": "2026-10-28T15:15:53.321Z"
+        "created_at": "2026-10-28T15:18:19.144Z"
       },
       {
         "id": "3",
-        "page_id": "4289e68c-1568-4b18-93a9-7d43870245ce",
-        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "page_id": "40b7a893-c59b-485b-8ea6-670a6fee807e",
+        "organization_id": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+        "actor_id": "1ea4b72e-7376-4208-8e63-6ea9f46f1f84",
         "event": "release",
         "amount": "0.5679",
         "balance_after": "19.0179",
         "frozen_after": "0.5000",
-        "created_at": "2026-10-28T15:15:53.322Z"
+        "created_at": "2026-10-28T15:18:19.146Z"
       }
     ]
   },
   "saved": {
-    "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21",
+    "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af",
     "detailId": "detail-data-222",
-    "queryId": "1713d429-2e91-4fe5-940b-deddf2faa170",
-    "candidateId": "756050ed-b5ca-473c-97fc-b5899c20d0a8",
+    "queryId": "ba2e9ea1-4543-4a3b-a7a2-c8250cccce9b",
+    "candidateId": "37dd3f9e-611f-4a95-88f3-58e0308e03c6",
     "listSourceId": "list-terminal-111"
   },
   "contacts": [
     {
-      "id": "26bf870a-ee88-4fab-bb38-50f447518cc9",
+      "id": "93c63e1e-faac-466a-b951-08684955a6a1",
       "mailsou_id": "mailsou-terminal-0",
       "source_payload": {
         "id": "contact-source-0",
@@ -231,7 +231,7 @@
       }
     },
     {
-      "id": "7d0742ba-8a67-4f37-86ad-7780e4e6c0e7",
+      "id": "204fbc15-0842-4994-a9e9-6a19469dc536",
       "mailsou_id": "mailsou-terminal-1",
       "source_payload": {
         "id": "contact-source-1",
@@ -244,7 +244,7 @@
       }
     },
     {
-      "id": "34ae09e9-853e-49e0-9a02-d1d94017b5f7",
+      "id": "034e7863-fe95-439f-9ea3-1a8e2c7b7deb",
       "mailsou_id": "mailsou-terminal-2",
       "source_payload": {
         "id": "contact-source-2",
@@ -257,12 +257,12 @@
       }
     }
   ],
-  "templateId": "91704c95-efb6-4892-a1f5-248d627981a0",
-  "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf",
+  "templateId": "68a22868-1a62-41d6-a8fc-9c334b59bc1b",
+  "batchId": "50f5e58a-8d3e-4bbb-8e31-47d81f050085",
   "recipients": [
     {
-      "id": "f02d2b7d-21ec-439a-ab33-bc81a67a736e",
-      "contact_id": "7d0742ba-8a67-4f37-86ad-7780e4e6c0e7",
+      "id": "5fdb48d3-1f33-4902-a88d-0ef861417c48",
+      "contact_id": "204fbc15-0842-4994-a9e9-6a19469dc536",
       "mailsou_id": "mailsou-terminal-1",
       "email": "accepted@terminal.test",
       "subject": "Hello Buyer 1",
@@ -270,8 +270,8 @@
       "initialStatus": "accepted"
     },
     {
-      "id": "9e4fe4f7-ab0d-4dcd-a118-3ecb0a42546e",
-      "contact_id": "34ae09e9-853e-49e0-9a02-d1d94017b5f7",
+      "id": "5dd0e98f-98f7-41cb-821e-42dbfc6f843d",
+      "contact_id": "034e7863-fe95-439f-9ea3-1a8e2c7b7deb",
       "mailsou_id": "mailsou-terminal-2",
       "email": "failed@terminal.test",
       "subject": "Hello Buyer 2",
@@ -279,8 +279,8 @@
       "initialStatus": "not_submitted"
     },
     {
-      "id": "bfcfd7ca-71a3-4535-a511-a668f72c990a",
-      "contact_id": "26bf870a-ee88-4fab-bb38-50f447518cc9",
+      "id": "c53d363e-a51d-42f3-a383-8d75133f261b",
+      "contact_id": "93c63e1e-faac-466a-b951-08684955a6a1",
       "mailsou_id": "mailsou-terminal-0",
       "email": "uncertain@terminal.test",
       "subject": "Hello Buyer 0",
@@ -343,9 +343,9 @@
   ],
   "sendCalls": [
     {
-      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "organizationId": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
       "resourceId": "integration-resource-333",
-      "recipientId": "9e4fe4f7-ab0d-4dcd-a118-3ecb0a42546e",
+      "recipientId": "5dd0e98f-98f7-41cb-821e-42dbfc6f843d",
       "senderAddress": "sender@mail.integration-terminal.test",
       "relpy_to": "reply@integration-terminal.test",
       "to": "failed@terminal.test",
@@ -353,19 +353,9 @@
       "content": "Terminal Buyer: Buyer 2"
     },
     {
-      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "organizationId": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
       "resourceId": "integration-resource-333",
-      "recipientId": "bfcfd7ca-71a3-4535-a511-a668f72c990a",
-      "senderAddress": "sender@mail.integration-terminal.test",
-      "relpy_to": "reply@integration-terminal.test",
-      "to": "uncertain@terminal.test",
-      "subject": "Hello Buyer 0",
-      "content": "Terminal Buyer: Buyer 0"
-    },
-    {
-      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-      "resourceId": "integration-resource-333",
-      "recipientId": "f02d2b7d-21ec-439a-ab33-bc81a67a736e",
+      "recipientId": "5fdb48d3-1f33-4902-a88d-0ef861417c48",
       "senderAddress": "sender@mail.integration-terminal.test",
       "relpy_to": "reply@integration-terminal.test",
       "to": "accepted@terminal.test",
@@ -373,9 +363,19 @@
       "content": "Terminal Buyer: Buyer 1"
     },
     {
-      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "organizationId": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
       "resourceId": "integration-resource-333",
-      "recipientId": "954d68b7-eca0-492a-b40f-a3ff1da65e7e",
+      "recipientId": "c53d363e-a51d-42f3-a383-8d75133f261b",
+      "senderAddress": "sender@mail.integration-terminal.test",
+      "relpy_to": "reply@integration-terminal.test",
+      "to": "uncertain@terminal.test",
+      "subject": "Hello Buyer 0",
+      "content": "Terminal Buyer: Buyer 0"
+    },
+    {
+      "organizationId": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+      "resourceId": "integration-resource-333",
+      "recipientId": "22363f0a-24fa-4042-a188-4941406c8e9a",
       "senderAddress": "sender@mail.integration-terminal.test",
       "relpy_to": "reply@integration-terminal.test",
       "to": "failed@terminal.test",
@@ -385,7 +385,7 @@
   ],
   "channelCalls": [
     {
-      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "organizationId": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
       "resourceId": "integration-resource-333",
       "domain": "mail.integration-terminal.test",
       "senderAddress": "sender@mail.integration-terminal.test"
@@ -393,12 +393,12 @@
   ],
   "evidenceCalls": [
     {
-      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
-      "recipientId": "bfcfd7ca-71a3-4535-a511-a668f72c990a",
+      "organizationId": "71065db6-a2cf-45c4-b1f3-bddb1a33b5c0",
+      "recipientId": "c53d363e-a51d-42f3-a383-8d75133f261b",
       "channelKind": "UMAIL",
       "resourceId": "integration-resource-333",
       "to": "uncertain@terminal.test",
-      "submittedAt": "2026-10-28T15:15:42.760Z"
+      "submittedAt": "2026-10-28T15:18:09.525Z"
     }
   ],
   "requests": [
@@ -420,19 +420,19 @@
     {
       "path": "/api/company-candidates/verify",
       "body": {
-        "candidateId": "756050ed-b5ca-473c-97fc-b5899c20d0a8"
+        "candidateId": "37dd3f9e-611f-4a95-88f3-58e0308e03c6"
       }
     },
     {
       "path": "/api/company-details/quote",
       "body": {
-        "candidateId": "756050ed-b5ca-473c-97fc-b5899c20d0a8"
+        "candidateId": "37dd3f9e-611f-4a95-88f3-58e0308e03c6"
       }
     },
     {
       "path": "/api/company-details/execute",
       "body": {
-        "queryId": "1713d429-2e91-4fe5-940b-deddf2faa170"
+        "queryId": "ba2e9ea1-4543-4a3b-a7a2-c8250cccce9b"
       }
     },
     {
@@ -444,25 +444,25 @@
     {
       "path": "/api/company-contacts/profile",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
       "path": "/api/company-timeline/list",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
       "path": "/api/company-attachments/list",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
       "path": "/api/company-contacts/quote",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21",
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af",
         "positionTags": [],
         "pageNo": 1,
         "pageSize": 20
@@ -471,13 +471,13 @@
     {
       "path": "/api/company-contacts/execute",
       "body": {
-        "queryId": "054c9824-d9fe-47c2-864d-eac7f37b376b"
+        "queryId": "ad8457a4-c744-4e68-b31e-3ede6efdebe3"
       }
     },
     {
       "path": "/api/company-contacts/profile",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
@@ -493,20 +493,20 @@
         "senderAddress": "sender@mail.integration-terminal.test",
         "replyAddress": "reply@integration-terminal.test",
         "defaultChannel": false,
-        "requestId": "d498fcd0-ac11-448d-807c-0c0de8ad3a9e"
+        "requestId": "2f631665-7ae3-4de3-a564-67544b12838d"
       }
     },
     {
       "path": "/api/email-drafts",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21",
-        "templateId": "91704c95-efb6-4892-a1f5-248d627981a0",
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af",
+        "templateId": "68a22868-1a62-41d6-a8fc-9c334b59bc1b",
         "templateVersion": 1,
         "subject": "Hello {{contactName}}",
         "content": "{{companyName}}: {{contactName}}",
         "selections": [
           {
-            "contactId": "34ae09e9-853e-49e0-9a02-d1d94017b5f7",
+            "contactId": "034e7863-fe95-439f-9ea3-1a8e2c7b7deb",
             "emailKind": "company",
             "variables": {
               "contactName": "Buyer 2"
@@ -514,7 +514,7 @@
             "confirmUnsubscribed": false
           },
           {
-            "contactId": "7d0742ba-8a67-4f37-86ad-7780e4e6c0e7",
+            "contactId": "204fbc15-0842-4994-a9e9-6a19469dc536",
             "emailKind": "company",
             "variables": {
               "contactName": "Buyer 1"
@@ -522,7 +522,7 @@
             "confirmUnsubscribed": false
           },
           {
-            "contactId": "26bf870a-ee88-4fab-bb38-50f447518cc9",
+            "contactId": "93c63e1e-faac-466a-b951-08684955a6a1",
             "emailKind": "company",
             "variables": {
               "contactName": "Buyer 0"
@@ -535,20 +535,20 @@
     {
       "path": "/api/email-drafts/preview",
       "body": {
-        "draftId": "863206bd-7692-4329-82bd-f2284e1269b0"
+        "draftId": "9ef02d0a-d1de-4535-b0b4-51e718561495"
       }
     },
     {
       "path": "/api/email-previews/confirm",
       "body": {
-        "previewId": "c11f79dd-f155-47a0-aaf1-609ddc9cea23"
+        "previewId": "ceb79742-c717-483e-87e2-747afa8f2395"
       }
     },
     {
       "path": "/api/email-batches/confirm",
       "body": {
-        "previewId": "c11f79dd-f155-47a0-aaf1-609ddc9cea23",
-        "channelId": "d9ecd313-1ecf-458c-a66b-e215c4a0082b",
+        "previewId": "ceb79742-c717-483e-87e2-747afa8f2395",
+        "channelId": "c6e88312-7796-4a7b-9701-4d051d757539",
         "confirmUnsubscribeNotice": true,
         "confirmQuota": true
       }
@@ -556,31 +556,31 @@
     {
       "path": "/api/email-batches/execute",
       "body": {
-        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+        "batchId": "50f5e58a-8d3e-4bbb-8e31-47d81f050085"
       }
     },
     {
       "path": "/api/email-batches/detail",
       "body": {
-        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+        "batchId": "50f5e58a-8d3e-4bbb-8e31-47d81f050085"
       }
     },
     {
       "path": "/api/email-batches/detail",
       "body": {
-        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+        "batchId": "50f5e58a-8d3e-4bbb-8e31-47d81f050085"
       }
     },
     {
       "path": "/api/email-batches/detail",
       "body": {
-        "batchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094"
+        "batchId": "420799e3-3244-4210-8268-e34e06cc6bba"
       }
     },
     {
       "path": "/api/email-recipients/reconfirm",
       "body": {
-        "recipientId": "954d68b7-eca0-492a-b40f-a3ff1da65e7e",
+        "recipientId": "22363f0a-24fa-4042-a188-4941406c8e9a",
         "confirmUnsubscribeNotice": true,
         "confirmQuota": true
       }
@@ -588,43 +588,43 @@
     {
       "path": "/api/email-batches/detail",
       "body": {
-        "batchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094"
+        "batchId": "420799e3-3244-4210-8268-e34e06cc6bba"
       }
     },
     {
       "path": "/api/email-batches/detail",
       "body": {
-        "batchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094"
+        "batchId": "420799e3-3244-4210-8268-e34e06cc6bba"
       }
     },
     {
       "path": "/api/email-recipients/execute",
       "body": {
-        "recipientId": "954d68b7-eca0-492a-b40f-a3ff1da65e7e"
+        "recipientId": "22363f0a-24fa-4042-a188-4941406c8e9a"
       }
     },
     {
       "path": "/api/email-batches/detail",
       "body": {
-        "batchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094"
+        "batchId": "420799e3-3244-4210-8268-e34e06cc6bba"
       }
     },
     {
       "path": "/api/email-batches/detail",
       "body": {
-        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+        "batchId": "50f5e58a-8d3e-4bbb-8e31-47d81f050085"
       }
     },
     {
       "path": "/api/email-recipients/reconcile",
       "body": {
-        "recipientId": "bfcfd7ca-71a3-4535-a511-a668f72c990a"
+        "recipientId": "c53d363e-a51d-42f3-a383-8d75133f261b"
       }
     },
     {
       "path": "/api/email-batches/detail",
       "body": {
-        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+        "batchId": "50f5e58a-8d3e-4bbb-8e31-47d81f050085"
       }
     },
     {
@@ -633,13 +633,13 @@
         "name": "Integration colleague",
         "email": "created@integration-terminal.test",
         "role": "sales",
-        "requestId": "3562efba-b477-4884-b44d-e36e8e387051"
+        "requestId": "23eecf9b-cf1b-43d0-88fa-3a9fc2dee383"
       }
     },
     {
       "path": "/api/email-batches/detail",
       "body": {
-        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+        "batchId": "50f5e58a-8d3e-4bbb-8e31-47d81f050085"
       }
     },
     {
@@ -651,19 +651,19 @@
     {
       "path": "/api/company-contacts/profile",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
       "path": "/api/company-timeline/list",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
       "path": "/api/company-attachments/list",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
@@ -681,25 +681,25 @@
     {
       "path": "/api/company-contacts/profile",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
       "path": "/api/company-timeline/list",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
       "path": "/api/company-attachments/list",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
       "path": "/api/company-contacts/refresh-quote",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21",
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af",
         "positionTags": [],
         "pageNo": 1,
         "pageSize": 20
@@ -708,13 +708,13 @@
     {
       "path": "/api/company-contacts/execute",
       "body": {
-        "queryId": "89aa1801-339b-4b4b-bfd3-46478fafa8b2"
+        "queryId": "c05de1c5-f2e9-49e2-aa91-606598ad3e25"
       }
     },
     {
       "path": "/api/company-contacts/profile",
       "body": {
-        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+        "profileId": "e2b1c65f-5c86-41a9-9168-a341b683b3af"
       }
     },
     {
@@ -743,42 +743,42 @@
     {
       "path": "/api/product-searches/execute",
       "body": {
-        "pageId": "4289e68c-1568-4b18-93a9-7d43870245ce"
+        "pageId": "40b7a893-c59b-485b-8ea6-670a6fee807e"
       }
     },
     {
       "path": "/api/product-candidates/check",
       "body": {
-        "candidateId": "bd4ddab1-3fe5-4129-acd6-cb9d86c052ad"
+        "candidateId": "fb0e8cea-327d-4681-add2-7a4e0e7312db"
       }
     },
     {
       "path": "/api/company-candidates/verify",
       "body": {
-        "candidateId": "15740f68-d1a0-4e84-98ae-0005503cfc9b"
+        "candidateId": "27000ac9-6f2a-4005-87cb-b5ab440286bd"
       }
     },
     {
       "path": "/api/company-details/quote",
       "body": {
-        "candidateId": "15740f68-d1a0-4e84-98ae-0005503cfc9b"
+        "candidateId": "27000ac9-6f2a-4005-87cb-b5ab440286bd"
       }
     },
     {
       "path": "/api/company-details/execute",
       "body": {
-        "queryId": "0f2a9676-035a-47f6-8d76-387a0b2864be"
+        "queryId": "bf681f35-3600-4c98-a73c-5a870f785fe5"
       }
     },
     {
       "path": "/api/company-details/quote",
       "body": {
-        "candidateId": "15740f68-d1a0-4e84-98ae-0005503cfc9b"
+        "candidateId": "27000ac9-6f2a-4005-87cb-b5ab440286bd"
       }
     }
   ],
   "errors": [],
-  "devOrigin": "http://127.0.0.1:56449",
+  "devOrigin": "http://127.0.0.1:49211",
   "executionCompleted": true,
   "acceptance": "blocked: settled duplicate product detail has no profile link"
 }

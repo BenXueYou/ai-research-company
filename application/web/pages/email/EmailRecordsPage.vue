@@ -19,7 +19,33 @@
       <el-button :disabled="busy || reading" @click="verifyPending">查看原批次核实结果</el-button>
     </div>
     <p v-if="reading" class="records-loading" role="status">正在读取发送记录…</p>
-    <el-empty v-else-if="!batches.length && !error" class="records-empty" description="暂无发送记录" />
+    <el-empty
+      v-else-if="!batches.length && !error"
+      class="records-empty"
+      :image-size="72"
+    >
+      <template #image>
+        <svg
+          class="empty-mail"
+          width="72"
+          height="72"
+          viewBox="0 0 72 72"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <rect class="empty-mail-tile" x="1" y="1" width="70" height="70" rx="20" />
+          <rect x="17" y="23" width="38" height="28" rx="5" />
+          <path d="m19 26 14 11a5 5 0 0 0 6 0l14-11M18 48l12-11m24 11L42 37" />
+        </svg>
+      </template>
+      <template #description>
+        <div class="empty-description">
+          <h2>暂无发送记录</h2>
+          <p>从企业档案选择联系人并发送邮件后，<br>可在这里查看发送进度和收件人结果。</p>
+        </div>
+      </template>
+      <RouterLink class="empty-action" to="/terminal/profiles">前往企业档案<span aria-hidden="true"> →</span></RouterLink>
+    </el-empty>
     <div v-if="batches.length" class="records-panel">
       <div class="panel-heading">
         <h2>发送批次</h2>
@@ -314,6 +340,19 @@ onScopeDispose(() => {
   background: var(--console-surface);
   box-shadow: 0 2px 5px #19234605;
 }
+.records-empty {
+  min-height: 360px;
+  padding: 48px 24px;
+  --el-empty-description-margin-top: 20px;
+  --el-empty-bottom-margin-top: 24px;
+}
+.records-empty :deep(.el-empty__image svg) { width: 72px; height: 72px; color: var(--console-brand); fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.empty-mail-tile { fill: #eef1ff; stroke: none; }
+.empty-description h2 { margin: 0 0 10px; color: var(--console-text); font-size: 16px; font-weight: 600; line-height: 1.5; }
+.records-empty .empty-description p { margin: 0; color: var(--console-muted); font-size: 13px; line-height: 1.9; }
+.empty-action { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 40px; padding: 9px 18px; border: 1px solid var(--console-brand); border-radius: 8px; color: #fff; background: var(--console-brand); font-size: 13px; text-decoration: none; }
+.empty-action:hover { border-color: var(--console-brand-deep); background: var(--console-brand-deep); }
+.empty-action:focus-visible { outline: 3px solid #aeb7f4; outline-offset: 3px; }
 .records-panel { overflow: hidden; }
 .panel-heading { align-items: center; padding: 20px 22px; }
 .panel-heading h2, .detail-heading h2 { margin: 0; font-size: 16px; font-weight: 650; line-height: 1.5; }

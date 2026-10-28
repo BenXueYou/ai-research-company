@@ -1,7 +1,7 @@
 {
   "stable": true,
   "browserExitCode": 1,
-  "completedAt": "2026-10-28T15:15:54.141Z",
+  "completedAt": "2026-10-28T15:18:19.945Z",
   "sources": {
     "server/app.ts": "2c4432407d31af4fbe575d3faefc5ba9a4f71e51f63116078d0e68b1550e6ff1",
     "server/cli.ts": "ad39ebab98bb5017fc30cefd3009cd68c3eeeae37618372ef5bc3b7df341ffcb",
@@ -101,7 +101,7 @@
     "web/pages/companies/components/CompanyProfileEditor.vue": "a3699d0892ee6c29e39c6691d4229817ff36640668be4d07b91404c7c8304a0e",
     "web/pages/companies/components/CompanyTimeline.vue": "f354079c01089e43b00500e106f191e2897493bd33b0ad7f62c3e32488d20826",
     "web/pages/companies/components/EmailComposer.vue": "497d9328b808362e4c61385fa84a2aeb6d81eaa7824b73566d99ba916191f559",
-    "web/pages/email/EmailRecordsPage.vue": "da8d8fc0aedb49d8fde454f5ee3a4dc882923cc6c3b14172896565f35c782f98",
+    "web/pages/email/EmailRecordsPage.vue": "4b2cbbae7d955f5dab0d56dbd23bac12b40351195fabcbcb251c29329b0e72f1",
     "web/pages/email/PlatformEmailQuota.vue": "8b9cb5d30301d4e4fc2d3d9398581241505e4160052e58d5da5c47ce7ab945bb",
     "web/pages/email/TeamSendingSettingsPage.vue": "93efd1ff3f8e19b71e4c8c77e26289ac57884b8cf6d6d279ee16eba3ba52c61f",
     "web/pages/email/UMailResourceSettings.vue": "dd2cc6d470470e02f87920d2df3302e0484a47ff0425410287fdecfb67f8900e",
@@ -135,7 +135,7 @@
     "web/stores/session.ts": "8fb653f42dee687d51afee843ef61596f22c5896d50396e128d25d2feaedad4c",
     "web/styles/console.css": "a4c263f5dfc9b7bf20c732a95b535c77918d2f87fa653edf19c451fc5c0d8d8f",
     "web/styles/global.css": "381571712eb9b6e32414a0eab079f4fcfcc041cf1d803cbb1b17c2a579444382",
-    "web/styles/index.ts": "120514520d445467236154414274c54b2057976bd955965549c0da00f030b9ef",
+    "web/styles/index.ts": "bea9afd509562fc22f299d5ec46e0e90923592b2ef7e064a37f823e84ef5c3e5",
     "web/styles/theme.css": "d3f2bd60647d6beda71bf47beab51ad2042a829e87bf9580046ff813fcd23c6e",
     "web/utils/formatFetchedAt.ts": "46a4e61f2f762d84ba0c930becc463560ce3810ab877a2f354167ada6c63b191",
     "web/utils/text.txt": "fb2b579adfe580db8b443807118531295a1ea7b3fbfacb1f2de1e731b3dfe6d3"

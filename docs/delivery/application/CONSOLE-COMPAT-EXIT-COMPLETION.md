@@ -1,6 +1,6 @@
 # 控制台兼容容器最终退出
 
-日期：2026-10-28（Asia/Shanghai）。本记录仅验收本地公共兼容退出，跨分销和终端的完整业务组合验收由同批独立会话另外留证；单票结果不替代最终全局集成。
+日期：2026-10-28（Asia/Shanghai）。**结构退出已实施；本票公共专项已通过。最终全角色全局验收未达成**：同批终端组合 T-INT-01 真实失败尚未修复，分销会话仍待最终公共版本复验。本记录不宣布整批放行。
 
 ## 基线及授权范围
 
@@ -52,11 +52,30 @@
 
 ## 验证与证据
 
-最终执行结果和脱敏证据待本轮成功运行后补入本节。测试源 `application/tests/console-compat-exit.spec.ts`，执行器 `application/scripts/verify-console-compat-exit.mjs`。每次随机独有 PostgreSQL 容器、库名 compat_<uuid>_test、回环数据库端口、Nest/Vite 端口及 `.scratch/compat-exit/<uuid>/{compiled,web,results}`；不读取正式供应商凭据，不写共享 dist/test-results。结束仅删除本次容器及其卷，关闭本次 Nest/Vite。
+最终成功运行：
+
+| 命令（application 下） | 结果 |
+| --- | --- |
+| npm run typecheck | 最终通过；Vue 与服务端/测试 TypeScript |
+| node scripts/verify-console-compat-exit.mjs | 独立 tsc、Vite 构建通过；真实 Chromium/Nest/PostgreSQL 专项 1 passed（27.7s，场景25.1s） |
+| 触及文件 git diff --check | 通过 |
+| rg 查找 CompatWorkspace/workspaceVisited/isCompatPath/meta.target/compat-（web） | 无剩余引用；退出码1表示无命中 |
+
+运行 ID `1ac4eb5f702646e18617e1e52f0852ed`；PostgreSQL 库 `compat_1ac4eb5f702646e18617e1e52f0852ed_test`，运行后随自有容器清理。源码编译前/浏览器结束后 SHA-256 完整比较 stable=true，见 [SOURCE](CONSOLE-COMPAT-EXIT-SOURCE.json)。实际不同组织/账号 UUID、通知和导航请求记录、原请求脱敏值及账务快照见 [EVIDENCE](CONSOLE-COMPAT-EXIT-EVIDENCE.json)。证据没有 Cookie、CSRF、密码、连接串、密钥或 SMTP 凭据。
+
+实际执行：四角色逐一真实登录默认页、所有主菜单、帮助、账号设置、后退/前进；21个唯一业务路径（按角色共27次）逐个生产深链及刷新，Nest/Vite 全路径 HTTP HTML承载检查，Vite 真实登录与用量刷新；跨角色直达回默认页、未知 API不返回HTML及缺资源404。正常账号通知始终单横幅，客户端导航/帮助/设置返回不增加 GET coefficient/notices；每次整页刷新只增加一次，分销订单没有第二通知请求。平台设置通知历史合法存在，横幅断言单独限定 .el-alert。
+
+终端搜索输入 → 账号设置取消/放弃 → 账号表单后退取消/返回放弃，原query/hash完整返回，未提交搜索不执行业务。真实删除当前账号 sessions 后进入只读用量触发401，通知及旧缓存销毁；换业务员账号搜索为空。通知真实GET先取服务器响应，延迟到退出并登录分销后才交付，当前账号仅一个通知，不恢复旧会话。临时凭据登录/业务直达均不挂通知，直接通知API403；真实改密成功后回登录，再用新密码登录成功。
+
+组合场景：管理员SMTP表单原值 host=smtp.compat.test、port字符串587、security=starttls、username=distinct-authentication、replyTo=distinct-reply@compat.test，区别于登录 admin@compat.test及组织/账号UUID。defaultChannel仍来自原复选框false，requestId由原组件产生；本票公共代码不读取或重映射这些值。真实后端在受控verify阻塞期间，帮助导航被阻止；保存成功后浏览器丢弃响应成为unknown。取消离开仍在设置；确认到账号设置→帮助→后退→返回工作台，unknown和原载荷保留，不自动GET/POST/核验。主动核实产生第二POST，脱敏请求完整相等（含原requestId），受控verify仍只有1次。凭据证据已替换为[REDACTED]。
+
+11张余额/库存/订单/流水/邮件额度/批次/收件人/查询业务表前后快照相等：终端balance=123.4567，queryFrozen=2.0001，salesReserved=3.0002均保持；原空流水/额度/查询未增加。搜索及上游账户调用0，实际发信0；受控SMTP配置verify=1（不是发信），仅用户显式保存/核实POST2次。合法POST company-profiles/list是本地只读列表，已按现有接口职责识别，不误记成写入或收费请求。browser pageerror=0。
+
+中间未通过运行均未计入通过：测试适配器类型不完整、通知历史与横幅选择器混计、Vite跨源使用错误后端APP_ORIGIN、尝试更新不可变通知历史的夹具、移除拦截器过早导致迟到route已处理、用量已移除标题的选择器、把本地只读POST列表误计为业务写入。只修测试夹具和断言，不放宽产品契约；最终使用新随机资源从头执行成功。测试源 `application/tests/console-compat-exit.spec.ts`，执行器 `application/scripts/verify-console-compat-exit.mjs`。每次随机独有 PostgreSQL 容器、库名 compat_<uuid>_test、回环数据库端口、Nest/Vite 端口及 `.scratch/compat-exit/<uuid>/{compiled,web,results}`；不读取正式供应商凭据，不写共享 dist/test-results。结束仅删除本次容器及其卷，关闭本次 Nest/Vite。
 
 ## 验证边界
 
-- 本票只补公共组合边界，不重跑所有业务票完整流程；不同业务标识、收费查询、订单履约/退款/库存竞争、附件、联系人到邮件、跨日额度等由各票专项及同批独立集成证据承担。最终全局集成是否通过须汇齐另两个会话证据后决定。
+- 本票只补公共组合边界，不重跑所有业务票完整流程；不同业务标识、收费查询、订单履约/退款/库存竞争、附件、联系人到邮件、跨日额度等由各票专项及同批独立集成证据承担。已只读核对同批 DISTRIBUTION-INTEGRATION-COMPLETION.md 和 TERMINAL-INTEGRATION-COMPLETION.md。前者已通过独立组合但标记等待最终公共版本，后者明确 1 passed / 1 failed、退出码 1。T-INT-01：公司名建档后，产品新候选独立详情 settled 且命中同一 detail.id，数据库只保留原内部档案，但产品成功结果缺少进入既有档案的链接。本票不修改产品/服务标识或规则；该缺陷与空兼容容器的去留无关，保留空容器不能修复，故完成结构清理并明确不满足最终全局放行。详见 [终端组合验收](TERMINAL-INTEGRATION-COMPLETION.md)。
 - 正式腾道、SMTP/U-Mail 认证、DNS、实际投递/退信/回复、生产 HTTPS/反向代理、部署、跨刷新未知上下文恢复均未执行，不将构建通过当作业务验证。
 - 原通知读取失败静默清空策略保持，未新增刷新、已读确认或推送机制。本票未额外验证每一种通知服务器异常/无效响应分支。
 - 既有大 chunk 构建提示保留，没有为清理兼容逻辑改变拆包策略。
@@ -65,6 +84,10 @@
 
 - 规则版本：0.0.1；触发：自动；另应用 Vue skill。
 - 应用规则：ACTIVE MUST FCS-007/011/013/019/021～027/030；GUIDANCE FCS-014/032。无依赖变更，FCS-028/029 无新增适用内容。
-- 校验结果：npm run typecheck 已通过；独立 tsc/Vite 构建已通过；最终真实专项结果见验证节。未执行常规 npm run build（会写共享 dist），使用独立 outDir 等效编译构建；无独立 lint/formatter 既有脚本；未执行无关全量测试与部署测试。
+- 校验结果：npm run typecheck 已通过；独立 tsc/Vite 构建已通过；最终真实专项1/1通过，详见验证节。未执行常规 npm run build（会写共享 dist），使用独立 outDir 等效编译构建；无独立 lint/formatter 既有脚本；未执行无关全量测试与部署测试。
 - 冲突：无。存量规范债务：未触及区域未格式化。
 - PENDING：命名/块顺序/缩进/属性排序等沿用现有风格，无需本票澄清。
+
+
+最终只读复核：源码 manifest 与成功运行逐项比较 changedSinceRun=[]。交付时共享仓库 HEAD 为 376a75c956d6783c599496a22109c8119b7c29da；本会话未执行 git commit/push，其他进程的共享仓库状态变化不归因于本票。已保留当前全部内容。
+

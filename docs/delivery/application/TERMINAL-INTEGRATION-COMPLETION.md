@@ -8,6 +8,8 @@
 
 本会话只新增 `application/integration-terminal/` 下的测试、配置和 runner，以及本记录、TERMINAL-INTEGRATION-EVIDENCE.json、TERMINAL-INTEGRATION-SOURCE.json。没有修改业务源码、App/router/layout、共享 package/锁文件、其他票测试或记录；没有 reset/stash、提交推送、远端更新、部署或重启用户服务。
 
+收尾时观察到共享 HEAD 已变为 `376a75c`（`feat: 完成部分页面样式的提交`），此前本套未跟踪文件也已进入该提交；这不是本会话发起的 Git 操作，未回退或改写它。随后 `EmailRecordsPage.vue` 与 `web/styles/index.ts` 又出现变更，故重新运行隔离编译/构建/浏览器集成，不以先前构建冒充其最终版本。
+
 本次未修改 Vue 业务代码，无前端生成规则需要落地；发现组合缺陷后使用 diagnosing-bugs 的失败反馈循环，保留失败断言并核对最小成因。按明确文件分工，不实施业务修复。
 
 ## 命令与环境
@@ -71,4 +73,6 @@ TERMINAL-INTEGRATION-SOURCE.json 记录运行前后 web/server/vite 配置 SHA-2
 
 ## 公共退出最终对齐
 
-已只读核对 CONSOLE-COMPAT-EXIT-PUBLIC-CHANGES.md：App 删除兼容容器、通知转公共布局、有限缓存保留。本次独立编译与真实组合执行已包含这些公共变更；最终公共会话完成状态及源码一致性核对待补记，不能将进行中状态记为已完成。
+已只读核对 CONSOLE-COMPAT-EXIT-PUBLIC-CHANGES.md：App 删除兼容容器、通知转公共布局、有限缓存保留。包含共享目录最新邮件页/样式变更的最终重跑 `1 passed / 1 failed` 用时 17.3 秒，主浏览器场景 14.8 秒；包含这些公共变更，源码运行前后 `stable=true`，随后再次逐项比对 manifest，`changedSinceRun=[]`。
+
+已读取随后生成的 [CONSOLE-COMPAT-EXIT-COMPLETION.md](CONSOLE-COMPAT-EXIT-COMPLETION.md)：公共结构退出及其专项已通过（1 passed），该记录同样保留 T-INT-01 造成的整批阻塞。读取最终记录后再次逐项核对本套源码 manifest：`stableAtRun=true,changedSinceRun=[],browserExitCode=1`，因此本轮受影响终端入口已在与公共最终源码一致的组合上运行，无需为只新增交付文档重复收费测试。#57 completed 已确认。公共记录的通过不替代本套失败；未来公共源码变化或业务修复后仍须重跑 runner，不能用此轮证据代替最终整批放行。
