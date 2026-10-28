@@ -51,9 +51,24 @@ test('四角色帮助与身份限制', async ({ page, request }) => {
       ['admin36@example.com', '终端企业管理员操作指南', '团队与成员', '多层查看范围', '进入找企业', '/terminal/search'],
       ['sales36@example.com', '业务员操作指南', '团队权限', '团队与成员', '进入找企业', '/terminal/search']
     ];
+    const destinations: Record<string, string> = {
+      '进入下级管理': '/organizations',
+      '进入点数与账务': '/platform/ledger',
+      '进入采购与配置': '/platform/settings',
+      '进入上游与对账': '/platform/reconciliation',
+      '进入点数订单': '/distribution/orders',
+      '进入交易与利润': '/distribution/profit',
+      '进入找企业': '/terminal/search',
+      '进入邮件发送记录': '/terminal/emails',
+      '进入成员管理': '/terminal/members',
+      '进入账号设置': '/account/settings'
+    };
     for (const [name, heading, own, other, link, target] of cases) {
       await login(name, password);
-      await page.getByRole('link', { name: '帮助中心' }).click();
+      const helpLink = page.getByRole('link', { name: '帮助中心' });
+      if (name === 'super_admin') await expect(helpLink).not.toHaveClass(/sidebar-help/);
+      else await expect(helpLink).toHaveClass(/sidebar-help/);
+      await helpLink.click();
       await expect(page).toHaveURL(`${origin}/help`);
       await expect(page.getByText(heading)).toBeVisible();
       await expect(page.getByRole('heading', { name: own })).toBeVisible();
@@ -66,6 +81,17 @@ test('四角色帮助与身份限制', async ({ page, request }) => {
       await expect(page.getByText(heading)).toBeVisible();
       await page.goto(`${origin}/help`);
       await expect(page.getByText(heading)).toBeVisible();
+      const links = await page.locator('.role-help .help-link').allTextContents();
+      for (const label of links) {
+        await page.getByRole('button', { name: label, exact: true }).click();
+        const destination = label === '进入下级管理'
+          ? `${name === 'super_admin' ? '/platform' : '/distribution'}${destinations[label]}`
+          : destinations[label];
+        expect(destination).toBeTruthy();
+        await expect(page).toHaveURL(`${origin}${destination}`);
+        await page.goBack();
+        await expect(page.getByText(heading)).toBeVisible();
+      }
       await page.getByRole('button', { name: '退出登录' }).click();
     }
   } finally {

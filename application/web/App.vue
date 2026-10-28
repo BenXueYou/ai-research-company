@@ -120,6 +120,10 @@
             />
           </KeepAlive>
         </RouterView>
+        <nav v-if="session && !session.mustChange && path === '/platform/ledger'" aria-label="点数与账务页面">
+          <RouterLink to="/platform/ledger/profit">交易与利润</RouterLink> ·
+          <RouterLink to="/platform/ledger/flows">账务流水</RouterLink>
+        </nav>
         <CompatWorkspace
           v-if="session && !session.mustChange && workspaceVisited"
           v-show="isCompatPath"

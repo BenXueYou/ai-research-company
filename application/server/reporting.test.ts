@@ -155,7 +155,21 @@ test('T28 scoped reporting through HTTP and PostgreSQL', async () => {
       await platformPage.getByText('平台承担费用：0.7500').waitFor();
       await platformPage.getByText('扣除平台承担费用后：0.7500').waitFor();
       await platformPage.getByText(`${outsider} · terminal · 停用`).waitFor();
+      await platformPage.goto(`${origin}/platform/ledger/profit`);
+      console.log('profit page', await platformPage.url(), (await platformPage.locator('body').innerText()).slice(0, 500));
+      await platformPage.getByRole('heading', { name: '交易与利润' }).waitFor();
+      await platformPage.getByText('平台销售毛利：1.5000').waitFor();
+      await platformPage.goto(`${origin}/platform/ledger/flows`);
+      await platformPage.getByRole('heading', { name: '账务流水' }).waitFor();
+      await platformPage.getByText('平台库存与采购流水').waitFor();
       await platformContext.close();
+      const unauthorizedContext = await browser.newContext();
+      await unauthorizedContext.addCookies([{ name: 'identity_session', value: accounts[2].token,
+        url: origin, httpOnly: true, sameSite: 'Strict' }]);
+      const unauthorizedPage = await unauthorizedContext.newPage();
+      await unauthorizedPage.goto(`${origin}/platform/ledger/profit`);
+      await unauthorizedPage.waitForURL(`${origin}/terminal/search`);
+      await unauthorizedContext.close();
     } finally {
       await browser.close();
     }
@@ -170,3 +184,4 @@ test('T28 scoped reporting through HTTP and PostgreSQL', async () => {
     else process.env.SMTP_CREDENTIAL_KEY = priorSmtpKey;
   }
 });
+

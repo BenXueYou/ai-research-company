@@ -10,3 +10,7 @@ dist-t06/
 test-results-t06/
 *.log
 .scratch/playwright-results/
+.scratch/**/*.test.js
+.scratch/**/*.test.js.map
+.scratch/**/*.spec.js
+.scratch/**/*.spec.js.map

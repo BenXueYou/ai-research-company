@@ -7,6 +7,7 @@ import SettingsRoute from './SettingsRoute.vue';
 import RoleHelpPage from '../pages/help/RoleHelpPage.vue';
 import UpstreamMonitorPage from '../pages/upstream/UpstreamMonitorPage.vue';
 import ReconciliationPage from '../pages/upstream/ReconciliationPage.vue';
+import PlatformReportPage from '../pages/reports/PlatformReportPage.vue';
 
 type Role = 'platform' | 'distributor' | 'admin' | 'sales';
 declare module 'vue-router' {
@@ -51,6 +52,18 @@ const businessRoutes: RouteRecordRaw[] = navigation.map(item => ({
 const routes: RouteRecordRaw[] = [
   ...businessRoutes,
   {
+    path: '/platform/ledger/profit',
+    component: PlatformReportPage,
+    props: { kind: 'profit' },
+    meta: { title: '交易与利润', roles: ['platform'], business: true }
+  },
+  {
+    path: '/platform/ledger/flows',
+    component: PlatformReportPage,
+    props: { kind: 'ledger' },
+    meta: { title: '账务流水', roles: ['platform'], business: true }
+  },
+  {
     path: '/platform/reconciliation/upstream',
     name: 'platform-upstream',
     component: UpstreamMonitorPage,
@@ -83,7 +96,7 @@ export function defaultPath(role: string): string {
 }
 
 export function isBusinessPath(path: string, role: string): boolean {
-  return (path === '/platform/reconciliation/upstream' && role === 'platform') ||
+  return (['/platform/reconciliation/upstream', '/platform/ledger/profit', '/platform/ledger/flows'].includes(path) && role === 'platform') ||
     navigation.some(item => item.path === path && item.roles.includes(role as Role));
 }
 

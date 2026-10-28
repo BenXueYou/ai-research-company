@@ -12,14 +12,25 @@ import {
   ElFormItem,
   ElInput
 } from 'element-plus';
-import {
-  procurementApi,
-  type ProcurementRequest,
-  type ProcurementSnapshot
-} from '../../api/procurementApi';
+
+interface ProcurementSnapshot {
+  currency: string;
+  pricing: { coefficient: string; minimum_markup: string };
+  inventory: { balance: string; frozen: string; reserved: string; available: string; average_cost: string; minimum_sale_price: string };
+  totals: { recorded_upstream_credits: string; cash_outflow: string; expenses: string };
+  prices: { interface_path: string; upstream_unit_price: string; maximum_billable_units: number; evidence: string; version: string }[];
+  purchases: { id: string; purpose: string; receipt_reference: string; upstream_points: string; coefficient_snapshot: string; generated_internal_points: string; amount: string; expense_id: string | null }[];
+  expenses: { id: string; purpose: string; source_reference: string; amount: string; evidence: string; purchase_ids: string[]; replenished_amount: string; reconciliation_difference: string }[];
+  ledger: { id: string; event: string; reference: string; internal_delta: string; upstream_delta: string; cash_outflow: string; expense_delta: string; balance_after: string; average_cost_after: string }[];
+}
+type ProcurementRequest = (path: string, body?: Record<string, string>) => Promise<unknown>;
 
 const props = defineProps<{ request: ProcurementRequest }>();
-const api = procurementApi(props.request);
+const procurementPaths = {
+  purchase: 'procurement/purchases',
+  expense: 'procurement/expenses',
+  pricing: 'procurement/pricing'
+} as const;
 const snapshot = shallowRef<ProcurementSnapshot>();
 const busy = ref(false);
 const error = ref('');
@@ -58,7 +69,7 @@ const purposes: Record<string, string> = {
   excess: '超额费用'
 };
 async function refresh() {
-  snapshot.value = await api.overview();
+  snapshot.value = await props.request('procurement') as ProcurementSnapshot;
 }
 async function submit(operation: 'purchase' | 'expense' | 'pricing', values: Record<string, string>) {
   if (busy.value) return;
@@ -72,7 +83,7 @@ async function submit(operation: 'purchase' | 'expense' | 'pricing', values: Rec
     pending.set(operation, attempt);
   }
   try {
-    await api[operation]({ ...values, requestId: attempt.requestId });
+    await props.request(procurementPaths[operation], { ...values, requestId: attempt.requestId });
     notice.value = '已记账，余额和流水已更新';
     await refresh();
   } catch (failure) {

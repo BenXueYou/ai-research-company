@@ -10,7 +10,8 @@ const menu = computed(() => navigation.filter(item =>
   item.roles.includes(props.session.role as 'platform' | 'distributor' | 'admin' | 'sales')
 ));
 const active = (value: string) => route.path === value ||
-  (value === '/platform/reconciliation' && route.path === '/platform/reconciliation/upstream');
+  (value === '/platform/reconciliation' && route.path === '/platform/reconciliation/upstream') ||
+  (value === '/platform/ledger' && route.path.startsWith('/platform/ledger/'));
 </script>
 
 <template>
@@ -26,8 +27,8 @@ const active = (value: string) => route.path === value ||
       :aria-current="active(item.path) ? 'page' : undefined"
     ><span>{{ item.label }}</span></RouterLink>
     <RouterLink
-      class="sidebar-link sidebar-help"
-      :class="{ active: route.path === '/help' }"
+      class="sidebar-link"
+      :class="{ active: route.path === '/help', 'sidebar-help': session.role !== 'platform' }"
       to="/help"
       :aria-current="route.path === '/help' ? 'page' : undefined"
     >帮助中心</RouterLink>

@@ -1,5 +1,11 @@
 # #35 独立账号设置与离开交互（部分验证，尚未完成全部验收）
 
+## 2026-10-28 当前工作区复验
+
+保留工作区已有的依赖、会话和 HTTP 改动，使用独立 Docker PostgreSQL `codex-issue36-test`（127.0.0.1:55441，`console36_test`），顺序运行 `npx tsc -p tsconfig.server.json --outDir .scratch/issue35-dist`、`npx vite build --outDir issue35-test-web` 和 `npx playwright test --config config/playwright/playwright.issue35.config.ts`，均通过；构建提示 chunk 超过 500 kB。浏览器场景包括账号设置导航、强制和主动改密、四角色、开户响应丢失重试以及直属组织与账号不同 ID 的参数核对，具体范围见下方补充验收。
+
+其他业务表单仍未逐一接入或验收离开提示。订单、采购及配置的待确认请求和资金结果仍需对应迁移票验证；不以本次通过认定全部表单已受保护。
+
 ## 基线与实现
 
 基线为工作区现有未提交的 #34 实现，HEAD `9b6145373a30d2597a4326099c67f402155c591c`；保留既有修改。账号设置沿用 `/account/settings`、`POST /api/auth/password`；当前密码、新密码、确认密码分别来自三个表单输入，服务端根据会话确定本人，不传账号 ID。成功后清除前端会话，服务端撤销该账号所有会话。前端规则保持 12–128 位可打印非空格 ASCII 和两次一致；当前密码与新旧相同由服务端拒绝。未修改下级、订单、采购等请求和幂等规则。

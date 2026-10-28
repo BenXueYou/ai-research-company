@@ -25,6 +25,7 @@
     "@nestjs/common": "^11.1.0",
     "@nestjs/core": "^11.1.0",
     "@nestjs/platform-express": "^11.1.0",
+    "axios": "^1.21.0",
     "element-plus": "2.14.7",
     "express": "^5.1.0",
     "pg": "^8.16.0",

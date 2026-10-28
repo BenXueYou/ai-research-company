@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { shallowRef } from 'vue';
+import { apiRequest, HttpError } from '../api/http';
 
 export interface Session {
   id: string;
@@ -28,21 +29,15 @@ export const useSessionStore = defineStore('session', () => {
 
   async function request(path: string, body?: Record<string, unknown>): Promise<unknown> {
     const issuedIn = generation.value;
-    const csrf = document.cookie.split('; ').find(item =>
-      item.startsWith('identity_csrf=')
-    )?.slice(14) ?? '';
-    const response = await fetch(`/api/${path}`, {
-      method: body ? 'POST' : 'GET',
-      credentials: 'same-origin',
-      headers: body ? { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf } : {},
-      body: body ? JSON.stringify(body) : undefined
-    });
-    const data = await response.json();
-    if (issuedIn !== generation.value) throw new Error('会话已变化，请重新登录');
-    if (!response.ok) {
-      if (response.status === 401 && path !== 'auth/login') clear();
-      throw new Error(typeof data.message === 'string' ? data.message : '请求失败，请稍后重试');
+    let data: unknown;
+    try {
+      data = await apiRequest(path, body);
+    } catch (failure) {
+      if (issuedIn !== generation.value) throw new Error('会话已变化，请重新登录');
+      if (failure instanceof HttpError && failure.status === 401 && path !== 'auth/login') clear();
+      throw failure;
     }
+    if (issuedIn !== generation.value) throw new Error('会话已变化，请重新登录');
     return data;
   }
 
