@@ -1,6 +1,41 @@
 # Issue #38 平台下级账户与列表点数摘要
 
-日期：2026-10-28（Asia/Shanghai）。功能模块已实现，真实后端/数据库/浏览器专项通过；公共面包屑接入待统一处理。未部署、重启用户服务、提交、推送或改动远端票据。
+日期：2026-10-28（Asia/Shanghai）。功能模块已实现，公共面包屑接入及真实后端/数据库/浏览器专项已完成收尾复验。未部署、重启用户服务、提交、推送或改动远端票据。
+
+## 本轮收尾复验（2026-10-28）
+
+本轮读取 GitHub #38 正文与“应用根组件与兼容容器退出约定”补充验收（通过 GitHub REST API；无额外评论），并核对现行已批准 Spec、工程脚手架、应用说明、#37 完成记录及实际引用。复验基线 HEAD `f009895e16571113301e261a87a45051a52d21ac`，工作区仍有其他任务大量未提交改动。
+
+当前 `router/index.ts` 将 `/platform/organizations` 直接绑定真实 `PlatformOrganizationsPage`；`view=accounts` 只切换本页子视图。`ConsoleBreadcrumb.vue` 已呈现“下级管理 / 直属下级 / 下级账户”，直属下级可点击返回，账户为当前位置。`App.vue` 的范围缓存包括该页面并以 session generation 销毁；`CompatWorkspace.vue` 中 `OrganizationOpening` 只为分销挂载，平台没有本模块重复挂载，也没有本票遗留滚动 target。分销及终端等其他兼容模块仍有调用方，继续保留兼容容器，不宣称完成全局退出。
+
+核对 `ReportingService.overview`：组织范围由服务端会话 organization_id 递归取得，active=false 未被过滤；四项来自 internal_point_accounts，available 保持数据库 `balance-query_frozen-sales_reserved`；前端仍按组织 id 对应 organizationId，原样展示字符串，不使用管理员 accountId，不与上游库存合并。本轮无产品代码或请求契约修改，未触及 #37 开户、凭据、重置、离开保护与未知结果逻辑，未修改公共入口、#39 报表页或服务、#36 帮助页。
+
+本轮仅修改 `application/issue38-tests/accounts.test.ts`、本记录，并新增 [收尾证据](ISSUE-38-CLOSEOUT-EVIDENCE.json)。测试新增可配置独立端口/静态产物目录及无秘密的证据输出；补充面包屑父级返回、跨模块返回与读取次数、加载禁用、null/缺失字段异常场景，修正公共面包屑新增后同名链接导致的旧选择器歧义。
+
+实际命令均在 application 执行：
+
+| 命令 | 结果 |
+| --- | --- |
+| `npm run typecheck` | 通过，前后端类型检查 |
+| `node node_modules/typescript/bin/tsc -p issue38-tests/tsconfig.json --outDir .scratch/issue38-closeout-dist` | 通过，本票及业务服务独立编译 |
+| `node node_modules/vite/bin/vite.js build --outDir .scratch/issue38-closeout-web` | 通过，已有大包提示保留 |
+| `node --env-file=.scratch/issue37-real.env --test .scratch/issue38-closeout-dist/issue38-tests/accounts.test.js` | 最终 1/1 通过，真实 Nest/HTTP/PostgreSQL/Chromium |
+
+最后一条进程环境设置 `ISSUE38_PORT=3498`、`ISSUE38_WEB_DIR=.scratch/issue38-closeout-web`、`ISSUE38_EVIDENCE=../docs/delivery/application/ISSUE-38-CLOSEOUT-EVIDENCE.json`、`ISSUE38_SCREENSHOT=.scratch/issue38-closeout-accounts.png`。只消费已有环境文件中的测试连接作为 CREATE DATABASE 连接源，不读取回显文件内容。所有初始化、夹具与写入都在随机新库 `issue38_84e7fde0849145e5907f17786ea18fc9_test`；测试 finally 删除该库且正常退出，未清空连接源库，未启动/重启用户服务。本轮没有 Vite 常驻服务，静态资源由独占 3498 的测试 Nest 提供；构建和编译均使用独立目录。
+
+实际通过场景：
+
+- 直属两行及授权多层四行、三级停用终端、上级名称/层级、账户缺行；组织 UUID 与管理员 UUID 不同，详细快照见收尾 JSON。直属四项为 111.1234 / 11.0001 / 3.0002 / 97.1231，三级停用账户为 333.3456 / 33.0003 / 5.0004 / 295.3449。
+- 面包屑当前位置及父级 href/点击；账户页直接刷新、浏览器前进后退；离开到计价配置后从主菜单返回，再切账户，reports 累计仍只有首次一次请求；首次直属和账户子视图切换也只请求一次 organizations 与一次 reports，没有重复实例读取。
+- 延迟真实 HTTP 读取时显示“账户读取中…”、按钮禁用并隐藏旧行，放行后显示真实数据；仅字段异常场景基于真实响应置 balance=null 并删除 available，明确展示两处“数据缺失”，其余两项保持原值。503 异常展示失败并清除旧值；返回直属显示失败，解除异常后主动刷新恢复。只有字段异常和 503 为浏览器构造，正常读取、权限与持久化结果均使用真实后端和库。
+- 平台允许读取；分销/终端管理员/业务员平台深链跳转合法默认页，分销 reports 保持原授权后代且排除兄弟；匿名 401、强改 403 和设置新密码门禁；跨级状态、重置、建单、改价、收款、划拨等拒绝保持 403。
+- 浏览器 POST 为零；停用账户余额保持 333.3456，订单单价保持 9.0000，状态事件、密码重置、点数划拨、三类查询账务写入均为零。已查看账户截图，确认四项原始精度、面包屑与只读入口显示。
+
+运行中测试选择器曾将“平台设置”组按钮误当链接、全页“直属下级”命中面包屑与页内两个入口，已按真实导航限定选择器。另一次跨模块快速返回在设置初始读取 busy 时被公共离开保护拦住；测试现等待读取结束、刷新按钮启用再返回，最终通过。未修改其他模块行为。
+
+本轮未重跑 #37 全套开户/凭据/重置/丢响应（相关产品代码未改）；四角色真实密码登录、退出、切换全组合仍引用 #37 的既有证据，本轮仅使用真实会话夹具验证角色门禁。未验证生产、其他浏览器、并发压力、正式查询/邮件供应商及 72 小时真实等待；未运行无关全量测试或共享输出的默认构建。当前 query 子页无需新公共路由修复。
+
+前端技能核对：自动使用 Vue、frontend-coding-standards（规则版本 0.0.1），本轮未修改前端产品代码；契约、局部组件职责、既有状态与精度保持。类型检查、隔离编译/构建及专项通过；package.json 无 lint/格式化脚本，未执行；无依赖变更、规则冲突或 PENDING 决策需要澄清。
 
 ## 基线与范围
 

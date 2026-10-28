@@ -6,6 +6,8 @@ export default defineConfig({
     name: 'console-history',
     configureServer(server) {
       const paths = new Set([
+        '/platform/ledger/procurement',
+        '/platform/settings/umail', '/platform/settings/email-quota', '/platform/organizations/business-data',
         '/platform/overview', '/platform/organizations', '/platform/ledger', '/platform/reconciliation', '/platform/reconciliation/upstream', '/platform/settings',
         '/platform/ledger/profit', '/platform/ledger/flows',
         '/distribution/organizations', '/distribution/orders', '/distribution/profit',

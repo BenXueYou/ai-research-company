@@ -5,6 +5,8 @@ import { RouterLink } from 'vue-router';
 
 type SettingsRequest = (path: string, body?: Record<string, unknown>) => Promise<unknown>;
 
+defineOptions({ name: 'PlatformSettingsPage' });
+
 defineProps<{ request: SettingsRequest }>();
 </script>
 

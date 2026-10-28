@@ -1,0 +1,559 @@
+{
+  "database": "issue41_bdb99282f81c41259351ba98d412f042_test",
+  "stagedIntegration": false,
+  "ids": {
+    "detail": "b863087a-80d3-4fd2-a82f-f9ac127bcdd3",
+    "contact": "28dfbf7e-eac4-4a08-99bf-eb9921b73e35",
+    "product": "4aef74aa-1421-4a62-98ea-d605a14da965",
+    "expenseIds": [
+      "97f859ad-58ea-496a-96a9-c165ec44c9b8",
+      "8a38e278-a74b-46ca-a1c8-aaac5f778db9",
+      "13d12d7b-5010-498f-a5e8-9f84954f47f0"
+    ]
+  },
+  "writes": [
+    {
+      "path": "/api/procurement/purchases",
+      "purpose": "sale",
+      "upstreamPoints": "10",
+      "amount": "40",
+      "receiptReference": "SALE41",
+      "evidence": "supplier receipt verified",
+      "requestId": "c465193e-72ab-4d30-897e-c7ae52d71103"
+    },
+    {
+      "path": "/api/procurement/purchases",
+      "purpose": "sale",
+      "upstreamPoints": "10",
+      "amount": "40",
+      "receiptReference": "SALE41",
+      "evidence": "supplier receipt verified",
+      "requestId": "c465193e-72ab-4d30-897e-c7ae52d71103"
+    },
+    {
+      "path": "/api/procurement/expenses",
+      "purpose": "failure",
+      "amount": "7",
+      "sourceReference": "DETAIL41",
+      "evidence": "loss bill verified",
+      "detailLossQueryId": "b863087a-80d3-4fd2-a82f-f9ac127bcdd3",
+      "requestId": "a2c12a49-44e4-42b9-9610-4d672cefedb9"
+    },
+    {
+      "path": "/api/procurement/expenses",
+      "purpose": "failure",
+      "amount": "7",
+      "sourceReference": "CONTACT41",
+      "evidence": "loss bill verified",
+      "contactLossQueryId": "28dfbf7e-eac4-4a08-99bf-eb9921b73e35",
+      "requestId": "c0794cec-6a30-4389-af39-4ad0b5ec7c78"
+    },
+    {
+      "path": "/api/procurement/expenses",
+      "purpose": "excess",
+      "amount": "7",
+      "sourceReference": "PRODUCT41",
+      "evidence": "loss bill verified",
+      "productLossPageId": "4aef74aa-1421-4a62-98ea-d605a14da965",
+      "requestId": "cf887148-c153-48e6-818f-a089f8dde29a"
+    },
+    {
+      "path": "/api/procurement/expenses",
+      "purpose": "failure",
+      "amount": "7",
+      "sourceReference": "DETAIL-DUPLICATE41",
+      "evidence": "loss bill verified",
+      "detailLossQueryId": "b863087a-80d3-4fd2-a82f-f9ac127bcdd3",
+      "requestId": "627a5457-f681-473c-b976-7e46cec956db"
+    },
+    {
+      "path": "/api/procurement/expenses",
+      "purpose": "excess",
+      "amount": "7",
+      "sourceReference": "WRONG-PURPOSE41",
+      "evidence": "loss bill verified",
+      "contactLossQueryId": "28dfbf7e-eac4-4a08-99bf-eb9921b73e35",
+      "requestId": "30a87279-bb00-4307-b027-7ca26bb548c9"
+    },
+    {
+      "path": "/api/procurement/expenses",
+      "purpose": "failure",
+      "amount": "7",
+      "sourceReference": "TWO-LOSSES41",
+      "evidence": "loss bill verified",
+      "detailLossQueryId": "b863087a-80d3-4fd2-a82f-f9ac127bcdd3",
+      "contactLossQueryId": "28dfbf7e-eac4-4a08-99bf-eb9921b73e35",
+      "requestId": "d14c30f2-a2dc-4972-ab59-af510b26c3ee"
+    },
+    {
+      "path": "/api/procurement/purchases",
+      "purpose": "failure",
+      "upstreamPoints": "10",
+      "amount": "5",
+      "receiptReference": "NO-EXPENSE41",
+      "evidence": "supplier receipt verified",
+      "requestId": "0d0e91da-5394-47f2-9a41-8eb5694d7ac0"
+    },
+    {
+      "path": "/api/procurement/purchases",
+      "purpose": "failure",
+      "upstreamPoints": "10",
+      "amount": "5",
+      "receiptReference": "TOPUP41A",
+      "evidence": "supplier receipt verified",
+      "expenseId": "97f859ad-58ea-496a-96a9-c165ec44c9b8",
+      "requestId": "80bdc728-4cb3-43d2-b3fa-178594d1437b"
+    },
+    {
+      "path": "/api/procurement/purchases",
+      "purpose": "failure",
+      "upstreamPoints": "10",
+      "amount": "5",
+      "receiptReference": "TOPUP41B",
+      "evidence": "supplier receipt verified",
+      "expenseId": "97f859ad-58ea-496a-96a9-c165ec44c9b8",
+      "requestId": "56082fcc-1dc6-4225-8b09-70be3ed7a4d7"
+    },
+    {
+      "path": "/api/procurement/purchases",
+      "purpose": "excess",
+      "upstreamPoints": "10",
+      "amount": "5",
+      "receiptReference": "TOPUP41C",
+      "evidence": "supplier receipt verified",
+      "expenseId": "13d12d7b-5010-498f-a5e8-9f84954f47f0",
+      "requestId": "6b410bcb-099b-461f-b2cb-0fffc1b5c4f0"
+    },
+    {
+      "path": "/api/procurement/purchases",
+      "purpose": "coverage",
+      "upstreamPoints": "10",
+      "amount": "9",
+      "receiptReference": "COVERAGE41",
+      "evidence": "supplier receipt verified",
+      "requestId": "28500ffc-3ff8-4414-bcb0-b9d0d07a5183"
+    },
+    {
+      "path": "/api/procurement/purchases",
+      "purpose": "sale",
+      "upstreamPoints": "10",
+      "amount": "40",
+      "receiptReference": "LOST41",
+      "evidence": "supplier receipt verified",
+      "requestId": "32600610-4fba-43d2-9c21-fde426bedf37"
+    },
+    {
+      "path": "/api/procurement/purchases",
+      "purpose": "sale",
+      "upstreamPoints": "10",
+      "amount": "40",
+      "receiptReference": "LOST41",
+      "evidence": "supplier receipt verified",
+      "requestId": "32600610-4fba-43d2-9c21-fde426bedf37"
+    },
+    {
+      "path": "/api/procurement/expenses",
+      "purpose": "coverage",
+      "amount": "7",
+      "sourceReference": "EXPENSE-LOST41",
+      "evidence": "loss bill verified",
+      "requestId": "9685fb42-a208-4487-ba69-6594caaf3dc5"
+    },
+    {
+      "path": "/api/procurement/expenses",
+      "purpose": "coverage",
+      "amount": "7",
+      "sourceReference": "EXPENSE-LOST41",
+      "evidence": "loss bill verified",
+      "requestId": "9685fb42-a208-4487-ba69-6594caaf3dc5"
+    }
+  ],
+  "snapshot": {
+    "currency": "CNY",
+    "pricing": {
+      "coefficient": "3.0000",
+      "minimum_markup": "0.0100"
+    },
+    "inventory": {
+      "singleton": true,
+      "balance": "70.0000",
+      "frozen": "0.0000",
+      "reserved": "0.0000",
+      "average_cost": "1.4286",
+      "available": "70.0000",
+      "minimum_sale_price": "1.4429"
+    },
+    "totals": {
+      "recorded_upstream_credits": "60.0000",
+      "cash_outflow": "104.0000",
+      "expenses": "37.0000"
+    },
+    "prices": [],
+    "purchases": [
+      {
+        "id": "18347935-df04-4fbb-ba08-f9131da06284",
+        "purpose": "sale",
+        "upstream_points": "10.0000",
+        "coefficient_snapshot": "3.0000",
+        "generated_internal_points": "30.0000",
+        "amount": "40.0000",
+        "receipt_reference": "SALE41",
+        "evidence": "supplier receipt verified",
+        "expense_id": null,
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:36.539Z"
+      },
+      {
+        "id": "b32a1e7f-bf3d-43db-852e-02aedb9e422b",
+        "purpose": "failure",
+        "upstream_points": "10.0000",
+        "coefficient_snapshot": "3.0000",
+        "generated_internal_points": "0.0000",
+        "amount": "5.0000",
+        "receipt_reference": "TOPUP41A",
+        "evidence": "supplier receipt verified",
+        "expense_id": "97f859ad-58ea-496a-96a9-c165ec44c9b8",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:38.099Z"
+      },
+      {
+        "id": "6272a7a9-5a6e-45d9-b5e8-4a2dc757ea50",
+        "purpose": "failure",
+        "upstream_points": "10.0000",
+        "coefficient_snapshot": "3.0000",
+        "generated_internal_points": "0.0000",
+        "amount": "5.0000",
+        "receipt_reference": "TOPUP41B",
+        "evidence": "supplier receipt verified",
+        "expense_id": "97f859ad-58ea-496a-96a9-c165ec44c9b8",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:38.249Z"
+      },
+      {
+        "id": "dfb2821f-5b8d-470c-ae0f-d347c47d5e45",
+        "purpose": "excess",
+        "upstream_points": "10.0000",
+        "coefficient_snapshot": "3.0000",
+        "generated_internal_points": "0.0000",
+        "amount": "5.0000",
+        "receipt_reference": "TOPUP41C",
+        "evidence": "supplier receipt verified",
+        "expense_id": "13d12d7b-5010-498f-a5e8-9f84954f47f0",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:38.417Z"
+      },
+      {
+        "id": "ef17171c-b9fb-415f-b520-aa6e03f7b057",
+        "purpose": "coverage",
+        "upstream_points": "10.0000",
+        "coefficient_snapshot": "3.0000",
+        "generated_internal_points": "0.0000",
+        "amount": "9.0000",
+        "receipt_reference": "COVERAGE41",
+        "evidence": "supplier receipt verified",
+        "expense_id": "3a739ac9-3887-4434-af72-dde7ddedc6f0",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:38.580Z"
+      },
+      {
+        "id": "865e3ead-5b8a-4487-8b7c-85d4640b7ac4",
+        "purpose": "sale",
+        "upstream_points": "10.0000",
+        "coefficient_snapshot": "3.0000",
+        "generated_internal_points": "30.0000",
+        "amount": "40.0000",
+        "receipt_reference": "LOST41",
+        "evidence": "supplier receipt verified",
+        "expense_id": null,
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:38.751Z"
+      }
+    ],
+    "expenses": [
+      {
+        "id": "97f859ad-58ea-496a-96a9-c165ec44c9b8",
+        "purpose": "failure",
+        "source_reference": "DETAIL41",
+        "amount": "7.0000",
+        "evidence": "loss bill verified",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:36.971Z",
+        "detail_loss_query_id": "b863087a-80d3-4fd2-a82f-f9ac127bcdd3",
+        "product_loss_page_id": null,
+        "contact_loss_query_id": null,
+        "purchase_ids": [
+          "b32a1e7f-bf3d-43db-852e-02aedb9e422b",
+          "6272a7a9-5a6e-45d9-b5e8-4a2dc757ea50"
+        ],
+        "replenished_amount": "10.0000",
+        "reconciliation_difference": "3.0000"
+      },
+      {
+        "id": "8a38e278-a74b-46ca-a1c8-aaac5f778db9",
+        "purpose": "failure",
+        "source_reference": "CONTACT41",
+        "amount": "7.0000",
+        "evidence": "loss bill verified",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:37.151Z",
+        "detail_loss_query_id": null,
+        "product_loss_page_id": null,
+        "contact_loss_query_id": "28dfbf7e-eac4-4a08-99bf-eb9921b73e35",
+        "purchase_ids": [],
+        "replenished_amount": "0.0000",
+        "reconciliation_difference": "-7.0000"
+      },
+      {
+        "id": "13d12d7b-5010-498f-a5e8-9f84954f47f0",
+        "purpose": "excess",
+        "source_reference": "PRODUCT41",
+        "amount": "7.0000",
+        "evidence": "loss bill verified",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:37.369Z",
+        "detail_loss_query_id": null,
+        "product_loss_page_id": "4aef74aa-1421-4a62-98ea-d605a14da965",
+        "contact_loss_query_id": null,
+        "purchase_ids": [
+          "dfb2821f-5b8d-470c-ae0f-d347c47d5e45"
+        ],
+        "replenished_amount": "5.0000",
+        "reconciliation_difference": "-2.0000"
+      },
+      {
+        "id": "3a739ac9-3887-4434-af72-dde7ddedc6f0",
+        "purpose": "coverage",
+        "source_reference": "COVERAGE41",
+        "amount": "9.0000",
+        "evidence": "supplier receipt verified",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:38.577Z",
+        "detail_loss_query_id": null,
+        "product_loss_page_id": null,
+        "contact_loss_query_id": null,
+        "purchase_ids": [
+          "ef17171c-b9fb-415f-b520-aa6e03f7b057"
+        ],
+        "replenished_amount": "9.0000",
+        "reconciliation_difference": "0.0000"
+      },
+      {
+        "id": "8815940c-aef2-44cc-8596-e0d2b1e09666",
+        "purpose": "coverage",
+        "source_reference": "EXPENSE-LOST41",
+        "amount": "7.0000",
+        "evidence": "loss bill verified",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "created_at": "2026-10-28T11:15:39.329Z",
+        "detail_loss_query_id": null,
+        "product_loss_page_id": null,
+        "contact_loss_query_id": null,
+        "purchase_ids": [],
+        "replenished_amount": "0.0000",
+        "reconciliation_difference": "-7.0000"
+      }
+    ],
+    "ledger": [
+      {
+        "id": "1",
+        "event": "purchase",
+        "reference": "18347935-df04-4fbb-ba08-f9131da06284",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "30.0000",
+        "upstream_delta": "10.0000",
+        "cash_outflow": "40.0000",
+        "expense_delta": "0.0000",
+        "balance_after": "40.0000",
+        "average_cost_after": "1.5000",
+        "details": {
+          "purpose": "sale",
+          "expenseId": null,
+          "receiptReference": "SALE41",
+          "coefficientSnapshot": "3.0000"
+        },
+        "created_at": "2026-10-28T11:15:36.542Z"
+      },
+      {
+        "id": "2",
+        "event": "expense",
+        "reference": "97f859ad-58ea-496a-96a9-c165ec44c9b8",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "0.0000",
+        "upstream_delta": "0.0000",
+        "cash_outflow": "0.0000",
+        "expense_delta": "7.0000",
+        "balance_after": "40.0000",
+        "average_cost_after": "1.5000",
+        "details": {
+          "purpose": "failure",
+          "evidence": "loss bill verified"
+        },
+        "created_at": "2026-10-28T11:15:36.973Z"
+      },
+      {
+        "id": "3",
+        "event": "expense",
+        "reference": "8a38e278-a74b-46ca-a1c8-aaac5f778db9",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "0.0000",
+        "upstream_delta": "0.0000",
+        "cash_outflow": "0.0000",
+        "expense_delta": "7.0000",
+        "balance_after": "40.0000",
+        "average_cost_after": "1.5000",
+        "details": {
+          "purpose": "failure",
+          "evidence": "loss bill verified"
+        },
+        "created_at": "2026-10-28T11:15:37.153Z"
+      },
+      {
+        "id": "4",
+        "event": "expense",
+        "reference": "13d12d7b-5010-498f-a5e8-9f84954f47f0",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "0.0000",
+        "upstream_delta": "0.0000",
+        "cash_outflow": "0.0000",
+        "expense_delta": "7.0000",
+        "balance_after": "40.0000",
+        "average_cost_after": "1.5000",
+        "details": {
+          "purpose": "excess",
+          "evidence": "loss bill verified"
+        },
+        "created_at": "2026-10-28T11:15:37.371Z"
+      },
+      {
+        "id": "5",
+        "event": "purchase",
+        "reference": "b32a1e7f-bf3d-43db-852e-02aedb9e422b",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "0.0000",
+        "upstream_delta": "10.0000",
+        "cash_outflow": "5.0000",
+        "expense_delta": "0.0000",
+        "balance_after": "40.0000",
+        "average_cost_after": "1.5000",
+        "details": {
+          "purpose": "failure",
+          "expenseId": "97f859ad-58ea-496a-96a9-c165ec44c9b8",
+          "receiptReference": "TOPUP41A",
+          "coefficientSnapshot": "3.0000"
+        },
+        "created_at": "2026-10-28T11:15:38.101Z"
+      },
+      {
+        "id": "6",
+        "event": "purchase",
+        "reference": "6272a7a9-5a6e-45d9-b5e8-4a2dc757ea50",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "0.0000",
+        "upstream_delta": "10.0000",
+        "cash_outflow": "5.0000",
+        "expense_delta": "0.0000",
+        "balance_after": "40.0000",
+        "average_cost_after": "1.5000",
+        "details": {
+          "purpose": "failure",
+          "expenseId": "97f859ad-58ea-496a-96a9-c165ec44c9b8",
+          "receiptReference": "TOPUP41B",
+          "coefficientSnapshot": "3.0000"
+        },
+        "created_at": "2026-10-28T11:15:38.251Z"
+      },
+      {
+        "id": "7",
+        "event": "purchase",
+        "reference": "dfb2821f-5b8d-470c-ae0f-d347c47d5e45",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "0.0000",
+        "upstream_delta": "10.0000",
+        "cash_outflow": "5.0000",
+        "expense_delta": "0.0000",
+        "balance_after": "40.0000",
+        "average_cost_after": "1.5000",
+        "details": {
+          "purpose": "excess",
+          "expenseId": "13d12d7b-5010-498f-a5e8-9f84954f47f0",
+          "receiptReference": "TOPUP41C",
+          "coefficientSnapshot": "3.0000"
+        },
+        "created_at": "2026-10-28T11:15:38.420Z"
+      },
+      {
+        "id": "8",
+        "event": "expense",
+        "reference": "3a739ac9-3887-4434-af72-dde7ddedc6f0",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "0.0000",
+        "upstream_delta": "0.0000",
+        "cash_outflow": "0.0000",
+        "expense_delta": "9.0000",
+        "balance_after": "40.0000",
+        "average_cost_after": "1.5000",
+        "details": {
+          "purpose": "coverage",
+          "evidence": "supplier receipt verified"
+        },
+        "created_at": "2026-10-28T11:15:38.578Z"
+      },
+      {
+        "id": "9",
+        "event": "purchase",
+        "reference": "ef17171c-b9fb-415f-b520-aa6e03f7b057",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "0.0000",
+        "upstream_delta": "10.0000",
+        "cash_outflow": "9.0000",
+        "expense_delta": "0.0000",
+        "balance_after": "40.0000",
+        "average_cost_after": "1.5000",
+        "details": {
+          "purpose": "coverage",
+          "expenseId": "3a739ac9-3887-4434-af72-dde7ddedc6f0",
+          "receiptReference": "COVERAGE41",
+          "coefficientSnapshot": "3.0000"
+        },
+        "created_at": "2026-10-28T11:15:38.581Z"
+      },
+      {
+        "id": "10",
+        "event": "purchase",
+        "reference": "865e3ead-5b8a-4487-8b7c-85d4640b7ac4",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "30.0000",
+        "upstream_delta": "10.0000",
+        "cash_outflow": "40.0000",
+        "expense_delta": "0.0000",
+        "balance_after": "70.0000",
+        "average_cost_after": "1.4286",
+        "details": {
+          "purpose": "sale",
+          "expenseId": null,
+          "receiptReference": "LOST41",
+          "coefficientSnapshot": "3.0000"
+        },
+        "created_at": "2026-10-28T11:15:38.753Z"
+      },
+      {
+        "id": "11",
+        "event": "expense",
+        "reference": "8815940c-aef2-44cc-8596-e0d2b1e09666",
+        "actor_id": "37e8df30-bf24-45de-a374-4f00fd843d82",
+        "internal_delta": "0.0000",
+        "upstream_delta": "0.0000",
+        "cash_outflow": "0.0000",
+        "expense_delta": "7.0000",
+        "balance_after": "70.0000",
+        "average_cost_after": "1.4286",
+        "details": {
+          "purpose": "coverage",
+          "evidence": "loss bill verified"
+        },
+        "created_at": "2026-10-28T11:15:39.331Z"
+      }
+    ]
+  },
+  "supplierCalls": 0
+}

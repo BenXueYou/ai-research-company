@@ -12,6 +12,10 @@ import {
   ElFormItem,
   ElInput
 } from 'element-plus';
+import { useFormLeave } from '../../router/formLeave';
+import { HttpError } from '../../api/http';
+
+defineOptions({ name: 'PlatformProcurement' });
 
 interface ProcurementSnapshot {
   currency: string;
@@ -28,8 +32,7 @@ type ProcurementRequest = (path: string, body?: Record<string, string>) => Promi
 const props = defineProps<{ request: ProcurementRequest }>();
 const procurementPaths = {
   purchase: 'procurement/purchases',
-  expense: 'procurement/expenses',
-  pricing: 'procurement/pricing'
+  expense: 'procurement/expenses'
 } as const;
 const snapshot = shallowRef<ProcurementSnapshot>();
 const busy = ref(false);
@@ -52,16 +55,26 @@ const expense = reactive({
   contactLossQueryId: '',
   productLossPageId: ''
 });
-const pricing = reactive({
-  minimumMarkup: '',
-  interfacePath: '',
-  upstreamUnitPrice: '',
-  maximumBillableUnits: '',
-  evidenceType: 'supplier_verified',
-  evidence: ''
+type Operation = 'purchase' | 'expense';
+interface Attempt {
+  operation: Operation;
+  payload: string;
+  requestId: string;
+}
+const pending = new Map<Operation, Attempt>();
+const unknown = shallowRef<Attempt[]>([]);
+const submitting = ref(false);
+const baseline = { purchase: JSON.stringify(purchase), expense: JSON.stringify(expense) };
+function discard() {
+  Object.assign(purchase, JSON.parse(baseline.purchase));
+  Object.assign(expense, JSON.parse(baseline.expense));
+}
+useFormLeave({
+  state: () => submitting.value ? 'submitting' : unknown.value.length ? 'unknown' :
+    JSON.stringify(purchase) !== baseline.purchase || JSON.stringify(expense) !== baseline.expense ? 'dirty' : 'clean',
+  discard,
+  retainUnknown: true
 });
-// Retain the same key and payload after network uncertainty; edits receive a new key.
-const pending = new Map<string, { payload: string; requestId: string }>();
 const purposes: Record<string, string> = {
   sale: '销售库存',
   coverage: '补足额度',
@@ -71,28 +84,63 @@ const purposes: Record<string, string> = {
 async function refresh() {
   snapshot.value = await props.request('procurement') as ProcurementSnapshot;
 }
-async function submit(operation: 'purchase' | 'expense' | 'pricing', values: Record<string, string>) {
+async function submit(operation: Operation, values: Record<string, string>, original?: Attempt) {
   if (busy.value) return;
   busy.value = true;
+  submitting.value = true;
   error.value = '';
   notice.value = '';
   const payload = JSON.stringify(values);
-  let attempt = pending.get(operation);
+  let attempt = original ?? pending.get(operation);
   if (!attempt || attempt.payload !== payload) {
-    attempt = { payload, requestId: crypto.randomUUID() };
+    attempt = { operation, payload, requestId: crypto.randomUUID() };
     pending.set(operation, attempt);
   }
   try {
     await props.request(procurementPaths[operation], { ...values, requestId: attempt.requestId });
-    notice.value = '已记账，余额和流水已更新';
-    await refresh();
   } catch (failure) {
-    error.value = failure instanceof Error ? failure.message : '网络异常，请使用原表单重试核对';
+    if (!(failure instanceof HttpError) || failure.status >= 500) {
+      if (!unknown.value.some(item =>
+        item.requestId === attempt.requestId
+      )) unknown.value = [...unknown.value, attempt];
+    }
+    error.value = failure instanceof Error ? failure.message : '网络异常，请使用原请求核对';
+    submitting.value = false;
+    busy.value = false;
+    return;
+  }
+  unknown.value = unknown.value.filter(item =>
+    item.requestId !== attempt.requestId
+  );
+  // The acknowledged payload may be an older uncertain attempt, not the current draft.
+  const currentValues = operation === 'purchase' ? purchaseValues() : expenseValues();
+  if (JSON.stringify(currentValues) === payload) baseline[operation] = JSON.stringify(operation === 'purchase' ? purchase : expense);
+  notice.value = '已记账';
+  submitting.value = false;
+  try {
+    await refresh();
+    notice.value = '已记账，余额和流水已更新';
+  } catch (failure) {
+    error.value = failure instanceof Error ? `已记账，账务刷新失败：${failure.message}` : '已记账，请主动刷新核对账务';
   } finally {
     busy.value = false;
   }
 }
-function submitPurchase() {
+function expenseValues(): Record<string, string> {
+  return {
+    purpose: expense.purpose,
+    amount: expense.amount,
+    sourceReference: expense.sourceReference,
+    evidence: expense.evidence,
+    ...(expense.detailLossQueryId ? { detailLossQueryId: expense.detailLossQueryId } : {}),
+    ...(expense.contactLossQueryId ? { contactLossQueryId: expense.contactLossQueryId } : {}),
+    ...(expense.productLossPageId ? { productLossPageId: expense.productLossPageId } : {})
+  };
+}
+function retry(attempt: Attempt) {
+  return submit(attempt.operation, JSON.parse(attempt.payload), attempt);
+}
+function purchaseValues(): Record<string, string> {
   const values: Record<string, string> = {
     purpose: purchase.purpose,
     upstreamPoints: purchase.upstreamPoints,
@@ -101,18 +149,7 @@ function submitPurchase() {
     evidence: purchase.evidence
   };
   if (purchase.purpose !== 'sale' && purchase.expenseId) values.expenseId = purchase.expenseId;
-  return submit('purchase', values);
-}
-function submitPricing() {
-  const values: Record<string, string> = { evidence: pricing.evidence };
-  if (pricing.minimumMarkup) values.minimumMarkup = pricing.minimumMarkup;
-  if (pricing.interfacePath) {
-    values.interfacePath = pricing.interfacePath;
-    values.upstreamUnitPrice = pricing.upstreamUnitPrice;
-    values.maximumBillableUnits = pricing.maximumBillableUnits;
-    values.evidenceType = pricing.evidenceType;
-  }
-  return submit('pricing', values);
+  return values;
 }
 async function reload() {
   if (busy.value) return;
@@ -127,9 +164,28 @@ onMounted(reload);
 
 <template>
   <section class="procurement-panel" aria-labelledby="procurement-title">
-    <h2 id="procurement-title">平台采购与计价</h2>
-    <ElAlert v-if="error" :title="error" type="error" :closable="false" />
-    <ElAlert v-if="notice" :title="notice" type="success" :closable="false" />
+    <h2 id="procurement-title">平台采购与承担费用</h2>
+    <ElAlert
+      v-if="error"
+      :title="error"
+      type="error"
+      :closable="false"
+    />
+    <ElAlert
+      v-if="notice"
+      :title="notice"
+      type="success"
+      :closable="false"
+    />
+    <div v-if="unknown.length" role="alert">
+      <p>提交结果尚未确认。离开不会取消或重试请求；返回后可刷新账务，或使用原请求核对，避免重复入账。</p>
+      <div v-for="attempt in unknown" :key="attempt.requestId">
+        <p>{{ attempt.operation === 'purchase' ? '采购' : '费用' }} · {{ attempt.requestId }}</p>
+        <p>{{ purposes[JSON.parse(attempt.payload).purpose] }} · {{ JSON.parse(attempt.payload).amount }} 元 ·
+          {{ JSON.parse(attempt.payload).receiptReference || JSON.parse(attempt.payload).sourceReference }}</p>
+        <ElButton :disabled="busy" @click="retry(attempt)">使用原请求核对</ElButton>
+      </div>
+    </div>
     <template v-if="snapshot">
       <p>币种 {{ snapshot.currency }} · 入账系数 X={{ snapshot.pricing.coefficient }} · 最低加价率 {{
         snapshot.pricing.minimum_markup }}（0.01 = 1%）</p>
@@ -166,11 +222,15 @@ onMounted(reload);
         </div>
       </dl>
       <p>上游点数为本系统已登记采购累计值；实际供应商余额须结合查询扣费账单核对。</p>
-      <div class="procurement-forms">
-        <ElForm label-position="top" @submit.prevent="submitPurchase">
+      <fieldset class="procurement-forms" :disabled="busy">
+        <ElForm label-position="top" @submit.prevent="submit('purchase', purchaseValues())">
           <h3>采购入账</h3>
           <ElFormItem label="采购用途" for="purchase-purpose">
-            <select id="purchase-purpose" v-model="purchase.purpose" :disabled="busy">
+            <select
+              id="purchase-purpose"
+              v-model="purchase.purpose"
+              :disabled="busy"
+            >
               <option value="sale">销售库存</option>
               <option value="coverage">补足额度</option>
               <option value="failure">失败费用</option>
@@ -178,19 +238,43 @@ onMounted(reload);
             </select>
           </ElFormItem>
           <ElFormItem label="采购上游点数" for="purchase-points">
-            <ElInput id="purchase-points" v-model="purchase.upstreamPoints" required />
+            <ElInput
+              id="purchase-points"
+              v-model="purchase.upstreamPoints"
+              required
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElFormItem label="采购人民币金额" for="purchase-amount">
-            <ElInput id="purchase-amount" v-model="purchase.amount" required />
+            <ElInput
+              id="purchase-amount"
+              v-model="purchase.amount"
+              required
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElFormItem label="采购凭证编号" for="purchase-reference">
-            <ElInput id="purchase-reference" v-model="purchase.receiptReference" required />
+            <ElInput
+              id="purchase-reference"
+              v-model="purchase.receiptReference"
+              required
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElFormItem label="采购核对依据" for="purchase-evidence">
-            <ElInput id="purchase-evidence" v-model="purchase.evidence" required />
+            <ElInput
+              id="purchase-evidence"
+              v-model="purchase.evidence"
+              required
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElFormItem v-if="purchase.purpose !== 'sale'" label="关联已记费用" for="purchase-expense">
-            <select id="purchase-expense" v-model="purchase.expenseId" :disabled="busy">
+            <select
+              id="purchase-expense"
+              v-model="purchase.expenseId"
+              :disabled="busy"
+            >
               <option value="">{{ purchase.purpose === 'coverage' ? '本次确认新费用' : '请先登记费用并选择关联' }}</option>
               <template v-for="item in snapshot.expenses" :key="item.id">
                 <option v-if="item.purpose === purchase.purpose" :value="item.id">{{ item.source_reference }} · {{
@@ -201,77 +285,67 @@ onMounted(reload);
           <p>关联费用须与采购用途一致；已记费用可关联多笔充值，只增加资金支出与上游点数。充值合计与费用的差额单独展示供核对。</p>
           <ElButton native-type="submit" :disabled="busy">确认采购入账</ElButton>
         </ElForm>
-        <ElForm label-position="top" @submit.prevent="submit('expense', {
-          purpose: expense.purpose,
-          amount: expense.amount,
-          sourceReference: expense.sourceReference,
-          evidence: expense.evidence,
-          ...(expense.detailLossQueryId ? { detailLossQueryId: expense.detailLossQueryId } : {}),
-          ...(expense.contactLossQueryId ? { contactLossQueryId: expense.contactLossQueryId } : {}),
-          ...(expense.productLossPageId ? { productLossPageId: expense.productLossPageId } : {})
-        })">
+        <ElForm label-position="top" @submit.prevent="submit('expense', expenseValues())">
           <h3>平台承担费用</h3>
           <ElFormItem label="费用用途" for="expense-purpose">
-            <select id="expense-purpose" v-model="expense.purpose" :disabled="busy">
+            <select
+              id="expense-purpose"
+              v-model="expense.purpose"
+              :disabled="busy"
+            >
               <option value="failure">失败费用</option>
               <option value="excess">超额费用</option>
               <option value="coverage">补足额度</option>
             </select>
           </ElFormItem>
           <ElFormItem label="费用人民币金额" for="expense-amount">
-            <ElInput id="expense-amount" v-model="expense.amount" required />
+            <ElInput
+              id="expense-amount"
+              v-model="expense.amount"
+              required
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElFormItem label="费用来源编号" for="expense-reference">
-            <ElInput id="expense-reference" v-model="expense.sourceReference" required />
+            <ElInput
+              id="expense-reference"
+              v-model="expense.sourceReference"
+              required
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElFormItem label="费用核对依据" for="expense-evidence">
-            <ElInput id="expense-evidence" v-model="expense.evidence" required />
+            <ElInput
+              id="expense-evidence"
+              v-model="expense.evidence"
+              required
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElFormItem label="关联企业详情损耗查询标识" for="expense-detail-loss">
-            <ElInput id="expense-detail-loss" v-model="expense.detailLossQueryId" :disabled="busy" />
+            <ElInput
+              id="expense-detail-loss"
+              v-model="expense.detailLossQueryId"
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElFormItem label="关联联系人页损耗查询标识" for="expense-contact-loss">
-            <ElInput id="expense-contact-loss" v-model="expense.contactLossQueryId" :disabled="busy" />
+            <ElInput
+              id="expense-contact-loss"
+              v-model="expense.contactLossQueryId"
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElFormItem label="关联产品名单损耗页标识" for="expense-product-loss">
-            <ElInput id="expense-product-loss" v-model="expense.productLossPageId" :disabled="busy" />
+            <ElInput
+              id="expense-product-loss"
+              v-model="expense.productLossPageId"
+              :disabled="busy"
+            />
           </ElFormItem>
           <ElButton native-type="submit" :disabled="busy">确认费用</ElButton>
         </ElForm>
-        <ElForm label-position="top" @submit.prevent="submitPricing">
-          <h3>基础计价配置</h3>
-          <p>未配置接口保持未配置；请按已核实商务价格填写，勿录入演示值。查询报价及调用仍须经过后续查询流程。</p>
-          <ElFormItem label="最低加价率" for="minimum-markup">
-            <ElInput id="minimum-markup" v-model="pricing.minimumMarkup" placeholder="留空保持当前值" />
-          </ElFormItem>
-          <ElFormItem label="接口路径" for="price-path">
-            <ElInput id="price-path" v-model="pricing.interfacePath" />
-          </ElFormItem>
-          <ElFormItem label="上游接口单价（上游点数/计费单位）" for="unit-price">
-            <ElInput id="unit-price" v-model="pricing.upstreamUnitPrice" />
-          </ElFormItem>
-          <ElFormItem label="已核实本页最大计费量" for="billable-units">
-            <ElInput id="billable-units" v-model="pricing.maximumBillableUnits" />
-          </ElFormItem>
-          <ElFormItem label="计价核实依据" for="pricing-evidence">
-            <ElInput id="pricing-evidence" v-model="pricing.evidence" required />
-          </ElFormItem>
-          <ElFormItem label="计价依据类型" for="pricing-evidence-type">
-            <select id="pricing-evidence-type" v-model="pricing.evidenceType">
-              <option value="supplier_verified">已核实供应商商务依据</option>
-              <option value="controlled_test">受控测试价格（生产环境禁止）</option>
-            </select>
-          </ElFormItem>
-          <ElButton native-type="submit" :disabled="busy">保存计价配置</ElButton>
-        </ElForm>
-      </div>
-      <h3>已配置接口单价</h3>
-      <p v-if="!snapshot.prices.length">接口单价未配置，付费查询不可执行。</p>
-      <ul>
-        <li v-for="item in snapshot.prices" :key="item.interface_path">{{ item.interface_path }}：{{
-          item.upstream_unit_price
-          }} 上游点数/计费单位；本页最大 {{ item.maximum_billable_units }}；版本 {{ item.version }}</li>
-      </ul>
+      </fieldset>
       <h3>费用来源与核对</h3>
       <div class="procurement-scroll">
         <table>
@@ -369,6 +443,13 @@ onMounted(reload);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
+}
+
+.procurement-forms {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 .procurement-balances dd {

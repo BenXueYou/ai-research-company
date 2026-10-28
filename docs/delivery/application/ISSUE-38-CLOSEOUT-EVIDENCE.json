@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-28",
+  "databaseName": "issue38_84e7fde0849145e5907f17786ea18fc9_test",
+  "port": 3498,
+  "rows": [
+    {
+      "id": "ec5e62ac-b91d-49ad-a054-4512ad1bfa62",
+      "accountId": "50a5d80e-5987-459e-99b8-235ac9d2e190",
+      "parent": "1e371eff-af5b-466e-997e-1d4b51fde3aa",
+      "name": "Direct distribution"
+    },
+    {
+      "id": "4f03cc8d-8e61-496b-855f-d9f239b06a82",
+      "accountId": "ae14d5e3-a400-455f-ab66-d67a3ae26c65",
+      "parent": "1e371eff-af5b-466e-997e-1d4b51fde3aa",
+      "name": "Direct terminal missing"
+    },
+    {
+      "id": "8f91a6aa-a397-468e-b101-0024dfdc784b",
+      "accountId": "714a69de-b080-4480-9126-a0c588e990be",
+      "parent": "ec5e62ac-b91d-49ad-a054-4512ad1bfa62",
+      "name": "Second distribution"
+    },
+    {
+      "id": "c5c0e353-9865-49b6-b3d9-d51caca7041d",
+      "accountId": "d718b302-0fc8-4823-8cd6-d98d8afef94b",
+      "parent": "8f91a6aa-a397-468e-b101-0024dfdc784b",
+      "name": "Disabled deep terminal"
+    }
+  ],
+  "browserWrites": [],
+  "direct": {
+    "balance": "111.1234",
+    "queryFrozen": "11.0001",
+    "salesReserved": "3.0002",
+    "available": "97.1231"
+  },
+  "deepDisabled": {
+    "balance": "333.3456",
+    "queryFrozen": "33.0003",
+    "salesReserved": "5.0004",
+    "available": "295.3449"
+  },
+  "checked": [
+    "breadcrumbs parent return",
+    "deep link reload",
+    "history back forward",
+    "cached page return without reports refetch",
+    "loading real response",
+    "null and absent field anomaly",
+    "503 failure and manual recovery",
+    "role gates",
+    "must change gate",
+    "cross level write denial",
+    "no browser POST or point ledger writes"
+  ],
+  "simulated": [
+    "null and absent report fields",
+    "503 report failure"
+  ],
+  "databaseCleanup": "finally drops only the created database"
+}

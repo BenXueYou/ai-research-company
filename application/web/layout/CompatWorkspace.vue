@@ -41,8 +41,6 @@
       :can-maintain="session.role === 'admin'"
       :request="request"
     />
-    <PlatformProcurement id="compat-settings" v-if="session.role === 'platform'" :request="request" />
-    <CoefficientChanges v-if="session.role === 'platform'" :request="request" />
     <PointOrders
       id="compat-orders"
       v-if="session.role === 'distributor'"
@@ -59,8 +57,6 @@ import OrganizationOpening from '../pages/organizations/OrganizationOpening.vue'
 import MemberManagement from '../pages/organizations/MemberManagement.vue';
 import CompanySearch from '../pages/companies/CompanySearch.vue';
 import ProductSearch from '../pages/companies/ProductSearch.vue';
-import PlatformProcurement from '../pages/commerce/PlatformProcurement.vue';
-import CoefficientChanges from '../pages/commerce/CoefficientChanges.vue';
 import CoefficientNotice from '../pages/commerce/components/CoefficientNotice.vue';
 import PointOrders from '../pages/commerce/PointOrders.vue';
 import UsageReports from '../pages/reports/UsageReports.vue';

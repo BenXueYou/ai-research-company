@@ -47,3 +47,12 @@ application/.scratch/issue43-*
 
 !application/tests/browser/issue34-layout.spec.ts
 !application/tests/browser/issue34-contract.spec.ts
+!application/tests/browser/platform-integration-*.spec.ts
+application/.scratch/platform-integration-*
+!application/tests/issue47-overview.spec.ts
+
+# Issue 40 order regression sources used by the isolated verification runner.
+!application/tests/point-orders.test.ts
+!application/tests/point-transfers.test.ts
+!application/tests/point-refunds.test.ts
+!application/tests/browser/point-orders.spec.ts

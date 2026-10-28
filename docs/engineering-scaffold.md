@@ -28,7 +28,11 @@
 
 迁移下一域前先从 `router/index.ts` 和兼容容器核对该域是否重复挂载，确定表单、结果未确认请求及页面缓存边界，再记录前后请求字段和值来源。当前批次的前端核对与未验证范围见[对账页迁移记录](delivery/application/RECONCILIATION-ROUTE-MIGRATION.md)。平台其他业务页、分销与终端独立页仍按[控制台页面迁移 Spec](../需求设计/10-控制台角色导航与页面迁移Spec.md) 分批完成。
 
+本轮 #40/#41/#42 共享集成：平台 `/platform/ledger` 使用 `PlatformPointOrdersPage`，新增 `/platform/ledger/procurement` 采购与费用页面，`/platform/settings` 保留独立计价与系数设置。采购与系数的旧兼容挂载已移除，分销订单与终端兼容模块继续保留。缓存仅包含明确组件名，以会话 generation 销毁；账号设置返回保留合法业务来源的 query/hash。Nest 与 Vite 白名单同步覆盖采购及已存在的邮件设置、业务数据深链。公共 `formLeave` 已可用，其接入契约与验证见 [#35 现状复核](delivery/application/ISSUE-35-DEPENDENCY-AUDIT.md)和[本轮汇总](delivery/application/PARALLEL-PLATFORM-INTEGRATION-2026-10-28.md)。这些接入不表示 #40 待补库存业务状态或全角色兼容退出已完成。
+
 ## 工具链与命令
+
+`/platform/overview` 已由 `pages/overview/PlatformOverviewPage.vue` 承载平台只读运营概览，库存/上游历史快照/查询及订单待办复用原 GET 接口，App 不再把概览作为兼容路径挂载。页面离开销毁、返回重新读取，不增加业务写入或上游更新；四个快捷入口、角色门禁及 Nest/Vite History 验证见 [#47 交付记录](delivery/application/ISSUE-47-COMPLETION.md)。订单摘要已接入 #40 最终 `awaiting_stock` 契约，不表示其他角色兼容模块全部退出。
 
 所有 npm 命令在 `application/` 执行。项目使用 npm 和已提交的 `package-lock.json`；当前已验证的本地环境为 Node.js 22.14.0 / npm 10.9.2，这只是复验参考，不限定其他版本。安装使用 `npm ci`，依赖变更同时提交 `package.json` 和锁文件。前后端均使用 TypeScript；应用栈为 Vue 3 + Vite + Element Plus / NestJS / PostgreSQL，部分流程使用 Redis。
 

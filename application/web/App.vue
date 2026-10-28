@@ -96,7 +96,7 @@
           </el-form>
         </section>
         <RouterView v-if="session && !session.mustChange" v-slot="{ Component }">
-          <KeepAlive include="ReconciliationPage,PointOrders,PlatformSettingsPage,PlatformOrganizationsPage,UMailResourceSettings,PlatformEmailQuota">
+          <KeepAlive :key="generation" include="ReconciliationPage,PlatformPointOrdersPage,PlatformProcurement,PlatformSettingsPage,PlatformOrganizationsPage,UMailResourceSettings,PlatformEmailQuota">
             <component
               :is="Component"
               :request="request"
@@ -163,7 +163,7 @@ const menu = computed(() =>
 );
 const currentTitle = computed(() => route.meta.title ?? '工作台');
 const isCompatPath = computed(() => menu.value.some(item =>
-  item.path === path.value && !['/platform/reconciliation', '/platform/organizations', '/platform/ledger', '/platform/settings'].includes(item.path)
+  item.path === path.value && !['/platform/overview', '/platform/reconciliation', '/platform/organizations', '/platform/ledger', '/platform/settings'].includes(item.path)
 ));
 const formLeave = provideFormLeave(router, () =>
   !!session.value && !session.value.mustChange && !navigatingAfterLogin.value
@@ -182,7 +182,7 @@ function navigate(next: string) {
   if (!session.value || session.value.mustChange) return;
   if (!router.resolve(next).matched.some(item => item.meta.roles && (item.meta.roles as string[]).includes(session.value?.role ?? ''))) return;
   if (next === '/account/settings' && path.value !== next) {
-    previousPath.value = isBusinessPath(path.value, session.value.role) ? path.value : defaultPath(session.value.role);
+    previousPath.value = isBusinessPath(path.value, session.value.role) ? route.fullPath : defaultPath(session.value.role);
   }
   void router.push(next);
 }
@@ -249,7 +249,7 @@ async function changePassword() {
 }
 function openSettings() {
   if (path.value === '/account/settings' || busy.value || !session.value) return;
-  previousPath.value = isBusinessPath(path.value, session.value.role) ? path.value : defaultPath(session.value.role);
+  previousPath.value = isBusinessPath(path.value, session.value.role) ? route.fullPath : defaultPath(session.value.role);
   clearPasswords();
   error.value = '';
   navigate('/account/settings');

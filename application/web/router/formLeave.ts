@@ -54,7 +54,8 @@ export function provideFormLeave(router: Router, enabled: () => boolean) {
     if (dirty.length && !window.confirm(dirty[0].message ?? '您有未提交的修改。确定放弃并离开吗？取消将继续编辑。')) return undefined;
     return () => {
       for (const entry of dirty) {
-        if (entry.state() === 'dirty') entry.discard();
+        // The committed route can already hide the form and report it as clean.
+        if (!['submitting', 'unknown'].includes(entry.state())) entry.discard();
       }
     };
   }

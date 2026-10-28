@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID, randomBytes } from 'node:crypto';
 import { resolve } from 'node:path';
+import { writeFileSync } from 'node:fs';
 import pg from 'pg';
 import { chromium, expect } from '@playwright/test';
 import { createApplication } from '../server/app.js';
@@ -18,7 +19,8 @@ test('issue38 real accounts: association, hierarchy, missing/error, read-only an
   const pool = new pg.Pool({ connectionString: url.toString() });
   process.env.ORG_CONTACT_KEY = randomBytes(32).toString('hex');
   process.env.SMTP_CREDENTIAL_KEY = randomBytes(32).toString('hex');
-  const origin = 'http://127.0.0.1:3398';
+  const port = Number(process.env.ISSUE38_PORT ?? 3398);
+  const origin = `http://127.0.0.1:${port}`;
   let app: Awaited<ReturnType<typeof createApplication>> | undefined;
   let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
   try {
@@ -51,8 +53,8 @@ test('issue38 real accounts: association, hierarchy, missing/error, read-only an
     const salesId = randomUUID();
     await pool.query(`INSERT INTO accounts(id,organization_id,email,password_hash,role,must_change) VALUES($1,$2,'sales38@test.invalid','hash','sales',false)`, [salesId,rows[1].id]);
     await pool.query('INSERT INTO sessions(token_hash,account_id,csrf_hash) VALUES($1,$2,$3)', [digest('issue38-sales'),salesId,digest('csrf')]);
-    app = await createApplication(pool, origin, false, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, resolve('.scratch/issue38-web'));
-    await app.listen(3398, '127.0.0.1');
+    app = await createApplication(pool, origin, false, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, resolve(process.env.ISSUE38_WEB_DIR ?? '.scratch/issue38-web'));
+    await app.listen(port, '127.0.0.1');
     const get = (path: string, token = actors[0].token) => fetch(`${origin}/api/${path}`, { headers: { Cookie: `identity_session=${token}` } });
     const post = (path: string, data: object, token = actors[0].token) => fetch(`${origin}/api/${path}`, {
       method: 'POST', headers: { Cookie: `identity_session=${token}`, Origin: origin, 'Content-Type': 'application/json', 'X-CSRF-Token': 'csrf' }, body: JSON.stringify(data)
@@ -89,7 +91,11 @@ test('issue38 real accounts: association, hierarchy, missing/error, read-only an
     await context.addCookies([{name:'identity_session',value:actors[0].token,url:origin}]);
     const page = await context.newPage();
     const writes: string[] = [];
+    const reads: string[] = [];
     page.on('request', request => { if(request.method() === 'POST') writes.push(request.url()); });
+    page.on('request', request => {
+      if (request.method() === 'GET' && /\/api\/(reports|organizations)$/.test(request.url())) reads.push(new URL(request.url()).pathname);
+    });
     await page.goto(origin+'/platform/organizations');
     const direct = page.locator('.child-row').filter({hasText:'Direct distribution'});
     await expect(direct.getByText('111.1234',{exact:true})).toBeVisible();
@@ -99,6 +105,9 @@ test('issue38 real accounts: association, hierarchy, missing/error, read-only an
     await expect(page.locator('.child-row').filter({hasText:'Direct terminal missing'}).getByText('暂无点数账户数据')).toBeVisible();
     await expect(page.locator('.child-row')).toHaveCount(2);
     await page.getByRole('link',{name:'下级账户',exact:true}).click();
+    const breadcrumb = page.getByLabel('面包屑', { exact: true });
+    await expect(breadcrumb.locator('[aria-current="page"]')).toHaveText('下级账户');
+    await expect(breadcrumb.getByRole('link', { name: '直属下级', exact: true })).toHaveAttribute('href', '/platform/organizations');
     await expect(page.locator('.child-row')).toHaveCount(4);
     const deep = page.locator('.child-row').filter({hasText:'Disabled deep terminal'});
     await expect(deep.getByText('295.3449',{exact:true})).toBeVisible();
@@ -108,22 +117,68 @@ test('issue38 real accounts: association, hierarchy, missing/error, read-only an
     await expect(deep).toContainText('第3层下级');
     await expect(deep).toContainText('Second distribution');
     await expect(page.getByRole('button',{name:/重置|停用组织|恢复组织/})).toHaveCount(0);
+    assert.deepEqual(reads.sort(), ['/api/organizations', '/api/reports']);
+    await breadcrumb.getByRole('link', { name: '直属下级', exact: true }).click();
+    await expect(page.locator('.child-row')).toHaveCount(2);
+    await page.getByRole('link', { name: '下级账户', exact: true }).click();
+    await page.getByRole('button', { name: '平台设置', exact: false }).click();
+    await page.getByRole('link', { name: '计价配置', exact: true }).click();
+    await expect(page).toHaveURL(origin + '/platform/settings');
+    await expect(page.getByRole('button', { name: '刷新计价设置', exact: true })).toBeEnabled();
+    await expect(page.getByRole('button', { name: '刷新系数', exact: false })).toBeEnabled();
+    await page.getByRole('navigation', { name: '主菜单', exact: true }).getByRole('link', { name: '下级管理', exact: true }).click();
+    await expect(page.locator('.child-row')).toHaveCount(2);
+    await page.getByRole('link', { name: '下级账户', exact: true }).click();
+    await expect(deep.getByText('295.3449', { exact: true })).toBeVisible();
+    assert.equal(reads.filter(path => path === '/api/reports').length, 1, 'returning to cached accounts must not refetch');
     await page.reload();
     await expect(deep.getByText('333.3456',{exact:true})).toBeVisible();
+    await expect(breadcrumb.locator('[aria-current="page"]')).toHaveText('下级账户');
     await page.goBack();
     await expect(page.locator('.child-row')).toHaveCount(2);
     await page.goForward();
     await expect(page.locator('.child-row')).toHaveCount(4);
+    // Delay a real response to observe loading and prevent duplicate refreshes.
+    let releaseReport!: () => void;
+    const reportGate = new Promise<void>(resolveGate => { releaseReport = resolveGate; });
+    await page.route('**/api/reports', async route => {
+      await reportGate;
+      await route.continue();
+    });
+    await page.getByRole('button', { name: '刷新账户', exact: true }).click();
+    await expect(page.getByText('账户读取中…', { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: '刷新账户', exact: true })).toBeDisabled();
+    await expect(page.locator('.child-row')).toHaveCount(0);
+    releaseReport();
+    await expect(deep.getByText('295.3449', { exact: true })).toBeVisible();
+    await page.unroute('**/api/reports');
+    // Controlled contract anomaly: absent individual fields must not become zero.
+    await page.route('**/api/reports', async route => {
+      const response = await route.fetch();
+      const snapshot = await response.json();
+      const account = snapshot.accounts.find((item: any) => item.organizationId === rows[0].id);
+      account.balance = null;
+      delete account.available;
+      await route.fulfill({ response, json: snapshot });
+    });
+    await page.getByRole('button', { name: '刷新账户', exact: true }).click();
+    await expect(direct.getByText('数据缺失', { exact: true })).toHaveCount(2);
+    await expect(direct.getByText('11.0001', { exact: true })).toBeVisible();
+    await expect(direct.getByText('3.0002', { exact: true })).toBeVisible();
+    await page.unroute('**/api/reports');
     // Failure injection only: success paths above use real HTTP/database.
     await page.route('**/api/reports',route => route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({message:'controlled failure'})}));
     await page.getByRole('button',{name:'刷新账户',exact:true}).click();
     await expect(page.getByText('下级账户读取失败，请刷新重试。')).toBeVisible();
     await expect(page.locator('.child-row')).toHaveCount(0);
-    await page.getByRole('link',{name:'直属下级',exact:true}).click();
+    await page.getByRole('navigation', { name: '下级管理页面', exact: true }).getByRole('link', { name: '直属下级', exact: true }).click();
     await expect(page.getByText('点数读取失败，请刷新重试。')).toHaveCount(2);
     await page.unroute('**/api/reports');
     await page.getByRole('button',{name:'刷新列表',exact:true}).click();
     await expect(direct.getByText('97.1231',{exact:true})).toBeVisible();
+    await page.getByRole('link', { name: '下级账户', exact: true }).click();
+    await expect(deep.getByText('295.3449', { exact: true })).toBeVisible();
+    if (process.env.ISSUE38_SCREENSHOT) await page.screenshot({ path: process.env.ISSUE38_SCREENSHOT, fullPage: true });
     assert.deepEqual(writes,[]);
     for (const actor of [actors[1],actors[2],{token:'issue38-sales',role:'sales'}]) {
       const denied = await browser.newContext();
@@ -147,6 +202,13 @@ test('issue38 real accounts: association, hierarchy, missing/error, read-only an
       assert.equal((await pool.query(`SELECT count(*) FROM ${table}`)).rows[0].count,'0');
     console.log('Association UUIDs: '+JSON.stringify(rows));
     console.log('Evidence: distinct organization/account UUIDs; direct 111.1234/11.0001/3.0002/97.1231; deep disabled 333.3456/33.0003/5.0004/295.3449; no browser POST; no state/reset writes. Database '+databaseName);
+    if (process.env.ISSUE38_EVIDENCE) writeFileSync(process.env.ISSUE38_EVIDENCE, JSON.stringify({
+      date: '2026-10-28', databaseName, port, rows, browserWrites: writes,
+      direct: { balance: '111.1234', queryFrozen: '11.0001', salesReserved: '3.0002', available: '97.1231' },
+      deepDisabled: { balance: '333.3456', queryFrozen: '33.0003', salesReserved: '5.0004', available: '295.3449' },
+      checked: ['breadcrumbs parent return', 'deep link reload', 'history back forward', 'cached page return without reports refetch', 'loading real response', 'null and absent field anomaly', '503 failure and manual recovery', 'role gates', 'must change gate', 'cross level write denial', 'no browser POST or point ledger writes'],
+      simulated: ['null and absent report fields', '503 report failure'], databaseCleanup: 'finally drops only the created database'
+    }, null, 2) + '\n');
   } finally {
     await browser?.close();
     await app?.close();

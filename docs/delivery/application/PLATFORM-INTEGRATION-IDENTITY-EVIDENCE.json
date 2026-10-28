@@ -1,0 +1,49 @@
+{
+  "database": "platform_integration_test",
+  "note": "Final real browser fixture; no password/session tokens included",
+  "accounts": [
+    {
+      "account_id": "e276159a-5114-4153-9115-dbb1e430616b",
+      "organization_id": "9417f6c4-296e-4224-bfdb-6943c7641ade",
+      "role": "admin",
+      "username": null,
+      "email": "admin35@example.com",
+      "must_change": false,
+      "kind": "terminal"
+    },
+    {
+      "account_id": "af7a8a67-c1df-4caa-9992-a55d61a4bf3f",
+      "organization_id": "25d06b71-7e1a-40dd-9c1f-1124eaadba9c",
+      "role": "distributor",
+      "username": null,
+      "email": "distributor35@example.com",
+      "must_change": false,
+      "kind": "distributor"
+    },
+    {
+      "account_id": "a2d02902-1641-4941-a7ba-86722939eaed",
+      "organization_id": "19428b34-934d-45aa-b55b-824df2d3b095",
+      "role": "platform",
+      "username": "super_admin",
+      "email": null,
+      "must_change": false,
+      "kind": "platform"
+    },
+    {
+      "account_id": "bf7fd62f-adef-41c3-8e75-7fa5c02ba55f",
+      "organization_id": "9417f6c4-296e-4224-bfdb-6943c7641ade",
+      "role": "sales",
+      "username": null,
+      "email": "sales35@example.com",
+      "must_change": false,
+      "kind": "terminal"
+    }
+  ],
+  "checks": {
+    "differentAccountOrganizationIds": true
+  },
+  "publicBrowserTests": 13,
+  "additionalFormLeaveTests": 2,
+  "realIdentityTests": 12,
+  "policyTests": 3
+}

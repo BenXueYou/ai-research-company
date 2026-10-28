@@ -262,3 +262,20 @@ Vue Router 负责 URL 匹配、页面选择和导航，不替代 Vue 应用根�
 ### 平台交易利润与账务流水实施记录（2026-10-28，Issue #44）
 
 `/platform/ledger/profit` 与 `/platform/ledger/flows` 由独立报表页面承载，沿用既有报表范围、账务口径及自有账务 CSV 导出。平台旧 `UsageReports` 兼容挂载及 App 内重复导航已移除；分销、终端仍使用该共享组件，兼容容器继续保留。只读页离开销毁、返回重新读取，同组件页别切换复用当前快照，不增加业务写入或收费操作。开发与生产静态入口直达刷新、公共面包屑和菜单、四角色及强制改密、浏览器 CSV 逐列数据库对照已实际验证，证据与边界见 [Issue #44 交付记录](../docs/delivery/application/ISSUE-44-PROGRESS.md)。本地完成不代表生产部署或其他兼容模块退出。
+
+
+### 平台采购与承担费用实施记录（2026-10-28，Issue #41）
+
+`/platform/ledger/procurement` 已由真实采购页面承载采购入账、承担费用、关联核对与各自流水；旧采购兼容挂载移除，完整计价入口在平台设置。未提交、提交中与结果未知接入公共离开保护及限定页面缓存，主动核对保持原载荷和 requestId，不因切页返回重发。真实浏览器/HTTP/PostgreSQL 验证的字段来源、不同损耗及费用 ID、库存成本、去重、余额流水、权限及未验证边界见 [#41 交付记录](../docs/delivery/application/ISSUE-41-COMPLETION.md)。本记录不表示生产部署或其他角色兼容模块全部退出。
+
+### 平台计价与换算系数设置实施记录（2026-10-28，Issue #42）
+
+`/platform/settings` 由 `PlatformSettingsPage` 组合计价配置与系数通知/生效，旧兼容系数挂载已随公共集成移除，跨角色系数通知继续保留。未提交、提交中和结果未知接入公共离开机制与限定页面缓存；返回不重放保存、发布或生效，用户可用原幂等请求核实未知结果。保留原字段来源、留空条件、覆盖计算和旧授权系数。生产构建入口与 Vite 开发入口的真实 HTTP/PostgreSQL 浏览器验收及尚未覆盖边界见 [Issue #42 交付记录](../docs/delivery/application/ISSUE-42-COMPLETION.md)。
+
+### 平台点数订单页面实施记录（2026-10-28，Issue #40）
+
+`/platform/ledger` 由 `PlatformPointOrdersPage` 承载平台订单，复用共享订单组件，分销入口继续保留。平台草稿、提交中与结果未知接入公共离开保护及限定缓存；原操作载荷和 requestId 随未知上下文保留，返回不重发。2026-10-28 本轮按已批准 PRD R17/R44 补齐缺库存足额收款登记、零预留待补、补足后逐单整单原子预留及完整划拨，并保留缺库存来源以拒绝该分支退款。平台和分销真实浏览器/HTTP/PostgreSQL 已验证锁价履约、采购涨价、库存竞争、停用恢复、重复及丢响应幂等、普通退款和权限拒绝，见 [#40 交付记录](../docs/delivery/application/ISSUE-40-COMPLETION.md)与[接口交接](../docs/delivery/application/ISSUE-40-SHORTAGE-CONTRACT.md)。这不表示分销独立页面迁移或全角色兼容容器退出已完成。
+
+### 平台运营概览实施记录（2026-10-28，Issue #47）
+
+`/platform/overview` 已由 `PlatformOverviewPage` 真实路由承载。复用原 GET 展示平台内部点库存、查询冻结和销售预留、上游点数及有效期/快照时间、三类 pending 查询、awaiting_stock 待补与 reserved 待履约订单，待收款独立展示。加载、未配置、无快照、库存缺失和局部失败均明确提示。四个快捷入口到达已交付的开户、订单、采购和查询核对页面，页面不提供业务提交或自动上游更新。已确认 #40 最终稳定契约和完成证据，接入后完整真实浏览器/HTTP/PostgreSQL 专项重跑通过，包含 Nest/Vite 深链刷新、四角色/强制改密、面包屑与菜单、账务不变及供应商调用0。参数来源、完整命令与未验证范围见 [#47 交付记录](../docs/delivery/application/ISSUE-47-COMPLETION.md)。概览离开销毁、返回重新读取；App 已排除该兼容路径，分销/终端兼容模块继续保留。

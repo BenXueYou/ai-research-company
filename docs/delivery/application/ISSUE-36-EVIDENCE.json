@@ -1,0 +1,36 @@
+{
+  "runId": "db8ae1abd7",
+  "databaseName": "issue36_db8ae1abd7_test",
+  "container": "codex-issue36-db8ae1abd7",
+  "checks": [
+    {
+      "name": "Vue typecheck",
+      "status": "passed"
+    },
+    {
+      "name": "isolated server compilation",
+      "status": "passed"
+    },
+    {
+      "name": "isolated Vite build",
+      "status": "passed"
+    },
+    {
+      "name": "built Chromium + HTTP + PostgreSQL",
+      "status": "passed"
+    },
+    {
+      "name": "development Chromium + HTTP + PostgreSQL",
+      "status": "passed"
+    }
+  ],
+  "databasePort": 54588,
+  "built": {
+    "httpPort": 54596,
+    "vitePort": null
+  },
+  "development": {
+    "httpPort": 52940,
+    "vitePort": 52941
+  }
+}

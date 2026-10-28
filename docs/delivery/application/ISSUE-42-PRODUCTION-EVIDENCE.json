@@ -1,0 +1,185 @@
+{
+  "database": "/issue42_bec2d287bad54e0aaef0b2e2bb454d20_test",
+  "ids": {
+    "platform": "14b617be-3e76-47b4-90c8-020dad821ff2",
+    "distributor": "3dfe1047-83ce-4fec-aaaf-974cedde859a",
+    "terminal": "4976e0b3-2472-4818-8458-48f22ec69c26",
+    "actor": "eeac46e1-4728-48ca-85e5-a42841a95859",
+    "terminalActor": "670915df-50b2-4b03-9bee-ae88a622f065",
+    "candidate": "fa2b4e0e-18ee-4cf2-9835-ac1edfbc54e3",
+    "profile": "87e361de-b865-4d74-84ec-4ad31229d9fb",
+    "query": "ec962b1a-04f4-4888-ab80-42730abb0a85",
+    "oldQuote": "a32e1b95-ffc2-4a14-840f-238f3167f885",
+    "change": "3bfb8c95-16c9-4b58-9625-691dcfe202fd",
+    "announcementRequest": "c0c00b95-8223-48f3-896c-5c73562dbdbd"
+  },
+  "posts": [
+    {
+      "path": "/api/procurement/pricing",
+      "body": {
+        "evidence": "合同42",
+        "minimumMarkup": "0.0200",
+        "requestId": "56d98b29-cb74-437f-b7b0-18f6fffb9a0e"
+      }
+    },
+    {
+      "path": "/api/procurement/pricing",
+      "body": {
+        "evidence": "合同42",
+        "minimumMarkup": "0.0200",
+        "interfacePath": "/v2/company",
+        "upstreamUnitPrice": "2.1234",
+        "maximumBillableUnits": "9",
+        "evidenceType": "supplier_verified",
+        "requestId": "936105fb-54f5-4564-9d2c-0036246985d6"
+      }
+    },
+    {
+      "path": "/api/procurement/pricing",
+      "body": {
+        "evidence": "合同42",
+        "minimumMarkup": "0.0200",
+        "interfacePath": "/v2/company",
+        "upstreamUnitPrice": "2.1234",
+        "maximumBillableUnits": "9",
+        "evidenceType": "supplier_verified",
+        "requestId": "936105fb-54f5-4564-9d2c-0036246985d6"
+      }
+    },
+    {
+      "path": "/api/coefficient/announcements",
+      "body": {
+        "requestId": "c0c00b95-8223-48f3-896c-5c73562dbdbd",
+        "coefficient": "0.5000",
+        "effectiveAt": "2026-10-28T11:17:17.000Z",
+        "notice": "全链通知42"
+      }
+    },
+    {
+      "path": "/api/coefficient/announcements",
+      "body": {
+        "requestId": "c0c00b95-8223-48f3-896c-5c73562dbdbd",
+        "coefficient": "0.5000",
+        "effectiveAt": "2026-10-28T11:17:17.000Z",
+        "notice": "全链通知42"
+      }
+    },
+    {
+      "path": "/api/coefficient/activate",
+      "body": {
+        "id": "3bfb8c95-16c9-4b58-9625-691dcfe202fd"
+      }
+    },
+    {
+      "path": "/api/coefficient/activate",
+      "body": {
+        "id": "3bfb8c95-16c9-4b58-9625-691dcfe202fd"
+      }
+    },
+    {
+      "path": "/api/coefficient/activate",
+      "body": {
+        "id": "3bfb8c95-16c9-4b58-9625-691dcfe202fd"
+      }
+    },
+    {
+      "path": "/api/procurement/pricing",
+      "body": {
+        "requestId": "65ea0f4d-9262-4c8f-a517-8cc6e1f3b478",
+        "minimumMarkup": "0.05",
+        "evidence": "forbidden"
+      }
+    },
+    {
+      "path": "/api/coefficient/announcements",
+      "body": {
+        "requestId": "14a01f92-56b6-4393-85dd-47497b992313",
+        "coefficient": "0.4",
+        "effectiveAt": "2026-10-28T11:18:20.249Z",
+        "notice": "forbidden"
+      }
+    },
+    {
+      "path": "/api/coefficient/activate",
+      "body": {
+        "id": "3bfb8c95-16c9-4b58-9625-691dcfe202fd"
+      }
+    },
+    {
+      "path": "/api/procurement/pricing",
+      "body": {
+        "requestId": "b777f5c9-86b4-41f7-942f-1b20133a43bf",
+        "minimumMarkup": "0.05",
+        "evidence": "forbidden"
+      }
+    },
+    {
+      "path": "/api/coefficient/announcements",
+      "body": {
+        "requestId": "6500b48c-d7d3-4562-938a-5734f7a63fae",
+        "coefficient": "0.4",
+        "effectiveAt": "2026-10-28T11:18:21.324Z",
+        "notice": "forbidden"
+      }
+    },
+    {
+      "path": "/api/coefficient/activate",
+      "body": {
+        "id": "3bfb8c95-16c9-4b58-9625-691dcfe202fd"
+      }
+    },
+    {
+      "path": "/api/procurement/pricing",
+      "body": {
+        "requestId": "9f2a82d3-9a9f-4cd7-a4f5-a9a76197f3cf",
+        "minimumMarkup": "0.05",
+        "evidence": "forbidden"
+      }
+    },
+    {
+      "path": "/api/coefficient/announcements",
+      "body": {
+        "requestId": "caa2e87e-4443-473b-bbaf-5776e4e6efb4",
+        "coefficient": "0.4",
+        "effectiveAt": "2026-10-28T11:18:22.311Z",
+        "notice": "forbidden"
+      }
+    },
+    {
+      "path": "/api/coefficient/activate",
+      "body": {
+        "id": "3bfb8c95-16c9-4b58-9625-691dcfe202fd"
+      }
+    }
+  ],
+  "coefficientReads": 10,
+  "upstreamCalls": 2,
+  "price": {
+    "interface_path": "/v2/company",
+    "upstream_unit_price": "2.1234",
+    "maximum_billable_units": 9,
+    "evidence": "合同42",
+    "evidence_type": "supplier_verified",
+    "version": "db93f2be-77d6-4c15-8cd3-ae6a03edae05",
+    "actor_id": "eeac46e1-4728-48ca-85e5-a42841a95859"
+  },
+  "coverage": {
+    "shortfall": "0.0000",
+    "pendingCount": 3,
+    "normalExposure": "14.0000",
+    "platformBalance": "4.0000",
+    "terminalBalance": "3.0000",
+    "upstreamBalance": "18.0000",
+    "upstreamTraceId": "account-42",
+    "upstreamCheckedAt": "2026-10-28T11:17:18.631Z",
+    "distributorBalance": "3.0000",
+    "lockedInternalPoints": "3.0000",
+    "platformHeldIncluded": "1.0000",
+    "terminalHeldIncluded": "3.0000",
+    "requiredUpstreamPoints": "16.5000",
+    "distributorHeldIncluded": "1.0000",
+    "oldAuthorizationExposure": "2.5000",
+    "inTransitChargedUpstreamPoints": "0.5000"
+  },
+  "auditCount": 2
+}

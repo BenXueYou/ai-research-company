@@ -4,6 +4,7 @@
       <RouterLink to="/platform/organizations">返回下级管理</RouterLink>
       <el-button :disabled="loading" @click="load">刷新</el-button>
     </header>
+    <p v-if="loading" role="status">业务数据加载中…</p>
     <p v-if="error" role="alert">{{ error }}</p>
     <template v-if="report">
       <label for="business-organization">查看组织</label>

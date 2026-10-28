@@ -1,0 +1,50 @@
+{
+  "database": "issue47_c9259935aaac4345b416fef4ead15b96_test",
+  "environment": "isolated PostgreSQL / Nest / Chromium / Vite",
+  "snapshots": {
+    "inventory": "1234.5000 internal",
+    "upstream": "87.25 upstream",
+    "fetchedAt": "2026-10-01T00:00:00.000Z"
+  },
+  "pendingQueries": {
+    "details": 1,
+    "contacts": 1,
+    "products": 1
+  },
+  "navigationBusinessWrites": 0,
+  "supplierCalls": 0,
+  "unchangedBusinessTables": [
+    "platform_inventory",
+    "distributor_inventory",
+    "internal_point_accounts",
+    "point_purchases",
+    "platform_expenses",
+    "point_orders",
+    "point_order_requests",
+    "point_order_ledger",
+    "point_transfers",
+    "point_order_refunds",
+    "query_point_ledger",
+    "company_contact_point_ledger",
+    "product_search_ledger",
+    "upstream_account_snapshot",
+    "upstream_monitor_events"
+  ],
+  "roles": [
+    "platform",
+    "distributor",
+    "admin",
+    "sales"
+  ],
+  "missingAndFailureStates": true,
+  "nestAndViteHistory": true,
+  "forcedPasswordChange": true,
+  "orderFinalStatusAcceptance": {
+    "awaiting_stock": 1,
+    "reserved": 1,
+    "unpaid": 1,
+    "transferredExcluded": true,
+    "refundedExcluded": true,
+    "source": "real create/confirm with insufficient inventory; same request replay returns same result"
+  }
+}

@@ -54,6 +54,10 @@ export function createCommerceController(services: Services) {
     confirmPointOrder(@Req() request: AuthRequest) {
       return pointOrders.mutate(request.identity, request.sessionToken, 'confirm', request.body ?? {});
     }
+    @Post('point-orders/reserve')
+    reservePointOrder(@Req() request: AuthRequest) {
+      return pointOrders.mutate(request.identity, request.sessionToken, 'reserve', request.body ?? {});
+    }
     @Post('point-orders/transfer')
     transferPointOrder(@Req() request: AuthRequest) {
       return pointOrders.mutate(request.identity, request.sessionToken, 'transfer', request.body ?? {});

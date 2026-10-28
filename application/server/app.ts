@@ -77,6 +77,8 @@ export async function createApplication(
   app.useGlobalGuards(new IdentityGuard(service, origin));
   app.use(express.static(webRoot, { index: 'index.html' }));
   const consolePaths = new Set([
+    '/platform/ledger/procurement',
+    '/platform/organizations/business-data',
     '/platform/settings/umail', '/platform/settings/email-quota',
     '/platform/overview', '/platform/organizations', '/platform/ledger', '/platform/ledger/profit', '/platform/ledger/flows', '/platform/reconciliation', '/platform/reconciliation/upstream', '/platform/settings',
     '/distribution/organizations', '/distribution/orders', '/distribution/profit',

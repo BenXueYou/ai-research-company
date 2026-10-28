@@ -2,12 +2,18 @@ import { defineConfig } from '@playwright/test';
 
 process.env.PLAYWRIGHT_NO_COPY_PROMPT = '1';
 export default defineConfig({
-  testDir: '../../dist/tests',
+  testDir: '../../.scratch/issue40/compiled/tests',
   testMatch: 'issue40-point-orders.spec.js',
-  outputDir: '../../.scratch/playwright-results/issue40',
+  outputDir: '../../.scratch/issue40/playwright-results',
   workers: 1,
-  timeout: 90000,
-  preserveOutput: 'never',
-  use: { baseURL: 'http://127.0.0.1:3098', browserName: 'chromium', trace: 'off', screenshot: 'off' },
+  timeout: 180000,
+  preserveOutput: 'failures-only',
+  use: {
+    baseURL: 'http://127.0.0.1:3140',
+    browserName: 'chromium',
+    actionTimeout: 10000,
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure'
+  },
   reporter: [['list']]
 });

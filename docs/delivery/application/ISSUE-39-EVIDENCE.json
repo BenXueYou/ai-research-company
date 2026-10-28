@@ -1,0 +1,566 @@
+{
+  "issue": 39,
+  "date": "2026-10-28",
+  "runs": {
+    "static": {
+      "database": "issue39_e20ad84fb6474af68c9928911d4893e0_test",
+      "origin": "http://127.0.0.1:3339",
+      "cases": [
+        "platform full authorized tree",
+        "unrelated root excluded",
+        "two recipients per batch",
+        "organization filters",
+        "inactive/deleted retained",
+        "empty organization",
+        "GET/HEAD history",
+        "refresh/back/forward",
+        "query update",
+        "loading/failure/recovery",
+        "four roles login and logout",
+        "temporary password gate",
+        "401 clears content",
+        "cross-tenant and cross-level writes rejected",
+        "distributor and terminal report/CSV isolation"
+      ],
+      "fixtures": [
+        {
+          "org": "23dcd275-87d2-4e65-8116-49b7423450a1",
+          "profile": "98dd3cc2-a9aa-4458-b0cc-a55846db479e",
+          "batch": "2515a358-af3a-4544-bcd3-0893879bb8ae",
+          "recipient": "60cf214f-39d6-44b8-903c-1139444fe6f7",
+          "contact": "edff255d-2eca-46c7-a5fe-13c33d1fbee0",
+          "detailId": "upstream-detail-0-39",
+          "subject": "私有邮件主题0-39"
+        },
+        {
+          "org": "93053bd7-68de-46e9-a9d4-92eb11fb2128",
+          "profile": "af6da2d0-c5c9-4558-bcc7-6dd8c0389dba",
+          "batch": "b5e4d3da-cccf-46e2-9291-3a62c7b9c8cf",
+          "recipient": "ea9cd7f6-aa6f-4f89-a82e-3687771dd608",
+          "contact": "b07aa65e-b171-43bd-8774-fb09086a81af",
+          "detailId": "upstream-detail-1-39",
+          "subject": "私有邮件主题1-39"
+        },
+        {
+          "org": "07a755c8-7eea-4081-a9e8-edcf0b3f494e",
+          "profile": "e8411c4b-ed96-456b-9bab-84512cb8bab8",
+          "batch": "e9ae88f3-a4f7-47ad-bf1a-04aee706ba3b",
+          "recipient": "782f5fb1-6fd4-46c2-978e-9ca7e4170b71",
+          "contact": "ab9ac131-564f-4418-a82d-de9374d38518",
+          "detailId": "upstream-detail-2-39",
+          "subject": "私有邮件主题2-39"
+        }
+      ],
+      "contract": {
+        "request": "GET /api/reports",
+        "body": null,
+        "actorOrganizationId": "6cdfb4c9-fb89-487b-93f9-3117defe1aa1",
+        "organizations": [
+          {
+            "id": "6cdfb4c9-fb89-487b-93f9-3117defe1aa1",
+            "name": "平台",
+            "kind": "platform",
+            "parentId": null,
+            "active": true,
+            "depth": 0
+          },
+          {
+            "id": "93053bd7-68de-46e9-a9d4-92eb11fb2128",
+            "name": "企业乙39",
+            "kind": "terminal",
+            "parentId": "6cdfb4c9-fb89-487b-93f9-3117defe1aa1",
+            "active": false,
+            "depth": 1
+          },
+          {
+            "id": "37fd1256-6b56-447f-b500-757c77a2103b",
+            "name": "分销一级39",
+            "kind": "distributor",
+            "parentId": "6cdfb4c9-fb89-487b-93f9-3117defe1aa1",
+            "active": true,
+            "depth": 1
+          },
+          {
+            "id": "7854727c-dc57-442a-8f34-5e04ccf638ce",
+            "name": "无数据企业39",
+            "kind": "terminal",
+            "parentId": "6cdfb4c9-fb89-487b-93f9-3117defe1aa1",
+            "active": true,
+            "depth": 1
+          },
+          {
+            "id": "af5a7f50-39e0-4bff-b4f2-a5c22e0f55e5",
+            "name": "分销二级39",
+            "kind": "distributor",
+            "parentId": "37fd1256-6b56-447f-b500-757c77a2103b",
+            "active": true,
+            "depth": 2
+          },
+          {
+            "id": "23dcd275-87d2-4e65-8116-49b7423450a1",
+            "name": "企业甲39",
+            "kind": "terminal",
+            "parentId": "af5a7f50-39e0-4bff-b4f2-a5c22e0f55e5",
+            "active": true,
+            "depth": 3
+          }
+        ],
+        "customers": [
+          {
+            "id": "98dd3cc2-a9aa-4458-b0cc-a55846db479e",
+            "organizationId": "23dcd275-87d2-4e65-8116-49b7423450a1",
+            "name": "私有客户0-39",
+            "countryCode3": "TUR",
+            "customerStatus": "lead",
+            "deletedAt": null,
+            "fetchedAt": null,
+            "mainProducts": "泵",
+            "purchasingNeeds": "阀门",
+            "cooperationIntent": "待沟通",
+            "detail": {
+              "id": "upstream-detail-0-39",
+              "fileId": "different-file-0-39",
+              "contact": "私有联系人0-39"
+            }
+          },
+          {
+            "id": "af6da2d0-c5c9-4558-bcc7-6dd8c0389dba",
+            "organizationId": "93053bd7-68de-46e9-a9d4-92eb11fb2128",
+            "name": "私有客户1-39",
+            "countryCode3": "TUR",
+            "customerStatus": "lead",
+            "deletedAt": "2026-10-28T11:42:33.038Z",
+            "fetchedAt": null,
+            "mainProducts": "泵",
+            "purchasingNeeds": "阀门",
+            "cooperationIntent": "待沟通",
+            "detail": {
+              "id": "upstream-detail-1-39",
+              "fileId": "different-file-1-39",
+              "contact": "私有联系人1-39"
+            }
+          }
+        ],
+        "emails": [
+          {
+            "id": "2515a358-af3a-4544-bcd3-0893879bb8ae",
+            "organizationId": "23dcd275-87d2-4e65-8116-49b7423450a1",
+            "profileId": "98dd3cc2-a9aa-4458-b0cc-a55846db479e",
+            "channelKind": "SMTP",
+            "usageDay": "2026-10-27T16:00:00.000Z",
+            "recipientId": "60cf214f-39d6-44b8-903c-1139444fe6f7",
+            "status": "accepted",
+            "email": "one0@test.invalid",
+            "subject": "私有邮件主题0-39-one",
+            "content": "私有邮件正文39"
+          },
+          {
+            "id": "2515a358-af3a-4544-bcd3-0893879bb8ae",
+            "organizationId": "23dcd275-87d2-4e65-8116-49b7423450a1",
+            "profileId": "98dd3cc2-a9aa-4458-b0cc-a55846db479e",
+            "channelKind": "SMTP",
+            "usageDay": "2026-10-27T16:00:00.000Z",
+            "recipientId": "d13f7426-0d0b-4121-9079-b69baff63f7f",
+            "status": "accepted",
+            "email": "two0@test.invalid",
+            "subject": "私有邮件主题0-39-two",
+            "content": "私有邮件正文39"
+          },
+          {
+            "id": "b5e4d3da-cccf-46e2-9291-3a62c7b9c8cf",
+            "organizationId": "93053bd7-68de-46e9-a9d4-92eb11fb2128",
+            "profileId": "af6da2d0-c5c9-4558-bcc7-6dd8c0389dba",
+            "channelKind": "SMTP",
+            "usageDay": "2026-10-27T16:00:00.000Z",
+            "recipientId": "220bb994-25f7-4489-9890-0a0f9786a4ab",
+            "status": "accepted",
+            "email": "two1@test.invalid",
+            "subject": "私有邮件主题1-39-two",
+            "content": "私有邮件正文39"
+          },
+          {
+            "id": "b5e4d3da-cccf-46e2-9291-3a62c7b9c8cf",
+            "organizationId": "93053bd7-68de-46e9-a9d4-92eb11fb2128",
+            "profileId": "af6da2d0-c5c9-4558-bcc7-6dd8c0389dba",
+            "channelKind": "SMTP",
+            "usageDay": "2026-10-27T16:00:00.000Z",
+            "recipientId": "ea9cd7f6-aa6f-4f89-a82e-3687771dd608",
+            "status": "accepted",
+            "email": "one1@test.invalid",
+            "subject": "私有邮件主题1-39-one",
+            "content": "私有邮件正文39"
+          }
+        ],
+        "deniedWrites": [
+          {
+            "path": "company-profiles/update",
+            "body": {
+              "profileId": "98dd3cc2-a9aa-4458-b0cc-a55846db479e",
+              "mainProducts": "unauthorized change"
+            },
+            "status": 403
+          },
+          {
+            "path": "company-profiles/delete",
+            "body": {
+              "profileId": "98dd3cc2-a9aa-4458-b0cc-a55846db479e"
+            },
+            "status": 403
+          },
+          {
+            "path": "email-batches/execute",
+            "body": {
+              "batchId": "2515a358-af3a-4544-bcd3-0893879bb8ae"
+            },
+            "status": 403
+          },
+          {
+            "path": "point-orders",
+            "body": {
+              "requestId": "0aedf7fb-a965-4ece-a5c5-c039c398a2fe",
+              "buyerId": "23dcd275-87d2-4e65-8116-49b7423450a1",
+              "quantity": "1",
+              "unitPrice": "1"
+            },
+            "status": 403
+          },
+          {
+            "path": "password-resets",
+            "body": {
+              "requestId": "c248489e-1b7c-4956-83c8-3f7f7716066a",
+              "accountId": "a1dd0e83-1476-43f7-bfb9-a09e19d63222"
+            },
+            "status": 403
+          }
+        ]
+      },
+      "reportRequests": [
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET "
+      ],
+      "businessRowsUnchanged": [
+        "company_searches",
+        "company_candidates",
+        "company_detail_queries",
+        "company_profiles",
+        "company_profile_events",
+        "company_contact_queries",
+        "company_contacts",
+        "email_drafts",
+        "email_previews",
+        "email_batches",
+        "email_recipients",
+        "email_daily_usage",
+        "email_usage_events",
+        "internal_point_accounts",
+        "query_point_ledger",
+        "company_contact_point_ledger",
+        "product_search_ledger",
+        "point_orders",
+        "point_order_requests",
+        "point_transfers",
+        "procurement_ledger",
+        "platform_inventory",
+        "password_reset_requests"
+      ],
+      "providerCalls": 0
+    },
+    "vite": {
+      "database": "issue39_c1360bbfc0ec41a1b6446c0aedd50b18_test",
+      "origin": "http://127.0.0.1:5339",
+      "cases": [
+        "platform full authorized tree",
+        "unrelated root excluded",
+        "two recipients per batch",
+        "organization filters",
+        "inactive/deleted retained",
+        "empty organization",
+        "GET/HEAD history",
+        "refresh/back/forward",
+        "query update",
+        "loading/failure/recovery",
+        "four roles login and logout",
+        "temporary password gate",
+        "401 clears content",
+        "cross-tenant and cross-level writes rejected",
+        "distributor and terminal report/CSV isolation"
+      ],
+      "fixtures": [
+        {
+          "org": "025e74c0-e36b-4fbd-b134-15b25f01538f",
+          "profile": "fba1c5f2-7956-4d85-884c-545ebacb98a8",
+          "batch": "bfa44faa-3861-4745-a817-5d0787e37f6b",
+          "recipient": "71a4b615-a2ab-47ef-a7f2-b94eeddf45da",
+          "contact": "29c13501-2172-4cfc-91cd-eb9f17ec3c46",
+          "detailId": "upstream-detail-0-39",
+          "subject": "私有邮件主题0-39"
+        },
+        {
+          "org": "2f770a1f-5069-4e55-afd3-507ab25807ff",
+          "profile": "b2e8b4ad-c0d4-42bb-8357-da8b556cc6aa",
+          "batch": "448c277e-35c5-4f3e-bf5d-3843fd0d86e1",
+          "recipient": "8aeba141-449f-4d7a-8526-5e465770d1c8",
+          "contact": "ef2c4262-0a62-4462-90e5-9dabfeacf1b6",
+          "detailId": "upstream-detail-1-39",
+          "subject": "私有邮件主题1-39"
+        },
+        {
+          "org": "d738311f-ef81-4288-9298-eb929d31aa24",
+          "profile": "f93e05d5-dd56-47e6-bde3-b73756d6d724",
+          "batch": "7a555e34-8846-4e4c-a6cc-bd2f40f09f47",
+          "recipient": "84520e09-ae88-4d94-ad85-8cb6163b5b97",
+          "contact": "8b3cc29a-d5aa-4823-a6a9-c716ed0c0e0b",
+          "detailId": "upstream-detail-2-39",
+          "subject": "私有邮件主题2-39"
+        }
+      ],
+      "contract": {
+        "request": "GET /api/reports",
+        "body": null,
+        "actorOrganizationId": "2ab18078-9170-433e-bb15-6ceda19a9000",
+        "organizations": [
+          {
+            "id": "2ab18078-9170-433e-bb15-6ceda19a9000",
+            "name": "平台",
+            "kind": "platform",
+            "parentId": null,
+            "active": true,
+            "depth": 0
+          },
+          {
+            "id": "2f770a1f-5069-4e55-afd3-507ab25807ff",
+            "name": "企业乙39",
+            "kind": "terminal",
+            "parentId": "2ab18078-9170-433e-bb15-6ceda19a9000",
+            "active": false,
+            "depth": 1
+          },
+          {
+            "id": "e4a33e37-0227-43a9-b76d-ef69e70e9ab7",
+            "name": "分销一级39",
+            "kind": "distributor",
+            "parentId": "2ab18078-9170-433e-bb15-6ceda19a9000",
+            "active": true,
+            "depth": 1
+          },
+          {
+            "id": "d5f25eda-2c7b-434a-915e-8dce0b488577",
+            "name": "无数据企业39",
+            "kind": "terminal",
+            "parentId": "2ab18078-9170-433e-bb15-6ceda19a9000",
+            "active": true,
+            "depth": 1
+          },
+          {
+            "id": "299a5097-7c86-40c2-8af3-6e9fb6df7734",
+            "name": "分销二级39",
+            "kind": "distributor",
+            "parentId": "e4a33e37-0227-43a9-b76d-ef69e70e9ab7",
+            "active": true,
+            "depth": 2
+          },
+          {
+            "id": "025e74c0-e36b-4fbd-b134-15b25f01538f",
+            "name": "企业甲39",
+            "kind": "terminal",
+            "parentId": "299a5097-7c86-40c2-8af3-6e9fb6df7734",
+            "active": true,
+            "depth": 3
+          }
+        ],
+        "customers": [
+          {
+            "id": "fba1c5f2-7956-4d85-884c-545ebacb98a8",
+            "organizationId": "025e74c0-e36b-4fbd-b134-15b25f01538f",
+            "name": "私有客户0-39",
+            "countryCode3": "TUR",
+            "customerStatus": "lead",
+            "deletedAt": null,
+            "fetchedAt": null,
+            "mainProducts": "泵",
+            "purchasingNeeds": "阀门",
+            "cooperationIntent": "待沟通",
+            "detail": {
+              "id": "upstream-detail-0-39",
+              "fileId": "different-file-0-39",
+              "contact": "私有联系人0-39"
+            }
+          },
+          {
+            "id": "b2e8b4ad-c0d4-42bb-8357-da8b556cc6aa",
+            "organizationId": "2f770a1f-5069-4e55-afd3-507ab25807ff",
+            "name": "私有客户1-39",
+            "countryCode3": "TUR",
+            "customerStatus": "lead",
+            "deletedAt": "2026-10-28T11:44:25.840Z",
+            "fetchedAt": null,
+            "mainProducts": "泵",
+            "purchasingNeeds": "阀门",
+            "cooperationIntent": "待沟通",
+            "detail": {
+              "id": "upstream-detail-1-39",
+              "fileId": "different-file-1-39",
+              "contact": "私有联系人1-39"
+            }
+          }
+        ],
+        "emails": [
+          {
+            "id": "bfa44faa-3861-4745-a817-5d0787e37f6b",
+            "organizationId": "025e74c0-e36b-4fbd-b134-15b25f01538f",
+            "profileId": "fba1c5f2-7956-4d85-884c-545ebacb98a8",
+            "channelKind": "SMTP",
+            "usageDay": "2026-10-27T16:00:00.000Z",
+            "recipientId": "71a4b615-a2ab-47ef-a7f2-b94eeddf45da",
+            "status": "accepted",
+            "email": "one0@test.invalid",
+            "subject": "私有邮件主题0-39-one",
+            "content": "私有邮件正文39"
+          },
+          {
+            "id": "bfa44faa-3861-4745-a817-5d0787e37f6b",
+            "organizationId": "025e74c0-e36b-4fbd-b134-15b25f01538f",
+            "profileId": "fba1c5f2-7956-4d85-884c-545ebacb98a8",
+            "channelKind": "SMTP",
+            "usageDay": "2026-10-27T16:00:00.000Z",
+            "recipientId": "a3ab0c4c-6f24-4808-835c-d5da9a5b94dd",
+            "status": "accepted",
+            "email": "two0@test.invalid",
+            "subject": "私有邮件主题0-39-two",
+            "content": "私有邮件正文39"
+          },
+          {
+            "id": "448c277e-35c5-4f3e-bf5d-3843fd0d86e1",
+            "organizationId": "2f770a1f-5069-4e55-afd3-507ab25807ff",
+            "profileId": "b2e8b4ad-c0d4-42bb-8357-da8b556cc6aa",
+            "channelKind": "SMTP",
+            "usageDay": "2026-10-27T16:00:00.000Z",
+            "recipientId": "8aeba141-449f-4d7a-8526-5e465770d1c8",
+            "status": "accepted",
+            "email": "one1@test.invalid",
+            "subject": "私有邮件主题1-39-one",
+            "content": "私有邮件正文39"
+          },
+          {
+            "id": "448c277e-35c5-4f3e-bf5d-3843fd0d86e1",
+            "organizationId": "2f770a1f-5069-4e55-afd3-507ab25807ff",
+            "profileId": "b2e8b4ad-c0d4-42bb-8357-da8b556cc6aa",
+            "channelKind": "SMTP",
+            "usageDay": "2026-10-27T16:00:00.000Z",
+            "recipientId": "b210685c-28ec-4e42-b076-b2c3256660e4",
+            "status": "accepted",
+            "email": "two1@test.invalid",
+            "subject": "私有邮件主题1-39-two",
+            "content": "私有邮件正文39"
+          }
+        ],
+        "deniedWrites": [
+          {
+            "path": "company-profiles/update",
+            "body": {
+              "profileId": "fba1c5f2-7956-4d85-884c-545ebacb98a8",
+              "mainProducts": "unauthorized change"
+            },
+            "status": 403
+          },
+          {
+            "path": "company-profiles/delete",
+            "body": {
+              "profileId": "fba1c5f2-7956-4d85-884c-545ebacb98a8"
+            },
+            "status": 403
+          },
+          {
+            "path": "email-batches/execute",
+            "body": {
+              "batchId": "bfa44faa-3861-4745-a817-5d0787e37f6b"
+            },
+            "status": 403
+          },
+          {
+            "path": "point-orders",
+            "body": {
+              "requestId": "7c857651-8c44-42d7-b1e5-29547d67ddec",
+              "buyerId": "025e74c0-e36b-4fbd-b134-15b25f01538f",
+              "quantity": "1",
+              "unitPrice": "1"
+            },
+            "status": 403
+          },
+          {
+            "path": "password-resets",
+            "body": {
+              "requestId": "294c292b-7a02-4f4d-96a1-04576ed85783",
+              "accountId": "43326230-c401-4eaa-a864-eabe3ccfc403"
+            },
+            "status": 403
+          }
+        ]
+      },
+      "reportRequests": [
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET ",
+        "GET "
+      ],
+      "businessRowsUnchanged": [
+        "company_searches",
+        "company_candidates",
+        "company_detail_queries",
+        "company_profiles",
+        "company_profile_events",
+        "company_contact_queries",
+        "company_contacts",
+        "email_drafts",
+        "email_previews",
+        "email_batches",
+        "email_recipients",
+        "email_daily_usage",
+        "email_usage_events",
+        "internal_point_accounts",
+        "query_point_ledger",
+        "company_contact_point_ledger",
+        "product_search_ledger",
+        "point_orders",
+        "point_order_requests",
+        "point_transfers",
+        "procurement_ledger",
+        "platform_inventory",
+        "password_reset_requests"
+      ],
+      "providerCalls": 0
+    }
+  }
+}

@@ -1,0 +1,415 @@
+{"version":10,"type":"context-options","origin":"library","browserName":"","playwrightVersion":"1.64.1","options":{},"platform":"win32","wallTime":1793186139668,"monotonicTime":2893.95,"sdkLanguage":"javascript","title":"..\\..\\..\\..\\tests\\issue40-point-orders.spec.ts:9 › T07/T08 browser selects the exact direct buyer, reserves and transfers once"}
+{"type":"before","callId":"aenn@138","startTime":6848.489,"class":"APIRequestContext","method":"fetch","params":{"url":"http://127.0.0.1:3140/api/point-orders/reprice","method":"POST","headers":[{"name":"accept","value":"application/json, text/plain, */*"},{"name":"accept-language","value":"en-US"},{"name":"content-type","value":"application/json"},{"name":"cookie","value":"identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"},{"name":"origin","value":"http://127.0.0.1:3140"},{"name":"user-agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"},{"name":"x-csrf-token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"},{"name":"sec-ch-ua","value":"\"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"156\", \"HeadlessChrome\";v=\"156\""},{"name":"sec-ch-ua-mobile","value":"?0"},{"name":"sec-ch-ua-platform","value":"\"Windows\""}],"postData":"<Buffer>","timeout":10000}}
+{"type":"log","callId":"aenn@138","time":6853.279,"message":"→ POST http://127.0.0.1:3140/api/point-orders/reprice"}
+{"type":"log","callId":"aenn@138","time":6853.302,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@138","time":6853.305,"message":"  accept: application/json, text/plain, */*"}
+{"type":"log","callId":"aenn@138","time":6853.308,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@138","time":6853.311,"message":"  accept-language: en-US"}
+{"type":"log","callId":"aenn@138","time":6853.314,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@138","time":6853.316,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@138","time":6853.319,"message":"  origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@138","time":6853.321,"message":"  x-csrf-token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@138","time":6853.324,"message":"  sec-ch-ua: \"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"156\", \"HeadlessChrome\";v=\"156\""}
+{"type":"log","callId":"aenn@138","time":6853.327,"message":"  sec-ch-ua-mobile: ?0"}
+{"type":"log","callId":"aenn@138","time":6853.33,"message":"  sec-ch-ua-platform: \"Windows\""}
+{"type":"log","callId":"aenn@138","time":6853.333,"message":"  content-length: 137"}
+{"type":"log","callId":"aenn@138","time":6898.35,"message":"← 201 Created"}
+{"type":"log","callId":"aenn@138","time":6898.365,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@138","time":6898.37,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@138","time":6898.373,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@138","time":6898.377,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@138","time":6898.381,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@138","time":6898.384,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@138","time":6898.388,"message":"  content-length: 86"}
+{"type":"log","callId":"aenn@138","time":6898.391,"message":"  etag: W/\"56-CYRf07JfZqXohtXGlJ7w+40hcAY\""}
+{"type":"log","callId":"aenn@138","time":6898.395,"message":"  date: Wed, 28 Oct 2026 11:15:43 GMT"}
+{"type":"log","callId":"aenn@138","time":6898.398,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@138","time":6898.401,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@138","endTime":6898.64,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/reprice","status":201,"statusText":"Created","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"86"},{"name":"ETag","value":"W/\"56-CYRf07JfZqXohtXGlJ7w+40hcAY\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:43 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186143626,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":0,"secureConnectionStart":-1,"connectEnd":4.902000000000044,"requestStart":4.902000000000044,"responseStart":45.07099999999991},"responseEndTiming":45.835000000000036,"fetchUid":"7de79c01db66c4013b2a991c61e44cd2"}}}
+{"type":"before","callId":"aenn@186","startTime":7502.604,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"d1217a77-e04e-44b7-a630-9e5091e92069\",\"buyerId\":\"fee28d27-3981-4ae2-b48f-31b96b338feb\",\"quantity\":\"1\",\"unitPrice\":\"2.2\"}","timeout":10000}}
+{"type":"log","callId":"aenn@186","time":7504.854,"message":"→ POST http://127.0.0.1:3140/api/point-orders"}
+{"type":"log","callId":"aenn@186","time":7504.876,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@186","time":7504.88,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@186","time":7504.883,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@186","time":7504.886,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@186","time":7504.889,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@186","time":7504.892,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@186","time":7504.895,"message":"  content-length: 134"}
+{"type":"log","callId":"aenn@186","time":7506.065,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@186","time":7532.437,"message":"← 403 Forbidden"}
+{"type":"log","callId":"aenn@186","time":7532.45,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@186","time":7532.454,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@186","time":7532.457,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@186","time":7532.46,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@186","time":7532.463,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@186","time":7532.467,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@186","time":7532.47,"message":"  content-length: 84"}
+{"type":"log","callId":"aenn@186","time":7532.473,"message":"  etag: W/\"54-YAc/tKqHeLfrXWs5ZKL6H2qR598\""}
+{"type":"log","callId":"aenn@186","time":7532.476,"message":"  date: Wed, 28 Oct 2026 11:15:44 GMT"}
+{"type":"log","callId":"aenn@186","time":7532.479,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@186","time":7532.482,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@186","endTime":7532.626,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders","status":403,"statusText":"Forbidden","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"84"},{"name":"ETag","value":"W/\"54-YAc/tKqHeLfrXWs5ZKL6H2qR598\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:44 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186144278,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":2.001999999999498,"responseStart":27.388999999999214},"responseEndTiming":27.631999999999607,"fetchUid":"bb517359988dcd195a831522600fc74c"}}}
+{"type":"before","callId":"aenn@189","startTime":7534.187,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"3481d2bc-1c26-4f8e-84b2-9843b6541876\",\"buyerId\":\"203fb10d-7079-4d4c-bc57-1c604a39916f\",\"quantity\":\"1\",\"unitPrice\":\"2.19\"}","timeout":10000}}
+{"type":"log","callId":"aenn@189","time":7535.563,"message":"→ POST http://127.0.0.1:3140/api/point-orders"}
+{"type":"log","callId":"aenn@189","time":7535.582,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@189","time":7535.587,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@189","time":7535.59,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@189","time":7535.593,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@189","time":7535.596,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@189","time":7535.598,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@189","time":7535.601,"message":"  content-length: 135"}
+{"type":"log","callId":"aenn@189","time":7535.627,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@189","time":7561.323,"message":"← 409 Conflict"}
+{"type":"log","callId":"aenn@189","time":7561.331,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@189","time":7561.333,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@189","time":7561.336,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@189","time":7561.339,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@189","time":7561.341,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@189","time":7561.344,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@189","time":7561.346,"message":"  content-length: 107"}
+{"type":"log","callId":"aenn@189","time":7561.348,"message":"  etag: W/\"6b-w7E6uwgEDAiy4ibEvmgacWc4Eho\""}
+{"type":"log","callId":"aenn@189","time":7561.351,"message":"  date: Wed, 28 Oct 2026 11:15:44 GMT"}
+{"type":"log","callId":"aenn@189","time":7561.354,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@189","time":7561.356,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@189","endTime":7561.445,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders","status":409,"statusText":"Conflict","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"107"},{"name":"ETag","value":"W/\"6b-w7E6uwgEDAiy4ibEvmgacWc4Eho\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:44 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186144310,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.3640000000004875,"responseStart":25.572000000000116},"responseEndTiming":25.713000000000648,"fetchUid":"eda0ea4b5dfa892e88b4bec260254f50"}}}
+{"type":"before","callId":"aenn@192","startTime":7562.898,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"f4b87acc-540a-4053-b546-13587d916ce9\",\"buyerId\":\"203fb10d-7079-4d4c-bc57-1c604a39916f\",\"quantity\":\"0\",\"unitPrice\":\"2.2\"}","timeout":10000}}
+{"type":"log","callId":"aenn@192","time":7564.033,"message":"→ POST http://127.0.0.1:3140/api/point-orders"}
+{"type":"log","callId":"aenn@192","time":7564.05,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@192","time":7564.054,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@192","time":7564.057,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@192","time":7564.06,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@192","time":7564.067,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@192","time":7564.071,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@192","time":7564.074,"message":"  content-length: 134"}
+{"type":"log","callId":"aenn@192","time":7564.077,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@192","time":7583.177,"message":"← 400 Bad Request"}
+{"type":"log","callId":"aenn@192","time":7583.187,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@192","time":7583.191,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@192","time":7583.194,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@192","time":7583.197,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@192","time":7583.2,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@192","time":7583.203,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@192","time":7583.206,"message":"  content-length: 98"}
+{"type":"log","callId":"aenn@192","time":7583.209,"message":"  etag: W/\"62-vj/QcJtYP7kWyJZTt0pORMrrHD4\""}
+{"type":"log","callId":"aenn@192","time":7583.213,"message":"  date: Wed, 28 Oct 2026 11:15:44 GMT"}
+{"type":"log","callId":"aenn@192","time":7583.216,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@192","time":7583.218,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@192","endTime":7583.315,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders","status":400,"statusText":"Bad Request","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"98"},{"name":"ETag","value":"W/\"62-vj/QcJtYP7kWyJZTt0pORMrrHD4\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:44 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186144338,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.31599999999980355,"responseStart":18.84099999999944},"responseEndTiming":19.0649999999996,"fetchUid":"1cc28da048de3e2d02703acb970646ee"}}}
+{"type":"before","callId":"aenn@195","startTime":7584.698,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/reprice","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"b186dad0-33d4-48bf-a913-e822a44e300b\",\"orderId\":\"a7e1f0af-8f90-4188-a26f-929bfd10aecf\",\"quantity\":\"4\",\"unitPrice\":\"2.2\"}","timeout":10000}}
+{"type":"log","callId":"aenn@195","time":7585.796,"message":"→ POST http://127.0.0.1:3140/api/point-orders/reprice"}
+{"type":"log","callId":"aenn@195","time":7585.809,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@195","time":7585.812,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@195","time":7585.815,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@195","time":7585.817,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@195","time":7585.819,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@195","time":7585.821,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@195","time":7585.824,"message":"  content-length: 134"}
+{"type":"log","callId":"aenn@195","time":7585.826,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@195","time":7604.267,"message":"← 409 Conflict"}
+{"type":"log","callId":"aenn@195","time":7604.277,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@195","time":7604.28,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@195","time":7604.283,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@195","time":7604.286,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@195","time":7604.288,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@195","time":7604.291,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@195","time":7604.293,"message":"  content-length: 95"}
+{"type":"log","callId":"aenn@195","time":7604.296,"message":"  etag: W/\"5f-xyOgjTvFVdEpjg5cIrYrxz6eWXE\""}
+{"type":"log","callId":"aenn@195","time":7604.316,"message":"  date: Wed, 28 Oct 2026 11:15:44 GMT"}
+{"type":"log","callId":"aenn@195","time":7604.319,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@195","time":7604.322,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@195","endTime":7604.42,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/reprice","status":409,"statusText":"Conflict","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"95"},{"name":"ETag","value":"W/\"5f-xyOgjTvFVdEpjg5cIrYrxz6eWXE\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:44 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186144360,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.2600000000002183,"responseStart":18.302999999999884},"responseEndTiming":18.432999999999993,"fetchUid":"be68716b8272f8751bd6f7b148cb02eb"}}}
+{"type":"before","callId":"aenn@204","startTime":7696.163,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/transfer","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"70102b45-4971-428c-83e5-7e09912291fd\",\"orderId\":\"a7e1f0af-8f90-4188-a26f-929bfd10aecf\"}","timeout":10000}}
+{"type":"log","callId":"aenn@204","time":7697.643,"message":"→ POST http://127.0.0.1:3140/api/point-orders/transfer"}
+{"type":"log","callId":"aenn@204","time":7697.663,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@204","time":7697.667,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@204","time":7697.67,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@204","time":7697.672,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@204","time":7697.674,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@204","time":7697.677,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@204","time":7697.68,"message":"  content-length: 101"}
+{"type":"log","callId":"aenn@204","time":7697.682,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@204","time":7721.319,"message":"← 409 Conflict"}
+{"type":"log","callId":"aenn@204","time":7721.331,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@204","time":7721.335,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@204","time":7721.338,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@204","time":7721.342,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@204","time":7721.346,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@204","time":7721.349,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@204","time":7721.352,"message":"  content-length: 89"}
+{"type":"log","callId":"aenn@204","time":7721.356,"message":"  etag: W/\"59-HDP3ntSBH2xNYAL8Kw+gHhUEY3w\""}
+{"type":"log","callId":"aenn@204","time":7721.359,"message":"  date: Wed, 28 Oct 2026 11:15:44 GMT"}
+{"type":"log","callId":"aenn@204","time":7721.362,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@204","time":7721.365,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@204","endTime":7721.473,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/transfer","status":409,"statusText":"Conflict","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"89"},{"name":"ETag","value":"W/\"59-HDP3ntSBH2xNYAL8Kw+gHhUEY3w\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:44 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186144472,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.3220000000001164,"responseStart":23.438000000000102},"responseEndTiming":23.605000000000473,"fetchUid":"28b6893b2707753226dab80142b7a7c2"}}}
+{"type":"before","callId":"aenn@220","startTime":7983.583,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/transfer","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"b481cebf-4b58-4d2d-b4c9-917587a78f30\",\"orderId\":\"a7e1f0af-8f90-4188-a26f-929bfd10aecf\"}","timeout":10000}}
+{"type":"log","callId":"aenn@220","time":7985.898,"message":"→ POST http://127.0.0.1:3140/api/point-orders/transfer"}
+{"type":"log","callId":"aenn@220","time":7985.916,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@220","time":7985.919,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@220","time":7985.921,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@220","time":7985.923,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@220","time":7985.924,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@220","time":7985.926,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@220","time":7985.927,"message":"  content-length: 101"}
+{"type":"log","callId":"aenn@220","time":7985.929,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@220","time":8006.048,"message":"← 201 Created"}
+{"type":"log","callId":"aenn@220","time":8006.064,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@220","time":8006.068,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@220","time":8006.071,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@220","time":8006.074,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@220","time":8006.081,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@220","time":8006.084,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@220","time":8006.087,"message":"  content-length: 93"}
+{"type":"log","callId":"aenn@220","time":8006.09,"message":"  etag: W/\"5d-fm2V0gpkrf7QcunUNJbJhQi+eQo\""}
+{"type":"log","callId":"aenn@220","time":8006.094,"message":"  date: Wed, 28 Oct 2026 11:15:44 GMT"}
+{"type":"log","callId":"aenn@220","time":8006.098,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@220","time":8006.101,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@220","endTime":8006.242,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/transfer","status":201,"statusText":"Created","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"93"},{"name":"ETag","value":"W/\"5d-fm2V0gpkrf7QcunUNJbJhQi+eQo\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:44 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186144760,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.33700000000044383,"responseStart":19.855000000000473},"responseEndTiming":20.028000000000247,"fetchUid":"352252e816b1cb550444f161935e4f14"}}}
+{"type":"before","callId":"aenn@223","startTime":8008.036,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/transfer","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"4d016aec-3f4d-49d6-a710-8141b2a2da33\",\"orderId\":\"a7e1f0af-8f90-4188-a26f-929bfd10aecf\"}","timeout":10000}}
+{"type":"log","callId":"aenn@223","time":8009.672,"message":"→ POST http://127.0.0.1:3140/api/point-orders/transfer"}
+{"type":"log","callId":"aenn@223","time":8009.696,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@223","time":8009.701,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@223","time":8009.704,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@223","time":8009.706,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@223","time":8009.709,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@223","time":8009.711,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@223","time":8009.714,"message":"  content-length: 101"}
+{"type":"log","callId":"aenn@223","time":8009.716,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@223","time":8029.035,"message":"← 409 Conflict"}
+{"type":"log","callId":"aenn@223","time":8029.046,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@223","time":8029.051,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@223","time":8029.054,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@223","time":8029.057,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@223","time":8029.061,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@223","time":8029.062,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@223","time":8029.064,"message":"  content-length: 92"}
+{"type":"log","callId":"aenn@223","time":8029.066,"message":"  etag: W/\"5c-pY6mvGHbc6GjgFpl0F2wGP1gXCw\""}
+{"type":"log","callId":"aenn@223","time":8029.068,"message":"  date: Wed, 28 Oct 2026 11:15:44 GMT"}
+{"type":"log","callId":"aenn@223","time":8029.069,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@223","time":8029.071,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@223","endTime":8029.171,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/transfer","status":409,"statusText":"Conflict","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"92"},{"name":"ETag","value":"W/\"5c-pY6mvGHbc6GjgFpl0F2wGP1gXCw\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:44 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186144784,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.4790000000002692,"responseStart":19.27300000000014},"responseEndTiming":19.41899999999987,"fetchUid":"cf40bf35974b384daa46ce493172e8b6"}}}
+{"type":"before","callId":"aenn@226","startTime":8030.359,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/refund","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"94f5f0e7-254a-4a0f-9205-60909a2a69fe\",\"orderId\":\"a7e1f0af-8f90-4188-a26f-929bfd10aecf\",\"refundEvidence\":\"不合法的已划拨退款\"}","timeout":10000}}
+{"type":"log","callId":"aenn@226","time":8031.975,"message":"→ POST http://127.0.0.1:3140/api/point-orders/refund"}
+{"type":"log","callId":"aenn@226","time":8031.989,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@226","time":8031.993,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@226","time":8031.996,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@226","time":8031.999,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@226","time":8032.001,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@226","time":8032.003,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@226","time":8032.005,"message":"  content-length: 148"}
+{"type":"log","callId":"aenn@226","time":8032.006,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@226","time":8050.152,"message":"← 409 Conflict"}
+{"type":"log","callId":"aenn@226","time":8050.16,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@226","time":8050.162,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@226","time":8050.166,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@226","time":8050.186,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@226","time":8050.19,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@226","time":8050.193,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@226","time":8050.196,"message":"  content-length: 113"}
+{"type":"log","callId":"aenn@226","time":8050.199,"message":"  etag: W/\"71-FSPubNfIJ/mzzIwOrp4kZGdg48U\""}
+{"type":"log","callId":"aenn@226","time":8050.202,"message":"  date: Wed, 28 Oct 2026 11:15:44 GMT"}
+{"type":"log","callId":"aenn@226","time":8050.205,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@226","time":8050.212,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@226","endTime":8050.325,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/refund","status":409,"statusText":"Conflict","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"113"},{"name":"ETag","value":"W/\"71-FSPubNfIJ/mzzIwOrp4kZGdg48U\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:44 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186144806,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.3419999999996435,"responseStart":18.02899999999954},"responseEndTiming":18.195999999999913,"fetchUid":"a236afb71372daf36d745c2ff54c9076"}}}
+{"type":"before","callId":"aenn@236","startTime":8224.49,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/refund","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"262d9dc3-e213-402e-ad68-90645de094ec\",\"orderId\":\"135ca408-3859-42f2-a413-845d02b84864\",\"refundEvidence\":\"未收款退款\"}","timeout":10000}}
+{"type":"log","callId":"aenn@236","time":8226.376,"message":"→ POST http://127.0.0.1:3140/api/point-orders/refund"}
+{"type":"log","callId":"aenn@236","time":8226.395,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@236","time":8226.399,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@236","time":8226.402,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@236","time":8226.404,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@236","time":8226.407,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@236","time":8226.409,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@236","time":8226.411,"message":"  content-length: 136"}
+{"type":"log","callId":"aenn@236","time":8226.413,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@236","time":8245.912,"message":"← 409 Conflict"}
+{"type":"log","callId":"aenn@236","time":8245.927,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@236","time":8245.931,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@236","time":8245.934,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@236","time":8245.937,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@236","time":8245.942,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@236","time":8245.946,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@236","time":8245.949,"message":"  content-length: 113"}
+{"type":"log","callId":"aenn@236","time":8245.952,"message":"  etag: W/\"71-FSPubNfIJ/mzzIwOrp4kZGdg48U\""}
+{"type":"log","callId":"aenn@236","time":8245.955,"message":"  date: Wed, 28 Oct 2026 11:15:45 GMT"}
+{"type":"log","callId":"aenn@236","time":8245.958,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@236","time":8245.981,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@236","endTime":8246.086,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/refund","status":409,"statusText":"Conflict","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"113"},{"name":"ETag","value":"W/\"71-FSPubNfIJ/mzzIwOrp4kZGdg48U\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:45 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186145000,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.352999999999156,"responseStart":19.227999999999156},"responseEndTiming":19.432999999999083,"fetchUid":"251f1e4ba25f6bc1e52895ab6b0cd487"}}}
+{"type":"before","callId":"aenn@239","startTime":8247.844,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/confirm","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"b8a0d478-30eb-4a89-a511-0679c4c67200\",\"orderId\":\"135ca408-3859-42f2-a413-845d02b84864\",\"receiptReference\":\"T07-UI-RECEIPT\"}","timeout":10000}}
+{"type":"log","callId":"aenn@239","time":8248.938,"message":"→ POST http://127.0.0.1:3140/api/point-orders/confirm"}
+{"type":"log","callId":"aenn@239","time":8248.951,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@239","time":8248.955,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@239","time":8248.958,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@239","time":8248.96,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@239","time":8248.962,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@239","time":8248.965,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@239","time":8248.967,"message":"  content-length: 137"}
+{"type":"log","callId":"aenn@239","time":8248.97,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@239","time":8274.849,"message":"← 409 Conflict"}
+{"type":"log","callId":"aenn@239","time":8274.858,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@239","time":8274.861,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@239","time":8274.864,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@239","time":8274.867,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@239","time":8274.87,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@239","time":8274.872,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@239","time":8274.875,"message":"  content-length: 101"}
+{"type":"log","callId":"aenn@239","time":8274.878,"message":"  etag: W/\"65-IUJop7qney7SHuzLq5JWyl9SX0Q\""}
+{"type":"log","callId":"aenn@239","time":8274.88,"message":"  date: Wed, 28 Oct 2026 11:15:45 GMT"}
+{"type":"log","callId":"aenn@239","time":8274.883,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@239","time":8274.886,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@239","endTime":8274.993,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/confirm","status":409,"statusText":"Conflict","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"101"},{"name":"ETag","value":"W/\"65-IUJop7qney7SHuzLq5JWyl9SX0Q\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:45 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186145023,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.2919999999994616,"responseStart":25.720000000001164},"responseEndTiming":25.877000000000407,"fetchUid":"f6db95d4634c6d7a516fd64d4460fc3a"}}}
+{"type":"before","callId":"aenn@264","startTime":8730.504,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/refund","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"f610ca80-cecc-4888-b784-2d1d1c63d5fd\",\"orderId\":\"135ca408-3859-42f2-a413-845d02b84864\",\"refundEvidence\":\"T09-UI-REFUND\"}","timeout":10000}}
+{"type":"log","callId":"aenn@264","time":8731.593,"message":"→ POST http://127.0.0.1:3140/api/point-orders/refund"}
+{"type":"log","callId":"aenn@264","time":8731.605,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@264","time":8731.633,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@264","time":8731.636,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@264","time":8731.639,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@264","time":8731.641,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@264","time":8731.644,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@264","time":8731.646,"message":"  content-length: 134"}
+{"type":"log","callId":"aenn@264","time":8731.649,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@264","time":8750.695,"message":"← 201 Created"}
+{"type":"log","callId":"aenn@264","time":8750.702,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@264","time":8750.704,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@264","time":8750.706,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@264","time":8750.707,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@264","time":8750.709,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@264","time":8750.71,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@264","time":8750.712,"message":"  content-length: 108"}
+{"type":"log","callId":"aenn@264","time":8750.714,"message":"  etag: W/\"6c-4/gJIsaRmY8a8riw8Mr7ftRwf/s\""}
+{"type":"log","callId":"aenn@264","time":8750.715,"message":"  date: Wed, 28 Oct 2026 11:15:45 GMT"}
+{"type":"log","callId":"aenn@264","time":8750.717,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@264","time":8750.719,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@264","endTime":8750.789,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/refund","status":201,"statusText":"Created","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"108"},{"name":"ETag","value":"W/\"6c-4/gJIsaRmY8a8riw8Mr7ftRwf/s\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:45 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186145506,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.22899999999935972,"responseStart":18.90899999999965},"responseEndTiming":19.04199999999946,"fetchUid":"5e6ff8fab260f7c684995d9711a11fed"}}}
+{"type":"before","callId":"aenn@267","startTime":8752.109,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/refund","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"72e313f6-6d06-4654-9ffa-55a1d4cca5a9\",\"orderId\":\"135ca408-3859-42f2-a413-845d02b84864\",\"refundEvidence\":\"重复退款\"}","timeout":10000}}
+{"type":"log","callId":"aenn@267","time":8753.256,"message":"→ POST http://127.0.0.1:3140/api/point-orders/refund"}
+{"type":"log","callId":"aenn@267","time":8753.271,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@267","time":8753.275,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@267","time":8753.277,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@267","time":8753.281,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@267","time":8753.283,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@267","time":8753.285,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@267","time":8753.289,"message":"  content-length: 133"}
+{"type":"log","callId":"aenn@267","time":8753.299,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@267","time":8771.972,"message":"← 409 Conflict"}
+{"type":"log","callId":"aenn@267","time":8771.983,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@267","time":8771.986,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@267","time":8771.989,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@267","time":8771.991,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@267","time":8771.994,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@267","time":8771.996,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@267","time":8771.999,"message":"  content-length: 113"}
+{"type":"log","callId":"aenn@267","time":8772.004,"message":"  etag: W/\"71-FSPubNfIJ/mzzIwOrp4kZGdg48U\""}
+{"type":"log","callId":"aenn@267","time":8772.007,"message":"  date: Wed, 28 Oct 2026 11:15:45 GMT"}
+{"type":"log","callId":"aenn@267","time":8772.01,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@267","time":8772.012,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@267","endTime":8772.127,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/refund","status":409,"statusText":"Conflict","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"113"},{"name":"ETag","value":"W/\"71-FSPubNfIJ/mzzIwOrp4kZGdg48U\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:45 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186145527,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.31199999999989814,"responseStart":18.615999999999985},"responseEndTiming":18.72700000000077,"fetchUid":"0ecad9799774d2b63be62198104ae665"}}}
+{"type":"before","callId":"aenn@271","startTime":8775.407,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"40412c09-bbcf-4678-b8f7-27d1b113f6c7\",\"buyerId\":\"0bdcf5ad-edcc-4804-b082-3983698b842c\",\"quantity\":\"8\",\"unitPrice\":\"2.2\"}","timeout":10000}}
+{"type":"log","callId":"aenn@271","time":8776.805,"message":"→ POST http://127.0.0.1:3140/api/point-orders"}
+{"type":"log","callId":"aenn@271","time":8776.826,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@271","time":8776.83,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@271","time":8776.833,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@271","time":8776.835,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@271","time":8776.837,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@271","time":8776.839,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@271","time":8776.841,"message":"  content-length: 134"}
+{"type":"log","callId":"aenn@271","time":8776.843,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@271","time":8804.891,"message":"← 201 Created"}
+{"type":"log","callId":"aenn@271","time":8804.901,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@271","time":8804.904,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@271","time":8804.906,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@271","time":8804.925,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@271","time":8804.928,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@271","time":8804.93,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@271","time":8804.932,"message":"  content-length: 87"}
+{"type":"log","callId":"aenn@271","time":8804.935,"message":"  etag: W/\"57-P3PQSM2Yiq9BseUck/ahJqb3cHE\""}
+{"type":"log","callId":"aenn@271","time":8804.937,"message":"  date: Wed, 28 Oct 2026 11:15:45 GMT"}
+{"type":"log","callId":"aenn@271","time":8804.939,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@271","time":8804.942,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@271","endTime":8805.032,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders","status":201,"statusText":"Created","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"87"},{"name":"ETag","value":"W/\"57-P3PQSM2Yiq9BseUck/ahJqb3cHE\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:45 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186145551,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.3150000000005093,"responseStart":27.90600000000086},"responseEndTiming":28.07600000000093,"fetchUid":"93714f886dc60ba5dc263b89c7fa1c46"}}}
+{"type":"before","callId":"aenn@275","startTime":8807.183,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/confirm","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}],"jsonData":"{\"requestId\":\"7ae66cd8-9f63-4ab2-9a76-39757cdbe15d\",\"orderId\":\"11a86407-47b3-4e28-aa11-41a71d7b3649\",\"receiptReference\":\"SHORTAGE\"}","timeout":10000}}
+{"type":"log","callId":"aenn@275","time":8808.182,"message":"→ POST http://127.0.0.1:3140/api/point-orders/confirm"}
+{"type":"log","callId":"aenn@275","time":8808.193,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@275","time":8808.196,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@275","time":8808.199,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@275","time":8808.201,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@275","time":8808.203,"message":"  X-CSRF-Token: AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@275","time":8808.205,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@275","time":8808.207,"message":"  content-length: 131"}
+{"type":"log","callId":"aenn@275","time":8808.209,"message":"  cookie: identity_session=3IU10hRQjN8V3lHhDEIpojlsRoc1VuO6CpKhdh1vw4o; identity_csrf=AWN46Qt2dOyG1iZQn-b3CoYphID7ATlKi8K7OYEa4rU"}
+{"type":"log","callId":"aenn@275","time":8829.269,"message":"← 409 Conflict"}
+{"type":"log","callId":"aenn@275","time":8829.28,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@275","time":8829.285,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@275","time":8829.288,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@275","time":8829.29,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@275","time":8829.292,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@275","time":8829.294,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@275","time":8829.321,"message":"  content-length: 155"}
+{"type":"log","callId":"aenn@275","time":8829.323,"message":"  etag: W/\"9b-DkRCnGGHWAww4ZTgAFr3vsd9zHM\""}
+{"type":"log","callId":"aenn@275","time":8829.325,"message":"  date: Wed, 28 Oct 2026 11:15:45 GMT"}
+{"type":"log","callId":"aenn@275","time":8829.327,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@275","time":8829.33,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@275","endTime":8829.413,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/confirm","status":409,"statusText":"Conflict","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"155"},{"name":"ETag","value":"W/\"9b-DkRCnGGHWAww4ZTgAFr3vsd9zHM\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:45 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186145582,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.2639999999992142,"responseStart":20.941999999999098},"responseEndTiming":21.06499999999869,"fetchUid":"7186ed6628582c68f42f0a32e20f79b1"}}}
+{"type":"before","callId":"aenn@305","startTime":9925.477,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/refund","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"ME51qH3gj-SfjaKkL_jQy_qSHcCSgga3W8CrYRpkrT4"}],"jsonData":"{\"requestId\":\"a00a5d03-383f-4de0-80e9-a12c36a747fa\",\"orderId\":\"135ca408-3859-42f2-a413-845d02b84864\",\"refundEvidence\":\"越权退款\"}","timeout":10000}}
+{"type":"log","callId":"aenn@305","time":9927.542,"message":"→ POST http://127.0.0.1:3140/api/point-orders/refund"}
+{"type":"log","callId":"aenn@305","time":9927.562,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@305","time":9927.564,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@305","time":9927.566,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@305","time":9927.568,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@305","time":9927.569,"message":"  X-CSRF-Token: ME51qH3gj-SfjaKkL_jQy_qSHcCSgga3W8CrYRpkrT4"}
+{"type":"log","callId":"aenn@305","time":9927.57,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@305","time":9927.572,"message":"  content-length: 133"}
+{"type":"log","callId":"aenn@305","time":9927.573,"message":"  cookie: identity_session=c9ho5-gOPYG2C56DIO0YCaq3EEfqn8aQopHIK1V6mdc; identity_csrf=ME51qH3gj-SfjaKkL_jQy_qSHcCSgga3W8CrYRpkrT4"}
+{"type":"log","callId":"aenn@305","time":9951.776,"message":"← 403 Forbidden"}
+{"type":"log","callId":"aenn@305","time":9951.785,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@305","time":9951.788,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@305","time":9951.791,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@305","time":9951.793,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@305","time":9951.796,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@305","time":9951.798,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@305","time":9951.801,"message":"  content-length: 81"}
+{"type":"log","callId":"aenn@305","time":9951.803,"message":"  etag: W/\"51-yZJrEuDmccu5iLW8GEUz7Jst6PE\""}
+{"type":"log","callId":"aenn@305","time":9951.806,"message":"  date: Wed, 28 Oct 2026 11:15:46 GMT"}
+{"type":"log","callId":"aenn@305","time":9951.808,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@305","time":9951.81,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@305","endTime":9951.905,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/refund","status":403,"statusText":"Forbidden","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"81"},{"name":"ETag","value":"W/\"51-yZJrEuDmccu5iLW8GEUz7Jst6PE\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:46 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186146701,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.8230000000003201,"responseStart":24.538000000000466},"responseEndTiming":24.704999999999927,"fetchUid":"568aa15710f972d3ef96cb4d0a2a2ead"}}}
+{"type":"before","callId":"aenn@332","startTime":11044.068,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders/refund","method":"POST","headers":[{"name":"Origin","value":"http://127.0.0.1:3140"},{"name":"X-CSRF-Token","value":"V-OnFUmOTdTVbfguMUWYJRTCDfEM7st_jsrbar4-G1U"}],"jsonData":"{\"requestId\":\"86078567-0677-43f7-8220-cfb038864b40\",\"orderId\":\"135ca408-3859-42f2-a413-845d02b84864\",\"refundEvidence\":\"越权退款\"}","timeout":10000}}
+{"type":"log","callId":"aenn@332","time":11049.827,"message":"→ POST http://127.0.0.1:3140/api/point-orders/refund"}
+{"type":"log","callId":"aenn@332","time":11049.845,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@332","time":11049.848,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@332","time":11049.851,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@332","time":11049.853,"message":"  Origin: http://127.0.0.1:3140"}
+{"type":"log","callId":"aenn@332","time":11049.855,"message":"  X-CSRF-Token: V-OnFUmOTdTVbfguMUWYJRTCDfEM7st_jsrbar4-G1U"}
+{"type":"log","callId":"aenn@332","time":11049.857,"message":"  content-type: application/json"}
+{"type":"log","callId":"aenn@332","time":11049.859,"message":"  content-length: 133"}
+{"type":"log","callId":"aenn@332","time":11049.861,"message":"  cookie: identity_session=ZkaR4R2h_XcplXf3ELAyplDDluRzPQCD71V9CTW8cpk; identity_csrf=V-OnFUmOTdTVbfguMUWYJRTCDfEM7st_jsrbar4-G1U"}
+{"type":"log","callId":"aenn@332","time":11064.681,"message":"← 403 Forbidden"}
+{"type":"log","callId":"aenn@332","time":11064.696,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@332","time":11064.7,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@332","time":11064.703,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@332","time":11064.706,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@332","time":11064.71,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@332","time":11064.733,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@332","time":11064.737,"message":"  content-length: 114"}
+{"type":"log","callId":"aenn@332","time":11064.74,"message":"  etag: W/\"72-3XRH1F8GjTJGTVoCpTyxUvxnihw\""}
+{"type":"log","callId":"aenn@332","time":11064.743,"message":"  date: Wed, 28 Oct 2026 11:15:47 GMT"}
+{"type":"log","callId":"aenn@332","time":11064.746,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@332","time":11064.749,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@332","endTime":11064.859,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders/refund","status":403,"statusText":"Forbidden","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"114"},{"name":"ETag","value":"W/\"72-3XRH1F8GjTJGTVoCpTyxUvxnihw\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:47 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186147824,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.3210000000017317,"responseStart":14.59400000000096},"responseEndTiming":14.808000000000902,"fetchUid":"3c755768e1ddd2dc556cbf85d085d3bd"}}}
+{"type":"before","callId":"aenn@335","startTime":11066.877,"class":"APIRequestContext","method":"fetch","params":{"url":"/api/point-orders","method":"GET","timeout":10000}}
+{"type":"log","callId":"aenn@335","time":11068.37,"message":"→ GET http://127.0.0.1:3140/api/point-orders"}
+{"type":"log","callId":"aenn@335","time":11068.395,"message":"  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"}
+{"type":"log","callId":"aenn@335","time":11068.399,"message":"  accept: */*"}
+{"type":"log","callId":"aenn@335","time":11068.401,"message":"  accept-encoding: gzip,deflate,br"}
+{"type":"log","callId":"aenn@335","time":11068.404,"message":"  cookie: identity_session=ZkaR4R2h_XcplXf3ELAyplDDluRzPQCD71V9CTW8cpk; identity_csrf=V-OnFUmOTdTVbfguMUWYJRTCDfEM7st_jsrbar4-G1U"}
+{"type":"log","callId":"aenn@335","time":11083.647,"message":"← 403 Forbidden"}
+{"type":"log","callId":"aenn@335","time":11083.659,"message":"  x-powered-by: Express"}
+{"type":"log","callId":"aenn@335","time":11083.663,"message":"  x-content-type-options: nosniff"}
+{"type":"log","callId":"aenn@335","time":11083.666,"message":"  referrer-policy: no-referrer"}
+{"type":"log","callId":"aenn@335","time":11083.669,"message":"  content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}
+{"type":"log","callId":"aenn@335","time":11083.672,"message":"  cache-control: no-store"}
+{"type":"log","callId":"aenn@335","time":11083.675,"message":"  content-type: application/json; charset=utf-8"}
+{"type":"log","callId":"aenn@335","time":11083.678,"message":"  content-length: 114"}
+{"type":"log","callId":"aenn@335","time":11083.681,"message":"  etag: W/\"72-3XRH1F8GjTJGTVoCpTyxUvxnihw\""}
+{"type":"log","callId":"aenn@335","time":11083.684,"message":"  date: Wed, 28 Oct 2026 11:15:47 GMT"}
+{"type":"log","callId":"aenn@335","time":11083.687,"message":"  connection: keep-alive"}
+{"type":"log","callId":"aenn@335","time":11083.69,"message":"  keep-alive: timeout=5"}
+{"type":"after","callId":"aenn@335","endTime":11083.794,"result":{"response":{"url":"http://127.0.0.1:3140/api/point-orders","status":403,"statusText":"Forbidden","headers":[{"name":"X-Powered-By","value":"Express"},{"name":"X-Content-Type-Options","value":"nosniff"},{"name":"Referrer-Policy","value":"no-referrer"},{"name":"Content-Security-Policy","value":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"},{"name":"Cache-Control","value":"no-store"},{"name":"Content-Type","value":"application/json; charset=utf-8"},{"name":"Content-Length","value":"114"},{"name":"ETag","value":"W/\"72-3XRH1F8GjTJGTVoCpTyxUvxnihw\""},{"name":"Date","value":"Wed, 28 Oct 2026 11:15:47 GMT"},{"name":"Connection","value":"keep-alive"},{"name":"Keep-Alive","value":"timeout=5"}],"serverAddr":{"ipAddress":"127.0.0.1","port":3140},"timing":{"startTime":1793186147842,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.32999999999992724,"responseStart":15.220000000001164},"responseEndTiming":15.32799999999952,"fetchUid":"02e33ba4dc28e85ff7020b0b56e81a6a"}}}

@@ -9,11 +9,13 @@ import UpstreamMonitorPage from '../pages/upstream/UpstreamMonitorPage.vue';
 import ReconciliationPage from '../pages/upstream/ReconciliationPage.vue';
 import PlatformReportPage from '../pages/reports/PlatformReportPage.vue';
 import PlatformBusinessData from '../pages/reports/PlatformBusinessData.vue';
-import PointOrders from '../pages/commerce/PointOrders.vue';
+import PlatformPointOrdersPage from '../pages/commerce/PlatformPointOrdersPage.vue';
+import PlatformProcurement from '../pages/commerce/PlatformProcurement.vue';
 import PlatformOrganizationsPage from '../pages/organizations/PlatformOrganizationsPage.vue';
 import PlatformSettingsPage from '../pages/commerce/PlatformSettingsPage.vue';
 import UMailResourceSettings from '../pages/email/UMailResourceSettings.vue';
 import PlatformEmailQuota from '../pages/email/PlatformEmailQuota.vue';
+import PlatformOverviewPage from '../pages/overview/PlatformOverviewPage.vue';
 
 type Role = 'platform' | 'distributor' | 'admin' | 'sales';
 declare module 'vue-router' {
@@ -53,15 +55,21 @@ export const navigation: NavigationItem[] = [
 const businessRoutes: RouteRecordRaw[] = navigation.map(item => ({
   path: item.path,
   name: item.path.slice(1).replaceAll('/', '-'),
-  component: item.path === '/platform/reconciliation' ? ReconciliationPage :
+  component: item.path === '/platform/overview' ? PlatformOverviewPage :
+    item.path === '/platform/reconciliation' ? ReconciliationPage :
     item.path === '/platform/organizations' ? PlatformOrganizationsPage :
-    item.path === '/platform/ledger' ? PointOrders :
+    item.path === '/platform/ledger' ? PlatformPointOrdersPage :
     item.path === '/platform/settings' ? PlatformSettingsPage : EmptyRoute,
   meta: { title: item.label, roles: item.roles, target: item.target, business: true }
 }));
 
 const routes: RouteRecordRaw[] = [
   ...businessRoutes,
+  {
+    path: '/platform/ledger/procurement',
+    component: PlatformProcurement,
+    meta: { title: '采购与费用', roles: ['platform'], business: true }
+  },
   {
     path: '/platform/settings/umail',
     component: UMailResourceSettings,
@@ -120,6 +128,7 @@ const platformNavigation: Record<string, { label: string; group?: string; order:
   '/platform/overview': { label: '运营概览', order: 0 },
   '/platform/organizations': { label: '下级管理', order: 1 },
   '/platform/ledger': { label: '点数订单', group: '点数与账务', order: 2 },
+  '/platform/ledger/procurement': { label: '采购与费用', group: '点数与账务', order: 2.5 },
   '/platform/ledger/profit': { label: '交易与利润', group: '点数与账务', order: 3 },
   '/platform/ledger/flows': { label: '账务流水', group: '点数与账务', order: 4 },
   '/platform/reconciliation/upstream': { label: '上游账号监控', group: '上游与对账', order: 5 },
@@ -160,6 +169,8 @@ export function defaultPath(role: string): string {
 }
 
 export function isBusinessPath(path: string, role: string): boolean {
+  path = path.split(/[?#]/, 1)[0];
+  if (path === '/platform/ledger/procurement' && role === 'platform') return true;
   if (['/platform/settings/umail', '/platform/settings/email-quota'].includes(path) && role === 'platform') return true;
   return (['/platform/organizations/business-data', '/platform/reconciliation/upstream', '/platform/ledger/profit', '/platform/ledger/flows'].includes(path) && role === 'platform') ||
     navigation.some(item => item.path === path && item.roles.includes(role as Role));

@@ -17,21 +17,26 @@ export async function migrateOrders(client: PoolClient) {
       quantity numeric(20,4) NOT NULL CHECK(quantity>0),
       unit_price numeric(20,4) NOT NULL CHECK(unit_price>0),
       amount numeric(20,4) NOT NULL CHECK(amount>0),
-      status text NOT NULL CHECK(status IN ('unpaid','reserved','transferred','refunded')),
+      status text NOT NULL CHECK(status IN ('unpaid','awaiting_stock','reserved','transferred','refunded')),
+      shortage_receipt boolean NOT NULL DEFAULT false,
       receipt_reference text UNIQUE,
       created_by uuid NOT NULL REFERENCES accounts(id),
       confirmed_by uuid REFERENCES accounts(id),
       created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
       confirmed_at timestamptz,
       CHECK((status='unpaid' AND receipt_reference IS NULL AND confirmed_by IS NULL AND confirmed_at IS NULL)
-        OR (status IN ('reserved','transferred','refunded') AND receipt_reference IS NOT NULL AND confirmed_by IS NOT NULL AND confirmed_at IS NOT NULL))
+        OR (status IN ('awaiting_stock','reserved','transferred','refunded') AND receipt_reference IS NOT NULL AND confirmed_by IS NOT NULL AND confirmed_at IS NOT NULL))
     );
     CREATE INDEX IF NOT EXISTS point_orders_seller ON point_orders(seller_id,created_at);
+    ALTER TABLE point_orders ADD COLUMN IF NOT EXISTS shortage_receipt boolean NOT NULL DEFAULT false;
     ALTER TABLE point_orders DROP CONSTRAINT IF EXISTS point_orders_status_check;
-    ALTER TABLE point_orders ADD CONSTRAINT point_orders_status_check CHECK(status IN ('unpaid','reserved','transferred','refunded'));
+    ALTER TABLE point_orders ADD CONSTRAINT point_orders_status_check CHECK(status IN ('unpaid','awaiting_stock','reserved','transferred','refunded'));
     ALTER TABLE point_orders DROP CONSTRAINT IF EXISTS point_orders_check;
     ALTER TABLE point_orders ADD CONSTRAINT point_orders_check CHECK((status='unpaid' AND receipt_reference IS NULL AND confirmed_by IS NULL AND confirmed_at IS NULL)
-      OR (status IN ('reserved','transferred','refunded') AND receipt_reference IS NOT NULL AND confirmed_by IS NOT NULL AND confirmed_at IS NOT NULL));
+      OR (status IN ('awaiting_stock','reserved','transferred','refunded') AND receipt_reference IS NOT NULL AND confirmed_by IS NOT NULL AND confirmed_at IS NOT NULL));
+    ALTER TABLE point_orders DROP CONSTRAINT IF EXISTS point_orders_shortage_check;
+    ALTER TABLE point_orders ADD CONSTRAINT point_orders_shortage_check CHECK(
+      (status<>'awaiting_stock' OR shortage_receipt) AND (NOT shortage_receipt OR status IN ('awaiting_stock','reserved','transferred')));
     CREATE TABLE IF NOT EXISTS point_order_requests (
       request_id uuid PRIMARY KEY, actor_id uuid NOT NULL REFERENCES accounts(id),
       operation text NOT NULL, payload jsonb NOT NULL, result jsonb NOT NULL
