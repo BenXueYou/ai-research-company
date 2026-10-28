@@ -7,9 +7,9 @@
 ## 实现范围
 
 - [后端入口](../../../application/server/main.ts)、[部署命令](../../../application/server/cli.ts)、[数据库事务与初始结构](../../../application/server/database.ts)。
-- [身份服务](../../../application/server/identity.ts)：原子一次性引导、邮箱登录、会话、本人改密、全设备撤销、固定字段审计。
+- [身份服务](../../../application/server/identity/identity.ts)：原子一次性引导、邮箱登录、会话、本人改密、全设备撤销、固定字段审计。
 - [HTTP 安全边界](../../../application/server/app.ts)：默认鉴权、强改密拦截、Origin/CSRF、同源 Cookie、安全响应头。
-- [密码及邮箱策略](../../../application/server/policy.ts)。
+- [密码及邮箱策略](../../../application/server/identity/policy.ts)。
 - [真实身份界面](../../../application/web/App.vue)与[响应式样式](../../../application/web/style.css)：登录、强改密、本人设置、最小工作台、退出。
 - [锁文件](../../../application/package-lock.json)、[配置样例](../../../application/.env.example)、[测试数据库配置](../../../application/compose.yaml)、[运行说明](../../../application/README.md)。
 

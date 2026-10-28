@@ -5,7 +5,7 @@ export default defineConfig({
   testMatch: 'email-send.spec.js',
   workers: 1,
   timeout: 60000,
-  outputDir: '../../.scratch/t23-playwright-results',
+  outputDir: '../../.scratch/playwright-results/t23',
   use: { baseURL: 'http://127.0.0.1:3133', browserName: 'chromium', trace: 'off', screenshot: 'off' },
   reporter: [['list']]
 });

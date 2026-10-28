@@ -3,7 +3,7 @@ process.env.PLAYWRIGHT_NO_COPY_PROMPT = '1';
 export default defineConfig({
   testDir: '../../dist/tests/browser',
   testMatch: 'point-orders.spec.js',
-  outputDir: '../../test-results-t07',
+  outputDir: '../../.scratch/playwright-results/t07',
   workers: 1,
   timeout: 90000,
   preserveOutput: 'never',

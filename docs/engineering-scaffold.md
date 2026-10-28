@@ -14,7 +14,7 @@
 | `application/server/composition/services.ts` | 现有服务及适配器组装 | 只连接既有服务依赖；不在装配层改变请求字段和业务默认值 |
 | `application/tests/`、`tests/browser/` | 纯逻辑、真实 PostgreSQL/HTTP、浏览器场景 | 按受影响流程选择测试，并记录夹具与观察到的业务结果 |
 | `application/scripts/`、`compose.yaml`、`.env.example` | 部署入口、本地测试依赖和配置样例 | 新配置同时更新样例与运行说明；秘密只放受控环境或忽略的本地文件 |
-| `需求设计/`、`docs/decisions/`、`application/T*-COMPLETION.md` | 规格、已批准决策、各票交付证据 | 规格证明契约，交付记录证明实际执行；历史记录不能代替新验证 |
+| `需求设计/`、`docs/decisions/`、`docs/delivery/application/` | 规格、已批准决策、各票交付证据 | 规格证明契约，交付记录证明实际执行；历史记录不能代替新验证 |
 
 `web/` 与 `server/` 的首批业务文件已按业务域整理，入口文件保持原位置。各领域实际移动范围、契约对照和验证边界见[结构整理记录](./server-web-structure-migration.md)。后续继续按小批次调整时，保留现有路由、请求/响应、鉴权、数据库读写、外部调用和页面提交行为；目录结构本身不授权修改业务逻辑。
 

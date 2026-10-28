@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
+  outputDir: '../../.scratch/playwright-results/t20',
   testDir: '../../dist/tests/browser',
   testMatch: 'umail.spec.js',
   workers: 1,

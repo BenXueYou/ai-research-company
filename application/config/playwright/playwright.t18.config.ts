@@ -3,7 +3,7 @@ process.env.PLAYWRIGHT_NO_COPY_PROMPT = '1';
 export default defineConfig({
   testDir: '../../.scratch/t18-dist/tests/browser',
   testMatch: 'company-attachments.spec.js',
-  outputDir: '../../.scratch/t18-playwright-results',
+  outputDir: '../../.scratch/playwright-results/t18',
   workers: 1,
   timeout: 60_000,
   preserveOutput: 'never',

@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
+  outputDir: '../../.scratch/playwright-results/t29',
   testDir: '../../dist/tests/browser',
   testMatch: 'upstream-monitor.spec.js',
   workers: 1,

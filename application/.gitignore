@@ -9,3 +9,4 @@ dist-t06/
 .t06-runtime/
 test-results-t06/
 *.log
+.scratch/playwright-results/

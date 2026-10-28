@@ -5,7 +5,7 @@ export default defineConfig({
   testMatch: 'company-profiles.spec.js',
   workers: 1,
   timeout: 60000,
-  outputDir: '../../.scratch/t16-playwright-results',
+  outputDir: '../../.scratch/playwright-results/t16',
   use: { baseURL: 'http://127.0.0.1:3166', browserName: 'chromium', trace: 'off', screenshot: 'off' },
   reporter: [['list']]
 });

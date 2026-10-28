@@ -2,6 +2,7 @@
 // Failure DOM snapshots can contain the one-time credential handoff.
 process.env.PLAYWRIGHT_NO_COPY_PROMPT = '1';
 export default defineConfig({
+  outputDir: './.scratch/playwright-results/default',
   testDir: './dist/tests/browser',
   workers: 1,
   timeout: 45000,

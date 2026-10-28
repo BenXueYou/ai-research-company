@@ -95,7 +95,7 @@ npm run test:integration
 npm run test:e2e
 ```
 
-测试使用真实 Nest HTTP 服务、真实 PostgreSQL 和 Chromium，不替换后端请求。集成服务端口 3091、浏览器端口 3092，请确保空闲。浏览器测试关闭 trace 和截图，避免将凭据写入工件。测试脚本自动读取本地 `.env.test` 并编译后运行。构建产物、测试日志、浏览器报告、依赖与环境秘密均被忽略。
+测试使用真实 Nest HTTP 服务、真实 PostgreSQL 和 Chromium，不替换后端请求。集成服务端口 3091、浏览器端口 3092，请确保空闲。浏览器测试关闭 trace 和截图，避免将凭据写入工件。测试脚本自动读取本地 `.env.test` 并编译后运行。Playwright 结果统一写入被忽略的 `.scratch/playwright-results/`，默认测试使用 `default/`，专项配置各用自己的 `tNN/` 子目录。构建产物、测试日志、浏览器报告、依赖与环境秘密均被忽略。
 
 关闭测试数据库（保留数据卷）：
 
