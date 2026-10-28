@@ -24,8 +24,12 @@ try {
   await app.listen(Number(process.env.PORT ?? 3000), '127.0.0.1');
   app.getHttpServer().on('close', () => { void pool.end(); if (redis?.isOpen) void redis.close(); });
   console.log('身份应用已启动');
-} catch {
-  console.error('启动失败：检查数据库迁移、连接及 APP_ORIGIN 配置');
+} catch (error) {
+  if ((error as NodeJS.ErrnoException).code === 'EADDRINUSE') {
+    console.error(`启动失败：端口 ${process.env.PORT ?? 3000} 已被占用，请先停止已运行的后端，再重新启动。`);
+  } else {
+    console.error('启动失败：检查数据库迁移、连接及 APP_ORIGIN 配置');
+  }
   if (redis?.isOpen) await redis.close();
   await pool.end();
   process.exitCode = 1;

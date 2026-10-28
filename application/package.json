@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --env-file-if-exists=.env node_modules/@nestjs/cli/bin/nest.js start --watch --path tsconfig.server.json",
+    "dev": "node --env-file-if-exists=.env node_modules/tsx/dist/cli.mjs watch --tsconfig tsconfig.server.json server/main.ts",
     "dev:web": "vite --host 127.0.0.1",
     "start": "node --env-file-if-exists=.env dist/server/main.js",
     "build": "vue-tsc --noEmit && nest build --path tsconfig.server.json && vite build",
