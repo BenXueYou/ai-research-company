@@ -2,7 +2,7 @@
 
 工程目录、命令分层及变更验证门禁见[工程脚手架约定](../docs/engineering-scaffold.md)。本文件保留应用配置、启动和业务运行说明。
 
-当前代码入口保持 `server/main.ts`、`server/app.ts` 和 `web/main.ts`、`web/App.vue`；业务服务、schema、控制器和页面按 `identity`、`organizations`、`commerce`、`companies`、`email`、`upstream` 领域定位，页面用量报表在 `web/reports`。本次目录调整与验证范围见[结构整理记录](../docs/server-web-structure-migration.md)。
+当前代码入口保持 `server/main.ts`、`server/app.ts` 和 `web/main.ts`、`web/App.vue`；业务服务、schema、控制器按领域定位。前端页面位于 `web/pages`，各业务模块内部组件位于自己的 `components` 子目录；`web/components` 只用于跨业务模块复用的全局组件。请求适配和控制台布局分别位于 `web/api`、`web/layout`，纯工具预留在 `web/utils`。页面文件归位及验证见 [Web 分层迁移记录](../docs/delivery/application/WEB-LAYER-MIGRATION.md)；先前目录调整见[结构整理记录](../docs/server-web-structure-migration.md)。
 
 T03已提供终端企业“成员管理”：创建业务员/终端企业管理员、当次展示及复制临时凭据、停用其他成员；本人和首位管理员不可停用。组织身份取服务端当前账号，成员不需要电话。实现、参数来源和实际验收结果见[T03记录](../docs/delivery/application/T03-COMPLETION.md)。管理方重置及补发属于T04。
 
@@ -25,6 +25,28 @@ cp .env.example .env
 ```
 
 Windows PowerShell 可用 `Copy-Item .env.example .env`。配置文件不会提交。连接串的用户名、密码须正确进行 URL 编码。应用不自动建库，也不在启动时自动初始化账号。
+
+## 本地开发数据库（Docker Desktop）
+
+`compose.dev.yaml` 使用独立的开发数据库 `acquisition_dev`、数据卷和回环端口 `55433`，与 `compose.yaml` 的测试库分开。当前本地 `.env` 已配置数据库密码及两个独立加密密钥；该文件被 Git 忽略，应与开发数据卷一起保留，不要重新生成密钥来连接已有数据库。
+
+在 `application/` 目录运行：
+
+```sh
+docker compose -f compose.dev.yaml --env-file .env up -d --wait
+npm run db:migrate
+npm run dev
+```
+
+当前配置使用 `APP_ORIGIN=http://127.0.0.1:3000`，该地址由后端提供 `dist/web` 中的前端构建。需要更新页面时先运行 `npm run build`；若另起 Vite 开发服务器，按下文将 `APP_ORIGIN` 改为 Vite 的实际源并重启后端。腾道服务尚未配置时，保持 `REDIS_URL` 和三个 `TENGDAO_*` 配置为空。
+
+停止开发数据库并保留数据：
+
+```sh
+docker compose -f compose.dev.yaml stop
+```
+
+新环境需先按 `.env.example` 准备 `.env`，设置高熵 `POSTGRES_PASSWORD`，将 `DATABASE_URL` 指向 `postgresql://acquisition:<密码的URL编码值>@127.0.0.1:55433/acquisition_dev`，并分别生成两个独立的32字节密钥（64位十六进制）。仅对全新、专用开发库执行首次初始化。
 
 ## 新库初始化与单环境部署
 

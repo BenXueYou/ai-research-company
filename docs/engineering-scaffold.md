@@ -7,7 +7,9 @@
 | 位置 | 当前职责 | 新增代码的放置原则 |
 | --- | --- | --- |
 | `application/package.json`、`package-lock.json` | 唯一应用包与锁文件；npm 脚本入口 | 在此维护稳定命令；一次性排查命令不提升为常规脚本 |
-| `application/web/` | Vue 3 页面、组件和浏览器 API 调用；`main.ts` 挂载应用，`App.vue` 组织界面 | 按业务域就近放页面与调用代码；公共能力有多个实际调用方后再抽取 |
+| `application/web/main.ts`、`App.vue` | 安装 Pinia / Router 并挂载应用；应用外壳管理会话、登录、改密和路由出口 | 不在外壳重新集中引入业务组件；保持会话代次、身份门禁和导航职责 |
+| `application/web/router/`、`stores/session.ts` | 路由表、角色门禁、导航元数据与共享会话状态 | 新路由按实际页面职责接入；请求参数来源留在所属业务模块 |
+| `application/web/layout/`、`pages/` | 公共布局、未迁移业务的 `CompatWorkspace.vue` 和按业务域归位的页面及组件 | 已迁移页交由 RouterView 渲染；兼容容器仅保留未迁移模块，并保持实例状态与角色条件 |
 | `application/server/main.ts`、`app.ts` | 进程启动、Nest 应用装配 | 新业务放对应服务、控制器和校验代码；装配入口只连接依赖 |
 | `application/server/database.ts`、`cli.ts` | PostgreSQL 连接、当前新库初始化入口 | 数据结构变化先核对当前初始化路径；版本化迁移和回滚须单独设计验证 |
 | `application/server/{identity,organizations,commerce,companies,email,upstream}/` | 各业务域的控制器、服务、schema 与上游适配 | 保持服务端权限、事务和适配器边界；移动文件时逐批核对公开行为 |
@@ -18,9 +20,17 @@
 
 `web/` 与 `server/` 的首批业务文件已按业务域整理，入口文件保持原位置。各领域实际移动范围、契约对照和验证边界见[结构整理记录](./server-web-structure-migration.md)。后续继续按小批次调整时，保留现有路由、请求/响应、鉴权、数据库读写、外部调用和页面提交行为；目录结构本身不授权修改业务逻辑。
 
+### 控制台页面迁移现状（2026-10-28）
+
+`/platform/reconciliation` 已由 `pages/upstream/ReconciliationPage.vue` 作为真实路由页承载查询结果人工核对与上游快照入口；`/platform/reconciliation/upstream` 仍为独立上游监控页。前者只缓存本页实例，往返子页时保留核对表单，不在返回时重发列表请求或业务提交。`App.vue` 不再逐个引入业务组件；未迁移内容集中由 `layout/CompatWorkspace.vue` 承载，仍按原角色条件挂载并在兼容菜单间保持实例。除上述对账页外，现有菜单仍有指向 `EmptyRoute.vue` 的兼容定位路由；菜单可用不代表独立页面已交付。
+
+迁移下一域前先从 `router/index.ts` 和兼容容器核对该域是否重复挂载，确定表单、结果未确认请求及页面缓存边界，再记录前后请求字段和值来源。当前批次的前端核对与未验证范围见[对账页迁移记录](delivery/application/RECONCILIATION-ROUTE-MIGRATION.md)。平台其他业务页、分销与终端独立页仍按[控制台页面迁移 Spec](../需求设计/10-控制台角色导航与页面迁移Spec.md) 分批完成。
+
 ## 工具链与命令
 
 所有 npm 命令在 `application/` 执行。项目使用 npm 和已提交的 `package-lock.json`；当前已验证的本地环境为 Node.js 22.14.0 / npm 10.9.2，这只是复验参考，不限定其他版本。安装使用 `npm ci`，依赖变更同时提交 `package.json` 和锁文件。前后端均使用 TypeScript；应用栈为 Vue 3 + Vite + Element Plus / NestJS / PostgreSQL，部分流程使用 Redis。
+
+项目安装了本地 Nest CLI。`npm run dev` 使用 `nest start --watch`，`npm run build` 使用 `nest build` 编译服务端，均显式采用 `tsconfig.server.json`，保持 `dist/server/main.js` 入口。`npm start` 运行该编译产物。代码生成可先用 `npx nest generate service identity/example --dry-run --no-spec --skip-import` 预览路径；生成的文件和依赖装配须按现有业务域结构人工核对。
 
 | 用途 | 当前入口 | 作用与边界 |
 | --- | --- | --- |

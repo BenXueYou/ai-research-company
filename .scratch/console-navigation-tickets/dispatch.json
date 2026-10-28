@@ -1,0 +1,83 @@
+{
+  "checkedDate": "2026-10-28",
+  "repository": "BenXueYou/ai-research-company",
+  "issueRange": [
+    34,
+    59
+  ],
+  "remoteState": {
+    "open": 26,
+    "closed": 0,
+    "unblocked": [
+      34
+    ]
+  },
+  "tasks": [
+    {
+      "threadId": "01a180f3-8073-7342-b96b-0d91a7aeb4a8",
+      "title": "控制台 #35 账号设置与离开提示实施",
+      "mode": "implementation",
+      "issues": [
+        35
+      ],
+      "ownership": "公共路由、App、账号和离开提示；集中集成#45路由"
+    },
+    {
+      "threadId": "01a180f3-8555-7ba1-ba14-ec5106ed42bc",
+      "title": "控制台 #45 上游账号监控独立页面实施",
+      "mode": "implementation",
+      "issues": [
+        45
+      ],
+      "ownership": "上游监控领域页面、独立专项测试；通过就绪标记交由#35接入公共路由"
+    },
+    {
+      "threadId": "01a180fd-d83d-76d2-af9a-166bebd84ec5",
+      "title": "控制台 #36 四角色帮助中心实施",
+      "mode": "implementation",
+      "issues": [
+        36
+      ],
+      "ownership": "角色帮助页面和独立测试；#35集中集成/help"
+    }
+  ],
+  "nextGate": "#35/#45先收口验收，#36帮助页面并行；App和History仍由#35独占。暂不启动依赖#35的业务页；#39/#44共享报表组件仍串行。远端均open，不以本地部分实现视为完成。",
+  "localProgress": {
+    "issue34": "本地实现与主要验证已完成，未提交、远端仍open；交付记录保留未逐项验证场景",
+    "prep35": "完成",
+    "prepPlatform": "完成",
+    "issue35": "已实现，身份专项有失败及多项待补验；原任务已恢复收口",
+    "issue45": "已实现；原History阻塞已有修复，恢复原任务重跑深链/刷新等验收"
+  },
+  "previousTasks": [
+    {
+      "threadId": "01a180e4-6ef4-7bc2-b7d7-1befb3f5b510",
+      "title": "控制台 #34 公共框架与四角色路由实施",
+      "mode": "implementation",
+      "issues": [
+        34
+      ],
+      "confirmedActive": true
+    },
+    {
+      "threadId": "01a180e4-747e-7421-bda8-0c2ed4c25771",
+      "title": "控制台 #35 身份与表单离开验收准备",
+      "mode": "preparation_only",
+      "issues": [
+        35
+      ],
+      "confirmedActive": true
+    },
+    {
+      "threadId": "01a180e4-7a14-7c92-bea2-4eda64286ec2",
+      "title": "控制台平台只读页面契约准备 #39 #44 #45",
+      "mode": "preparation_only",
+      "issues": [
+        39,
+        44,
+        45
+      ],
+      "confirmedActive": true
+    }
+  ]
+}

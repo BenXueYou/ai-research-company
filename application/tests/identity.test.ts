@@ -15,7 +15,7 @@ test('真实 PostgreSQL / HTTP 身份闭环与安全边界', async t => {
   let token = '';
   let csrf = '';
   const first = 'NewPassword123!';
-  const second = 'second-password-安全';
+  const second = 'second-password-ASCII!';
   const change = (currentPassword: string, newPassword: string) => ({ currentPassword, newPassword, confirmPassword: newPassword });
   async function http(path: string, body?: object, options: { token?: string; csrf?: string; origin?: string } = {}) {
     return fetch(origin + '/api/' + path, {
@@ -54,6 +54,7 @@ test('真实 PostgreSQL / HTTP 身份闭环与安全边界', async t => {
       assert.equal((await http('auth/password', { ...change(account.password, first), confirmPassword: 'different' })).status, 400);
       assert.equal((await http('auth/password', change('incorrect', first))).status, 400);
       assert.equal((await http('auth/password', change(account.password, account.password))).status, 400);
+      assert.equal((await http('auth/password', change(account.password, 'non-ascii-password-安全'))).status, 400);
     });
     await t.test('临时到期不能登录且已有临时会话失效', async () => {
       await pool.query("UPDATE accounts SET temporary_expires_at=clock_timestamp() - interval '1 second'");
@@ -77,7 +78,7 @@ test('真实 PostgreSQL / HTTP 身份闭环与安全边界', async t => {
     });
     await t.test('并发主动改密仅一个成功，不覆盖最新密码；全设备失效', async () => {
       const device = await service.login({ email: account.email, password: first }, 'device-c');
-      const third = 'third-password-安全';
+      const third = 'third-password-ASCII!';
       const results = await Promise.all([http('auth/password', change(first, second)), http('auth/password', change(first, third))]);
       assert.deepEqual(results.map(result => result.status).sort(), [200, 401]);
       const winner = results[0].status === 200 ? second : third;

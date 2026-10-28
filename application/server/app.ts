@@ -76,7 +76,19 @@ export async function createApplication(
   app.use(express.json({ limit: '8kb', strict: true }));
   app.useGlobalGuards(new IdentityGuard(service, origin));
   app.use(express.static(webRoot, { index: 'index.html' }));
-  // No SPA fallback for /api: unknown endpoints never become publicly accessible business routes.
+  const consolePaths = new Set([
+    '/platform/overview', '/platform/organizations', '/platform/ledger', '/platform/reconciliation', '/platform/reconciliation/upstream', '/platform/settings',
+    '/distribution/organizations', '/distribution/orders', '/distribution/profit',
+    '/terminal/search', '/terminal/profiles', '/terminal/emails', '/terminal/sending-settings', '/terminal/members', '/terminal/usage',
+    '/account/settings', '/help'
+  ]);
+  app.use((request: Request, response: Response, next: () => void) => {
+    if ((request.method === 'GET' || request.method === 'HEAD') && consolePaths.has(request.path)) {
+      response.sendFile(resolve(webRoot, 'index.html'));
+      return;
+    }
+    next();
+  });
   app.enableShutdownHooks();
   await emailSend.pauseExpired();
   let midnightTimer: NodeJS.Timeout;

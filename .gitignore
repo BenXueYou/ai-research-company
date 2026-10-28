@@ -27,3 +27,8 @@ application/.scratch/t26-browser-output/
 application/.scratch/t26-playwright.config.mjs
 application/.scratch/t26-regression.config.mjs
 application/.scratch/t26-regression-output/
+!application/tests/browser/console-navigation.spec.ts
+
+!application/tests/browser/issue35-navigation.spec.ts
+!application/tests/browser/router-navigation.spec.ts
+!application/tests/role-help.spec.ts

@@ -1,0 +1,318 @@
+[
+    {
+        "ordinal":  1,
+        "batch":  1,
+        "number":  34,
+        "id":  6072753507,
+        "title":  "[控制台迁移 01] 公共控制台与四角色 History 导航",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/34",
+        "blockedBy":  [
+
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  2,
+        "batch":  1,
+        "number":  35,
+        "id":  6072753626,
+        "title":  "[控制台迁移 02] 独立账号设置与表单离开交互",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/35",
+        "blockedBy":  [
+                          1
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  3,
+        "batch":  1,
+        "number":  36,
+        "id":  6072753734,
+        "title":  "[控制台迁移 03] 四角色帮助中心",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/36",
+        "blockedBy":  [
+                          1
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  4,
+        "batch":  1,
+        "number":  37,
+        "id":  6072753835,
+        "title":  "[控制台迁移 04] 直属下级开户与详情管理（平台）",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/37",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  5,
+        "batch":  1,
+        "number":  38,
+        "id":  6072753946,
+        "title":  "[控制台迁移 05] 平台下级账户与列表点数摘要",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/38",
+        "blockedBy":  [
+                          4
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  6,
+        "batch":  1,
+        "number":  39,
+        "id":  6072754080,
+        "title":  "[控制台迁移 06] 平台业务数据只读查看",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/39",
+        "blockedBy":  [
+                          1
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  7,
+        "batch":  1,
+        "number":  40,
+        "id":  6072754209,
+        "title":  "[控制台迁移 07] 平台点数订单完整履约页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/40",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  8,
+        "batch":  1,
+        "number":  41,
+        "id":  6072754323,
+        "title":  "[控制台迁移 08] 平台采购与承担费用页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/41",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  9,
+        "batch":  1,
+        "number":  42,
+        "id":  6072754436,
+        "title":  "[控制台迁移 09] 平台计价与换算系数设置",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/42",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  10,
+        "batch":  1,
+        "number":  43,
+        "id":  6072754553,
+        "title":  "[控制台迁移 10] 平台邮件资源与企业日额度设置",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/43",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  11,
+        "batch":  1,
+        "number":  44,
+        "id":  6072754665,
+        "title":  "[控制台迁移 11] 平台交易利润与账务流水页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/44",
+        "blockedBy":  [
+                          1
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  12,
+        "batch":  1,
+        "number":  45,
+        "id":  6072754766,
+        "title":  "[控制台迁移 12] 上游账号监控页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/45",
+        "blockedBy":  [
+                          1
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  13,
+        "batch":  1,
+        "number":  46,
+        "id":  6072754882,
+        "title":  "[控制台迁移 13] 查询异常核对与迟到结果页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/46",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  14,
+        "batch":  1,
+        "number":  47,
+        "id":  6072755053,
+        "title":  "[控制台迁移 14] 平台运营概览与有效快捷跳转",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/47",
+        "blockedBy":  [
+                          4,
+                          7,
+                          8,
+                          12,
+                          13
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  15,
+        "batch":  2,
+        "number":  48,
+        "id":  6072755150,
+        "title":  "[控制台迁移 15] 分销直属下级开户与详情管理",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/48",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  16,
+        "batch":  2,
+        "number":  49,
+        "id":  6072755245,
+        "title":  "[控制台迁移 16] 分销多层下级账户与点数摘要",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/49",
+        "blockedBy":  [
+                          15
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  17,
+        "batch":  2,
+        "number":  50,
+        "id":  6072755337,
+        "title":  "[控制台迁移 17] 分销点数订单完整履约页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/50",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  18,
+        "batch":  2,
+        "number":  51,
+        "id":  6072755510,
+        "title":  "[控制台迁移 18] 分销交易利润与自有账务页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/51",
+        "blockedBy":  [
+                          1
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  19,
+        "batch":  3,
+        "number":  52,
+        "id":  6072755619,
+        "title":  "[控制台迁移 19] 企业档案库与档案维护页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/52",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  20,
+        "batch":  3,
+        "number":  53,
+        "id":  6072755730,
+        "title":  "[控制台迁移 20] 公司名搜索、身份核实与详情建档",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/53",
+        "blockedBy":  [
+                          19
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  21,
+        "batch":  3,
+        "number":  54,
+        "id":  6072755870,
+        "title":  "[控制台迁移 21] 产品词搜索与候选建档",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/54",
+        "blockedBy":  [
+                          19
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  22,
+        "batch":  3,
+        "number":  55,
+        "id":  6072755996,
+        "title":  "[控制台迁移 22] 档案联系人查询与单轮邮件发送",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/55",
+        "blockedBy":  [
+                          19
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  23,
+        "batch":  3,
+        "number":  56,
+        "id":  6072756103,
+        "title":  "[控制台迁移 23] 邮件发送记录与结果核对页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/56",
+        "blockedBy":  [
+                          1
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  24,
+        "batch":  3,
+        "number":  57,
+        "id":  6072756245,
+        "title":  "[控制台迁移 24] 团队发信设置页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/57",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  25,
+        "batch":  3,
+        "number":  58,
+        "id":  6072756352,
+        "title":  "[控制台迁移 25] 成员管理页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/58",
+        "blockedBy":  [
+                          2
+                      ],
+        "verified":  true
+    },
+    {
+        "ordinal":  26,
+        "batch":  3,
+        "number":  59,
+        "id":  6072756456,
+        "title":  "[控制台迁移 26] 终端点数用量页面",
+        "url":  "https://github.com/BenXueYou/ai-research-company/issues/59",
+        "blockedBy":  [
+                          1
+                      ],
+        "verified":  true
+    }
+]

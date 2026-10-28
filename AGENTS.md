@@ -2,6 +2,10 @@
 
 适用于本仓库的设计、应用和验证工作。工程入口、目录职责、命令分层与交付记录见 [工程脚手架约定](docs/engineering-scaffold.md)；应用安装和运行参数见 [application/README.md](application/README.md)。修改应用前先读对应业务规格和受影响代码，再选择相关测试。
 
+## 后续 Web 业务模块
+
+后续新增、修改或迁移 Web 业务模块时，按 [应用运行说明中的前端目录职责](application/README.md)归位：页面放在 `web/pages` 对应业务目录，模块内部组件放在该目录的 `components`，`web/components` 仅放跨业务模块复用的全局组件。请求适配、布局与纯工具分别放在 `web/api`、`web/layout`、`web/utils`；按实际职责与引用关系调整，不为填充目录而抽取代码。移动后更新导入并验证受影响流程。
+
 ## 保持业务语义与接口契约
 
 - 组件迁移、样式调整、目录整理和非业务重构，保持原有业务行为。
