@@ -96,7 +96,7 @@
           </el-form>
         </section>
         <RouterView v-if="session && !session.mustChange" v-slot="{ Component }">
-          <KeepAlive :key="generation" include="ReconciliationPage,PlatformPointOrdersPage,PlatformProcurement,PlatformSettingsPage,PlatformOrganizationsPage,UMailResourceSettings,PlatformEmailQuota">
+          <KeepAlive :key="generation" include="EmailRecordsPage,TerminalSearchPage,CompanyProfilesPage,MemberManagement,ReconciliationPage,PlatformPointOrdersPage,PlatformProcurement,PlatformSettingsPage,PlatformOrganizationsPage,UMailResourceSettings,PlatformEmailQuota">
             <component
               :is="Component"
               :request="request"
@@ -163,7 +163,7 @@ const menu = computed(() =>
 );
 const currentTitle = computed(() => route.meta.title ?? '工作台');
 const isCompatPath = computed(() => menu.value.some(item =>
-  item.path === path.value && !['/platform/overview', '/platform/reconciliation', '/platform/organizations', '/platform/ledger', '/platform/settings'].includes(item.path)
+  item.path === path.value && !['/terminal/emails', '/terminal/search', '/terminal/profiles', '/terminal/members', '/platform/overview', '/platform/reconciliation', '/platform/organizations', '/platform/ledger', '/platform/settings', '/terminal/usage'].includes(item.path)
 ));
 const formLeave = provideFormLeave(router, () =>
   !!session.value && !session.value.mustChange && !navigatingAfterLogin.value

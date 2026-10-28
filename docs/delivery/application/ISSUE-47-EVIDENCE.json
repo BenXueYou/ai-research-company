@@ -1,5 +1,5 @@
 {
-  "database": "issue47_c9259935aaac4345b416fef4ead15b96_test",
+  "database": "issue47_63d7ef62f2a047638248a629f4a0c9ff_test",
   "environment": "isolated PostgreSQL / Nest / Chromium / Vite",
   "snapshots": {
     "inventory": "1234.5000 internal",

@@ -1,0 +1,587 @@
+{
+  "passed": true,
+  "origin": "http://127.0.0.1:61790",
+  "devOrigin": "http://127.0.0.1:63315",
+  "ids": {
+    "candidate": {
+      "id": "712e5fa8-bab9-4cb6-8b02-e06d0a5337e0",
+      "source_id": "list-selected-success-1"
+    },
+    "saved": {
+      "id": "5b4b3af3-6931-48d7-8365-3d0f61dfa4a1",
+      "detail_id": "detail-Selected success",
+      "query_id": "2f96c26d-7b08-42e3-a7cb-9f3053c41338"
+    }
+  },
+  "listCalls": [
+    {
+      "name": "success",
+      "countryCodes": "USA,TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "success",
+      "countryCodes": "USA,TUR",
+      "pageNo": 2,
+      "pageSize": 20
+    },
+    {
+      "name": "success",
+      "countryCodes": "USA,TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "empty",
+      "countryCodes": "USA,TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "zero",
+      "countryCodes": "USA,TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "timeout",
+      "countryCodes": "USA,TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "mismatch",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "missing",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "sales-success",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "poor",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "list-failure",
+      "countryCodes": "USA,TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "lost-response",
+      "countryCodes": "USA,TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    }
+  ],
+  "detailCalls": [
+    {
+      "name": "Selected success",
+      "countryCode3": "TUR"
+    },
+    {
+      "name": "Selected zero",
+      "countryCode3": "TUR"
+    },
+    {
+      "name": "Selected timeout",
+      "countryCode3": "TUR"
+    },
+    {
+      "name": "Selected mismatch",
+      "countryCode3": "TUR"
+    },
+    {
+      "name": "Selected missing",
+      "countryCode3": "TUR"
+    },
+    {
+      "name": "Selected sales-success",
+      "countryCode3": "TUR"
+    },
+    {
+      "name": "Selected lost-response",
+      "countryCode3": "TUR"
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "success",
+        "countryCodes": "USA,TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "712e5fa8-bab9-4cb6-8b02-e06d0a5337e0"
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "712e5fa8-bab9-4cb6-8b02-e06d0a5337e0"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "712e5fa8-bab9-4cb6-8b02-e06d0a5337e0"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "712e5fa8-bab9-4cb6-8b02-e06d0a5337e0"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "2f96c26d-7b08-42e3-a7cb-9f3053c41338"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "5b4b3af3-6931-48d7-8365-3d0f61dfa4a1"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "5b4b3af3-6931-48d7-8365-3d0f61dfa4a1"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "5b4b3af3-6931-48d7-8365-3d0f61dfa4a1"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "712e5fa8-bab9-4cb6-8b02-e06d0a5337e0"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "2f96c26d-7b08-42e3-a7cb-9f3053c41338"
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "success",
+        "countryCodes": "USA,TUR",
+        "pageNo": 2,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "success",
+        "countryCodes": "USA,TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "empty",
+        "countryCodes": "USA,TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "zero",
+        "countryCodes": "USA,TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "255fe6f9-bb7d-4f06-a819-40636303bdd0"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "255fe6f9-bb7d-4f06-a819-40636303bdd0"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "f861c605-e63a-477a-9034-42797956a829"
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "timeout",
+        "countryCodes": "USA,TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "6b8e0459-243f-4bd4-b2da-615728074d11"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "6b8e0459-243f-4bd4-b2da-615728074d11"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "7055b687-57cf-4a75-a7aa-f00cc75dccb7"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "7055b687-57cf-4a75-a7aa-f00cc75dccb7"
+      }
+    },
+    {
+      "path": "/api/company-details/status",
+      "body": {
+        "queryId": "7055b687-57cf-4a75-a7aa-f00cc75dccb7"
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "mismatch",
+        "countryCodes": "TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "23d54b57-1c39-457f-9677-acf2970c2b8e"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "23d54b57-1c39-457f-9677-acf2970c2b8e"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "ba2a95cf-55e1-484c-9ac1-ac22fb79a3a6"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "ba2a95cf-55e1-484c-9ac1-ac22fb79a3a6"
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "missing",
+        "countryCodes": "TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "d1d85f3a-f1a6-4bc6-a2e8-dc0df210ce9e"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "d1d85f3a-f1a6-4bc6-a2e8-dc0df210ce9e"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "16fe171b-88c9-4d9a-a552-afdc961981af"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "16fe171b-88c9-4d9a-a552-afdc961981af"
+      }
+    },
+    {
+      "path": "/api/company-details/status",
+      "body": {
+        "queryId": "7055b687-57cf-4a75-a7aa-f00cc75dccb7",
+        "unexpected": true
+      }
+    },
+    {
+      "path": "/api/company-details/status",
+      "body": {
+        "queryId": "7055b687-57cf-4a75-a7aa-f00cc75dccb7"
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "list-failure",
+        "countryCodes": "USA,TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "lost-response",
+        "countryCodes": "USA,TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "41e3ec26-dd98-4061-bbb5-af341c8fb7fb"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "41e3ec26-dd98-4061-bbb5-af341c8fb7fb"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "39696d66-7758-42f1-95f3-b91c5016db9d"
+      }
+    },
+    {
+      "path": "/api/company-details/status",
+      "body": {
+        "queryId": "39696d66-7758-42f1-95f3-b91c5016db9d"
+      }
+    }
+  ],
+  "zeroAccount": {
+    "balance": "19.7000",
+    "query_frozen": "0.0000"
+  },
+  "pendingAccount": {
+    "balance": "19.7000",
+    "query_frozen": "1.0000"
+  },
+  "finalAccount": {
+    "balance": "19.1000",
+    "query_frozen": "2.0000"
+  },
+  "ledger": [
+    {
+      "query_id": "2f96c26d-7b08-42e3-a7cb-9f3053c41338",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "20.0000",
+      "frozen_after": "1.0000"
+    },
+    {
+      "query_id": "2f96c26d-7b08-42e3-a7cb-9f3053c41338",
+      "event": "settle",
+      "amount": "0.3000",
+      "balance_after": "19.7000",
+      "frozen_after": "0.0000"
+    },
+    {
+      "query_id": "2f96c26d-7b08-42e3-a7cb-9f3053c41338",
+      "event": "release",
+      "amount": "0.7000",
+      "balance_after": "19.7000",
+      "frozen_after": "0.0000"
+    },
+    {
+      "query_id": "f861c605-e63a-477a-9034-42797956a829",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.7000",
+      "frozen_after": "1.0000"
+    },
+    {
+      "query_id": "f861c605-e63a-477a-9034-42797956a829",
+      "event": "settle",
+      "amount": "0.0000",
+      "balance_after": "19.7000",
+      "frozen_after": "0.0000"
+    },
+    {
+      "query_id": "f861c605-e63a-477a-9034-42797956a829",
+      "event": "release",
+      "amount": "1.0000",
+      "balance_after": "19.7000",
+      "frozen_after": "0.0000"
+    },
+    {
+      "query_id": "7055b687-57cf-4a75-a7aa-f00cc75dccb7",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.7000",
+      "frozen_after": "1.0000"
+    },
+    {
+      "query_id": "ba2a95cf-55e1-484c-9ac1-ac22fb79a3a6",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.7000",
+      "frozen_after": "2.0000"
+    },
+    {
+      "query_id": "16fe171b-88c9-4d9a-a552-afdc961981af",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.7000",
+      "frozen_after": "3.0000"
+    },
+    {
+      "query_id": "89c480e1-59b2-4447-b336-8be061830170",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.7000",
+      "frozen_after": "4.0000"
+    },
+    {
+      "query_id": "89c480e1-59b2-4447-b336-8be061830170",
+      "event": "settle",
+      "amount": "0.3000",
+      "balance_after": "19.4000",
+      "frozen_after": "3.0000"
+    },
+    {
+      "query_id": "89c480e1-59b2-4447-b336-8be061830170",
+      "event": "release",
+      "amount": "0.7000",
+      "balance_after": "19.4000",
+      "frozen_after": "3.0000"
+    },
+    {
+      "query_id": "7055b687-57cf-4a75-a7aa-f00cc75dccb7",
+      "event": "release",
+      "amount": "1.0000",
+      "balance_after": "19.4000",
+      "frozen_after": "2.0000"
+    },
+    {
+      "query_id": "39696d66-7758-42f1-95f3-b91c5016db9d",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.4000",
+      "frozen_after": "3.0000"
+    },
+    {
+      "query_id": "39696d66-7758-42f1-95f3-b91c5016db9d",
+      "event": "settle",
+      "amount": "0.3000",
+      "balance_after": "19.1000",
+      "frozen_after": "2.0000"
+    },
+    {
+      "query_id": "39696d66-7758-42f1-95f3-b91c5016db9d",
+      "event": "release",
+      "amount": "0.7000",
+      "balance_after": "19.1000",
+      "frozen_after": "2.0000"
+    }
+  ],
+  "edgeResults": [
+    {
+      "mode": "mismatch",
+      "queryId": "ba2a95cf-55e1-484c-9ac1-ac22fb79a3a6",
+      "state": "pending"
+    },
+    {
+      "mode": "missing",
+      "queryId": "16fe171b-88c9-4d9a-a552-afdc961981af",
+      "state": "pending"
+    }
+  ],
+  "roleResults": [
+    {
+      "label": "sales",
+      "status": 200,
+      "verify": 200,
+      "execute": 200
+    },
+    {
+      "label": "foreign",
+      "status": 404,
+      "verify": 404,
+      "execute": 404
+    },
+    {
+      "label": "platform",
+      "status": 403,
+      "verify": 403,
+      "execute": 403
+    },
+    {
+      "label": "distributor",
+      "status": 403,
+      "verify": 403,
+      "execute": 403
+    },
+    {
+      "label": "temporary",
+      "status": 403,
+      "verify": 403,
+      "execute": 403
+    }
+  ]
+}

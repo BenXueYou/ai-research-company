@@ -1,17 +1,17 @@
 {
-  "database": "/issue42_f5ccc50f2751401da6207bbaa2b52a56_test",
+  "database": "/issue42_5337fab3eacd48ff8b57cc2077f44057_test",
   "ids": {
-    "platform": "0894c3a6-35a2-470f-a2b4-85b2f52ed604",
-    "distributor": "ac7d547f-f3e3-43a9-add9-b319f39a74e7",
-    "terminal": "a5087755-1f33-43e4-90cc-20cc7ea9647e",
-    "actor": "ecbce0e3-a723-49f2-a4f4-b21788c92fad",
-    "terminalActor": "26a84147-b43d-448d-b17c-ac8d04bcfbc5",
-    "candidate": "3a801012-3993-4cab-9fcb-6f5da827202c",
-    "profile": "d9920b5b-588a-404d-8823-3c0ec2eb6386",
-    "query": "cec56f64-be6c-4f5e-bb41-d49191e6e548",
-    "oldQuote": "abbc14f8-663c-4927-bf12-cc9f2eec6c90",
-    "change": "7bab8550-a456-4e93-9e57-700037d7906e",
-    "announcementRequest": "2a645248-eef7-4b0b-ab99-daf65a07c6e2"
+    "platform": "0a648d1f-605e-472b-ad1f-57097b114fb5",
+    "distributor": "afac3e21-2340-4e1e-a6a6-7b70de005a93",
+    "terminal": "85d0a010-f30c-4aea-b828-31b872ef738b",
+    "actor": "3ca81dae-d5f5-4709-8b28-3617746380c8",
+    "terminalActor": "521a591a-e515-4bca-99a0-88805f229d6b",
+    "candidate": "8884c0fd-48f7-43d7-8ed7-dcfab3807ca1",
+    "profile": "c764c09e-faa9-41c3-b946-8505c295ed7c",
+    "query": "15849a74-dd56-4563-9809-966667904b0e",
+    "oldQuote": "6434cc71-683f-4785-b535-7459b2e3d523",
+    "change": "58916de6-1f11-456a-a5e4-c60b0fb13a99",
+    "announcementRequest": "ce609ad9-c308-4c39-b275-1a8e02facf18"
   },
   "posts": [
     {
@@ -19,7 +19,7 @@
       "body": {
         "evidence": "合同42",
         "minimumMarkup": "0.0200",
-        "requestId": "928024a8-4282-45cf-8e07-fbbf2e07a482"
+        "requestId": "c05917fc-dd73-4f71-a4eb-fb6e3e948f06"
       }
     },
     {
@@ -31,7 +31,7 @@
         "upstreamUnitPrice": "2.1234",
         "maximumBillableUnits": "9",
         "evidenceType": "supplier_verified",
-        "requestId": "c366942d-d1bb-4fe2-90aa-fd03ddea630c"
+        "requestId": "b69419a2-e130-438f-aa4f-b665443e113d"
       }
     },
     {
@@ -43,49 +43,49 @@
         "upstreamUnitPrice": "2.1234",
         "maximumBillableUnits": "9",
         "evidenceType": "supplier_verified",
-        "requestId": "c366942d-d1bb-4fe2-90aa-fd03ddea630c"
+        "requestId": "b69419a2-e130-438f-aa4f-b665443e113d"
       }
     },
     {
       "path": "/api/coefficient/announcements",
       "body": {
-        "requestId": "2a645248-eef7-4b0b-ab99-daf65a07c6e2",
+        "requestId": "ce609ad9-c308-4c39-b275-1a8e02facf18",
         "coefficient": "0.5000",
-        "effectiveAt": "2026-10-28T11:18:41.000Z",
+        "effectiveAt": "2026-10-28T13:54:49.000Z",
         "notice": "全链通知42"
       }
     },
     {
       "path": "/api/coefficient/announcements",
       "body": {
-        "requestId": "2a645248-eef7-4b0b-ab99-daf65a07c6e2",
+        "requestId": "ce609ad9-c308-4c39-b275-1a8e02facf18",
         "coefficient": "0.5000",
-        "effectiveAt": "2026-10-28T11:18:41.000Z",
+        "effectiveAt": "2026-10-28T13:54:49.000Z",
         "notice": "全链通知42"
       }
     },
     {
       "path": "/api/coefficient/activate",
       "body": {
-        "id": "7bab8550-a456-4e93-9e57-700037d7906e"
+        "id": "58916de6-1f11-456a-a5e4-c60b0fb13a99"
       }
     },
     {
       "path": "/api/coefficient/activate",
       "body": {
-        "id": "7bab8550-a456-4e93-9e57-700037d7906e"
+        "id": "58916de6-1f11-456a-a5e4-c60b0fb13a99"
       }
     },
     {
       "path": "/api/coefficient/activate",
       "body": {
-        "id": "7bab8550-a456-4e93-9e57-700037d7906e"
+        "id": "58916de6-1f11-456a-a5e4-c60b0fb13a99"
       }
     },
     {
       "path": "/api/procurement/pricing",
       "body": {
-        "requestId": "fd749886-d08a-4571-8f6e-a59a18a83bcd",
+        "requestId": "0d9f8828-8ae4-49ab-95a6-c88fd12f8c03",
         "minimumMarkup": "0.05",
         "evidence": "forbidden"
       }
@@ -93,22 +93,22 @@
     {
       "path": "/api/coefficient/announcements",
       "body": {
-        "requestId": "35482bc8-3330-40df-841a-9843a59942d6",
+        "requestId": "ac8fdf96-685c-4f17-aef3-ad58ea8c1106",
         "coefficient": "0.4",
-        "effectiveAt": "2026-10-28T11:19:44.524Z",
+        "effectiveAt": "2026-10-28T13:55:52.206Z",
         "notice": "forbidden"
       }
     },
     {
       "path": "/api/coefficient/activate",
       "body": {
-        "id": "7bab8550-a456-4e93-9e57-700037d7906e"
+        "id": "58916de6-1f11-456a-a5e4-c60b0fb13a99"
       }
     },
     {
       "path": "/api/procurement/pricing",
       "body": {
-        "requestId": "48df42d1-9ad8-40ef-8777-4ec4450f175a",
+        "requestId": "b71042e5-df89-47db-a838-a103f06485c3",
         "minimumMarkup": "0.05",
         "evidence": "forbidden"
       }
@@ -116,22 +116,22 @@
     {
       "path": "/api/coefficient/announcements",
       "body": {
-        "requestId": "790b7eed-61ab-4197-8973-694ef80ec81b",
+        "requestId": "cd0fbe44-ccf3-441c-9d33-72012cf07a4f",
         "coefficient": "0.4",
-        "effectiveAt": "2026-10-28T11:19:45.819Z",
+        "effectiveAt": "2026-10-28T13:55:53.249Z",
         "notice": "forbidden"
       }
     },
     {
       "path": "/api/coefficient/activate",
       "body": {
-        "id": "7bab8550-a456-4e93-9e57-700037d7906e"
+        "id": "58916de6-1f11-456a-a5e4-c60b0fb13a99"
       }
     },
     {
       "path": "/api/procurement/pricing",
       "body": {
-        "requestId": "5286e675-9c28-4221-92b7-204edaa4fd32",
+        "requestId": "49374d7a-6d79-4ef5-b302-3c9a8c3ab7df",
         "minimumMarkup": "0.05",
         "evidence": "forbidden"
       }
@@ -139,16 +139,16 @@
     {
       "path": "/api/coefficient/announcements",
       "body": {
-        "requestId": "bf74712d-7b26-49b1-b877-d09b35f537dc",
+        "requestId": "dfe24489-1d29-40ff-b85f-c699c79bbe46",
         "coefficient": "0.4",
-        "effectiveAt": "2026-10-28T11:19:47.137Z",
+        "effectiveAt": "2026-10-28T13:55:54.279Z",
         "notice": "forbidden"
       }
     },
     {
       "path": "/api/coefficient/activate",
       "body": {
-        "id": "7bab8550-a456-4e93-9e57-700037d7906e"
+        "id": "58916de6-1f11-456a-a5e4-c60b0fb13a99"
       }
     }
   ],
@@ -160,8 +160,8 @@
     "maximum_billable_units": 9,
     "evidence": "合同42",
     "evidence_type": "supplier_verified",
-    "version": "64329a36-90c4-4c23-8345-919c4271a051",
-    "actor_id": "ecbce0e3-a723-49f2-a4f4-b21788c92fad"
+    "version": "e15905a2-dcc6-43ff-bf15-a60faf5dcd35",
+    "actor_id": "3ca81dae-d5f5-4709-8b28-3617746380c8"
   },
   "coverage": {
     "shortfall": "0.0000",
@@ -171,7 +171,7 @@
     "terminalBalance": "3.0000",
     "upstreamBalance": "18.0000",
     "upstreamTraceId": "account-42",
-    "upstreamCheckedAt": "2026-10-28T11:18:42.166Z",
+    "upstreamCheckedAt": "2026-10-28T13:54:50.425Z",
     "distributorBalance": "3.0000",
     "lockedInternalPoints": "3.0000",
     "platformHeldIncluded": "1.0000",

@@ -1,0 +1,568 @@
+{
+  "route": "/terminal/profiles",
+  "ids": {
+    "saved": {
+      "id": "de51335f-1910-4bb5-925d-fbe4f021c476",
+      "query": "35309bc7-df98-425c-942f-9059459c62e3",
+      "candidate": "efc0a555-0279-4724-886d-ff9ca15d3973",
+      "org": "796eafbe-587f-4fe8-8d6e-91e6c29e5a51",
+      "actor": "e1669af3-97c6-4045-9271-9a4fa2217280",
+      "detailId": "upstream-detail-de51335f-1910-4bb5-925d-fbe4f021c476"
+    },
+    "second": {
+      "id": "dc1ac631-1172-48ed-ae24-b31e7913583c",
+      "query": "6be41d51-135a-4946-89b4-7aaefe94768e",
+      "candidate": "0f721b80-8277-467b-85eb-108adfcb48f4",
+      "org": "796eafbe-587f-4fe8-8d6e-91e6c29e5a51",
+      "actor": "e1669af3-97c6-4045-9271-9a4fa2217280",
+      "detailId": "upstream-detail-dc1ac631-1172-48ed-ae24-b31e7913583c"
+    },
+    "foreign": {
+      "id": "46deddec-fe91-47eb-887b-f5b207b2da45",
+      "query": "afa47bfa-d341-4ec2-a793-b429d4525c49",
+      "candidate": "0bab2c16-bb9a-4054-b3a8-8d088cb221d2",
+      "org": "bf117511-8638-4884-bd7d-a61f5b0b81f3",
+      "actor": "0c40b1a3-33be-4cfe-846b-76fc4e88c1b5",
+      "detailId": "upstream-detail-46deddec-fe91-47eb-887b-f5b207b2da45"
+    },
+    "record": {
+      "id": "09c99c60-8468-45e5-9da2-ede80256f85b",
+      "company_id": "de51335f-1910-4bb5-925d-fbe4f021c476",
+      "created_by": "e1669af3-97c6-4045-9271-9a4fa2217280"
+    },
+    "attachment": {
+      "id": "0fdc35ac-3eb8-45c7-ad29-929083e57fb9",
+      "company_id": "de51335f-1910-4bb5-925d-fbe4f021c476"
+    },
+    "recordAttachment": {
+      "id": "8ed72366-016f-4c8e-bf60-0583ad801791",
+      "company_id": "de51335f-1910-4bb5-925d-fbe4f021c476",
+      "communication_id": "09c99c60-8468-45e5-9da2-ede80256f85b"
+    },
+    "contactId": "86a2c6d0-27cd-46ea-be09-1c4d9f180c9a",
+    "contactQuery": "d490dd55-9cc6-410f-bd00-96eda93f339e",
+    "templateId": "f2dd3b13-ad4d-4837-ad87-5c6418a8fb8e"
+  },
+  "vendorCalls": [
+    {
+      "name": "Chosen Company",
+      "countryCode3": "TUR"
+    },
+    {
+      "name": "Chosen Company",
+      "countryCode3": "TUR"
+    }
+  ],
+  "account": {
+    "balance": "9.7500",
+    "query_frozen": "0.0000"
+  },
+  "frozen": {
+    "balance": "9.7500",
+    "query_frozen": "1.0000"
+  },
+  "requests": [
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/email-drafts",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "templateId": "f2dd3b13-ad4d-4837-ad87-5c6418a8fb8e",
+        "templateVersion": 1,
+        "subject": "Hello {{companyName}}",
+        "content": "Dear {{contactName}}",
+        "selections": [
+          {
+            "contactId": "86a2c6d0-27cd-46ea-be09-1c4d9f180c9a",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Buyer"
+            },
+            "confirmUnsubscribed": false
+          }
+        ]
+      }
+    },
+    {
+      "path": "/api/email-drafts/preview",
+      "body": {
+        "draftId": "402e0ad7-0208-41f8-bb22-4a0e98f11963"
+      }
+    },
+    {
+      "path": "/api/email-previews/confirm",
+      "body": {
+        "previewId": "3e31b359-5c80-49b7-b6d1-06c54f6ded1f"
+      }
+    },
+    {
+      "path": "/api/company-profiles/update",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "mainProducts": "工业阀门",
+        "purchasingNeeds": "",
+        "cooperationIntent": "",
+        "nextFollowUpAt": "2026-11-02T16:30:00.000Z",
+        "customerStatus": "following",
+        "starRating": 4,
+        "tags": [
+          "重点",
+          "出口"
+        ]
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false,
+        "followUpFrom": "2026-11-03",
+        "followUpTo": "2026-11-03"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false,
+        "customerStatus": "replied"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false,
+        "customerStatus": "following"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false,
+        "customerStatus": "following",
+        "followUpFrom": "2026-11-03",
+        "followUpTo": "2026-11-01"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false,
+        "customerStatus": "following"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "dc1ac631-1172-48ed-ae24-b31e7913583c"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "dc1ac631-1172-48ed-ae24-b31e7913583c"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "dc1ac631-1172-48ed-ae24-b31e7913583c"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-timeline/create",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "type": "note",
+        "eventTime": "2026-10-28T02:30:00.000Z",
+        "contactOrPhone": null,
+        "content": "Issue52 follow-up"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/upload",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "fileName": "issue52.pdf",
+        "mimeType": "application/pdf",
+        "contentBase64": "JVBERi0xLjQKSXNzdWU1MiBhdHRhY2htZW50Cg=="
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/download",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "attachmentId": "0fdc35ac-3eb8-45c7-ad29-929083e57fb9"
+      }
+    },
+    {
+      "path": "/api/company-attachments/upload",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "communicationId": "09c99c60-8468-45e5-9da2-ede80256f85b",
+        "fileName": "record52.pdf",
+        "mimeType": "application/pdf",
+        "contentBase64": "JVBERi0xLjQKSXNzdWU1MiBhdHRhY2htZW50Cg=="
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/delete",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "attachmentId": "0fdc35ac-3eb8-45c7-ad29-929083e57fb9"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-details/refresh-quote",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-details/refresh-quote",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-details/refresh-quote",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "34353947-7cf5-4bfd-864b-2a7cf2b479a6"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "34353947-7cf5-4bfd-864b-2a7cf2b479a6"
+      }
+    },
+    {
+      "path": "/api/company-profiles/update",
+      "body": {
+        "profileId": "46deddec-fe91-47eb-887b-f5b207b2da45",
+        "mainProducts": "forbidden"
+      }
+    },
+    {
+      "path": "/api/company-attachments/download",
+      "body": {
+        "profileId": "46deddec-fe91-47eb-887b-f5b207b2da45",
+        "attachmentId": "0fdc35ac-3eb8-45c7-ad29-929083e57fb9"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "organizationId": "bf117511-8638-4884-bd7d-a61f5b0b81f3"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-profiles/delete",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/delete",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "attachmentId": "0fdc35ac-3eb8-45c7-ad29-929083e57fb9"
+      }
+    },
+    {
+      "path": "/api/company-timeline/edit",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "recordId": "09c99c60-8468-45e5-9da2-ede80256f85b",
+        "type": "note",
+        "eventTime": "2026-10-28T00:00:00.000Z",
+        "contactOrPhone": null,
+        "content": "forbidden"
+      }
+    },
+    {
+      "path": "/api/company-profiles/update",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476",
+        "mainProducts": "业务员维护",
+        "purchasingNeeds": "",
+        "cooperationIntent": "",
+        "nextFollowUpAt": "2026-11-02T16:30:00.000Z",
+        "customerStatus": "following",
+        "starRating": 4,
+        "tags": [
+          "重点",
+          "出口"
+        ]
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-profiles/delete",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": true
+      }
+    },
+    {
+      "path": "/api/company-profiles/restore",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": true
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-profiles/history",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-details/refresh-quote",
+      "body": {
+        "profileId": "de51335f-1910-4bb5-925d-fbe4f021c476"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "5df037a9-860f-4e62-9b72-9924275fa3f7"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "5df037a9-860f-4e62-9b72-9924275fa3f7"
+      }
+    }
+  ],
+  "passed": true
+}

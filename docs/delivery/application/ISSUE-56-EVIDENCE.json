@@ -1,0 +1,284 @@
+{
+  "database": "issue56_abdf94c6ffa34d68a6163d6a47657201_test",
+  "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403",
+  "crossDayBatch": "713d633f-9e1c-4097-b26c-b656cf073752",
+  "profileId": "67b8e3e1-d3a3-47fc-a20f-e1d085f30c75",
+  "organizationId": "7914e56f-1d60-4eda-acd8-46d0f490f3d7",
+  "recipientIds": {
+    "accepted": "165f3eb9-7e3d-4db8-bfa2-d27f65fc9d69",
+    "failed": "7a11abb1-5bd8-4e92-ba72-8c9231bc2096",
+    "uncertain": "e364cad9-6bd3-486b-ba89-c06746e5d2c7",
+    "paused": "21995f86-c303-4c15-95ea-b019cf435981",
+    "retry": "17f1ca82-56eb-45be-b9d5-7963d2c8e5f5"
+  },
+  "observed": [
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconcile",
+      "body": {
+        "recipientId": "e364cad9-6bd3-486b-ba89-c06746e5d2c7"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconcile",
+      "body": {
+        "recipientId": "e364cad9-6bd3-486b-ba89-c06746e5d2c7"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-recipients/retry",
+      "body": {
+        "recipientId": "e364cad9-6bd3-486b-ba89-c06746e5d2c7",
+        "confirmPossibleDuplicate": true
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconcile",
+      "body": {
+        "recipientId": "165f3eb9-7e3d-4db8-bfa2-d27f65fc9d69"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "713d633f-9e1c-4097-b26c-b656cf073752"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconfirm",
+      "body": {
+        "recipientId": "21995f86-c303-4c15-95ea-b019cf435981",
+        "confirmUnsubscribeNotice": true,
+        "confirmQuota": true
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "713d633f-9e1c-4097-b26c-b656cf073752"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "713d633f-9e1c-4097-b26c-b656cf073752"
+      }
+    },
+    {
+      "path": "/api/email-recipients/execute",
+      "body": {
+        "recipientId": "21995f86-c303-4c15-95ea-b019cf435981"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "713d633f-9e1c-4097-b26c-b656cf073752"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "6dc7c466-9135-47b4-a333-5daf307cc403"
+      }
+    }
+  ],
+  "senderCalls": [
+    {
+      "recipientId": "165f3eb9-7e3d-4db8-bfa2-d27f65fc9d69",
+      "to": "unique-3@example.com",
+      "subject": "Subject 3",
+      "replyTo": "reply@example.net"
+    },
+    {
+      "recipientId": "7a11abb1-5bd8-4e92-ba72-8c9231bc2096",
+      "to": "dup@example.com",
+      "subject": "Chosen source",
+      "replyTo": "reply@example.net"
+    },
+    {
+      "recipientId": "e364cad9-6bd3-486b-ba89-c06746e5d2c7",
+      "to": "unique-2@example.com",
+      "subject": "Subject 2",
+      "replyTo": "reply@example.net"
+    },
+    {
+      "recipientId": "17f1ca82-56eb-45be-b9d5-7963d2c8e5f5",
+      "to": "unique-2@example.com",
+      "subject": "Subject 2",
+      "replyTo": "reply@example.net"
+    },
+    {
+      "recipientId": "21995f86-c303-4c15-95ea-b019cf435981",
+      "to": "dup@example.com",
+      "subject": "Chosen source",
+      "replyTo": "reply@example.net"
+    }
+  ],
+  "evidenceCalls": [
+    "e364cad9-6bd3-486b-ba89-c06746e5d2c7",
+    "e364cad9-6bd3-486b-ba89-c06746e5d2c7",
+    "165f3eb9-7e3d-4db8-bfa2-d27f65fc9d69",
+    "165f3eb9-7e3d-4db8-bfa2-d27f65fc9d69",
+    "165f3eb9-7e3d-4db8-bfa2-d27f65fc9d69"
+  ],
+  "quota": {
+    "dailyLimit": 2000,
+    "reserved": 1,
+    "used": 3,
+    "day": "2026-10-27T16:00:00.000Z",
+    "remaining": 1996
+  },
+  "state": [
+    {
+      "id": "165f3eb9-7e3d-4db8-bfa2-d27f65fc9d69",
+      "batch_id": "6dc7c466-9135-47b4-a333-5daf307cc403",
+      "organization_id": "7914e56f-1d60-4eda-acd8-46d0f490f3d7",
+      "profile_id": "67b8e3e1-d3a3-47fc-a20f-e1d085f30c75",
+      "contact_id": "d6d2eb64-a10b-4f5f-b81b-96a86038db4f",
+      "mailsou_id": "mailsou-3",
+      "status": "delivered",
+      "parent_recipient_id": null
+    },
+    {
+      "id": "17f1ca82-56eb-45be-b9d5-7963d2c8e5f5",
+      "batch_id": "6dc7c466-9135-47b4-a333-5daf307cc403",
+      "organization_id": "7914e56f-1d60-4eda-acd8-46d0f490f3d7",
+      "profile_id": "67b8e3e1-d3a3-47fc-a20f-e1d085f30c75",
+      "contact_id": "35e0736f-a804-4ffa-847f-f85de101bb42",
+      "mailsou_id": "mailsou-2",
+      "status": "accepted",
+      "parent_recipient_id": "e364cad9-6bd3-486b-ba89-c06746e5d2c7"
+    },
+    {
+      "id": "21995f86-c303-4c15-95ea-b019cf435981",
+      "batch_id": "713d633f-9e1c-4097-b26c-b656cf073752",
+      "organization_id": "7914e56f-1d60-4eda-acd8-46d0f490f3d7",
+      "profile_id": "67b8e3e1-d3a3-47fc-a20f-e1d085f30c75",
+      "contact_id": "e8f9d8e8-8450-47ad-9d9e-3325caf5cc12",
+      "mailsou_id": "mailsou-1",
+      "status": "accepted",
+      "parent_recipient_id": null
+    },
+    {
+      "id": "7a11abb1-5bd8-4e92-ba72-8c9231bc2096",
+      "batch_id": "6dc7c466-9135-47b4-a333-5daf307cc403",
+      "organization_id": "7914e56f-1d60-4eda-acd8-46d0f490f3d7",
+      "profile_id": "67b8e3e1-d3a3-47fc-a20f-e1d085f30c75",
+      "contact_id": "e8f9d8e8-8450-47ad-9d9e-3325caf5cc12",
+      "mailsou_id": "mailsou-1",
+      "status": "not_submitted",
+      "parent_recipient_id": null
+    },
+    {
+      "id": "e364cad9-6bd3-486b-ba89-c06746e5d2c7",
+      "batch_id": "6dc7c466-9135-47b4-a333-5daf307cc403",
+      "organization_id": "7914e56f-1d60-4eda-acd8-46d0f490f3d7",
+      "profile_id": "67b8e3e1-d3a3-47fc-a20f-e1d085f30c75",
+      "contact_id": "35e0736f-a804-4ffa-847f-f85de101bb42",
+      "mailsou_id": "mailsou-2",
+      "status": "uncertain",
+      "parent_recipient_id": null
+    }
+  ],
+  "unchangedPointTables": [
+    "internal_point_accounts",
+    "platform_inventory",
+    "query_point_ledger",
+    "company_contact_point_ledger",
+    "product_search_ledger"
+  ],
+  "browser": {
+    "history": true,
+    "nestAndVite": true,
+    "unknownResponse": true,
+    "fourRoles": true,
+    "forcedChange": true,
+    "crossTenantDenied": true,
+    "lateSessionResponse": true,
+    "readFailureClearsStaleDetail": true
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "database": "issue59_2cf12dd28f1c41619b899bdd63da3143_test",
+  "sources": [
+    {
+      "source": "detail",
+      "id": "1",
+      "referenceId": "c5831dc6-0815-479b-864e-e041ed2028b8",
+      "event": "freeze",
+      "amount": "10.0000",
+      "balanceAfter": "100.0000",
+      "frozenAfter": "10.0000"
+    },
+    {
+      "source": "detail",
+      "id": "2",
+      "referenceId": "c5831dc6-0815-479b-864e-e041ed2028b8",
+      "event": "settle",
+      "amount": "4.0000",
+      "balanceAfter": "96.0000",
+      "frozenAfter": "0.0000"
+    },
+    {
+      "source": "contact",
+      "id": "1",
+      "referenceId": "8b12d578-ec6b-4623-b4fe-0cf46a98da9f",
+      "event": "freeze",
+      "amount": "8.0000",
+      "balanceAfter": "96.0000",
+      "frozenAfter": "8.0000"
+    },
+    {
+      "source": "product",
+      "id": "1",
+      "referenceId": "f66ee959-9b33-4f2f-a9c5-d51909d7f500",
+      "event": "freeze",
+      "amount": "6.0000",
+      "balanceAfter": "96.0000",
+      "frozenAfter": "14.0000"
+    },
+    {
+      "source": "product",
+      "id": "2",
+      "referenceId": "f66ee959-9b33-4f2f-a9c5-d51909d7f500",
+      "event": "release",
+      "amount": "6.0000",
+      "balanceAfter": "96.0000",
+      "frozenAfter": "8.0000"
+    }
+  ],
+  "roles": [
+    "admin",
+    "sales",
+    "other admin",
+    "platform",
+    "distributor"
+  ],
+  "request": "GET /api/reports without body/query; organization from session",
+  "identifiers": {
+    "ad67c2c6-5086-4038-b5ce-2a4010c5bba7": [
+      "757d07a1-c9a4-46cb-b6b8-a3b63ca7b2d1",
+      "e7896ca5-9f09-45ea-967b-715d87681875",
+      "c5831dc6-0815-479b-864e-e041ed2028b8",
+      "64e6eb86-3a0b-4356-bc35-e601939dc9d6",
+      "8b12d578-ec6b-4623-b4fe-0cf46a98da9f",
+      "f66ee959-9b33-4f2f-a9c5-d51909d7f500"
+    ],
+    "75943e21-a97d-4702-9d6f-c7791f4b41cd": [
+      "0d235c2e-d4ec-42b0-8ae7-7d056aab6706",
+      "96556561-0774-4502-a945-fae6898b2c80",
+      "a84ea15a-54b0-4756-baf4-351c8f32d494",
+      "6d16ee65-9d4f-4ebb-92a2-30283a380152",
+      "1581bdef-d138-4961-805b-a70439bf8c7d",
+      "f3271975-8f96-4d39-bc87-c53bbbe2c655"
+    ]
+  },
+  "balances": {
+    "own": "96.0000",
+    "other": "296.0000",
+    "frozen": "8.0000"
+  },
+  "navigationWrites": [],
+  "otherPageReadPosts": [],
+  "supplierCalls": [],
+  "unchangedBusinessTables": [
+    "internal_point_accounts",
+    "query_point_ledger",
+    "company_contact_point_ledger",
+    "product_search_ledger",
+    "company_detail_queries",
+    "company_contact_queries",
+    "product_search_pages",
+    "platform_inventory",
+    "point_orders",
+    "procurement_ledger"
+  ],
+  "missingAccountAndDatabaseFailure": true,
+  "lateSessionResponse": true,
+  "nestAndViteHistory": true,
+  "forcedPasswordChange": true,
+  "crossTenantSelectorIgnored": true,
+  "csvDenied": true
+}

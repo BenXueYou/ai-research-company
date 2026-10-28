@@ -1,0 +1,594 @@
+{
+  "passed": true,
+  "database": "issue54_af73f29538674c748bd884228a9edd3a_test",
+  "node": "v24.15.0",
+  "origin": "http://127.0.0.1:60523",
+  "devOrigin": "http://127.0.0.1:55171",
+  "calls": [
+    {
+      "catalog": "imports",
+      "productDesc": "ceramic pump",
+      "buyerCountryCode3": "TUR",
+      "startDate": "2026-01-01",
+      "endDate": "2026-06-30",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "catalog": "imports",
+      "productDesc": "ceramic pump",
+      "buyerCountryCode3": "TUR",
+      "startDate": "2026-01-01",
+      "endDate": "2026-06-30",
+      "pageNo": 2,
+      "pageSize": 20
+    },
+    {
+      "catalog": "imports",
+      "productDesc": "zero pump",
+      "buyerCountryCode3": "TUR",
+      "startDate": "2026-01-01",
+      "endDate": "2026-06-30",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "catalog": "imports",
+      "productDesc": "timeout pump",
+      "buyerCountryCode3": "TUR",
+      "startDate": "2026-01-01",
+      "endDate": "2026-06-30",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "catalog": "imports",
+      "productDesc": "detail timeout",
+      "buyerCountryCode3": "TUR",
+      "startDate": "2026-01-01",
+      "endDate": "2026-06-30",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "catalog": "imports",
+      "productDesc": "sales zero",
+      "buyerCountryCode3": "TUR",
+      "startDate": "2026-01-01",
+      "endDate": "2026-06-30",
+      "pageNo": 1,
+      "pageSize": 20
+    }
+  ],
+  "companyCalls": [
+    {
+      "name": "Trade Buyer 2",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "Trade Buyer 2",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "Trade Buyer 2",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "Trade Buyer 1",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    }
+  ],
+  "detailCalls": [
+    {
+      "name": "Verified Legal Buyer 54",
+      "countryCode3": "TUR"
+    },
+    {
+      "name": "Verified Legal Buyer 54",
+      "countryCode3": "TUR"
+    }
+  ],
+  "ids": {
+    "productPage": "f54105f3-c162-4db7-9371-ead5836b8ee3",
+    "productCandidate": "0b940752-a403-4c72-beac-9e6ecf283477",
+    "companyCandidate": "0da944b6-2260-4714-bce8-282b92688a54",
+    "profile": {
+      "id": "6d052a64-3997-48f8-89a0-fbecd54ea56c",
+      "detail_id": "detail-data-id-54",
+      "query_id": "58086841-bbbe-478e-9e26-d39fb3ffd529"
+    },
+    "pending": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8",
+    "detailPending": "56373953-248d-447b-bf00-6bb0e7263230"
+  },
+  "balance": {
+    "balance": "19.0124",
+    "query_frozen": "0.0000"
+  },
+  "frozen": {
+    "balance": "18.5803",
+    "query_frozen": "1.0000"
+  },
+  "ledger": [
+    {
+      "page_id": "49521d2d-38ae-46f1-8892-556f85faa8c2",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "20.0000",
+      "frozen_after": "1.0000"
+    },
+    {
+      "page_id": "49521d2d-38ae-46f1-8892-556f85faa8c2",
+      "event": "settle",
+      "amount": "0.4321",
+      "balance_after": "19.5679",
+      "frozen_after": "0.0000"
+    },
+    {
+      "page_id": "49521d2d-38ae-46f1-8892-556f85faa8c2",
+      "event": "release",
+      "amount": "0.5679",
+      "balance_after": "19.5679",
+      "frozen_after": "0.0000"
+    },
+    {
+      "page_id": "f54105f3-c162-4db7-9371-ead5836b8ee3",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.5679",
+      "frozen_after": "1.0000"
+    },
+    {
+      "page_id": "f54105f3-c162-4db7-9371-ead5836b8ee3",
+      "event": "settle",
+      "amount": "0.4321",
+      "balance_after": "19.1358",
+      "frozen_after": "0.0000"
+    },
+    {
+      "page_id": "f54105f3-c162-4db7-9371-ead5836b8ee3",
+      "event": "release",
+      "amount": "0.5679",
+      "balance_after": "19.1358",
+      "frozen_after": "0.0000"
+    },
+    {
+      "page_id": "9457f634-347b-4f4e-b820-32281bf05ec4",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.0124",
+      "frozen_after": "1.0000"
+    },
+    {
+      "page_id": "9457f634-347b-4f4e-b820-32281bf05ec4",
+      "event": "settle",
+      "amount": "0.0000",
+      "balance_after": "19.0124",
+      "frozen_after": "0.0000"
+    },
+    {
+      "page_id": "9457f634-347b-4f4e-b820-32281bf05ec4",
+      "event": "release",
+      "amount": "1.0000",
+      "balance_after": "19.0124",
+      "frozen_after": "0.0000"
+    },
+    {
+      "page_id": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.0124",
+      "frozen_after": "1.0000"
+    },
+    {
+      "page_id": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8",
+      "event": "release",
+      "amount": "1.0000",
+      "balance_after": "19.0124",
+      "frozen_after": "0.0000"
+    },
+    {
+      "page_id": "3fd0d999-354f-41fc-85ba-f436b52e6b55",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "19.0124",
+      "frozen_after": "1.0000"
+    },
+    {
+      "page_id": "3fd0d999-354f-41fc-85ba-f436b52e6b55",
+      "event": "settle",
+      "amount": "0.4321",
+      "balance_after": "18.5803",
+      "frozen_after": "0.0000"
+    },
+    {
+      "page_id": "3fd0d999-354f-41fc-85ba-f436b52e6b55",
+      "event": "release",
+      "amount": "0.5679",
+      "balance_after": "18.5803",
+      "frozen_after": "0.0000"
+    },
+    {
+      "page_id": "b89062ac-1187-4af1-a5bd-0635358cbdfa",
+      "event": "freeze",
+      "amount": "1.0000",
+      "balance_after": "18.5803",
+      "frozen_after": "2.0000"
+    },
+    {
+      "page_id": "b89062ac-1187-4af1-a5bd-0635358cbdfa",
+      "event": "settle",
+      "amount": "0.0000",
+      "balance_after": "18.5803",
+      "frozen_after": "1.0000"
+    },
+    {
+      "page_id": "b89062ac-1187-4af1-a5bd-0635358cbdfa",
+      "event": "release",
+      "amount": "1.0000",
+      "balance_after": "18.5803",
+      "frozen_after": "1.0000"
+    }
+  ],
+  "detailLedger": [
+    {
+      "query_id": "58086841-bbbe-478e-9e26-d39fb3ffd529",
+      "event": "freeze",
+      "amount": "1.0000"
+    },
+    {
+      "query_id": "58086841-bbbe-478e-9e26-d39fb3ffd529",
+      "event": "settle",
+      "amount": "0.1234"
+    },
+    {
+      "query_id": "58086841-bbbe-478e-9e26-d39fb3ffd529",
+      "event": "release",
+      "amount": "0.8766"
+    },
+    {
+      "query_id": "56373953-248d-447b-bf00-6bb0e7263230",
+      "event": "freeze",
+      "amount": "1.0000"
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/product-searches/quote",
+      "body": {
+        "productDesc": "ceramic pump",
+        "buyerCountryCode3": "TUR",
+        "startDate": "2026-01-01",
+        "endDate": "2026-06-30",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/product-searches/quote",
+      "body": {
+        "productDesc": "ceramic pump",
+        "buyerCountryCode3": "TUR",
+        "startDate": "2026-01-01",
+        "endDate": "2026-06-30",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/product-searches/quote",
+      "body": {
+        "productDesc": "ceramic pump",
+        "buyerCountryCode3": "TUR",
+        "startDate": "2026-01-01",
+        "endDate": "2026-06-30",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/product-searches/quote",
+      "body": {
+        "productDesc": "ceramic pump",
+        "buyerCountryCode3": "TUR",
+        "startDate": "2026-01-01",
+        "endDate": "2026-06-30",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/product-searches/execute",
+      "body": {
+        "pageId": "49521d2d-38ae-46f1-8892-556f85faa8c2"
+      }
+    },
+    {
+      "path": "/api/product-searches/quote",
+      "body": {
+        "productDesc": "ceramic pump",
+        "buyerCountryCode3": "TUR",
+        "startDate": "2026-01-01",
+        "endDate": "2026-06-30",
+        "pageNo": 2,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/product-searches/execute",
+      "body": {
+        "pageId": "f54105f3-c162-4db7-9371-ead5836b8ee3"
+      }
+    },
+    {
+      "path": "/api/product-searches/execute",
+      "body": {
+        "pageId": "f54105f3-c162-4db7-9371-ead5836b8ee3"
+      }
+    },
+    {
+      "path": "/api/product-candidates/check",
+      "body": {
+        "candidateId": "0b940752-a403-4c72-beac-9e6ecf283477"
+      }
+    },
+    {
+      "path": "/api/product-candidates/check",
+      "body": {
+        "candidateId": "0b940752-a403-4c72-beac-9e6ecf283477"
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "0da944b6-2260-4714-bce8-282b92688a54"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "0da944b6-2260-4714-bce8-282b92688a54"
+      }
+    },
+    {
+      "path": "/api/product-candidates/check",
+      "body": {
+        "candidateId": "0b940752-a403-4c72-beac-9e6ecf283477"
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "30fd0f95-9a70-41fa-8e23-b27fac1bb1b9"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "30fd0f95-9a70-41fa-8e23-b27fac1bb1b9"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "30fd0f95-9a70-41fa-8e23-b27fac1bb1b9"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "58086841-bbbe-478e-9e26-d39fb3ffd529"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "30fd0f95-9a70-41fa-8e23-b27fac1bb1b9"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "58086841-bbbe-478e-9e26-d39fb3ffd529"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "30fd0f95-9a70-41fa-8e23-b27fac1bb1b9"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "6d052a64-3997-48f8-89a0-fbecd54ea56c"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "6d052a64-3997-48f8-89a0-fbecd54ea56c"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "6d052a64-3997-48f8-89a0-fbecd54ea56c"
+      }
+    },
+    {
+      "path": "/api/product-searches/quote",
+      "body": {
+        "productDesc": "zero pump",
+        "buyerCountryCode3": "TUR",
+        "startDate": "2026-01-01",
+        "endDate": "2026-06-30",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/product-searches/execute",
+      "body": {
+        "pageId": "9457f634-347b-4f4e-b820-32281bf05ec4"
+      }
+    },
+    {
+      "path": "/api/product-searches/quote",
+      "body": {
+        "productDesc": "timeout pump",
+        "buyerCountryCode3": "TUR",
+        "startDate": "2026-01-01",
+        "endDate": "2026-06-30",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/product-searches/execute",
+      "body": {
+        "pageId": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8"
+      }
+    },
+    {
+      "path": "/api/product-searches/execute",
+      "body": {
+        "pageId": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8"
+      }
+    },
+    {
+      "path": "/api/product-searches/page",
+      "body": {
+        "pageId": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8"
+      }
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "body": {
+        "queryId": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8",
+        "outcome": "failed",
+        "billingReference": "issue54-bill",
+        "evidence": "Controlled final failure"
+      }
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "body": {
+        "queryId": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8",
+        "outcome": "failed",
+        "billingReference": "issue54-bill",
+        "evidence": "Controlled final failure"
+      }
+    },
+    {
+      "path": "/api/product-searches/late-results",
+      "body": {
+        "queryId": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8",
+        "billingReference": "issue54-bill",
+        "traceId": "late-54",
+        "evidence": "Controlled late result",
+        "result": {
+          "content": [
+            {
+              "name": "Late Buyer"
+            }
+          ],
+          "page": 1,
+          "size": 20,
+          "total": 1
+        }
+      }
+    },
+    {
+      "path": "/api/product-searches/late-results",
+      "body": {
+        "queryId": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8",
+        "billingReference": "issue54-bill",
+        "traceId": "late-54",
+        "evidence": "Controlled late result",
+        "result": {
+          "content": [
+            {
+              "name": "Late Buyer"
+            }
+          ],
+          "page": 1,
+          "size": 20,
+          "total": 1
+        }
+      }
+    },
+    {
+      "path": "/api/product-searches/page",
+      "body": {
+        "pageId": "f16bc49b-4097-4108-b6e8-00eea3fb9ae8"
+      }
+    },
+    {
+      "path": "/api/product-searches/quote",
+      "body": {
+        "productDesc": "detail timeout",
+        "buyerCountryCode3": "TUR",
+        "startDate": "2026-01-01",
+        "endDate": "2026-06-30",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/product-searches/execute",
+      "body": {
+        "pageId": "3fd0d999-354f-41fc-85ba-f436b52e6b55"
+      }
+    },
+    {
+      "path": "/api/product-candidates/check",
+      "body": {
+        "candidateId": "88465ddd-72c0-4be6-b680-5a3ac7fd1e73"
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "7c5201b0-7294-4727-a40d-92f82c30e1ed"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "7c5201b0-7294-4727-a40d-92f82c30e1ed"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "56373953-248d-447b-bf00-6bb0e7263230"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "56373953-248d-447b-bf00-6bb0e7263230"
+      }
+    },
+    {
+      "path": "/api/company-details/status",
+      "body": {
+        "queryId": "56373953-248d-447b-bf00-6bb0e7263230"
+      }
+    }
+  ]
+}

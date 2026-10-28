@@ -87,3 +87,11 @@
 最终生产构建入口专项：`1 passed (15.7s)`；最终 Vite 入口专项：`1 passed (19.2s)`，均使用已归档的不同随机测试库，包装器正常回收数据库。后一次已等待最后登录后的计价/系数读取完成再关闭测试服务，避免开发代理在收尾时连接已关闭的3342。
 
 本票尝试删除 `.scratch/issue42-real-*` 等可丢弃临时产物时，自动审批以 `blocked by policy` 拒绝且无更细原因；未绕过拒绝，产物保留在本票独立目录。未影响共享 dist、test-results、开发数据库或其他会话文件。测试文件因仓库全局忽略测试目录而使用 `git add --intent-to-add --force` 标记为可审阅差异，没有暂存文件内容、提交或推送。
+
+## 2026-10-28 原型风格样式优化
+
+本轮只调整 PlatformSettingsPage、PricingSettings、CoefficientChanges 的 template/style，逐文件对照 HEAD，三个 script 块均完全一致。参照 `原型设计/原型V2.html` 与设计说明，沿用浅灰 #f2f4f9、白卡片、蓝紫 #4356e0、细边框 #e6e9f0 及既有中文系统字体。增加页面标题与同组设置导航；桌面双列表单、窄屏单列；价格用可横向滚动表格展示依据/版本；系数通知历史采用分组记录。无新增请求、缓存或业务字段。
+
+验证：application 目录 `vue-tsc --noEmit` 通过；专项 tsc 编译通过；Vite 独立 `.scratch/issue42-real-web` 构建通过（既有 chunk 大小提示）；`node --env-file=.env scripts/verify-issue42.mjs` 真实 HTTP/PostgreSQL 回归 1 passed (16.9s)，覆盖原请求字段、权限、覆盖16.5000点、幂等与调用次数、离开生命周期。该轮在本票编译后的测试副本末尾临时加截图/窄屏溢出检查，未改测试源：1440×1100与390×844截图已检查，窄屏 document 宽度未超过视口。截图位于 `application/.scratch/issue42-style-desktop.png`、`application/.scratch/issue42-style-mobile.png`。未进行部署或重启开发服务。
+
+前端编码规范试点反馈：版本0.0.1，自动触发；使用 frontend-design 与 Vue 技能。应用 ACTIVE FCS-007/011/013/014/030；脚本未触及，不扩散整理。类型检查、构建、专项回归和 diff --check通过；未执行常规 npm test（不覆盖本票），无独立 lint/格式化脚本；冲突无，相关 PENDING不提升为执行约束。正式供应商及生产部署仍未验证。

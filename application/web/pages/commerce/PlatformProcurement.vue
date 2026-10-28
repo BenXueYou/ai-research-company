@@ -164,7 +164,14 @@ onMounted(reload);
 
 <template>
   <section class="procurement-panel" aria-labelledby="procurement-title">
-    <h2 id="procurement-title">平台采购与承担费用</h2>
+    <header class="procurement-heading">
+      <div>
+        <p class="eyebrow">点数与账务 / 平台运营</p>
+        <h2 id="procurement-title">平台采购与承担费用</h2>
+        <p class="procurement-intro">统一登记采购、费用来源与库存成本，保留每笔关联和账务流水。</p>
+      </div>
+      <ElButton class="refresh-button" :disabled="busy" @click="reload"><span aria-hidden="true">↻</span>刷新账务</ElButton>
+    </header>
     <ElAlert
       v-if="error"
       :title="error"
@@ -346,7 +353,8 @@ onMounted(reload);
           <ElButton native-type="submit" :disabled="busy">确认费用</ElButton>
         </ElForm>
       </fieldset>
-      <h3>费用来源与核对</h3>
+      <section class="data-card">
+        <div class="section-heading"><div><p class="eyebrow">费用管理</p><h3>费用来源与核对</h3></div><span class="section-count">{{ snapshot.expenses.length }} 条</span></div>
       <div class="procurement-scroll">
         <table>
           <thead>
@@ -371,7 +379,9 @@ onMounted(reload);
           </tbody>
         </table>
       </div>
-      <h3>采购及费用关联</h3>
+      </section>
+      <section class="data-card">
+        <div class="section-heading"><div><p class="eyebrow">采购记录</p><h3>采购及费用关联</h3></div><span class="section-count">{{ snapshot.purchases.length }} 条</span></div>
       <div class="procurement-scroll">
         <table>
           <thead>
@@ -396,7 +406,9 @@ onMounted(reload);
           </tbody>
         </table>
       </div>
-      <h3>只增账务流水</h3>
+      </section>
+      <section class="data-card">
+        <div class="section-heading"><div><p class="eyebrow">审计留痕</p><h3>只增账务流水</h3></div><span class="section-count">{{ snapshot.ledger.length }} 条</span></div>
       <div class="procurement-scroll">
         <table>
           <thead>
@@ -423,38 +435,148 @@ onMounted(reload);
           </tbody>
         </table>
       </div>
+      </section>
     </template>
-    <ElButton :disabled="busy" @click="reload">刷新采购账务</ElButton>
   </section>
 </template>
 
 <style scoped>
 .procurement-panel {
   width: 100%;
-  margin-top: 24px;
-  padding: 24px;
-  border: 1px solid #d8e2e8;
+  max-width: 1440px;
+  margin: 0 auto;
+  color: #1c2333;
+}
+
+.procurement-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 2px 0 24px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #7b879b;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.procurement-heading h2 {
+  margin: 0;
+  color: #1c2333;
+  font-size: 24px;
+  line-height: 1.35;
+  letter-spacing: -.4px;
+}
+
+.procurement-intro {
+  margin: 7px 0 0;
+  color: #738095;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.refresh-button {
+  flex: none;
+  min-height: 36px;
+  color: #4356e0;
+  border-color: #dce2ff;
+  background: #f4f6ff;
+}
+
+.refresh-button span {
+  margin-right: 6px;
+  font-size: 17px;
+}
+
+.procurement-panel > .el-alert,
+.procurement-panel > [role='alert'] {
+  margin-bottom: 16px;
+}
+
+.procurement-balances,
+.data-card,
+.procurement-forms {
+  border: 1px solid #e6e9f0;
   border-radius: 12px;
   background: #fff;
+  box-shadow: 0 2px 5px #19234603;
 }
 
 .procurement-balances,
 .procurement-forms {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin: 0 0 20px;
+  padding: 0;
+}
+
+.procurement-balances > div {
+  min-width: 0;
+  padding: 18px 20px;
+  border-right: 1px solid #edf0f5;
+}
+
+.procurement-balances > div:nth-child(4n) {
+  border-right: 0;
+}
+
+.procurement-balances dt {
+  color: #7b879b;
+  font-size: 12px;
+}
+
+.procurement-balances dd {
+  margin: 8px 0;
+  color: #26334d;
+  font: 600 22px/1.3 'Segoe UI', Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .procurement-forms {
   min-width: 0;
   margin: 0;
-  padding: 0;
-  border: 0;
+  padding: 20px;
+  gap: 28px;
+  border: 1px solid #e6e9f0;
+  background: #fff;
+  box-shadow: 0 2px 5px #19234603;
 }
 
-.procurement-balances dd {
-  margin: 8px 0;
-  font-weight: 600;
+.procurement-forms h3,
+.data-card h3 {
+  margin: 0;
+  color: #26334d;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.data-card {
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.section-count {
+  padding: 4px 9px;
+  border-radius: 6px;
+  color: #6372a4;
+  background: #f3f5ff;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .procurement-scroll {
@@ -464,20 +586,94 @@ onMounted(reload);
 table {
   width: 100%;
   border-collapse: collapse;
+  color: #465064;
+  font-size: 12px;
 }
 
 th,
 td {
-  padding: 10px;
-  border-bottom: 1px solid #d8e2e8;
+  padding: 12px 10px;
+  border-bottom: 1px solid #edf0f5;
   text-align: left;
   overflow-wrap: anywhere;
+}
+
+th {
+  color: #7b879b;
+  background: #f8f9fc;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+tbody tr:hover {
+  background: #f8f9ff;
 }
 
 select {
   width: 100%;
   min-height: 36px;
-  border: 1px solid #b5c5ce;
-  border-radius: 4px;
+  border: 1px solid #dfe4ec;
+  border-radius: 7px;
+  color: #35415b;
+  background: #fff;
+}
+
+.procurement-panel :deep(.el-form-item__label) {
+  color: #647087;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.procurement-panel :deep(.el-input__wrapper) {
+  border-radius: 7px;
+  box-shadow: 0 0 0 1px #dfe4ec inset;
+}
+
+.procurement-panel :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px #7d8cf0 inset, 0 0 0 3px #eef1ff;
+}
+
+@media (max-width: 980px) {
+  .procurement-balances {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .procurement-balances > div:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .procurement-balances > div:nth-child(-n + 2) {
+    border-bottom: 1px solid #edf0f5;
+  }
+}
+
+@media (max-width: 720px) {
+  .procurement-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .procurement-heading h2 {
+    font-size: 22px;
+  }
+
+  .procurement-balances > div {
+    padding: 15px 14px;
+  }
+
+  .procurement-balances dd {
+    font-size: 18px;
+  }
+
+  .procurement-forms,
+  .data-card {
+    padding: 16px;
+  }
+
+  .data-card {
+    margin-top: 16px;
+  }
 }
 </style>

@@ -1,7 +1,16 @@
 <template>
-  <section class="workspace organization-section">
-    <div class="page-heading">
-      <p>直属上级：{{ parentName }}。开户后上级固定，最多两级分销。</p>
+  <section class="workspace organization-section style-b-page">
+    <div class="page-heading organization-heading">
+      <div>
+        <span class="module-kicker">ORGANIZATION MANAGEMENT</span>
+        <h1>下级管理</h1>
+        <p>管理直属合作组织、管理员凭据和组织状态。</p>
+      </div>
+      <div class="parent-context">
+        <span>当前上级</span>
+        <strong>{{ parentName || '读取中…' }}</strong>
+        <small>最多两级分销</small>
+      </div>
     </div>
     <el-alert
       v-if="error"
@@ -9,17 +18,17 @@
       :title="error"
       :closable="false"
     />
-    <nav aria-label="下级管理页面">
-      <RouterLink to="/platform/organizations">直属下级</RouterLink> ·
-      <RouterLink :to="{ path: '/platform/organizations', query: { view: 'new' } }">开户</RouterLink> ·
-      <RouterLink :to="{ path: '/platform/organizations', query: { view: 'accounts' } }">下级账户</RouterLink> ·
+    <nav class="organization-tabs" aria-label="下级管理页面">
+      <RouterLink to="/platform/organizations">直属下级</RouterLink>
+      <RouterLink :to="{ path: '/platform/organizations', query: { view: 'new' } }">开户</RouterLink>
+      <RouterLink :to="{ path: '/platform/organizations', query: { view: 'accounts' } }">下级账户</RouterLink>
       <RouterLink to="/platform/organizations/business-data">业务数据查看</RouterLink>
     </nav>
     <p v-if="openingUnknown" role="status">开户结果尚未确认。请刷新直属列表核实；重试将沿用本次请求标识，不会自动重新开户。</p>
     <el-button v-if="openingUnknown" @click="acknowledgeOpening">已核实开户结果，结束本次开户</el-button>
     <p v-if="resetUnknown" role="status">管理员密码重置结果尚未确认。请核实账号状态；返回本页不会再次重置。</p>
     <el-button v-if="resetUnknown" @click="acknowledgeReset">已核实，需要重新补发凭据</el-button>
-    <section v-if="credentials" class="identity-card" aria-label="开户凭据">
+    <section v-if="credentials" class="identity-card credential-panel" aria-label="开户凭据">
       <h2>{{ credentialAction === 'reset' ? '管理员密码重置成功' : '开户成功' }}</h2>
       <p>请在关闭前交付凭据。临时密码有效期72小时，首次登录必须改密。</p>
       <dl class="handoff-values">
@@ -34,7 +43,7 @@
     </section>
     <el-form
       v-else-if="view === 'new'"
-      class="identity-card opening-form"
+      class="identity-card opening-form style-b-card"
       label-position="top"
       @submit.prevent="openOrganization"
     >
@@ -104,19 +113,20 @@
       >{{ busy ? '正在开户…' : '确认开户' }}</el-button>
       <p class="hint">组织与首位管理员同时启用；系统生成临时密码。</p>
     </el-form>
-    <div v-if="view === 'list'" class="workspace-card children-list">
-      <h3>直属下级</h3>
-      <el-button :disabled="busy" @click="refresh">刷新列表</el-button>
+    <div v-if="view === 'list'" class="workspace-card children-list style-b-card">
+      <div class="section-heading">
+        <div><span class="module-kicker">DIRECT ORGANIZATIONS</span><h2>直属下级</h2></div>
+        <el-button :disabled="busy" @click="refresh">刷新列表</el-button>
+      </div>
       <p v-if="!children.length">暂无直属下级</p>
-      <article v-for="child in children" :key="child.id" class="child-row">
-        <h4>{{ child.name }}</h4>
-        <p>{{ child.kind === 'terminal' ? '终端企业' : `${child.distributorLevel}级分销` }} · {{ child.active ? '启用' : '停用' }}</p>
-        <p>联系号码：{{ child.phoneMasked }} · 管理员：{{ child.email }}</p>
+      <article v-for="child in children" :key="child.id" class="child-row organization-row">
+        <div class="organization-main"><span class="status-dot" :class="{ inactive: !child.active }"></span><div><h3>{{ child.name }}</h3><p>{{ child.kind === 'terminal' ? '终端企业' : `${child.distributorLevel}级分销` }} · {{ child.active ? '启用' : '停用' }}</p></div></div>
+        <div class="organization-contact"><span>管理员</span><strong>{{ child.email }}</strong><small>{{ child.phoneMasked }}</small></div>
         <PointAccountSummary :account="pointAccounts.get(child.id)" :state="pointsState" />
-        <RouterLink :to="{ path: '/platform/organizations', query: { id: child.id } }">下级详情</RouterLink>
+        <RouterLink class="row-action" :to="{ path: '/platform/organizations', query: { id: child.id } }">查看详情 →</RouterLink>
       </article>
     </div>
-    <section v-if="view === 'accounts'" class="workspace-card children-list" aria-label="下级账户">
+    <section v-if="view === 'accounts'" class="workspace-card children-list style-b-card" aria-label="下级账户">
       <h3>下级账户</h3>
       <p>查看授权范围内各层下级的内部点数。此页仅供查看；直属下级的管理请返回直属列表。</p>
       <el-button :disabled="pointsState === 'loading'" @click="refreshPoints">刷新账户</el-button>
@@ -132,8 +142,8 @@
         </article>
       </template>
     </section>
-    <div v-if="view === 'detail'" class="workspace-card children-list">
-      <h3>下级详情</h3>
+    <div v-if="view === 'detail'" class="workspace-card children-list style-b-card detail-card">
+      <div class="section-heading"><div><span class="module-kicker">ORGANIZATION PROFILE</span><h2>下级详情</h2></div></div>
       <template v-if="selectedChild">
         <h4>{{ selectedChild.name }}</h4>
         <p>{{ selectedChild.kind === 'terminal' ? '终端企业' : `${selectedChild.distributorLevel}级分销` }} · {{ selectedChild.active ? '启用' : '停用' }}</p>
@@ -385,11 +395,43 @@ onMounted(refresh);
 </script>
 
 <style scoped>
-.organization-section { margin-top: 32px; }
-.opening-form { max-width: 640px; }
-select { width: 100%; padding: 12px; border: 1px solid #dcdfe6; border-radius: 8px; color: #263052; background: white; }
-.children-list { margin-top: 24px; }
-.child-row { border-top: 1px solid #e5e7f1; margin-top: 16px; overflow-wrap: anywhere; }
+.style-b-page { --style-b-accent: #4356e0; --style-b-ink: #1c2333; --style-b-muted: #7d899d; --style-b-line: #e6e9f0; margin-top: 6px; }
+.organization-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+.organization-heading h1 { margin: 0 0 5px; color: var(--style-b-ink); font-size: 26px; letter-spacing: -.5px; }
+.organization-heading p { margin: 0; color: var(--style-b-muted); font-size: 13px; }
+.module-kicker { display: block; margin-bottom: 7px; color: #9ba6bd; font-size: 10px; letter-spacing: 1.5px; }
+.parent-context { min-width: 190px; padding: 12px 16px; border: 1px solid var(--style-b-line); border-radius: 10px; background: #fff; }
+.parent-context span, .parent-context small { display: block; color: var(--style-b-muted); font-size: 11px; }
+.parent-context strong { display: block; margin: 2px 0; color: var(--style-b-ink); font-size: 14px; }
+.organization-tabs { display: flex; gap: 22px; margin-bottom: 22px; border-bottom: 1px solid var(--style-b-line); overflow-x: auto; }
+.organization-tabs a { flex-shrink: 0; padding: 10px 2px; color: var(--style-b-muted); font-size: 13px; text-decoration: none; }
+.organization-tabs a.router-link-exact-active { border-bottom: 2px solid var(--style-b-accent); color: var(--style-b-accent); font-weight: 600; }
+.style-b-card { margin-top: 18px; padding: 23px; border: 1px solid var(--style-b-line); border-radius: 12px; background: #fff; box-shadow: 0 2px 5px #19234603; }
+.opening-form { max-width: none; }
+.opening-form h3, .section-heading h2 { margin: 0; color: var(--style-b-ink); font-size: 16px; }
+.opening-form h3 { padding-bottom: 15px; border-bottom: 1px solid var(--style-b-line); }
+.opening-form :deep(.el-form-item) { max-width: 720px; }
+.opening-form :deep(.el-form-item__label) { color: #647087; font-size: 12px; }
+select { width: 100%; padding: 10px 12px; border: 1px solid #dfe4ee; border-radius: 8px; color: var(--style-b-ink); background: #fff; }
+select:focus { border-color: var(--style-b-accent); outline: none; }
+.children-list { margin-top: 18px; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 4px; }
+.section-heading .module-kicker { margin-bottom: 3px; }
+.organization-row { display: grid; grid-template-columns: minmax(190px, 1.3fr) minmax(190px, 1fr) minmax(210px, 1fr) auto; align-items: center; gap: 20px; min-height: 82px; padding: 16px 0; border-top: 1px solid var(--style-b-line); overflow-wrap: anywhere; }
+.organization-main { display: flex; align-items: center; gap: 11px; }
+.organization-main h3 { margin: 0 0 3px; color: var(--style-b-ink); font-size: 14px; }
+.organization-main p, .organization-contact small { margin: 0; color: var(--style-b-muted); font-size: 12px; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: #16885e; box-shadow: 0 0 0 4px #eaf7f0; }
+.status-dot.inactive { background: #b97912; box-shadow: 0 0 0 4px #fff5e4; }
+.organization-contact span { display: block; color: #9ba6bd; font-size: 10px; }
+.organization-contact strong { display: block; margin: 2px 0; color: #465064; font-size: 12px; font-weight: 500; }
+.row-action { color: var(--style-b-accent); font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.row-action:hover { text-decoration: underline; }
+.credential-panel { max-width: 720px; border: 1px solid #dfe4ff; background: #f8f9ff; }
+.detail-card .section-heading { margin-bottom: 18px; }
+.detail-card h4 { margin: 0 0 8px; color: var(--style-b-ink); font-size: 20px; }
 .handoff-values { overflow-wrap: anywhere; }
-.handoff-values dd { margin: 8px 0 20px; font-family: monospace; }
+.handoff-values dd { margin: 8px 0 20px; color: var(--style-b-ink); font-family: Consolas, monospace; }
+@media (max-width: 900px) { .organization-row { grid-template-columns: 1fr 1fr; } .row-action { justify-self: end; } }
+@media (max-width: 600px) { .organization-heading { display: block; } .parent-context { margin-top: 16px; } .organization-tabs { gap: 16px; } .style-b-card { padding: 18px 16px; } .organization-row { grid-template-columns: 1fr; gap: 10px; } .row-action { justify-self: start; } }
 </style>

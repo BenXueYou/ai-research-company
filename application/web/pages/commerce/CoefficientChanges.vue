@@ -123,7 +123,7 @@ onUnmounted(stopClock);
 </script>
 
 <template>
-  <section class="procurement-panel" aria-labelledby="coefficient-title">
+  <section class="coefficient-settings" aria-labelledby="coefficient-title">
     <h2 id="coefficient-title">换算系数通知与生效</h2>
     <ElAlert
       v-if="error"
@@ -137,9 +137,14 @@ onUnmounted(stopClock);
       type="success"
       :closable="false"
     />
-    <p v-if="snapshot">当前 X={{ snapshot.current }}。已有余额不重算；已确认查询按原锁定 X 结算。</p>
+    <p v-if="snapshot" class="settings-summary">当前 X={{ snapshot.current }}。已有余额不重算；已确认查询按原锁定 X 结算。</p>
     <p v-if="unknown" role="alert">系数操作结果尚未确认。可刷新查看通知，或重试原请求核实；离开不会自动重试。</p>
-    <ElForm :disabled="busy || !!unknown" label-position="top" @submit.prevent="announce">
+    <ElForm
+      class="settings-form"
+      :disabled="busy || !!unknown"
+      label-position="top"
+      @submit.prevent="announce"
+    >
       <ElFormItem label="拟生效系数 X" for="coefficient-value">
         <ElInput id="coefficient-value" v-model="form.coefficient" required />
       </ElFormItem>
@@ -156,10 +161,12 @@ onUnmounted(stopClock);
       <ElFormItem label="调整通知" for="coefficient-notice">
         <ElInput id="coefficient-notice" v-model="form.notice" required />
       </ElFormItem>
-      <ElButton native-type="submit" :disabled="busy">发布通知</ElButton>
+      <ElButton class="settings-primary" native-type="submit" :disabled="busy">发布通知</ElButton>
     </ElForm>
     <ElButton v-if="unknown" :disabled="busy" @click="unknown === 'announce' ? announce() : activate(activationId)">重试原系数请求</ElButton>
-    <div v-for="change in snapshot?.changes ?? []" :key="change.id">
+    <h3>系数调整记录</h3>
+    <p v-if="snapshot && !snapshot.changes.length" class="settings-hint">暂无系数调整记录。</p>
+    <div v-for="change in snapshot?.changes ?? []" :key="change.id" class="coefficient-history">
       <h3>{{ change.previousCoefficient }} → {{ change.proposedCoefficient }}</h3>
       <p>通知：{{ change.notice }}；告知于 {{ change.announcedAt }}；计划生效 {{ change.effectiveAt }}</p>
       <p v-if="change.activatedAt">实际生效：{{ change.activatedAt }}；核验上游余额 {{ change.coverage?.upstreamBalance }}，覆盖需求 {{ change.coverage?.requiredUpstreamPoints }}，在途已扣 {{ change.coverage?.inTransitChargedUpstreamPoints }}。</p>

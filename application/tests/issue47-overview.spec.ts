@@ -144,6 +144,20 @@ test('Issue47 overview reads real snapshots, pending work and navigates without 
     await expect(overview.getByText('上游剩余点数：87.25 上游点')).toBeVisible();
     await expect(overview.getByText('上游有效期：2027-01-31')).toBeVisible();
     await expect(overview.getByText('快照获取时间：2026-10-01T00:00:00.000Z')).toBeVisible();
+    if (process.env.ISSUE47_VISUAL === '1') {
+      await page.setViewportSize({ width: 1440, height: 1100 });
+      await page.screenshot({ path: resolve('.scratch/issue47/overview-desktop.png') });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await expect(overview).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+      await page.screenshot({ path: resolve('.scratch/issue47/overview-mobile.png') });
+      await overview.getByRole('navigation', { name: '概览快捷入口' }).scrollIntoViewIfNeeded();
+      await expect(overview.getByRole('link', { name: '直属开户', exact: true })).toBeVisible();
+      expect(await page.locator('#console-main').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+      await page.screenshot({ path: resolve('.scratch/issue47/overview-mobile-bottom.png') });
+      await page.setViewportSize({ width: 1440, height: 1100 });
+      await page.locator('#console-main').evaluate(element => { element.scrollTop = 0; });
+    }
     const links = [
       ['直属开户', '/platform/organizations?view=new', '组织名称', '下级管理'],
       ['点数订单', '/platform/ledger', '直属点数订单', '点数订单'],

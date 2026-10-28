@@ -1,8 +1,28 @@
 <template>
-  <section>
-    <RouterLink to="/platform/settings">返回平台设置</RouterLink>
-    <p>默认每企业每日 2000 封；按北京时间零点计算。</p>
-    <el-form label-position="top" :disabled="busy || resultUnknown" @submit.prevent="save">
+  <section class="platform-email-page quota-page">
+    <header class="settings-heading">
+      <div>
+        <p class="settings-kicker">平台设置 / 邮件资源</p>
+        <h1>企业邮件日额度</h1>
+        <p>按北京时间每日零点重置；SMTP 与 U-Mail 共用企业额度。</p>
+      </div>
+      <RouterLink class="back-link" to="/platform/settings">返回平台设置</RouterLink>
+    </header>
+    <nav class="settings-navigation" aria-label="平台设置">
+      <RouterLink to="/platform/settings">计价配置</RouterLink>
+      <RouterLink to="/platform/settings/umail">U-Mail 企业资源</RouterLink>
+      <span aria-current="page">企业邮件日额度</span>
+    </nav>
+    <section class="settings-card" aria-labelledby="email-quota-form-title">
+      <div class="card-heading">
+        <div>
+          <p class="card-kicker">额度控制</p>
+          <h2 id="email-quota-form-title">设置企业每日封数</h2>
+        </div>
+        <span class="status-pill">北京时间</span>
+      </div>
+      <p class="card-hint">默认额度为每企业每日 2000 封。修改只影响后续发送的额度核算。</p>
+    <el-form class="quota-form" label-position="top" :disabled="busy || resultUnknown" @submit.prevent="save">
       <el-form-item label="终端企业">
         <el-select v-model="organizationId" placeholder="选择终端企业">
           <el-option
@@ -30,6 +50,7 @@
       :closable="false"
     />
     <p v-if="notice" role="status">{{ notice }}</p>
+    </section>
   </section>
 </template>
 
@@ -103,3 +124,49 @@ onMounted(() => {
   }).catch(failure => { error.value = failure instanceof Error ? failure.message : '加载企业失败'; });
 });
 </script>
+
+<style scoped>
+.platform-email-page {
+  --email-accent: #4356e0;
+  --email-line: #e6e9f0;
+  --email-muted: #738095;
+  width: 100%;
+  min-width: 0;
+  color: #1c2333;
+  font-family: 'Microsoft YaHei', 'PingFang SC', 'Segoe UI', sans-serif;
+}
+.settings-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.settings-kicker, .card-kicker { margin: 0 0 7px; color: #9ba6bd; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+.settings-heading h1 { margin: 0 0 8px; font-size: 24px; line-height: 1.4; letter-spacing: -.4px; }
+.settings-heading p:last-child, .card-hint { margin: 0; color: var(--email-muted); font-size: 13px; line-height: 1.8; }
+.back-link { flex: none; margin-top: 8px; color: var(--email-accent); font-size: 13px; text-decoration: none; }
+.back-link::before { content: '← '; }
+.settings-navigation { display: flex; gap: 26px; margin: 22px 0; border-bottom: 1px solid var(--email-line); overflow-x: auto; }
+.settings-navigation > * { flex: none; padding: 12px 2px; border-bottom: 2px solid transparent; color: var(--email-muted); font-size: 13px; text-decoration: none; }
+.settings-navigation [aria-current] { border-bottom-color: var(--email-accent); color: var(--email-accent); font-weight: 600; }
+.settings-navigation a:hover { color: var(--email-accent); }
+.settings-card { max-width: 920px; padding: 24px; border: 1px solid var(--email-line); border-radius: 12px; background: #fff; box-shadow: 0 2px 5px #19234603; }
+.card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid #edf0f6; }
+.card-heading h2 { margin: 0; font-size: 17px; font-weight: 650; }
+.status-pill { padding: 4px 9px; border-radius: 5px; color: #5365c5; background: #eef1ff; font-size: 11px; white-space: nowrap; }
+.card-hint { margin: 16px 0 20px; }
+.settings-card :deep(.el-alert) { margin-top: 16px; }
+.quota-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, .45fr) auto; align-items: end; gap: 0 18px; }
+.quota-form :deep(.el-form-item) { min-width: 0; margin-bottom: 0; }
+.quota-form :deep(.el-form-item__label) { height: auto; margin-bottom: 8px; color: #647087; font-size: 12px; line-height: 1.6; }
+.quota-form :deep(.el-input__wrapper), .quota-form :deep(.el-select__wrapper) { min-height: 42px; border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
+.quota-form :deep(.el-input__wrapper.is-focus), .quota-form :deep(.el-select__wrapper.is-focused) { box-shadow: 0 0 0 1px var(--email-accent) inset; }
+.quota-form :deep(.el-button) { min-height: 42px; margin: 0; padding: 10px 18px; border-color: var(--email-accent); border-radius: 8px; color: #fff; background: var(--email-accent); font-size: 13px; font-weight: 600; box-shadow: 0 3px 7px #4356e017; }
+.quota-form :deep(.el-button:not(:disabled):hover) { border-color: #3343c9; background: #3343c9; }
+[role='status'] { margin: 16px 0 0; color: #16885e; font-size: 13px; }
+@media (max-width: 760px) {
+  .settings-heading { display: block; }
+  .back-link { display: inline-block; margin-top: 14px; }
+  .settings-heading h1 { font-size: 21px; }
+  .settings-navigation { gap: 20px; }
+  .settings-card { padding: 18px 16px; }
+  .quota-form { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .quota-form :deep(.el-form-item) { margin-bottom: 0; }
+  .quota-form :deep(.el-button) { width: 100%; }
+}
+</style>

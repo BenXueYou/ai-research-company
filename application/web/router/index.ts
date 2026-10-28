@@ -2,7 +2,10 @@ import { nextTick } from 'vue';
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
 import type { Pinia } from 'pinia';
 import { useSessionStore } from '../stores/session';
+import MemberManagement from '../pages/organizations/MemberManagement.vue';
 import EmptyRoute from './EmptyRoute.vue';
+import CompanyProfilesPage from '../pages/companies/CompanyProfilesPage.vue';
+import TerminalSearchPage from '../pages/companies/TerminalSearchPage.vue';
 import SettingsRoute from './SettingsRoute.vue';
 import RoleHelpPage from '../pages/help/RoleHelpPage.vue';
 import UpstreamMonitorPage from '../pages/upstream/UpstreamMonitorPage.vue';
@@ -16,6 +19,8 @@ import PlatformSettingsPage from '../pages/commerce/PlatformSettingsPage.vue';
 import UMailResourceSettings from '../pages/email/UMailResourceSettings.vue';
 import PlatformEmailQuota from '../pages/email/PlatformEmailQuota.vue';
 import PlatformOverviewPage from '../pages/overview/PlatformOverviewPage.vue';
+import TerminalUsagePage from '../pages/reports/TerminalUsagePage.vue';
+import EmailRecordsPage from '../pages/email/EmailRecordsPage.vue';
 
 type Role = 'platform' | 'distributor' | 'admin' | 'sales';
 declare module 'vue-router' {
@@ -44,22 +49,27 @@ export const navigation: NavigationItem[] = [
   { path: '/distribution/organizations', label: '下级管理', roles: ['distributor'], target: 'compat-organizations' },
   { path: '/distribution/orders', label: '点数订单', roles: ['distributor'], target: 'compat-orders' },
   { path: '/distribution/profit', label: '交易与利润', roles: ['distributor'], target: 'compat-usage' },
-  { path: '/terminal/search', label: '找企业', roles: ['admin', 'sales'], target: 'company-search' },
-  { path: '/terminal/profiles', label: '企业档案库', roles: ['admin', 'sales'], target: 'company-search' },
-  { path: '/terminal/emails', label: '邮件发送记录', roles: ['admin', 'sales'], target: 'compat-emails' },
+  { path: '/terminal/search', label: '找企业', roles: ['admin', 'sales'] },
+  { path: '/terminal/profiles', label: '企业档案库', roles: ['admin', 'sales'] },
+  { path: '/terminal/emails', label: '邮件发送记录', roles: ['admin', 'sales'] },
   { path: '/terminal/sending-settings', label: '团队发信设置', roles: ['admin', 'sales'], target: 'compat-sending' },
-  { path: '/terminal/members', label: '成员管理', roles: ['admin', 'sales'], target: 'compat-members' },
-  { path: '/terminal/usage', label: '点数用量', roles: ['admin', 'sales'], target: 'compat-usage' }
+  { path: '/terminal/members', label: '成员管理', roles: ['admin', 'sales'] },
+  { path: '/terminal/usage', label: '点数用量', roles: ['admin', 'sales'] }
 ];
 
 const businessRoutes: RouteRecordRaw[] = navigation.map(item => ({
   path: item.path,
   name: item.path.slice(1).replaceAll('/', '-'),
-  component: item.path === '/platform/overview' ? PlatformOverviewPage :
+  component: item.path === '/terminal/search' ? TerminalSearchPage :
+    item.path === '/terminal/profiles' ? CompanyProfilesPage :
+    item.path === '/terminal/members' ? MemberManagement :
+    item.path === '/platform/overview' ? PlatformOverviewPage :
     item.path === '/platform/reconciliation' ? ReconciliationPage :
     item.path === '/platform/organizations' ? PlatformOrganizationsPage :
     item.path === '/platform/ledger' ? PlatformPointOrdersPage :
-    item.path === '/platform/settings' ? PlatformSettingsPage : EmptyRoute,
+    item.path === '/platform/settings' ? PlatformSettingsPage :
+    item.path === '/terminal/usage' ? TerminalUsagePage :
+    item.path === '/terminal/emails' ? EmailRecordsPage : EmptyRoute,
   meta: { title: item.label, roles: item.roles, target: item.target, business: true }
 }));
 

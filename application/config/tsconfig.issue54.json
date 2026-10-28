@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.server.json",
+  "compilerOptions": { "rootDir": "..", "outDir": "../.scratch/issue54/compiled" },
+  "include": ["../server/**/*.ts", "../tests/issue54-products.spec.ts", "../tests/product-search.test.ts", "../tests/detail-reconciliation.test.ts"]
+}

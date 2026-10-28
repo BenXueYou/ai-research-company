@@ -189,6 +189,9 @@ export class CompanyDetailService {
     }
     return this.get(identity, queryId);
   }
+  async status(identity: Identity, body: unknown) {
+    return this.get(identity, exact(body, 'queryId'));
+  }
   async get(identity: Identity, queryId: string) {
     await this.authorize(identity);
     if (!uuid.test(queryId)) throw new BadRequestException('查询标识无效');

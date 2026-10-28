@@ -1,0 +1,247 @@
+import { test, expect, type Page } from '@playwright/test';
+import { randomBytes, randomUUID } from 'node:crypto';
+import { resolve } from 'node:path';
+import { writeFile } from 'node:fs/promises';
+import { database, migrate } from '../server/database.js';
+import { createApplication } from '../server/app.js';
+import { IdentityService } from '../server/identity/identity.js';
+import { OrganizationService, contactKey } from '../server/organizations/organizations.js';
+import { hashPassword } from '../server/identity/policy.js';
+import { createServer } from 'vite';
+
+test('Issue58 real members route, delivery, authorization, unknown outcomes and lifecycle', async ({ page, context, browser }) => {
+  const url = process.env.TEST_DATABASE_URL;
+  if (!url || !new URL(url).pathname.endsWith('_test')) throw new Error('Dedicated test database required');
+  const pool = database(url);
+  process.env.ORG_CONTACT_KEY = randomBytes(32).toString('hex');
+  process.env.SMTP_CREDENTIAL_KEY = randomBytes(32).toString('hex');
+  let app: Awaited<ReturnType<typeof createApplication>> | undefined;
+  let devApp: Awaited<ReturnType<typeof createApplication>> | undefined;
+  let vite: Awaited<ReturnType<typeof createServer>> | undefined;
+  const password = 'Issue58-browser-test!';
+  const writes: { path: string; body: Record<string, string> }[] = [];
+  try {
+    await migrate(pool);
+    await pool.query('UPDATE accounts SET password_hash=$1,must_change=false', [await hashPassword(password)]);
+    const identity = new IdentityService(pool);
+    const platform = await identity.login({ email: 'super_admin', password }, 'issue58');
+    const actor = await identity.authenticate(platform.token);
+    const organizations = new OrganizationService(pool, contactKey());
+    const owner = await organizations.open(actor, platform.token, { name: '成员企业甲', kind: 'terminal', countryCode: '+86', phone: '13868005801', email: 'owner@issue58.test', requestId: randomUUID() });
+    const other = await organizations.open(actor, platform.token, { name: '成员企业乙', kind: 'terminal', countryCode: '+86', phone: '13868005802', email: 'other@issue58.test', requestId: randomUUID() });
+    await organizations.open(actor, platform.token, { name: '成员分销', kind: 'distributor', countryCode: '+86', phone: '13868005803', email: 'distributor@issue58.test', requestId: randomUUID() });
+    await pool.query('UPDATE accounts SET password_hash=$1,must_change=false', [await hashPassword(password)]);
+    expect(new Set([actor.id, actor.organization_id, owner.accountId, owner.organizationId, other.accountId, other.organizationId]).size).toBe(6);
+    app = await createApplication(pool, 'http://127.0.0.1:0', false, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, resolve('.scratch/issue58/web'));
+    // Bind an ephemeral port first, then configure the exact same origin for CSRF checks.
+    await app.listen(0, '127.0.0.1');
+    const port = app.getHttpServer().address().port as number;
+    await app.close();
+    const origin = `http://127.0.0.1:${port}`;
+    app = await createApplication(pool, origin, false, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, resolve('.scratch/issue58/web'));
+    await app.listen(port, '127.0.0.1');
+    async function login(target: Page, email: string, pass = password, base = origin) {
+      await target.goto(`${base}/terminal/members`);
+      await target.getByLabel('登录账号', { exact: true }).fill(email);
+      await target.getByLabel('密码', { exact: true }).fill(pass);
+      await target.getByRole('button', { name: '登录', exact: true }).click();
+      await target.getByRole('button', { name: /的账号菜单/ }).waitFor();
+      await target.goto(`${base}/terminal/members`);
+    }
+    async function accountAction(name: string) {
+      const trigger = page.getByRole('button', { name: /的账号菜单/ });
+      if (await trigger.getAttribute('aria-expanded') !== 'true') await trigger.click();
+      await page.getByRole('menuitem', { name, exact: true }).click();
+    }
+    async function post(target: Page, path: string, body: object) {
+      return target.evaluate(async ({ path, body }) => {
+        const csrf = document.cookie.split('; ').find(x => x.startsWith('identity_csrf='))?.slice(14) ?? '';
+        const response = await fetch(`/api/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf }, body: JSON.stringify(body) });
+        return { status: response.status, body: await response.json() };
+      }, { path, body });
+    }
+    page.on('request', request => {
+      if (request.method() === 'POST' && /\/api\/(members|members\/disable|password-resets)$/.test(new URL(request.url()).pathname)) writes.push({ path: new URL(request.url()).pathname, body: request.postDataJSON() });
+    });
+    await login(page, owner.email);
+    await expect(page.getByRole('heading', { name: '成员管理', exact: true })).toHaveCount(1);
+    await page.reload();
+    await expect(page.getByRole('heading', { name: '本企业成员', exact: true })).toBeVisible();
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.screenshot({ path: '.scratch/issue58/members-desktop.png', fullPage: true });
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: '.scratch/issue58/members-mobile.png', fullPage: true });
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    expect((await page.request.get(`${origin}/api/unknown-issue58`)).headers()['content-type']).not.toContain('text/html');
+    expect((await page.request.get(`${origin}/missing-issue58.js`)).status()).toBe(404);
+    await page.getByLabel('成员姓名', { exact: true }).fill('保留的输入');
+    page.once('dialog', dialog => dialog.dismiss());
+    await accountAction('账号设置');
+    await expect(page).toHaveURL(`${origin}/terminal/members`);
+    await expect(page.getByLabel('成员姓名', { exact: true })).toHaveValue('保留的输入');
+    page.once('dialog', dialog => dialog.accept());
+    await accountAction('账号设置');
+    await page.goBack();
+    await expect(page.getByLabel('成员姓名', { exact: true })).toHaveValue('');
+    await page.goForward();
+    await expect(page).toHaveURL(`${origin}/account/settings`);
+    await page.goBack();
+    await page.getByLabel('成员姓名', { exact: true }).fill('成员甲');
+    await page.getByLabel('成员登录邮箱', { exact: true }).fill('Member+58@EXAMPLE.COM');
+    await page.getByRole('button', { name: '确认创建成员', exact: true }).dblclick();
+    await expect(page.getByTestId('member-password')).toBeVisible();
+    expect(writes.length).toBe(1);
+    const create = writes[0].body;
+    expect(Object.keys(create).sort()).toEqual(['email', 'name', 'requestId', 'role']);
+    expect({ ...create, requestId: 'uuid' }).toEqual({ name: '成员甲', email: 'Member+58@EXAMPLE.COM', role: 'sales', requestId: 'uuid' });
+    const temporary = (await page.getByTestId('member-password').textContent())!;
+    expect(temporary.length).toBe(24);
+    const member = (await pool.query('SELECT * FROM accounts WHERE email=$1', ['Member+58@example.com'])).rows[0];
+    expect(member.organization_id).toBe(owner.organizationId);
+    expect(member.id).not.toBe(owner.organizationId);
+    expect(member.must_change).toBe(true);
+    expect(new Date(member.temporary_expires_at).getTime() - Date.now()).toBeGreaterThan(71.9 * 3600000);
+    await page.evaluate(() => { navigator.clipboard.writeText = async () => { throw new Error('controlled clipboard failure'); }; });
+    await page.getByRole('button', { name: '一键复制账号信息' }).click();
+    await expect(page.getByRole('status')).toContainText('复制失败');
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.evaluate(() => { navigator.clipboard.writeText = Clipboard.prototype.writeText.bind(navigator.clipboard); });
+    await page.getByRole('button', { name: '一键复制账号信息' }).click();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(temporary);
+    page.once('dialog', dialog => dialog.dismiss());
+    await accountAction('账号设置');
+    await expect(page.getByTestId('member-password')).toBeVisible();
+    await page.getByRole('button', { name: '已保存，关闭凭据' }).click();
+    expect((await post(page, 'members', create)).status).toBe(409);
+    expect((await post(page, 'members', { ...create, role: 'platform', requestId: randomUUID() })).status).toBe(400);
+    expect((await post(page, 'members', { ...create, email: ' bad@example.com', requestId: randomUUID() })).status).toBe(400);
+    expect((await post(page, 'members/disable', { accountId: owner.accountId })).status).toBe(403);
+    expect((await post(page, 'members/disable', { accountId: other.accountId })).status).toBe(403);
+    expect((await post(page, 'password-resets', { accountId: other.accountId, requestId: randomUUID() })).status).toBe(403);
+    expect((await post(page, 'password-resets', { accountId: owner.accountId, requestId: randomUUID() })).status).toBe(403);
+    const salesContext = await browser.newContext();
+    const salesPage = await salesContext.newPage();
+    await salesPage.goto(origin);
+    await salesPage.getByLabel('登录账号', { exact: true }).fill(member.email);
+    await salesPage.getByLabel('密码', { exact: true }).fill(temporary);
+    await salesPage.getByRole('button', { name: '登录', exact: true }).click();
+    await expect(salesPage.getByRole('heading', { name: '先保护好您的账号' })).toBeVisible();
+    expect((await salesPage.request.get(`${origin}/api/members`)).status()).toBe(403);
+    await salesPage.getByLabel('当前密码', { exact: true }).fill(temporary);
+    await salesPage.getByLabel('新密码', { exact: true }).fill(password);
+    await salesPage.getByLabel('确认新密码', { exact: true }).fill(password);
+    await salesPage.getByRole('button', { name: '确认修改并重新登录' }).click();
+    await expect(salesPage.getByRole('button', { name: '登录', exact: true })).toBeVisible();
+    await login(salesPage, member.email);
+    await expect(salesPage.getByText('仅本企业管理员可查看和管理成员，请联系企业管理员。')).toBeVisible();
+    await expect(salesPage.getByRole('button', { name: '确认创建成员' })).toHaveCount(0);
+    expect((await salesPage.request.get(`${origin}/api/members`)).status()).toBe(403);
+    for (const [path, body] of [['members', { ...create, email: 'forbidden@issue58.test', requestId: randomUUID() }], ['members/disable', { accountId: owner.accountId }], ['password-resets', { accountId: owner.accountId, requestId: randomUUID() }]] as const) expect((await post(salesPage, path, body)).status).toBe(403);
+    await page.getByRole('button', { name: `重置 ${member.email} 密码`, exact: true }).click();
+    await expect(page.getByTestId('member-password')).toBeVisible();
+    const resetRequest = writes.at(-1)!;
+    expect(resetRequest.body.accountId).toBe(member.id);
+    expect(Object.keys(resetRequest.body).sort()).toEqual(['accountId', 'requestId']);
+    expect((await salesPage.request.get(`${origin}/api/members`)).status()).toBe(401);
+    expect((await post(page, 'password-resets', resetRequest.body)).status).toBe(409);
+    await page.getByRole('button', { name: '已保存，关闭凭据' }).click();
+    await page.reload();
+    await expect(page.getByTestId('member-password')).toHaveCount(0);
+    await page.getByRole('button', { name: `停用 ${member.email}`, exact: true }).click();
+    await expect(page.getByRole('button', { name: `停用 ${member.email}`, exact: true })).toHaveCount(0);
+    expect(writes.at(-1)!.body).toEqual({ accountId: member.id });
+    expect((await pool.query('SELECT active FROM accounts WHERE id=$1', [member.id])).rows[0].active).toBe(false);
+    // Lost responses still execute real HTTP and commit real database transactions.
+    let releaseCreate!: () => void;
+    const createGate = new Promise<void>(resolve => { releaseCreate = resolve; });
+    await page.route('**/api/members', async route => {
+      if (route.request().method() !== 'POST') return route.continue();
+      await route.fetch(); await createGate; await route.abort();
+    });
+    await page.getByLabel('成员姓名', { exact: true }).fill('未知结果成员');
+    await page.getByLabel('成员登录邮箱', { exact: true }).fill('unknown@issue58.test');
+    await page.getByRole('button', { name: '确认创建成员', exact: true }).click();
+    await expect(page.getByRole('button', { name: '核实原请求' })).toBeDisabled();
+    await accountAction('账号设置');
+    await expect(page).toHaveURL(`${origin}/terminal/members`);
+    releaseCreate();
+    await expect(page.getByRole('button', { name: '核实原请求' })).toBeEnabled();
+    const unknownCreate = writes.at(-1)!;
+    const countBeforeLeave = writes.length;
+    page.once('dialog', dialog => dialog.accept());
+    await accountAction('账号设置');
+    await page.goBack();
+    await expect(page.getByRole('button', { name: '核实原请求' })).toBeEnabled();
+    expect(writes.length).toBe(countBeforeLeave);
+    await page.unroute('**/api/members');
+    await page.getByRole('button', { name: '核实原请求' }).click();
+    await expect(page.getByRole('button', { name: '核实原请求' })).toHaveCount(0);
+    expect(writes.at(-1)).toEqual(unknownCreate);
+    expect((await pool.query("SELECT count(*)::int AS n FROM accounts WHERE email='unknown@issue58.test'")).rows[0].n).toBe(1);
+    await page.route('**/api/password-resets', async route => { await route.fetch(); await route.abort(); });
+    await page.getByRole('button', { name: '重置 unknown@issue58.test 密码', exact: true }).click();
+    await expect(page.getByRole('button', { name: '核实原请求' })).toBeEnabled();
+    const unknownReset = writes.at(-1)!;
+    const countReset = writes.length;
+    page.once('dialog', dialog => dialog.accept());
+    await accountAction('账号设置');
+    await page.goBack();
+    await expect(page.getByRole('button', { name: '核实原请求' })).toBeEnabled();
+    expect(writes.length).toBe(countReset);
+    await page.unroute('**/api/password-resets');
+    await page.getByRole('button', { name: '核实原请求' }).click();
+    await expect(page.getByRole('button', { name: '核实原请求' })).toHaveCount(0);
+    expect(writes.at(-1)).toEqual(unknownReset);
+    expect((await pool.query('SELECT count(*)::int AS n FROM password_reset_requests WHERE request_id=$1', [unknownReset.body.requestId])).rows[0].n).toBe(1);
+    // A second administrator cannot disable the opening administrator.
+    await page.getByLabel('成员姓名', { exact: true }).fill('第二管理员');
+    await page.getByLabel('成员登录邮箱', { exact: true }).fill('admin2@issue58.test');
+    await page.getByLabel('成员角色', { exact: true }).selectOption('admin');
+    await page.getByRole('button', { name: '确认创建成员', exact: true }).click();
+    await expect(page.getByTestId('member-password')).toBeVisible();
+    const admin2 = (await pool.query("SELECT id FROM accounts WHERE email='admin2@issue58.test'")).rows[0];
+    await pool.query('UPDATE accounts SET must_change=false,password_hash=$1 WHERE id=$2', [await hashPassword(password), admin2.id]);
+    const adminContext = await browser.newContext(); const adminPage = await adminContext.newPage();
+    await login(adminPage, 'admin2@issue58.test');
+    await expect(adminPage.getByRole('button', { name: `停用 ${owner.email}`, exact: true })).toHaveCount(0);
+    expect((await post(adminPage, 'members/disable', { accountId: owner.accountId })).status).toBe(403);
+    // Session switch must destroy cached credentials and tenant data.
+    page.once('dialog', dialog => dialog.accept());
+    await accountAction('退出登录');
+    await expect(page.getByRole('button', { name: '登录', exact: true })).toBeVisible();
+    await login(page, other.email);
+    await expect(page.getByText('unknown@issue58.test', { exact: false })).toHaveCount(0);
+    await expect(page.getByTestId('member-password')).toHaveCount(0);
+    for (const email of ['super_admin', 'distributor@issue58.test']) {
+      await accountAction('退出登录');
+      await expect(page.getByRole('button', { name: '登录', exact: true })).toBeVisible();
+      await login(page, email);
+      await expect(page).not.toHaveURL(`${origin}/terminal/members`);
+      expect((await page.request.get(`${origin}/api/members`)).status()).toBe(403);
+    }
+    devApp = await createApplication(pool, origin);
+    await devApp.listen(0, '127.0.0.1');
+    const backendPort = devApp.getHttpServer().address().port;
+    vite = await createServer({ server: { host: '127.0.0.1', port: 0, proxy: { '/api': `http://127.0.0.1:${backendPort}` } } });
+    await vite.listen();
+    const devOrigin = vite.resolvedUrls!.local[0].replace(/\/$/, '');
+    await devApp.close();
+    devApp = await createApplication(pool, devOrigin);
+    await devApp.listen(backendPort, '127.0.0.1');
+    const devContext = await browser.newContext(); const devPage = await devContext.newPage();
+    await login(devPage, other.email, password, devOrigin);
+    await expect(devPage.getByRole('heading', { name: '本企业成员', exact: true })).toBeVisible();
+    await devPage.reload();
+    await expect(devPage.getByRole('heading', { name: '本企业成员', exact: true })).toBeVisible();
+    expect((await devPage.request.get(`${devOrigin}/api/unknown-issue58`)).headers()['content-type']).not.toContain('text/html');
+    await devContext.close();
+    await salesContext.close(); await adminContext.close();
+    await writeFile(resolve('../docs/delivery/application/ISSUE-58-EVIDENCE.json'), JSON.stringify({ database: new URL(url).pathname.slice(1), environment: 'isolated PostgreSQL / real Nest HTTP / Chromium / built web + Vite history',
+      identifiers: { ownerAccountId: owner.accountId, ownerOrganizationId: owner.organizationId, otherAccountId: other.accountId, otherOrganizationId: other.organizationId, memberAccountId: member.id },
+      create, reset: resetRequest.body, disable: { accountId: member.id }, unknownCreate, unknownReset,
+      verified: ['create sales/admin', 'email normalization/rejection', '24-character/72-hour credentials', 'clipboard failure/retry', 'one-time password display', 'must-change and old session revocation', 'self/opening administrator protection', 'cross-tenant denial', 'sales page/API denial', 'invalid role', 'duplicate create/reset', 'dirty cancel/discard', 'unknown navigation and original-request verification', 'history back/forward', 'built deep-link refresh', 'Vite deep-link refresh', 'four roles', 'session tenant switch'], supplierCalls: 0 }, null, 2));
+  } finally {
+    await vite?.close(); await devApp?.close(); await app?.close(); await pool.end();
+  }
+});

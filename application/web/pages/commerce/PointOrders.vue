@@ -1,6 +1,12 @@
 <template>
-  <section class="workspace-card point-orders">
-    <h2>直属点数订单</h2>
+  <section class="workspace-card point-orders order-page">
+    <header class="order-page-header">
+      <div>
+        <p class="eyebrow">POINTS &amp; LEDGER</p>
+        <h1>直属点数订单</h1>
+      </div>
+      <div class="order-header-mark" aria-hidden="true">⊙</div>
+    </header>
     <p>为直属下级建单并核实线下足额收款；库存充足时整单预留，不足时登记待补库存，补足后按原数量售价完整划拨。</p>
     <el-alert v-if="error" type="error" :title="error" :closable="false" />
     <el-alert v-if="notice" type="success" :title="notice" :closable="false" />
@@ -11,9 +17,13 @@
       <el-button :disabled="busy" @click="acknowledgeUnknown">已核实，结束本次核对</el-button>
     </div>
     <el-button :disabled="busy" @click="refreshOrders">刷新订单</el-button>
-    <p v-if="snapshot">库存 {{ snapshot.inventory.balance }}，已预留 {{ snapshot.inventory.reserved }}，当前平均成本 {{
-      snapshot.inventory.average_cost }}，最低加价率 {{ snapshot.pricing.minimum_markup }}</p>
-    <el-form label-position="top" @submit.prevent="createOrder">
+    <div v-if="snapshot" class="inventory-strip">
+      <div><span>库存</span><strong>{{ snapshot.inventory.balance }}</strong><small>点</small></div>
+      <div><span>已预留</span><strong>{{ snapshot.inventory.reserved }}</strong><small>点</small></div>
+      <div><span>当前平均成本</span><strong>{{ snapshot.inventory.average_cost }}</strong><small>元/点</small></div>
+      <div><span>最低加价率</span><strong>{{ snapshot.pricing.minimum_markup }}</strong></div>
+    </div>
+    <el-form class="order-create-form" label-position="top" @submit.prevent="createOrder">
       <h3>创建订单</h3>
       <el-form-item label="直属买方" for="order-buyer">
         <select
@@ -45,9 +55,11 @@
       </el-form-item>
       <el-button class="primary-button" native-type="submit" :disabled="busy || !!unknown || !buyerId">建单</el-button>
     </el-form>
-    <div v-for="order in snapshot?.orders ?? []" :key="order.id" class="workspace-card">
-      <h3>{{ order.buyerName }} · {{ order.status === 'transferred' ? '已划拨' : order.status === 'refunded' ? '已整单退款' :
-        order.status === 'reserved' ? '已收款并预留' : order.status === 'awaiting_stock' ? '已收款待补库存' : '待收款' }}</h3>
+    <div v-for="order in snapshot?.orders ?? []" :key="order.id" class="workspace-card order-card">
+      <div class="order-card-heading">
+        <h3>{{ order.buyerName }} · <span class="order-status" :class="`status-${order.status}`">{{ order.status === 'transferred' ? '已划拨' : order.status === 'refunded' ? '已整单退款' :
+          order.status === 'reserved' ? '已收款并预留' : order.status === 'awaiting_stock' ? '已收款待补库存' : '待收款' }}</span></h3>
+      </div>
       <p v-if="platformLifecycle" class="order-reference">订单编号：{{ order.id }}</p>
       <p v-if="!order.buyerActive && order.status === 'reserved'">买方组织已停用，划拨暂停；预留继续保留。</p>
       <p v-if="order.status === 'awaiting_stock'">本单尚未预留，买方尚未到账。补足库存后整单预留，再完整划拨；按原数量售价履约，不退款。</p>
@@ -269,5 +281,47 @@ onMounted(() => { load().catch(failure => { error.value = failure instanceof Err
 </script>
 
 <style scoped>
-.order-reference { overflow-wrap: anywhere; }
+.order-page { max-width: 1180px; margin: 0 auto; padding: 28px; background: #fff; border: 1px solid #e6e9f0; border-radius: 14px; box-shadow: 0 8px 24px #19234608; }
+.order-page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding-bottom: 20px; border-bottom: 1px solid #edf0f6; }
+.eyebrow { margin: 0 0 7px; color: #8794b2; font-size: 11px; letter-spacing: 1.8px; }
+.order-page h1 { margin: 0; color: #1c2333; font-size: 25px; line-height: 1.35; letter-spacing: -.4px; }
+.order-page > p:not(.eyebrow) { color: #738095; }
+.order-header-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; color: #4356e0; background: #eef1ff; font-size: 24px; }
+.order-create-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: end; gap: 16px; margin-top: 22px; padding: 22px; border: 1px solid #e6e9f0; border-radius: 12px; background: #fbfcff; }
+.order-create-form h3 { color: #27324a; font-size: 16px; }
+.order-create-form :deep(.el-input__wrapper), .order-page select { border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
+.order-card { margin-top: 16px; padding: 20px; border: 1px solid #e6e9f0; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #19234605; }
+.order-card-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.order-card h3 { margin: 0; color: #26324a; font-size: 16px; }
+.order-status { display: inline-block; padding: 4px 9px; border-radius: 5px; color: #5365c5; background: #eef1ff; font-size: 11px; }
+.status-transferred { color: #1c9063; background: #eaf7f0; }
+.status-refunded { color: #8a6670; background: #f7eef1; }
+.status-reserved, .status-awaiting_stock { color: #a8731e; background: #fff5e4; }
+.inventory-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 20px; border: 1px solid #e6e9f0; border-radius: 10px; }
+.inventory-strip > div { min-width: 0; padding: 18px 20px; }
+.inventory-strip > div + div { border-left: 1px solid #edf0f6; }
+.inventory-strip span { display: block; margin-bottom: 6px; color: #738095; font-size: 12px; }
+.inventory-strip strong { color: #4356e0; font: 600 23px/1.4 'Segoe UI', Consolas, monospace; overflow-wrap: anywhere; }
+.inventory-strip small { margin-left: 6px; color: #8994a8; font-size: 11px; }
+.order-create-form h3 { grid-column: 1 / -1; margin: 0; }
+.order-create-form :deep(.el-form-item) { min-width: 0; margin: 0; }
+.order-create-form > .el-button { min-height: 40px; }
+.order-create-form select { width: 100%; min-height: 40px; padding: 8px 12px; border: 0; color: #26324a; background: #fff; font: inherit; }
+.order-create-form select:focus-visible { outline: 2px solid #4356e0; outline-offset: 2px; }
+.order-create-form :deep(.el-input__wrapper) { min-height: 40px; }
+.order-page > .el-form:not(.order-create-form) { margin-top: 20px; padding: 22px; border: 1px solid #dfe4fd; border-radius: 12px; background: #f7f8ff; }
+.order-reference { overflow-wrap: anywhere; color: #8994a8; font: 11px/1.5 Consolas, monospace; }
+@media (max-width: 900px) { .order-create-form { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 680px) {
+  .order-page { padding: 18px 14px; }
+  .order-card-heading { align-items: flex-start; }
+  .inventory-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .inventory-strip > div { padding: 14px; }
+  .inventory-strip > div:nth-child(3) { border-left: 0; }
+  .inventory-strip > div:nth-child(n+3) { border-top: 1px solid #edf0f6; }
+  .inventory-strip strong { font-size: 19px; }
+  .order-create-form { grid-template-columns: minmax(0, 1fr); padding: 16px; }
+  .order-card { padding: 16px; }
+  .order-card :deep(.el-button) { margin: 6px 6px 0 0; max-width: 100%; height: auto; min-height: 34px; white-space: normal; }
+}
 </style>

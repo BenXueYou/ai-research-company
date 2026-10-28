@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.server.json",
+  "compilerOptions": { "rootDir": "..", "outDir": "../.scratch/issue56/compiled" },
+  "include": ["../server/**/*.ts", "../tests/issue56-emails.spec.ts"]
+}

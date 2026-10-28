@@ -1,8 +1,13 @@
 <template>
   <section class="workspace-card" aria-labelledby="detail-reconciliation-title">
-    <h2 id="detail-reconciliation-title">查询结果人工核对</h2>
-    <p>按查询标识核对供应商账单、traceId 和可查看结果。最终失败释放冻结；迟到结果仅留存，不再扣点。</p>
-    <el-button :disabled="busy" @click="refresh">刷新查询</el-button>
+    <div class="reconciliation-card-heading">
+      <div>
+        <p class="section-kicker">待处理事项</p>
+        <h2 id="detail-reconciliation-title">查询结果人工核对</h2>
+        <p class="section-description">按查询标识核对供应商账单、traceId 和可查看结果。最终失败释放冻结；迟到结果仅留存，不再扣点。</p>
+      </div>
+      <el-button class="refresh-button" :disabled="busy" @click="refresh">刷新查询</el-button>
+    </div>
     <p v-if="error" role="alert">{{ error }}</p>
     <p v-if="notice" role="status">{{ notice }}</p>
     <p v-if="unknown" role="alert">提交结果尚未确认，请刷新查询核实。离开不会取消或重试请求。</p>
@@ -274,3 +279,48 @@ function resultLabel(kind: Query['kind']) {
       : '名单页结果 JSON（含 content、page、size、total）';
 }
 </script>
+
+<style scoped>
+.reconciliation-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 4px;
+}
+
+.section-kicker {
+  margin: 0 0 6px;
+  color: #4356e0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+}
+
+.reconciliation-card-heading h2 {
+  margin-bottom: 8px;
+}
+
+.section-description {
+  max-width: 760px;
+  margin: 0;
+  color: #738095;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.refresh-button {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+  .reconciliation-card-heading {
+    display: block;
+  }
+
+  .refresh-button {
+    width: 100%;
+    margin-top: 16px;
+  }
+}
+</style>

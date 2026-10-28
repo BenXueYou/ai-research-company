@@ -199,6 +199,9 @@ export class CompanyDetailService {
         }
         return this.get(identity, queryId);
     }
+    async status(identity, body) {
+        return this.get(identity, exact(body, 'queryId'));
+    }
     async get(identity, queryId) {
         await this.authorize(identity);
         if (!uuid.test(queryId))

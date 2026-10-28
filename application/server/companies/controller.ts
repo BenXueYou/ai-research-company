@@ -65,6 +65,11 @@ export function createCompaniesController(services: Services) {
     executeCompanyDetail(@Req() request: AuthRequest) {
       return companyDetail.execute(request.identity, request.body ?? {});
     }
+    @Post('company-details/status')
+    @HttpCode(200)
+    companyDetailStatus(@Req() request: AuthRequest) {
+      return companyDetail.status(request.identity, request.body ?? {});
+    }
     @Get('company-profiles')
     companyProfiles(@Req() request: AuthRequest) {
       return companyDetail.profiles(request.identity);

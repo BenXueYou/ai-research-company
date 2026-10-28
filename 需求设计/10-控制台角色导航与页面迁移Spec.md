@@ -279,3 +279,29 @@ Vue Router 负责 URL 匹配、页面选择和导航，不替代 Vue 应用根�
 ### 平台运营概览实施记录（2026-10-28，Issue #47）
 
 `/platform/overview` 已由 `PlatformOverviewPage` 真实路由承载。复用原 GET 展示平台内部点库存、查询冻结和销售预留、上游点数及有效期/快照时间、三类 pending 查询、awaiting_stock 待补与 reserved 待履约订单，待收款独立展示。加载、未配置、无快照、库存缺失和局部失败均明确提示。四个快捷入口到达已交付的开户、订单、采购和查询核对页面，页面不提供业务提交或自动上游更新。已确认 #40 最终稳定契约和完成证据，接入后完整真实浏览器/HTTP/PostgreSQL 专项重跑通过，包含 Nest/Vite 深链刷新、四角色/强制改密、面包屑与菜单、账务不变及供应商调用0。参数来源、完整命令与未验证范围见 [#47 交付记录](../docs/delivery/application/ISSUE-47-COMPLETION.md)。概览离开销毁、返回重新读取；App 已排除该兼容路径，分销/终端兼容模块继续保留。
+
+### 终端点数用量实施记录（2026-10-28，Issue #59）
+
+`/terminal/usage` 由 `pages/reports/TerminalUsagePage.vue` 独立承载管理员与业务员的本企业余额、查询冻结及扣点退款流水，复用 `GET /api/reports` 的会话企业范围、原来源/事件/金额和 id/referenceId；不新增销售预留、指标或导出。终端旧 UsageReports 挂载、target 及兼容路径判断已移除，分销调用方继续保留。只读页离开销毁，返回重新读取，失败清除旧快照，缺账户明确提示。真实 Chromium/Nest/PostgreSQL/Vite 已验证三类不同查询引用、冻结/结算/释放、本企业隔离、角色及强制改密门禁、深链刷新、前进后退、晚到响应不残留、业务表不变及供应商调用 0，见 [#59 交付记录](../docs/delivery/application/ISSUE-59-COMPLETION.md)。其他模块仍依赖兼容容器，不表示全局退出或生产部署完成。
+
+### 终端成员管理实施记录（2026-10-28，Issue #58）
+
+`/terminal/members` 直接渲染 `pages/organizations/MemberManagement.vue`，移除本模块旧兼容挂载和滚动 target。管理员沿用已有创建、临时凭据交付、授权重置和停用；业务员入口只显示权限说明，不扩大成员列表读取或维护权限。请求适配位于 `web/api/members.ts`；账号 ID 仍来自所选成员，组织仍由服务端会话确定。限定页面缓存和公共离开保护保留未知请求上下文，返回不自动重发，主动核实沿用原请求标识；关闭凭据、放弃和会话切换清除展示，不提供跨刷新恢复。真实 Chromium/Nest/PostgreSQL、生产构建入口及 Vite 直达刷新验证与未覆盖边界见 [#58 交付记录](../docs/delivery/application/ISSUE-58-COMPLETION.md)。仍有其他角色及终端模块依赖兼容容器，本票不代表全局退出。
+
+
+### 终端企业档案库实施记录（2026-10-28，Issue #52）
+
+`/terminal/profiles` 由 `pages/companies/CompanyProfilesPage.vue` 真实承载本企业列表，`?id=<内部档案ID>` 定位详情；原搜索组件不再内嵌档案维护。复用原档案编辑、联系人/邮件和时间线/附件组件，筛选与所有业务参数来源、租户授权和收费规则保持。档案页限定缓存按会话销毁，输入离开确认、提交中阻止离开、未知结果保留原请求且返回不自动执行。真实浏览器/Nest/PostgreSQL 及 Vite History 专项覆盖档案维护、附件、联系人至邮件预览、拒绝路径和更新幂等收费；正式供应商/邮件投递和完整未修改分支未重跑，详见 [#52 交付记录](../docs/delivery/application/ISSUE-52-COMPLETION.md)与证据。其他未迁移终端/分销模块仍依赖兼容容器。
+
+### 终端公司名搜索实施记录（2026-10-28，Issue #53）
+
+`/terminal/search` 由 `pages/companies/TerminalSearchPage.vue` 真实承载，组合公司名与产品搜索；本票完成公司名搜索、逐页候选核实、独立详情报价/确认、建档和内部档案链接。移除两者旧兼容挂载、刷新 key 事件桥及公司搜索 target，限定缓存按会话销毁，输入/报价离开确认、提交中阻止离开、未知结果保留原 queryId，返回不重放。新增 `POST /api/company-details/status` 仅复用已有租户范围查询读取，不调用供应商或改变结算；详情成功按 `result.id` 精确匹配本企业档案 `detail.id` 后使用内部档案 ID 链接 #52。档案页仅在新选择 ID 尚不在当前列表时沿原筛选主动读取，支持先访问空档案库再建档的缓存链路。产品业务由 #54 单独验收；其他兼容角色/模块仍保留。真实浏览器、HTTP/PostgreSQL、生产构建及 Vite 验证、账务与调用次数见 [#53 交付记录](../docs/delivery/application/ISSUE-53-COMPLETION.md)。
+
+### 产品词搜索与候选建档实施记录（2026-10-28，Issue #54）
+
+`/terminal/search` 中的 `ProductSearch.vue` 由共享 `TerminalSearchPage.vue` 真实路由承载，与公司名入口共存；旧产品搜索兼容挂载随 #53 共享整合移除。产品词、采购企业所在国、贸易日期及逐页报价/确认沿用 T12，免费核实与独立详情建档保持原取值及收费规则；国家映射未核实时继续阻断。页面接入公共离开保护，名单/详情未知分别保留原 pageId/queryId，限定缓存返回不自动执行；主动核实仅读状态。建档及已有档案入口使用原详情报价的 localProfile.id 跳转本企业档案，不使用列表标识或上游 data.id。真实 Chromium/Nest/PostgreSQL、生产构建入口及 Vite 专项已验证两终端角色、拒绝/隔离、选择快照、四位小数、取消/零结果/超时/重复、失败及迟到不重扣、导航与调用次数。共享装配边界、命令、证据与未覆盖范围见 [#54 交付记录](../docs/delivery/application/ISSUE-54-COMPLETION.md)。正式供应商联调、生产部署与跨刷新恢复未完成；分销及其他未迁移模块仍使用兼容容器。
+
+
+### 终端邮件发送记录实施记录（2026-10-28，Issue #56）
+
+`/terminal/emails` 由 `pages/email/EmailRecordsPage.vue` 独立承载本企业共享发送记录，`?batchId=<批次UUID>` 定位逐收件人详情；旧邮件记录兼容挂载与 target 已移除。批次、档案、组织和收件人标识分别取原来源；核对、风险重发、跨日重确认与指定执行沿用原接口、原发送人权限、预占及幂等。限定页面缓存和公共离开保护保留未知结果上下文，返回及刷新不自动发送，主动核实只读取原批次。真实 Chromium/Nest/PostgreSQL、生产构建与 Vite 深链专项验证共享查看、跨租户拒绝、失败/不明/可信证据、丢响应重复操作、跨日额度、会话晚到隔离及点数流水不变；正式供应商及其他未改分支未重跑，详见 [#56 交付记录](../docs/delivery/application/ISSUE-56-COMPLETION.md)。团队设置与分销等兼容模块仍保留，本票不表示全局退出或生产部署。

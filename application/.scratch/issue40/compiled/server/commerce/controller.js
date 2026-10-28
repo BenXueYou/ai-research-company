@@ -47,6 +47,9 @@ export function createCommerceController(services) {
         confirmPointOrder(request) {
             return pointOrders.mutate(request.identity, request.sessionToken, 'confirm', request.body ?? {});
         }
+        reservePointOrder(request) {
+            return pointOrders.mutate(request.identity, request.sessionToken, 'reserve', request.body ?? {});
+        }
         transferPointOrder(request) {
             return pointOrders.mutate(request.identity, request.sessionToken, 'transfer', request.body ?? {});
         }
@@ -107,6 +110,10 @@ export function createCommerceController(services) {
         Post('point-orders/confirm'),
         __param(0, Req())
     ], CommerceController.prototype, "confirmPointOrder", null);
+    __decorate([
+        Post('point-orders/reserve'),
+        __param(0, Req())
+    ], CommerceController.prototype, "reservePointOrder", null);
     __decorate([
         Post('point-orders/transfer'),
         __param(0, Req())

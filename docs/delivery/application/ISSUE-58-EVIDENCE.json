@@ -1,0 +1,61 @@
+{
+  "database": "issue58_6f85ca902ac647999e1a40abdb0a1ff1_test",
+  "environment": "isolated PostgreSQL / real Nest HTTP / Chromium / built web + Vite history",
+  "identifiers": {
+    "ownerAccountId": "1442d7cc-3fca-463b-85db-db113ec791b0",
+    "ownerOrganizationId": "fe86ea6f-3e05-457f-aada-0b4258f3d2a1",
+    "otherAccountId": "386283c2-2d04-4ab3-84c1-7fd8924bfcad",
+    "otherOrganizationId": "6e3c0c1c-885a-4fdd-9298-33382f97308c",
+    "memberAccountId": "767c02dc-6d08-403b-8451-98f3ae31aeb2"
+  },
+  "create": {
+    "name": "成员甲",
+    "email": "Member+58@EXAMPLE.COM",
+    "role": "sales",
+    "requestId": "9998453a-4cad-4a93-a0bc-2c6f2cb99c0f"
+  },
+  "reset": {
+    "accountId": "767c02dc-6d08-403b-8451-98f3ae31aeb2",
+    "requestId": "d11166f4-f6b1-4a4a-ab12-9eda300bf63d"
+  },
+  "disable": {
+    "accountId": "767c02dc-6d08-403b-8451-98f3ae31aeb2"
+  },
+  "unknownCreate": {
+    "path": "/api/members",
+    "body": {
+      "name": "未知结果成员",
+      "email": "unknown@issue58.test",
+      "role": "sales",
+      "requestId": "0fcbae74-75c0-48e1-88d3-704631c62218"
+    }
+  },
+  "unknownReset": {
+    "path": "/api/password-resets",
+    "body": {
+      "accountId": "54da17cc-618d-4784-85bc-0e19fb6630f2",
+      "requestId": "93828508-7de5-473a-80a8-55f2fbf54f61"
+    }
+  },
+  "verified": [
+    "create sales/admin",
+    "email normalization/rejection",
+    "24-character/72-hour credentials",
+    "clipboard failure/retry",
+    "one-time password display",
+    "must-change and old session revocation",
+    "self/opening administrator protection",
+    "cross-tenant denial",
+    "sales page/API denial",
+    "invalid role",
+    "duplicate create/reset",
+    "dirty cancel/discard",
+    "unknown navigation and original-request verification",
+    "history back/forward",
+    "built deep-link refresh",
+    "Vite deep-link refresh",
+    "four roles",
+    "session tenant switch"
+  ],
+  "supplierCalls": 0
+}

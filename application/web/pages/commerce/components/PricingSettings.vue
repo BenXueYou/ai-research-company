@@ -124,9 +124,14 @@ onMounted(reload);
     />
     <p v-if="unknown" role="alert">计价保存结果尚未确认。可刷新查看当前配置，或重试原请求核实；离开不会自动重试。</p>
     <template v-if="snapshot">
-      <p>币种 {{ snapshot.currency }} · 当前最低加价率 {{ snapshot.pricing.minimum_markup }}。</p>
-      <p>未配置接口单价时，对应计费查询不可执行；留空接口路径不会新增或修改接口单价。</p>
-      <ElForm :disabled="busy || unknown" label-position="top" @submit.prevent="submit">
+      <p class="settings-summary">币种 {{ snapshot.currency }} · 当前最低加价率 {{ snapshot.pricing.minimum_markup }}。</p>
+      <p class="settings-hint">未配置接口单价时，对应计费查询不可执行；留空接口路径不会新增或修改接口单价。</p>
+      <ElForm
+        class="settings-form"
+        :disabled="busy || unknown"
+        label-position="top"
+        @submit.prevent="submit"
+      >
         <ElFormItem label="最低加价率" for="settings-minimum-markup">
           <ElInput id="settings-minimum-markup" v-model="pricing.minimumMarkup" placeholder="留空保持当前值" />
         </ElFormItem>
@@ -152,16 +157,29 @@ onMounted(reload);
             <option value="controlled_test">受控测试价格（生产环境禁止）</option>
           </select>
         </ElFormItem>
-        <ElButton native-type="submit" :disabled="busy">保存计价设置</ElButton>
+        <ElButton class="settings-primary" native-type="submit" :disabled="busy">保存计价设置</ElButton>
       </ElForm>
       <ElButton v-if="unknown" :disabled="busy" @click="submit">重试原计价请求</ElButton>
       <h3>已配置接口单价</h3>
       <p v-if="!snapshot.prices.length">接口单价未配置，付费查询不可执行。</p>
-      <ul>
-        <li v-for="item in snapshot.prices" :key="item.interface_path">
-          {{ item.interface_path }}：{{ item.upstream_unit_price }} 上游点数/计费单位；本页最大 {{ item.maximum_billable_units }}；依据 {{ item.evidence }}；版本 {{ item.version }}
-        </li>
-      </ul>
+      <div
+        v-if="snapshot.prices.length"
+        class="settings-table-scroll"
+        tabindex="0"
+        aria-label="已配置接口单价"
+      >
+        <table>
+          <thead><tr><th scope="col">接口路径</th><th scope="col">上游单价 / 计费单位</th><th scope="col">本页最大计费量</th><th scope="col">依据与版本</th></tr></thead>
+          <tbody>
+            <tr v-for="item in snapshot.prices" :key="item.interface_path">
+              <td class="price-path">{{ item.interface_path }}</td>
+              <td>{{ item.upstream_unit_price }} 上游点数</td>
+              <td>{{ item.maximum_billable_units }}</td>
+              <td>依据 {{ item.evidence }}；<span class="price-version">版本 {{ item.version }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </template>
     <ElButton :disabled="busy" @click="reload">刷新计价设置</ElButton>
   </section>
