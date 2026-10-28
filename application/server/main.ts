@@ -1,7 +1,7 @@
 ﻿import { createApplication } from './app.js';
 import { database } from './database.js';
 import { createClient } from 'redis';
-import { HttpTengdaoCompanyClient, RedisTengdaoSharedState, type TengdaoCompanyClient } from './tengdao.js';
+import { HttpTengdaoCompanyClient, RedisTengdaoSharedState, type TengdaoCompanyClient } from './upstream/tengdao.js';
 const pool = database();
 let redis: ReturnType<typeof createClient> | undefined;
 try {

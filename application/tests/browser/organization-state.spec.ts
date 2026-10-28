@@ -25,11 +25,11 @@ test('T26 browser: direct child state controls and restored login', async ({ pag
     await page.getByRole('button', { name: '登录', exact: true }).click();
     await expect(page.getByRole('heading', { name: '先保护好您的账号' })).toBeVisible();
     await page.getByLabel('当前密码', { exact: true }).fill('init@Base123');
-    await page.getByLabel('新密码', { exact: true }).fill('T26浏览器验证密码😀123');
-    await page.getByLabel('确认新密码', { exact: true }).fill('T26浏览器验证密码😀123');
+    await page.getByLabel('新密码', { exact: true }).fill('T26BrowserPwd123!');
+    await page.getByLabel('确认新密码', { exact: true }).fill('T26BrowserPwd123!');
     await page.getByRole('button', { name: '确认修改并重新登录' }).click();
     await page.getByLabel('登录账号', { exact: true }).fill('super_admin');
-    await page.getByLabel('密码', { exact: true }).fill('T26浏览器验证密码😀123');
+    await page.getByLabel('密码', { exact: true }).fill('T26BrowserPwd123!');
     await page.getByRole('button', { name: '登录', exact: true }).click();
     await expect(page.getByRole('heading', { name: '下级管理' })).toBeVisible();
     await page.getByLabel('组织名称', { exact: true }).fill('T26浏览器直属企业');

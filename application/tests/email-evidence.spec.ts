@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { createApplication } from '../server/app.js';
-import { EmailPreviewService } from '../server/email-preview.js';
-import { SmtpChannelService } from '../server/smtp-channel.js';
-import { hashPassword } from '../server/policy.js';
+import { EmailPreviewService } from '../server/email/email-preview.js';
+import { SmtpChannelService } from '../server/email/smtp-channel.js';
+import { hashPassword } from '../server/identity/policy.js';
 import { testDatabase } from './helpers.js';
 
 test('T24 浏览器核对证据并确认可能重复后手动重发', async ({ page }) => {

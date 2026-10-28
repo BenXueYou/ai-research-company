@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { createApplication } from '../server/app.js';
 import { migrate } from '../server/database.js';
-import { MemberService } from '../server/members.js';
-import { digest, IdentityService } from '../server/identity.js';
+import { MemberService } from '../server/identity/members.js';
+import { digest, IdentityService } from '../server/identity/identity.js';
 import { testDatabase } from './helpers.js';
 
 test('T03 真实HTTP/PostgreSQL成员创建、交付、停用及竞争', async t => {
@@ -16,7 +16,7 @@ test('T03 真实HTTP/PostgreSQL成员创建、交付、停用及竞争', async t
   type Session = { cookie: string; csrf: string };
   type Created = { accountId: string; organizationId: string; email: string; temporaryPassword: string; expiresAt: string };
   const empty = { cookie: '', csrf: '' };
-  const next = '成员验收新密码安全十二字符😀';
+  const next = 'MemberPwd123!456';
   let serial = 0;
   const data = (role = 'sales') => ({ name: `成员原名-${++serial}`, email: `Member.${serial}+tag@EXAMPLE.COM`, role, requestId: randomUUID() });
   async function http(session: Session, path: string, body?: object) {

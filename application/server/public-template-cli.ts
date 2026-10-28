@@ -2,8 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { basename, dirname, resolve } from 'node:path';
 import { database } from './database.js';
-import { IdentityService } from './identity.js';
-import { EmailPreviewService } from './email-preview.js';
+import { IdentityService } from './identity/identity.js';
+import { EmailPreviewService } from './email/email-preview.js';
 
 async function scan(path: string): Promise<boolean> {
   const scanner = process.env.TEMPLATE_ATTACHMENT_SCANNER;

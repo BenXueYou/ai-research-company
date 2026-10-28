@@ -108,4 +108,4 @@ Spec又称HTML原型未同步账号补充，而原型V2设计说明已记录v3.1
 
 本次未验证：生产部署及代理HTTPS配置、真实交互式CLI引导操作、平台运维恢复、下级开户/凭据复制/成员管理、跨企业业务隔离、账务及订单、腾道参数与真实扣费、SMTP/U-Mail发信与回复实收、跨日额度、附件安全及正式供应商契约。上述流程不因构建及身份测试通过而视为完成。
 
-实时回读证据快照：`tmp/review-github-issues.json`、`tmp/review-github-dependencies.json`。快照为本次检查时间的状态，之后应重新查询。
+实时回读证据快照：`archive/tmp/review-github-issues.json`、`archive/tmp/review-github-dependencies.json`。快照为本次检查时间的状态，之后应重新查询。

@@ -5,7 +5,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createApplication } from '../../server/app.js';
-import { hashPassword } from '../../server/policy.js';
+import { hashPassword } from '../../server/identity/policy.js';
 import { testDatabase } from '../helpers.js';
 
 test('T18 浏览器从档案选择 WhatsApp 附件并下载', async ({ page }) => {

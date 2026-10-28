@@ -6,12 +6,12 @@ import {
   randomUUID
 } from 'node:crypto';
 import { createApplication } from '../server/app.js';
-import { hashPassword } from '../server/policy.js';
+import { hashPassword } from '../server/identity/policy.js';
 import {
   bindSmtpCredentialKey,
   type DomesticSmtpAdapter,
   type DomesticSmtpSettings
-} from '../server/smtp-channel.js';
+} from '../server/email/smtp-channel.js';
 import { testDatabase } from './helpers.js';
 
 test('T19 国内SMTP团队渠道设置、隔离、权限与凭据保护', async t => {

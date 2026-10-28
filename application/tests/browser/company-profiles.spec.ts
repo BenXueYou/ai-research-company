@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { createApplication } from '../../server/app.js';
-import { hashPassword } from '../../server/policy.js';
+import { hashPassword } from '../../server/identity/policy.js';
 import { testDatabase } from '../helpers.js';
 
 test('T16 shared editing, filters, audit, delete and restore across HTTP and Chromium', async ({ page }) => {

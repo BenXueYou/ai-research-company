@@ -1,0 +1,66 @@
+# 工程脚手架约定
+
+本约定用于现有 `application/` 的增量开发和工程整理。业务范围及验收以 [第一阶段 Spec](../需求设计/08-第一阶段实施规格Spec.md#现有应用工程脚手架整理方案) 为准；具体业务规则以相应 PRD、技术设计和已批准决策为准。本文描述入口和工作方法，不改变现有接口、数据库初始化或业务取值。
+
+## 入口和目录
+
+| 位置 | 当前职责 | 新增代码的放置原则 |
+| --- | --- | --- |
+| `application/package.json`、`package-lock.json` | 唯一应用包与锁文件；npm 脚本入口 | 在此维护稳定命令；一次性排查命令不提升为常规脚本 |
+| `application/web/` | Vue 3 页面、组件和浏览器 API 调用；`main.ts` 挂载应用，`App.vue` 组织界面 | 按业务域就近放页面与调用代码；公共能力有多个实际调用方后再抽取 |
+| `application/server/main.ts`、`app.ts` | 进程启动、Nest 应用装配 | 新业务放对应服务、控制器和校验代码；装配入口只连接依赖 |
+| `application/server/database.ts`、`cli.ts` | PostgreSQL 连接、当前新库初始化入口 | 数据结构变化先核对当前初始化路径；版本化迁移和回滚须单独设计验证 |
+| `application/server/{identity,organizations,commerce,companies,email,upstream}/` | 各业务域的控制器、服务、schema 与上游适配 | 保持服务端权限、事务和适配器边界；移动文件时逐批核对公开行为 |
+| `application/server/composition/services.ts` | 现有服务及适配器组装 | 只连接既有服务依赖；不在装配层改变请求字段和业务默认值 |
+| `application/tests/`、`tests/browser/` | 纯逻辑、真实 PostgreSQL/HTTP、浏览器场景 | 按受影响流程选择测试，并记录夹具与观察到的业务结果 |
+| `application/scripts/`、`compose.yaml`、`.env.example` | 部署入口、本地测试依赖和配置样例 | 新配置同时更新样例与运行说明；秘密只放受控环境或忽略的本地文件 |
+| `需求设计/`、`docs/decisions/`、`application/T*-COMPLETION.md` | 规格、已批准决策、各票交付证据 | 规格证明契约，交付记录证明实际执行；历史记录不能代替新验证 |
+
+`web/` 与 `server/` 的首批业务文件已按业务域整理，入口文件保持原位置。各领域实际移动范围、契约对照和验证边界见[结构整理记录](./server-web-structure-migration.md)。后续继续按小批次调整时，保留现有路由、请求/响应、鉴权、数据库读写、外部调用和页面提交行为；目录结构本身不授权修改业务逻辑。
+
+## 工具链与命令
+
+所有 npm 命令在 `application/` 执行。项目使用 npm 和已提交的 `package-lock.json`；当前已验证的本地环境为 Node.js 22.14.0 / npm 10.9.2，这只是复验参考，不限定其他版本。安装使用 `npm ci`，依赖变更同时提交 `package.json` 和锁文件。前后端均使用 TypeScript；应用栈为 Vue 3 + Vite + Element Plus / NestJS / PostgreSQL，部分流程使用 Redis。
+
+| 用途 | 当前入口 | 作用与边界 |
+| --- | --- | --- |
+| 开发 | `npm run dev`、`npm run dev:web` | 后端与 Vite 分别启动；浏览器源须与 `APP_ORIGIN` 一致 |
+| 静态检查 | `npm run typecheck` | 前后端 TypeScript 检查，不代表业务流程通过 |
+| 纯逻辑 | `npm test` | 当前运行 `policy.test.ts`，不是全部测试 |
+| 构建 | `npm run build` | 类型检查、服务端编译、前端构建；不连接数据库 |
+| 数据库初始化 | `npm run db:migrate` / `npm run bootstrap` | 当前两者进入同一新库初始化逻辑；不代表版本化迁移或回滚 |
+| 部署准备 | `npm run deploy` | 检查必要配置，构建，再调用 `db:migrate`；对真实 `DATABASE_URL` 有写入效果 |
+| 启动 | `npm start` | 运行已构建的 `dist/server/main.js` |
+| 基础集成 | `npm run test:integration` | 当前脚本仅列出身份、组织、成员、SMTP、U-Mail、公司搜索六个测试文件 |
+| 基础浏览器 | `npm run test:e2e` | 构建后运行默认 Playwright 配置；专项 `test:e2e:t*` 配置按受影响票选择 |
+| 部署测试 | `npm run test:deployment` | 单独验证部署入口；先确认其测试环境与数据边界 |
+
+`test:members`、`test:t20` 等专项命令保留为有明确覆盖范围的入口。新增业务测试若未加入常规脚本，应在交付记录中写出实际执行命令；不得把 `test:integration` 或 `test:e2e` 的通过解释为所有票均已覆盖。脚本列表以 `package.json` 为准。
+
+## 从安装到验证
+
+1. 在 `application/` 执行 `npm ci`。按 [运行说明](../application/README.md#环境与安装) 配置 `.env`；开发和测试分别使用自己的配置与数据库。
+2. 对**全新、专用**应用库，核对 `DATABASE_URL` 和配置后运行 `npm run deploy`，再运行 `npm start`；当前初始化不用于升级旧业务库。部署命令会写库，不能用于只读检查。
+3. 测试使用独立、可丢弃、库名以 `_test` 结尾的 `TEST_DATABASE_URL`。按 [真实 PostgreSQL 测试说明](../application/README.md#真实-postgresql-测试) 准备 `.env.test` 和 Compose；测试会清空目标库中的表，不与手工验收或另一套件并行使用同一库。
+4. 先运行适用的类型检查、构建或纯逻辑测试，再运行受影响的真实 HTTP/数据库与浏览器场景。供应商受控适配器测试和正式账号联调分开记录。
+
+## 工程变更门禁
+
+工程整理或页面迁移前，先在交付记录中建立受影响契约表：用户选择、数据来源、前端状态、最终请求字段和值、服务端取值、持久化/外部调用、权限和拒绝结果。以改动前代码与可运行场景为基线；当前工作区若有未提交改动，先标出所属任务，避免把别人的改动计入本次整理。
+
+选择到提交链路的夹具应把 `id`、`fileId`、列表标识、详情 `data.id`、内部企业 ID、`mailsouId` 等适用字段设为**不同值**；身份链路也区分组织 ID、账号 ID、登录邮箱与回复邮箱，国家字段区分显示值与提交值。只记录该链路实际存在的字段，不按名称推断映射。修改前后逐字段对照值及来源，连同提交条件、默认值、兜底顺序和校验结果保存证据。
+
+按影响范围检查允许与拒绝路径、租户权限、账务余额/流水、外部调用参数和调用次数。业务疑点单独提出；工程整理不顺手修正规则。类型检查、构建及无关测试只证明其自身范围。
+
+### 交付记录格式
+
+每批工程变更可在 `docs/` 或相应票的 `T*-COMPLETION.md` 记录：
+
+| 项目 | 应记录的事实 |
+| --- | --- |
+| 基线 | 基准提交/工作区状态、移动或修改的文件、受影响路由和页面 |
+| 契约对照 | 选择值、各标识的不同测试值、修改前后请求参数及取值来源、响应/落库/外部参数 |
+| 验证 | 实际命令、环境、测试库、场景及允许/拒绝结果；账务和调用次数按适用范围记录 |
+| 边界 | 未执行流程、外部阻塞、正式供应商或生产环境尚未验证的事项 |
+
+完成标准：读者能从入口定位代码和命令；受影响的每条业务链路有前后取值及来源证据；执行结果与未验证范围明确。环境具备时再按上节完成新库安装、初始化、构建、启动和适用测试的复验。

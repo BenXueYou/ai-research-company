@@ -1,23 +1,23 @@
 import { randomUUID } from 'node:crypto';
-import { hashPassword } from './policy.js';
+import { hashPassword } from './identity/policy.js';
 import pg, { type PoolClient } from 'pg';
-import { migrateProcurement } from './procurement-schema.js';
-import { migrateMembers } from './members-schema.js';
-import { migratePasswordResets } from './password-resets-schema.js';
-import { migrateCompanySearch } from './company-search-schema.js';
-import { migrateProductSearch } from './product-search-schema.js';
-import { migrateCompanyDetail } from './company-detail-schema.js';
-import { migrateCompanyTimeline } from './company-timeline-schema.js';
-import { migrateCompanyAttachments } from './company-attachments-schema.js';
-import { migrateCompanyContacts } from './company-contacts-schema.js';
-import { migrateSmtpChannels } from './smtp-channel-schema.js';
-import { migrateUMail } from './umail-schema.js';
-import { migrateOrders } from './orders-schema.js';
-import { migrateUpstreamMonitor } from './upstream-monitor-schema.js';
-import { migrateEmailPreview } from './email-preview-schema.js';
-import { migrateCoefficient } from './coefficient-schema.js';
-import { migrateEmailSend } from './email-send-schema.js';
-import { migrateOrganizationState } from './organization-state-schema.js';
+import { migrateProcurement } from './commerce/procurement-schema.js';
+import { migrateMembers } from './identity/members-schema.js';
+import { migratePasswordResets } from './identity/password-resets-schema.js';
+import { migrateCompanySearch } from './companies/company-search-schema.js';
+import { migrateProductSearch } from './companies/product-search-schema.js';
+import { migrateCompanyDetail } from './companies/company-detail-schema.js';
+import { migrateCompanyTimeline } from './companies/company-timeline-schema.js';
+import { migrateCompanyAttachments } from './companies/company-attachments-schema.js';
+import { migrateCompanyContacts } from './companies/company-contacts-schema.js';
+import { migrateSmtpChannels } from './email/smtp-channel-schema.js';
+import { migrateUMail } from './email/umail-schema.js';
+import { migrateOrders } from './commerce/orders-schema.js';
+import { migrateUpstreamMonitor } from './upstream/upstream-monitor-schema.js';
+import { migrateEmailPreview } from './email/email-preview-schema.js';
+import { migrateCoefficient } from './commerce/coefficient-schema.js';
+import { migrateEmailSend } from './email/email-send-schema.js';
+import { migrateOrganizationState } from './organizations/organization-state-schema.js';
 
 export function database(url = process.env.DATABASE_URL): pg.Pool {
   if (!url)

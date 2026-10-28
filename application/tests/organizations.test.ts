@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createDecipheriv, randomBytes, randomUUID } from 'node:crypto';
-import { bindContactKey } from '../server/organizations.js';
+import { bindContactKey } from '../server/organizations/organizations.js';
 import { createApplication } from '../server/app.js';
 import { migrate } from '../server/database.js';
 import { testDatabase } from './helpers.js';
@@ -31,7 +31,7 @@ test('T02 真实HTTP / PostgreSQL开户业务及权限', async t => {
   async function activate(email: string, password: string) {
     const session = await login(email, password);
     assert.equal((await http(session, 'organizations')).status, 403);
-    const next = '新密码-开户验证-安全😀十二字符';
+    const next = 'OrgOpenPwd123!';
     assert.equal((await http(session, 'auth/password', { currentPassword: password, newPassword: next, confirmPassword: next })).status, 200);
     assert.equal((await http(session, 'workspace')).status, 401);
     return login(email, next);
@@ -170,7 +170,7 @@ test('T02 真实HTTP / PostgreSQL开户业务及权限', async t => {
     await t.test('组织停用拒绝登录/已有会话且不级联；账号角色不能伪装权限', async () => {
       await pool.query('UPDATE organizations SET active=false WHERE id=$1', [first.organizationId]);
       assert.equal((await http(firstSession, 'organizations', data())).status, 401);
-      assert.equal((await http(empty, 'auth/login', { email: first.email, password: '新密码-开户验证-安全😀十二字符' })).status, 401);
+      assert.equal((await http(empty, 'auth/login', { email: first.email, password: 'OrgOpenPwd123!' })).status, 401);
       await create(secondSession);
       await pool.query('UPDATE organizations SET active=true WHERE id=$1', [first.organizationId]);
       await pool.query("UPDATE accounts SET role='sales' WHERE id=$1", [first.accountId]);

@@ -26,7 +26,7 @@ test('T26 HTTP/PostgreSQL organization suspension preserves in-flight work and d
   }
   async function activate(email: string, password: string) {
     const session = await login(email, password);
-    const next = '新密码-T26-组织状态-验证😀';
+    const next = 'OrgStatePwd123!';
     assert.equal((await http(session, 'auth/password', { currentPassword: password, newPassword: next, confirmPassword: next })).status, 200);
     return { session: await login(email, next), password: next };
   }

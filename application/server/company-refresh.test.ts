@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { chromium } from '@playwright/test';
 import { createApplication } from './app.js';
-import { hashPassword } from './policy.js';
+import { hashPassword } from './identity/policy.js';
 import { testDatabase } from '../tests/helpers.js';
 
 test('T15 explicit detail and contact refresh retains prior evidence and old contacts', async () => {

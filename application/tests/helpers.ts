@@ -1,8 +1,8 @@
 import { randomBytes, randomUUID } from 'node:crypto';
-import { hashPassword, normalizeEmail, temporaryPassword } from '../server/policy.js';
+import { hashPassword, normalizeEmail, temporaryPassword } from '../server/identity/policy.js';
 import type pg from 'pg';
 import { database, migrate } from '../server/database.js';
-import { IdentityService } from '../server/identity.js';
+import { IdentityService } from '../server/identity/identity.js';
 export async function testDatabase() {
   process.env.ORG_CONTACT_KEY ??= randomBytes(32).toString('hex');
   process.env.SMTP_CREDENTIAL_KEY ??= randomBytes(32).toString('hex');

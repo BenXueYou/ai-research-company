@@ -6,7 +6,7 @@ import { chromium } from '@playwright/test';
 import { resolve } from 'node:path';
 import { createApplication } from './app.js';
 import { migrate } from './database.js';
-import { digest } from './identity.js';
+import { digest } from './identity/identity.js';
 
 test('T28 scoped reporting through HTTP and PostgreSQL', async () => {
   const source = process.env.TEST_DATABASE_URL;

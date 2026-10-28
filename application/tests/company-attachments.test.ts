@@ -5,7 +5,7 @@ import { mkdtemp, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createApplication } from '../server/app.js';
-import { hashPassword } from '../server/policy.js';
+import { hashPassword } from '../server/identity/policy.js';
 import { testDatabase } from './helpers.js';
 
 test('T18 private attachments, tenant and record scope, limits, audit and compensation', async () => {

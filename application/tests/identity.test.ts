@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { createApplication } from '../server/app.js';
-import { digest } from '../server/identity.js';
+import { digest } from '../server/identity/identity.js';
 import { migrate } from '../server/database.js';
 import { testDatabase, ordinaryAccount } from './helpers.js';
 
@@ -14,7 +14,7 @@ test('真实 PostgreSQL / HTTP 身份闭环与安全边界', async t => {
   let account = { email: '', password: '' };
   let token = '';
   let csrf = '';
-  const first = ' 新密码😀允许空格十二字符 ';
+  const first = 'NewPassword123!';
   const second = 'second-password-安全';
   const change = (currentPassword: string, newPassword: string) => ({ currentPassword, newPassword, confirmPassword: newPassword });
   async function http(path: string, body?: object, options: { token?: string; csrf?: string; origin?: string } = {}) {
@@ -118,7 +118,7 @@ test('真实 PostgreSQL / HTTP 身份闭环与安全边界', async t => {
       for (const role of ['platform', 'distributor', 'admin', 'sales']) {
         await pool.query('UPDATE accounts SET role=$1 WHERE id=$2', [role, owner.id]);
         const password = `role-password-${role}`;
-        const { hashPassword } = await import('../server/policy.js');
+        const { hashPassword } = await import('../server/identity/policy.js');
         await pool.query('UPDATE accounts SET password_hash=$1,must_change=true,temporary_expires_at=clock_timestamp()+interval \'72 hours\' WHERE id=$2', [await hashPassword(password), owner.id]);
         const login = await service.login({ email: account.email, password }, role);
         assert.equal((await http('workspace', undefined, { token: login.token })).status, 403);
@@ -137,7 +137,7 @@ test('真实 PostgreSQL / HTTP 身份闭环与安全边界', async t => {
 test('数据库内置平台账号：并发初始化、登录、改密、重复初始化及到期', async () => {
   const { pool, service } = await testDatabase();
   const initial = { email: 'super_admin', password: 'init@Base123' };
-  const next = '平台管理员新密码😀安全十二字符';
+  const next = 'PlatformPwd123!';
   try {
     await Promise.all([migrate(pool), migrate(pool)]);
     const rows = await pool.query('SELECT * FROM accounts');

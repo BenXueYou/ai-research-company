@@ -2,10 +2,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { procurementHttp } from './procurement-helpers.js';
-import { hashPassword } from '../server/policy.js';
+import { hashPassword } from '../server/identity/policy.js';
 import { migrate } from '../server/database.js';
-import { ProcurementService } from '../server/procurement.js';
-import { IdentityService } from '../server/identity.js';
+import { ProcurementService } from '../server/commerce/procurement.js';
+import { IdentityService } from '../server/identity/identity.js';
 import { createApplication } from '../server/app.js';
 
 test('T06 real HTTP/PostgreSQL accounting, pricing, permissions and concurrency', async t => {

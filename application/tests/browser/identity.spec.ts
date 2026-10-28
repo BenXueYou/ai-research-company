@@ -12,8 +12,8 @@ test(`真实UI ${kind}：临时登录、强改密、重登录、主动改密、�
   const account = kind === 'platform'
     ? { email: 'super_admin', password: 'init@Base123' }
     : await ordinaryAccount(pool, 'Browser@example.com');
-  const next = ' 浏览器新密码😀安全十二个字符 ';
-  const final = ' 第二次密码😀安全十二个字符 ';
+  const next = 'BrowserPwd123!456';
+  const final = 'SecondPwd123!456';
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   async function login(password: string) {

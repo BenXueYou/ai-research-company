@@ -1,10 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID, createCipheriv, randomBytes } from 'node:crypto';
-import { EmailSendService, type DeliveryEvidenceProvider, type DomesticSmtpSender, type UMailMessage, type UMailSender } from '../server/email-send.js';
-import { CompanyTimelineService } from '../server/company-timeline.js';
+import { EmailSendService, type DeliveryEvidenceProvider, type DomesticSmtpSender, type UMailMessage, type UMailSender } from '../server/email/email-send.js';
+import { CompanyTimelineService } from '../server/companies/company-timeline.js';
 import { testDatabase } from './helpers.js';
-import type { Identity } from '../server/identity.js';
+import type { Identity } from '../server/identity/identity.js';
 
 test('T22/T23/T24/T25 snapshots, quota, evidence, retry, cross-day confirmation and late results', async () => {
   const { pool } = await testDatabase();

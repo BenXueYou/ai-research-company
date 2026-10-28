@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { createApplication } from '../../server/app.js';
-import { EmailPreviewService } from '../../server/email-preview.js';
-import { SmtpChannelService } from '../../server/smtp-channel.js';
-import { hashPassword } from '../../server/policy.js';
+import { EmailPreviewService } from '../../server/email/email-preview.js';
+import { SmtpChannelService } from '../../server/email/smtp-channel.js';
+import { hashPassword } from '../../server/identity/policy.js';
 import { testDatabase } from '../helpers.js';
 
 test('T23 从档案预览明确选择 U-Mail 域名渠道并共享额度', async ({ page }) => {

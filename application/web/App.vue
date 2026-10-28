@@ -1,5 +1,5 @@
 <template>
-  <div class="app-shell">
+  <div class="app-shell" :class="{ 'workspace-mode': session && !session.mustChange }">
     <header class="top-bar">
       <a class="brand" href="#">◈ <span>智能获客</span><small>账号中心</small></a>
       <nav v-if="session" aria-label="账号导航">
@@ -8,6 +8,18 @@
         <el-button class="quiet-button" :disabled="busy" @click="logout">退出登录</el-button>
       </nav>
     </header>
+    <aside v-if="session && !session.mustChange" class="workspace-sidebar" aria-label="工作台导航">
+      <a class="workspace-brand" href="#">◈ <strong>智能获客</strong><small>SMART ACQUISITION</small></a>
+      <p class="sidebar-group">获客工作台</p>
+      <a class="sidebar-link active" href="#company-search">⌕ <span>找企业</span></a>
+      <a class="sidebar-link" href="#company-profiles">▣ <span>企业档案库</span></a>
+      <a class="sidebar-link" href="#email-records">✉ <span>邮件发送记录</span></a>
+      <p class="sidebar-group">团队管理</p>
+      <a class="sidebar-link" href="#team-settings">☷ <span>团队发信设置</span></a>
+      <a class="sidebar-link" href="#member-management">♙ <span>成员管理</span></a>
+      <p class="sidebar-group">账户</p>
+      <a class="sidebar-link" href="#usage-reports">◎ <span>点数用量</span></a>
+    </aside>
     <main>
       <p v-if="loading" role="status">正在验证会话…</p>
       <template v-else>
@@ -69,7 +81,7 @@
           </div>
           <el-form class="identity-card" label-position="top" @submit.prevent="changePassword">
             <h2>{{ session.mustChange ? '设置新密码' : '更新登录密码' }}</h2>
-            <p class="hint">12～128个Unicode字符，允许空格；不要求字符组合，不得与当前密码相同。</p>
+            <p class="hint">12～128位英文、数字或常见符号，不允许空格；不得与当前密码相同。</p>
             <el-form-item label="当前密码" for="current-password">
               <el-input
                 id="current-password"
@@ -119,14 +131,15 @@
           </div>
           <OrganizationOpening v-if="['platform', 'distributor'].includes(session.role)" :request="request" />
           <MemberManagement v-if="session.role === 'admin'" :request="request" :current-account-id="session.id" />
-          <ProductSearch v-if="['admin', 'sales'].includes(session.role)" :request="request" @profile-created="profileRefresh += 1" />
           <CompanySearch
+            id="company-search"
             v-if="['admin', 'sales'].includes(session.role)"
             :key="profileRefresh"
             :current-account-id="session.id"
             :can-delete-timeline="session.role === 'admin'"
             :request="request"
           />
+          <ProductSearch v-if="['admin', 'sales'].includes(session.role)" :request="request" @profile-created="profileRefresh += 1" />
           <TeamSmtpSettings
             v-if="['admin', 'sales'].includes(session.role)"
             :can-maintain="session.role === 'admin'"
@@ -155,22 +168,22 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import OrganizationOpening from './OrganizationOpening.vue';
-import MemberManagement from './MemberManagement.vue';
-import CompanySearch from './CompanySearch.vue';
-import ProductSearch from './ProductSearch.vue';
-import PlatformProcurement from './PlatformProcurement.vue';
-import CoefficientChanges from './CoefficientChanges.vue';
-import CoefficientNotice from './CoefficientNotice.vue';
-import DetailReconciliation from './DetailReconciliation.vue';
-import UpstreamMonitor from './UpstreamMonitor.vue';
-import PointOrders from './PointOrders.vue';
-import UsageReports from './UsageReports.vue';
-import TeamSmtpSettings from './TeamSmtpSettings.vue';
-import EmailSendRecords from './EmailSendRecords.vue';
-import PlatformEmailQuota from './PlatformEmailQuota.vue';
-import TeamUMailSettings from './TeamUMailSettings.vue';
-import UMailResourceSettings from './UMailResourceSettings.vue';
+import OrganizationOpening from './organizations/OrganizationOpening.vue';
+import MemberManagement from './organizations/MemberManagement.vue';
+import CompanySearch from './companies/CompanySearch.vue';
+import ProductSearch from './companies/ProductSearch.vue';
+import PlatformProcurement from './commerce/PlatformProcurement.vue';
+import CoefficientChanges from './commerce/CoefficientChanges.vue';
+import CoefficientNotice from './commerce/CoefficientNotice.vue';
+import DetailReconciliation from './companies/DetailReconciliation.vue';
+import UpstreamMonitor from './upstream/UpstreamMonitor.vue';
+import PointOrders from './commerce/PointOrders.vue';
+import UsageReports from './reports/UsageReports.vue';
+import TeamSmtpSettings from './email/TeamSmtpSettings.vue';
+import EmailSendRecords from './email/EmailSendRecords.vue';
+import PlatformEmailQuota from './email/PlatformEmailQuota.vue';
+import TeamUMailSettings from './email/TeamUMailSettings.vue';
+import UMailResourceSettings from './email/UMailResourceSettings.vue';
 import {
   ElAlert,
   ElButton,
@@ -266,9 +279,8 @@ async function logout() {
 }
 async function changePassword() {
   await run(async () => {
-    const length = [...newPassword.value].length;
-    if (length < 12 || length > 128 || newPassword.value !== confirmPassword.value)
-      throw new Error('新密码须为12～128个Unicode字符，且两次输入一致');
+    if (!/^[\x21-\x7E]{12,128}$/.test(newPassword.value) || newPassword.value !== confirmPassword.value)
+      throw new Error('新密码须为12～128位英文、数字或常见符号，且两次输入一致');
     await request('auth/password', {
       currentPassword: currentPassword.value,
       newPassword: newPassword.value,

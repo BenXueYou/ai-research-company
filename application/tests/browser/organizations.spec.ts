@@ -10,7 +10,7 @@ test('T02 浏览器真实开户、复制失败重试、来源值、短链层级�
   const origin = 'http://127.0.0.1:3092';
   const app = await createApplication(pool, origin);
   await app.listen(3092, '127.0.0.1');
-  const next = '浏览器开户密码-安全😀十二字符';
+  const next = 'BrowserOrg123!456';
   const submissions: Record<string, string>[] = [];
   const pageErrors: string[] = [];
   page.on('pageerror', error => pageErrors.push(error.message));

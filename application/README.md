@@ -1,10 +1,14 @@
 # 身份与直属组织开户应用
 
-T03已提供终端企业“成员管理”：创建业务员/终端企业管理员、当次展示及复制临时凭据、停用其他成员；本人和首位管理员不可停用。组织身份取服务端当前账号，成员不需要电话。实现、参数来源和实际验收结果见[T03记录](./T03-COMPLETION.md)。管理方重置及补发属于T04。
+工程目录、命令分层及变更验证门禁见[工程脚手架约定](../docs/engineering-scaffold.md)。本文件保留应用配置、启动和业务运行说明。
+
+当前代码入口保持 `server/main.ts`、`server/app.ts` 和 `web/main.ts`、`web/App.vue`；业务服务、schema、控制器和页面按 `identity`、`organizations`、`commerce`、`companies`、`email`、`upstream` 领域定位，页面用量报表在 `web/reports`。本次目录调整与验证范围见[结构整理记录](../docs/server-web-structure-migration.md)。
+
+T03已提供终端企业“成员管理”：创建业务员/终端企业管理员、当次展示及复制临时凭据、停用其他成员；本人和首位管理员不可停用。组织身份取服务端当前账号，成员不需要电话。实现、参数来源和实际验收结果见[T03记录](../docs/delivery/application/T03-COMPLETION.md)。管理方重置及补发属于T04。
 
 成员API为`GET/POST /api/members`和`POST /api/members/disable`。创建仅接受`name,email,role,requestId`，停用仅接受`accountId`；客户端不得提交组织、密码、启用状态。`npm run test:members`运行真实成员集成测试，须显式提供专用可丢弃的`TEST_DATABASE_URL`（以`_test`结尾，测试会清空该库账号表）。浏览器目标为`members.spec`，沿用现有`npm run test:e2e -- members.spec`。
 
-本目录是 Vue 3 + TypeScript + Vite + Element Plus / NestJS / PostgreSQL 的最小真实身份闭环，不是原型账号模拟。规则以[身份决策](../docs/decisions/001-t01-identity.md)为准。实现与测试结果见[验收记录](./VERIFICATION.md)。T02已实现直属组织开户，结果见[T02验收记录](./T02-COMPLETION.md)。管理员重置密码、供应商接入及后续业务模块未实现。
+本目录是 Vue 3 + TypeScript + Vite + Element Plus / NestJS / PostgreSQL 的最小真实身份闭环，不是原型账号模拟。规则以[身份决策](../docs/decisions/001-t01-identity.md)为准。实现与测试结果见[验收记录](../docs/delivery/application/VERIFICATION.md)。T02已实现直属组织开户，结果见[T02验收记录](../docs/delivery/application/T02-COMPLETION.md)。管理员重置密码、供应商接入及后续业务模块未实现。
 
 ## 环境与安装
 
@@ -63,7 +67,7 @@ npm run dev:web
 ## 功能与安全边界
 
 - 邮箱只将域名转小写，本地部分区分大小写，不合并加号别名或圆点。
-- 新密码按 Unicode 码点计数 12～128，允许空格，不裁剪、不归一化、不要求字符组合，不得与当前密码相同。
+- 新密码为 12～128 位可打印 ASCII 字符（英文、数字和常见符号），不允许空格，不得与当前密码相同。
 - 随机盐 scrypt 摘要；随机不透明会话令牌，数据库仅存 SHA-256；CSRF 令牌独立生成并存摘要。
 - 会话最长 8 小时，空闲 30 分钟失效。退出撤销当前会话；首次/主动改密撤销所有设备，必须重新登录。
 - 全局守卫默认保护 API，只有登录公开；临时及重置态禁止工作台请求，不能通过直接请求绕过 UI。
@@ -103,7 +107,7 @@ docker compose --env-file .env.test down
 
 ## 当前验证与边界
 
-最新补齐与验收结果见 [T01补齐记录](./T01-COMPLETION.md)，历史REVIEW/VERIFICATION保留为旧基线证据。本地新库部署、真实PostgreSQL及Chromium流程可复验；生产HTTPS/反向代理、备份与生产权限仍需目标环境验证。开户现由T02交付；重置、点数、查询、发信仍属后续票。
+最新补齐与验收结果见 [T01补齐记录](../docs/delivery/application/T01-COMPLETION.md)，历史REVIEW/VERIFICATION保留为旧基线证据。本地新库部署、真实PostgreSQL及Chromium流程可复验；生产HTTPS/反向代理、备份与生产权限仍需目标环境验证。开户现由T02交付；重置、点数、查询、发信仍属后续票。
 
 ## T02 直属开户
 
@@ -123,13 +127,13 @@ docker compose --env-file .env.test down
 
 启用查询时必须同时配置 `REDIS_URL`、`TENGDAO_BASE_URL`、`TENGDAO_API_KEY` 与从供应商账号合同取得的 `TENGDAO_BUSINESS_DAILY_LIMIT`；任一缺失都会拒绝启用，不使用演示配额。Compose 已提供只绑定回环地址的 Redis，供共享令牌、跨接口分钟守卫和按日调用计数使用。API key 与访问令牌不得写入前端配置、日志或提交文件。
 
-终端企业管理员/业务员按公司名及三位国家代码查询，每页最多 20 条。该接口免费且不产生内部点数流水，但每次供应商请求都计入共享账号数据类次数。候选默认待核实，必须人工明确确认；后续联系人和发信入口必须复用服务端已核实候选准入检查。完整实现和验证边界见 [T10 交付记录](./T10-COMPLETION.md)。
+终端企业管理员/业务员按公司名及三位国家代码查询，每页最多 20 条。该接口免费且不产生内部点数流水，但每次供应商请求都计入共享账号数据类次数。候选默认待核实，必须人工明确确认；后续联系人和发信入口必须复用服务端已核实候选准入检查。完整实现和验证边界见 [T10 交付记录](../docs/delivery/application/T10-COMPLETION.md)。
 
 ## T18 档案及人工记录附件私有留档
 
 部署前设置 `COMPANY_ATTACHMENT_STORAGE_DIR` 为应用可写且受文件系统权限保护的绝对路径，须位于 `dist/web` 等静态目录之外；数据库和该目录需一起备份。设置 `COMPANY_ATTACHMENT_SCANNER` 为安全扫描程序可执行文件；程序收到私有临时文件路径作为最后一个参数，仅退出码 0 表示通过。若需要固定参数，使用 JSON 字符串数组 `COMPANY_ATTACHMENT_SCANNER_ARGS`。未配置或扫描失败时上传被拒绝；正式环境需实际部署并验证扫描程序。
 
-终端企业成员从档案上传、下载，或把附件挂在本档案人工记录；企业管理员可软删除，文件到期（默认两年）后可手动清理，系统不会自动删除。格式白名单为 jpg/png/webp、pdf/doc/docx/xls/xlsx/ppt/pptx、zip/rar；服务端核对扩展名、MIME 和文件特征，单文件最多 20MB，每企业最多 50 个未删除附件。附件只经鉴权接口访问，下载和变更均写审计。档案附件不会进入邮件发送，邮件仍只使用平台预设模板附件。完整验证见 [T18 交付记录](./T18-COMPLETION.md)。
+终端企业成员从档案上传、下载，或把附件挂在本档案人工记录；企业管理员可软删除，文件到期（默认两年）后可手动清理，系统不会自动删除。格式白名单为 jpg/png/webp、pdf/doc/docx/xls/xlsx/ppt/pptx、zip/rar；服务端核对扩展名、MIME 和文件特征，单文件最多 20MB，每企业最多 50 个未删除附件。附件只经鉴权接口访问，下载和变更均写审计。档案附件不会进入邮件发送，邮件仍只使用平台预设模板附件。完整验证见 [T18 交付记录](../docs/delivery/application/T18-COMPLETION.md)。
 
 ## T19 国内 SMTP 团队渠道
 
@@ -137,4 +141,4 @@ docker compose --env-file .env.test down
 
 部署及启动必须配置独立的`SMTP_CREDENTIAL_KEY`：32字节密码学随机值，以64位十六进制表示。该密钥用于AES-256-GCM加密SMTP授权凭据，组织ID和渠道类型作为关联数据；数据库保存密钥指纹并拒绝直接换钥。密钥不得复用`ORG_CONTACT_KEY`、提交、记录日志或放入前端配置，须由受控密钥配置提供并安全备份。
 
-当前默认适配器不会连接真实SMTP，而明确保存`not_live_verified`结果；测试通过注入受控适配器验证可用、不可用及异常结果。真实SMTP认证/连接、DNS、发信投递、退信和回复实收属于T31，当前配置页和本地验证不能作为生产联调证据。完整实现、参数来源及验收边界见 [T19交付记录](./T19-COMPLETION.md)。
+当前默认适配器不会连接真实SMTP，而明确保存`not_live_verified`结果；测试通过注入受控适配器验证可用、不可用及异常结果。真实SMTP认证/连接、DNS、发信投递、退信和回复实收属于T31，当前配置页和本地验证不能作为生产联调证据。完整实现、参数来源及验收边界见 [T19交付记录](../docs/delivery/application/T19-COMPLETION.md)。
