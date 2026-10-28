@@ -14,3 +14,7 @@ test-results-t06/
 .scratch/**/*.test.js.map
 .scratch/**/*.spec.js
 .scratch/**/*.spec.js.map
+
+.scratch/issue37-*
+
+.scratch/issue38-*/

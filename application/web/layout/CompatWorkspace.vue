@@ -1,12 +1,9 @@
 <template>
   <section class="workspace">
     <CoefficientNotice :request="request" />
-    <div class="page-heading">
-      <h1>{{ title }}</h1>
-    </div>
     <OrganizationOpening
       id="compat-organizations"
-      v-if="['platform', 'distributor'].includes(session.role)"
+      v-if="session.role === 'distributor'"
       :request="request"
     />
     <MemberManagement
@@ -48,12 +45,10 @@
     <CoefficientChanges v-if="session.role === 'platform'" :request="request" />
     <PointOrders
       id="compat-orders"
-      v-if="['platform', 'distributor'].includes(session.role)"
+      v-if="session.role === 'distributor'"
       :request="request"
     />
-    <UsageReports id="compat-usage" :request="request" />
-    <UMailResourceSettings v-if="session.role === 'platform'" :request="request" />
-    <PlatformEmailQuota v-if="session.role === 'platform'" :request="request" />
+    <UsageReports v-if="session.role !== 'platform'" id="compat-usage" :request="request" />
   </section>
 </template>
 
@@ -71,9 +66,7 @@ import PointOrders from '../pages/commerce/PointOrders.vue';
 import UsageReports from '../pages/reports/UsageReports.vue';
 import TeamSmtpSettings from '../pages/email/TeamSmtpSettings.vue';
 import EmailSendRecords from '../pages/email/EmailSendRecords.vue';
-import PlatformEmailQuota from '../pages/email/PlatformEmailQuota.vue';
 import TeamUMailSettings from '../pages/email/TeamUMailSettings.vue';
-import UMailResourceSettings from '../pages/email/UMailResourceSettings.vue';
 
 defineProps<{
   session: Session;

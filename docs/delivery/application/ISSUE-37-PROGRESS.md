@@ -1,3 +1,5 @@
+> 历史阶段记录。2026-10-28 已补齐功能并通过本票本地真实业务验收，最终范围和边界见 [ISSUE-37-COMPLETION.md](ISSUE-37-COMPLETION.md)。
+
 # #37 平台直属下级迁移：基线，尚未交付
 
 现有 `web/pages/organizations/OrganizationOpening.vue` 同时承载开户、直属列表、详情展开、凭据交付、重置及停用恢复；平台与分销共用该组件，由 `CompatWorkspace` 挂载。当前平台 `/platform/organizations` 仍是兼容容器定位，列表、开户和详情尚不是独立可定位页面。

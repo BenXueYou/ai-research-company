@@ -1,0 +1,160 @@
+{
+  "before": {
+    "baseline": "before",
+    "ids": {
+      "platform": "646744d2-56a3-41f6-bbeb-b21bff98e620",
+      "account": "693a74e8-3ec6-44ea-8802-0995b5035775",
+      "organization": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+      "administrator": "80249851-bcc8-47b4-be4a-2fff5481b660"
+    },
+    "requests": [
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+          "active": false
+        }
+      },
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+          "active": true
+        }
+      },
+      {
+        "path": "/api/password-resets",
+        "body": {
+          "accountId": "80249851-bcc8-47b4-be4a-2fff5481b660",
+          "requestId": "a04cc585-0fbd-4da4-890d-6ad0b524198e"
+        }
+      },
+      {
+        "path": "/api/email-quota/configure",
+        "body": {
+          "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+          "dailyLimit": 2345
+        }
+      },
+      {
+        "path": "/api/email-quota/configure",
+        "body": {
+          "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+          "dailyLimit": 0
+        }
+      },
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "80249851-bcc8-47b4-be4a-2fff5481b660",
+          "active": false
+        }
+      },
+      {
+        "path": "/api/password-resets",
+        "body": {
+          "accountId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+          "requestId": "f843fe74-8c98-416c-9c10-fae54c2e7f57"
+        }
+      },
+      {
+        "path": "/api/email-quota/configure",
+        "body": {
+          "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+          "dailyLimit": 9999
+        }
+      }
+    ],
+    "result": {
+      "limit": 2345,
+      "invalidLimit": 400,
+      "wrongOrganizationIdentifier": 403,
+      "wrongAccountIdentifier": 403,
+      "salesDenied": 403
+    }
+  },
+  "after": {
+    "baseline": "after",
+    "ids": {
+      "platform": "fe69412c-939c-4981-886f-daaf3baccbe7",
+      "account": "c182fdfb-57bc-4111-a548-829f29603d36",
+      "organization": "3deb9af6-ff13-452d-9915-ab3293c0a216",
+      "administrator": "586ae2f4-8883-4175-9b67-57788ac68485"
+    },
+    "requests": [
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "3deb9af6-ff13-452d-9915-ab3293c0a216",
+          "active": false
+        }
+      },
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "3deb9af6-ff13-452d-9915-ab3293c0a216",
+          "active": true
+        }
+      },
+      {
+        "path": "/api/password-resets",
+        "body": {
+          "accountId": "586ae2f4-8883-4175-9b67-57788ac68485",
+          "requestId": "d89d8bbe-cf79-4ccf-b23e-d9b0a628ae12"
+        }
+      },
+      {
+        "path": "/api/email-quota/configure",
+        "body": {
+          "organizationId": "3deb9af6-ff13-452d-9915-ab3293c0a216",
+          "dailyLimit": 2345
+        }
+      },
+      {
+        "path": "/api/email-quota/configure",
+        "body": {
+          "organizationId": "3deb9af6-ff13-452d-9915-ab3293c0a216",
+          "dailyLimit": 0
+        }
+      },
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "586ae2f4-8883-4175-9b67-57788ac68485",
+          "active": false
+        }
+      },
+      {
+        "path": "/api/password-resets",
+        "body": {
+          "accountId": "3deb9af6-ff13-452d-9915-ab3293c0a216",
+          "requestId": "f353d912-4c79-4393-8e34-792e8dbcac23"
+        }
+      },
+      {
+        "path": "/api/email-quota/configure",
+        "body": {
+          "organizationId": "3deb9af6-ff13-452d-9915-ab3293c0a216",
+          "dailyLimit": 9999
+        }
+      }
+    ],
+    "result": {
+      "limit": 2345,
+      "invalidLimit": 400,
+      "wrongOrganizationIdentifier": 403,
+      "wrongAccountIdentifier": 403,
+      "salesDenied": 403
+    }
+  },
+  "accountPreservation": {
+    "headerScriptUnchanged": true,
+    "headerAccountSubtreeAndStylesUnchanged": true,
+    "appAccountHandlersUnchanged": {
+      "logout": true,
+      "changePassword": true,
+      "openSettings": true,
+      "closeSettings": true
+    }
+  }
+}

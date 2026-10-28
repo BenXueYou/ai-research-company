@@ -40,9 +40,8 @@ const roleName = computed(() => roleNames[props.role] ?? '当前账号');
 </script>
 
 <template>
-  <section class="role-help" aria-labelledby="help-title">
+  <section class="role-help" aria-label="帮助中心">
     <header>
-      <h1 id="help-title">帮助中心</h1>
       <p>{{ roleName }}操作指南</p>
     </header>
     <section v-for="guide in currentGuides" :key="guide.title" class="help-section">

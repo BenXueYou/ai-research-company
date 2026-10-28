@@ -77,14 +77,15 @@ export async function createApplication(
   app.useGlobalGuards(new IdentityGuard(service, origin));
   app.use(express.static(webRoot, { index: 'index.html' }));
   const consolePaths = new Set([
-    '/platform/overview', '/platform/organizations', '/platform/ledger', '/platform/reconciliation', '/platform/reconciliation/upstream', '/platform/settings',
+    '/platform/settings/umail', '/platform/settings/email-quota',
+    '/platform/overview', '/platform/organizations', '/platform/ledger', '/platform/ledger/profit', '/platform/ledger/flows', '/platform/reconciliation', '/platform/reconciliation/upstream', '/platform/settings',
     '/distribution/organizations', '/distribution/orders', '/distribution/profit',
     '/terminal/search', '/terminal/profiles', '/terminal/emails', '/terminal/sending-settings', '/terminal/members', '/terminal/usage',
     '/account/settings', '/help'
   ]);
   app.use((request: Request, response: Response, next: () => void) => {
     if ((request.method === 'GET' || request.method === 'HEAD') && consolePaths.has(request.path)) {
-      response.sendFile(resolve(webRoot, 'index.html'));
+      response.sendFile(resolve(webRoot, 'index.html'), { dotfiles: 'allow' });
       return;
     }
     next();

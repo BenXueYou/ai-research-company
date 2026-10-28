@@ -30,40 +30,6 @@ a:focus-visible {
   border-bottom: 1px solid #e5e9f3;
   gap: 20px;
 }
-.workspace-mode {
-  display: grid;
-  grid-template-columns: 224px minmax(0, 1fr);
-  min-height: 100vh;
-  background: #f2f4f9;
-}
-.workspace-mode .top-bar {
-  grid-column: 2;
-  grid-row: 1;
-  min-height: 75px;
-  padding: 0 30px;
-  background: transparent;
-  border-bottom: 1px solid #e6e9f0;
-}
-.workspace-mode .top-bar .brand { display: none; }
-.workspace-mode .top-bar nav { margin-left: auto; justify-content: flex-end; }
-.workspace-mode main {
-  grid-column: 2;
-  grid-row: 2;
-  max-width: 1700px;
-  width: 100%;
-  padding: 30px 30px 100px;
-}
-.workspace-mode footer { grid-column: 2; grid-row: 3; }
-.workspace-sidebar {
-  grid-column: 1;
-  grid-row: 1 / span 3;
-  padding: 27px 12px 190px;
-  color: white;
-  background: linear-gradient(170deg, #4a5ce4, #3f50d6);
-  display: flex;
-  flex-direction: column;
-}
-.sidebar-help { margin-top: auto; }
 .workspace-brand {
   display: grid;
   grid-template-columns: 32px 1fr;
@@ -298,10 +264,6 @@ footer {
   white-space: pre-wrap;
 }
 @media (max-width: 760px) {
-.workspace-mode { display: block; }
-.workspace-sidebar { padding: 15px; }
-.workspace-mode .top-bar { padding: 12px 18px; }
-.workspace-mode main { padding: 28px 18px 100px; }
 .workspace-mode .company-search > form { grid-template-columns: 1fr; }
   .identity-layout {
     grid-template-columns: 1fr;

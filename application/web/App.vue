@@ -1,13 +1,28 @@
 <template>
-  <div class="app-shell" :class="{ 'workspace-mode': session && !session.mustChange }">
+  <ConsoleFrame :workspace="!!session && !session.mustChange" :generation="generation">
+    <template #header="{ sidebarOpen, toggleSidebar }">
     <ConsoleHeader
       :session="session"
       :busy="busy"
       @settings="openSettings"
       @logout="logout"
-    />
-    <ConsoleSidebar v-if="session && !session.mustChange" :session="session" />
-    <main>
+    >
+      <template v-if="session && !session.mustChange" #navigation>
+        <button
+          type="button"
+          class="sidebar-toggle"
+          aria-controls="console-sidebar"
+          :aria-expanded="sidebarOpen"
+          :aria-label="sidebarOpen ? '收起菜单' : '展开菜单'"
+          @click="toggleSidebar"
+        ><span aria-hidden="true">☰</span><span class="sidebar-toggle-label">{{ sidebarOpen ? '收起菜单' : '展开菜单' }}</span></button>
+        <ConsoleBreadcrumb />
+      </template>
+    </ConsoleHeader>
+    </template>
+    <template #sidebar>
+      <ConsoleSidebar v-if="session && !session.mustChange" :session="session" />
+    </template>
       <p v-if="loading" role="status">正在验证会话…</p>
       <template v-else>
         <section v-if="sessionStatus === 'error'" class="identity-layout">
@@ -30,45 +45,16 @@
           :title="error"
           :closable="false"
         />
-        <section v-if="!session" class="identity-layout">
-          <div class="intro-panel">
-            <p class="eyebrow">安全访问 · 真实身份</p>
-            <h1>从可信连接，<br>开启每一次机会。</h1>
-            <p>使用平台账号或组织分配的登录邮箱访问工作空间。首次登录，请先设置属于自己的密码。</p>
-            <div class="security-note">◇ 账号由授权管理员交付，不开放自助注册。</div>
-          </div>
-          <el-form class="identity-card" label-position="top" @submit.prevent="login">
-            <p class="eyebrow">WELCOME BACK</p>
-            <h2>登录工作空间</h2>
-            <p class="hint">平台使用 super_admin，其他账号使用登录邮箱</p>
-            <el-form-item label="登录账号" for="email">
-              <el-input
-                id="email"
-                v-model="email"
-                :type="email === 'super_admin' ? 'text' : 'email'"
-                autocomplete="username"
-                required
-                :disabled="busy"
-              />
-            </el-form-item>
-            <el-form-item label="密码" for="login-password">
-              <el-input
-                id="login-password"
-                v-model="loginPassword"
-                type="password"
-                autocomplete="current-password"
-                required
-                :disabled="busy"
-              />
-            </el-form-item>
-            <el-button class="primary-button" native-type="submit" :disabled="busy">{{ busy ? '正在登录…' : '登录' }}</el-button>
-            <p class="hint">忘记密码？请联系授权管理员。临时密码有效期为72小时。</p>
-          </el-form>
-        </section>
+        <LoginPage
+          v-if="!session"
+          v-model:email="email"
+          v-model:login-password="loginPassword"
+          :busy="busy"
+          @submit="login"
+        />
         <section v-else-if="session.mustChange || path === '/account/settings'" class="password-layout">
           <div class="page-heading">
-            <p class="eyebrow">账号设置 / 修改密码</p>
-            <h1>{{ session.mustChange ? '先保护好您的账号' : '修改本人密码' }}</h1>
+            <h1 v-if="session.mustChange">先保护好您的账号</h1>
             <p>{{ session.mustChange ? '当前使用临时凭据，完成改密前无法访问工作台。' : '更新密码后，所有设备将退出登录。' }}</p>
           </div>
           <el-form class="identity-card" label-position="top" @submit.prevent="changePassword">
@@ -110,20 +96,15 @@
           </el-form>
         </section>
         <RouterView v-if="session && !session.mustChange" v-slot="{ Component }">
-          <KeepAlive include="ReconciliationPage">
+          <KeepAlive include="ReconciliationPage,PointOrders,PlatformSettingsPage,PlatformOrganizationsPage,UMailResourceSettings,PlatformEmailQuota">
             <component
               :is="Component"
               :request="request"
               :role="session.role"
-              :confirm-leave="confirmLeave"
               @navigate="navigate"
             />
           </KeepAlive>
         </RouterView>
-        <nav v-if="session && !session.mustChange && path === '/platform/ledger'" aria-label="点数与账务页面">
-          <RouterLink to="/platform/ledger/profit">交易与利润</RouterLink> ·
-          <RouterLink to="/platform/ledger/flows">账务流水</RouterLink>
-        </nav>
         <CompatWorkspace
           v-if="session && !session.mustChange && workspaceVisited"
           v-show="isCompatPath"
@@ -133,20 +114,25 @@
         />
         </template>
       </template>
-    </main>
     <footer>安全会话 · 最长8小时 / 空闲30分钟自动失效</footer>
-  </div>
+  </ConsoleFrame>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import { defaultPath, isBusinessPath, navigation } from './router';
 import { useSessionStore } from './stores/session';
+import { provideFormLeave } from './router/formLeave';
 import ConsoleHeader from './layout/ConsoleHeader.vue';
+import ConsoleFrame from './layout/ConsoleFrame.vue';
+import ConsoleBreadcrumb from './layout/ConsoleBreadcrumb.vue';
+import { provideBreadcrumbTitle } from './layout/breadcrumb';
 import ConsoleSidebar from './layout/ConsoleSidebar.vue';
 import CompatWorkspace from './layout/CompatWorkspace.vue';
+import LoginPage from './pages/login/LoginPage.vue';
+import { useLogin } from './pages/login/useLogin';
 import {
   ElAlert,
   ElButton,
@@ -154,6 +140,7 @@ import {
   ElFormItem,
   ElInput
 } from 'element-plus';
+provideBreadcrumbTitle();
 const router = useRouter();
 const route = useRoute();
 const auth = useSessionStore();
@@ -167,8 +154,7 @@ const workspaceVisited = ref(false);
 const passwordResultUnknown = ref(false);
 const error = ref('');
 const notice = ref('');
-const email = ref('');
-const loginPassword = ref('');
+const { email, loginPassword, login } = useLogin(run, navigatingAfterLogin);
 const currentPassword = ref('');
 const newPassword = ref('');
 const confirmPassword = ref('');
@@ -177,15 +163,21 @@ const menu = computed(() =>
 );
 const currentTitle = computed(() => route.meta.title ?? '工作台');
 const isCompatPath = computed(() => menu.value.some(item =>
-  item.path === path.value && item.path !== '/platform/reconciliation'
+  item.path === path.value && !['/platform/reconciliation', '/platform/organizations', '/platform/ledger', '/platform/settings'].includes(item.path)
 ));
-function confirmLeave() {
-  if (navigatingAfterLogin.value) return true;
-  if (!session.value || session.value.mustChange) return true;
-  if (busy.value) return false;
-  if (path.value !== '/account/settings' || !(currentPassword.value || newPassword.value || confirmPassword.value)) return true;
-  return window.confirm('您有未提交的修改。确定放弃并离开吗？取消将继续编辑。');
-}
+const formLeave = provideFormLeave(router, () =>
+  !!session.value && !session.value.mustChange && !navigatingAfterLogin.value
+);
+formLeave.register({
+  active: () => path.value === '/account/settings',
+  state: () => {
+    if (busy.value && path.value === '/account/settings') return 'submitting';
+    if (passwordResultUnknown.value) return 'unknown';
+    return currentPassword.value || newPassword.value || confirmPassword.value ? 'dirty' : 'clean';
+  },
+  discard: clearPasswords,
+  retainUnknown: true
+});
 function navigate(next: string) {
   if (!session.value || session.value.mustChange) return;
   if (!router.resolve(next).matched.some(item => item.meta.roles && (item.meta.roles as string[]).includes(session.value?.role ?? ''))) return;
@@ -222,27 +214,13 @@ async function run(action: () => Promise<void>) {
     busy.value = false;
   }
 }
-async function login() {
-  await run(async () => {
-    try {
-      await auth.login(email.value, loginPassword.value);
-      if (session.value && !session.value.mustChange) {
-        navigatingAfterLogin.value = true;
-        try {
-          await router.replace(defaultPath(session.value.role));
-        } finally {
-          navigatingAfterLogin.value = false;
-        }
-      }
-    } finally {
-      loginPassword.value = '';
-    }
-  });
-}
 async function logout() {
-  if (!confirmLeave()) return;
+  const commitLeave = formLeave.prepareLeave();
+  if (!commitLeave) return;
+  if (!window.dispatchEvent(new Event('organization-before-logout', { cancelable: true }))) return;
   await run(async () => {
     await request('auth/logout', {});
+    commitLeave();
     auth.clear();
     notice.value = '您已安全退出';
   });
@@ -280,11 +258,6 @@ function closeSettings() {
   if (!session.value) return;
   navigate(isBusinessPath(previousPath.value, session.value.role) ? previousPath.value : defaultPath(session.value.role));
 }
-function onBeforeUnload(event: BeforeUnloadEvent) {
-  if (busy.value || (path.value === '/account/settings' && (currentPassword.value || newPassword.value || confirmPassword.value))) {
-    event.preventDefault();
-  }
-}
 watch(generation, () => {
   workspaceVisited.value = false;
   previousPath.value = '/';
@@ -298,19 +271,10 @@ watch(path, (next, previous) => {
   }
   if (session.value && isCompatPath.value) {
     workspaceVisited.value = true;
-    void nextTick(() => {
-      const target = menu.value.find(item => item.path === next)?.target;
-      if (target) document.getElementById(target)?.scrollIntoView();
-    });
+
   }
 }, { immediate: true });
 watch(session, value => {
   if (value && isCompatPath.value) workspaceVisited.value = true;
-});
-onMounted(() => {
-  window.addEventListener('beforeunload', onBeforeUnload);
-});
-onUnmounted(() => {
-  window.removeEventListener('beforeunload', onBeforeUnload);
 });
 </script>

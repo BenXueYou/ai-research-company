@@ -1,0 +1,67 @@
+/* Public console owns the viewport; page components keep their lifecycle. */
+.app-shell.el-container { min-width: 0; }
+.app-shell:not(.workspace-mode) { display: block; }
+.console-header { padding: 0; }
+.console-column { min-width: 0; min-height: 0; }
+.workspace-mode.el-container { height: 100vh; height: 100dvh; overflow: hidden; background: #f2f4f9; }
+.workspace-mode .console-column { overflow: hidden; }
+.workspace-mode .console-header { flex: none; z-index: 5; background: #fff; }
+.workspace-mode .top-bar { min-height: 68px; padding: 10px 24px; flex-wrap: nowrap; align-items: center; gap: 16px; }
+.header-location { display: flex; align-items: center; gap: 16px; min-width: 0; flex: 1; }
+.workspace-mode .account-navigation { flex: none; margin-left: auto; }
+.workspace-mode .console-main { flex: 1; min-height: 0; min-width: 0; max-width: none; width: 100%; margin: 0; overflow: auto; overscroll-behavior: contain; padding: 24px; }
+.console-aside { flex: none; min-height: 0; overflow: hidden; background: #4657da; }
+.sidebar-panel, .workspace-sidebar { height: 100%; min-height: 0; display: flex; flex-direction: column; }
+.workspace-sidebar { color: #fff; padding: 0 12px; }
+.workspace-brand { flex: none; padding: 24px 10px; }
+.sidebar-scroll { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; display: flex; flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 0; padding: 0 0 20px; }
+.sidebar-group { margin: 12px 12px 8px; color: #d9deff; }
+.sidebar-link { width: 100%; flex: none; min-height: 44px; border: 0; background: transparent; text-align: left; cursor: pointer; font: inherit; font-size: 13px; }
+.sidebar-link.active { background: #6574e2; border: 0; box-shadow: none; color: #fff; }
+.sidebar-link:not(.active):hover { background: #5667df; border: 0; }
+.sidebar-child { padding-left: 30px; }
+.sidebar-parent { justify-content: space-between; }
+.sidebar-help { margin-top: auto; }
+.sidebar-toggle, .sidebar-close { flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 8px; border: 0; border-radius: 6px; font: inherit; font-size: 12px; color: #53617e; background: transparent; cursor: pointer; white-space: nowrap; }
+.sidebar-toggle:hover { background: #eef0f8; }
+.sidebar-close { color: #fff; margin: 8px; }
+.console-breadcrumb { display: flex; align-items: center; min-width: 0; flex: 1; line-height: 1.5; }
+.console-crumb { display: flex; min-width: 0; align-items: center; }
+.console-crumb:not(:last-child) .crumb-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.console-crumb:last-child { flex-shrink: 0; max-width: 100%; }
+.console-crumb:last-child .crumb-label { overflow-wrap: anywhere; }
+.crumb-separator { margin: 0 9px; color: #929bb1; }
+.console-breadcrumb a { color: #4356e0; font-weight: 400; }
+.workspace-mode .console-main, .console-scroll { --console-scroll-thumb: #a6afd6; --console-scroll-hover: #8794c0; scrollbar-width: thin; scrollbar-color: var(--console-scroll-thumb) transparent; }
+.workspace-mode .console-main:hover, .workspace-mode .console-main:focus-within, .console-scroll:hover, .console-scroll:focus-within { scrollbar-color: var(--console-scroll-hover) transparent; }
+.workspace-mode .console-main::-webkit-scrollbar, .console-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.workspace-mode .console-main::-webkit-scrollbar-track, .console-scroll::-webkit-scrollbar-track { background: transparent; }
+.workspace-mode .console-main::-webkit-scrollbar-thumb, .console-scroll::-webkit-scrollbar-thumb { background: var(--console-scroll-thumb); border-radius: 6px; }
+.workspace-mode .console-main:hover::-webkit-scrollbar-thumb, .workspace-mode .console-main:focus-within::-webkit-scrollbar-thumb, .console-scroll:hover::-webkit-scrollbar-thumb, .console-scroll:focus-within::-webkit-scrollbar-thumb { background: var(--console-scroll-hover); }
+.workspace-mode .console-main::-webkit-scrollbar-button, .console-scroll::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+.workspace-mode .console-main::-webkit-scrollbar-corner, .console-scroll::-webkit-scrollbar-corner { background: transparent; }
+.workspace-mode .console-main > * { min-width: 0; }
+.workspace-mode .platform-report { max-width: 100%; overflow-x: auto; }
+.workspace-mode pre { max-width: 100%; overflow: auto; }
+.sidebar-backdrop { position: fixed; inset: 0; z-index: 19; background: #18213e66; border: 0; }
+@media (prefers-color-scheme: dark) {
+  .workspace-mode .console-main, .console-scroll { --console-scroll-thumb: #8492bd; --console-scroll-hover: #a6afd6; }
+}
+@media (forced-colors: active) {
+  .workspace-mode .console-main, .console-scroll { scrollbar-color: auto; }
+  .sidebar-link.active { outline: 1px solid Highlight; }
+}
+@media (max-width: 760px) {
+  .workspace-mode .console-aside { position: fixed; inset: 0 auto 0 0; z-index: 20; width: min(280px, 85vw) !important; }
+  .workspace-mode .top-bar { padding: 8px 12px; gap: 8px; }
+  .workspace-mode .top-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+  .workspace-mode .header-location { display: contents; }
+  .workspace-mode .sidebar-toggle { grid-column: 1; grid-row: 1; justify-self: start; }
+  .workspace-mode .account-navigation { grid-column: 2; grid-row: 1; }
+  .workspace-mode .console-breadcrumb { grid-column: 1 / -1; grid-row: 2; }
+  .workspace-mode .console-main { padding: 18px 12px; }
+  .workspace-mode .account-trigger { max-width: 130px; }
+  .console-breadcrumb { flex-basis: 100%; font-size: 12px; }
+  .console-crumb:last-child { flex-shrink: 1; }
+  .sidebar-toggle-label { display: none; }
+}

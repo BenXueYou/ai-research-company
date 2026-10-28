@@ -1,0 +1,10 @@
+{
+  "headerScriptUnchanged": true,
+  "headerAccountSubtreeAndStylesUnchanged": true,
+  "appAccountHandlersUnchanged": {
+    "logout": true,
+    "changePassword": true,
+    "openSettings": true,
+    "closeSettings": true
+  }
+}

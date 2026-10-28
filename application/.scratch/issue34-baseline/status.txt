@@ -1,0 +1,89 @@
+ M .gitignore
+ M .scratch/console-navigation-tickets/01-issue.md
+ M application/.gitignore
+ M application/.scratch/issue35-dist/server/app.js
+ M application/.scratch/issue35-dist/server/app.js.map
+ M application/.scratch/issue35-dist/server/commerce/reporting.js
+ M application/.scratch/issue35-dist/server/commerce/reporting.js.map
+ D application/.scratch/t28-web/assets/index-DzJ57enX.css
+ D application/.scratch/t28-web/assets/index-zSZigrRi.js
+ M application/.scratch/t28-web/index.html
+ D application/issue35-test-web/assets/index-B_joUjDN.js
+ D application/issue35-test-web/assets/index-CuXlRDa8.css
+ M application/issue35-test-web/index.html
+ M application/server/app.ts
+ M application/server/commerce/reporting.ts
+ M application/server/reporting.test.ts
+ M application/web/App.vue
+ M application/web/layout/CompatWorkspace.vue
+ M application/web/layout/ConsoleHeader.vue
+ M application/web/layout/ConsoleSidebar.vue
+ M application/web/pages/commerce/PlatformProcurement.vue
+ M application/web/pages/commerce/PointOrders.vue
+ D application/web/pages/companies/DetailReconciliation.vue
+ M application/web/pages/email/PlatformEmailQuota.vue
+ M application/web/pages/email/UMailResourceSettings.vue
+ M application/web/pages/upstream/ReconciliationPage.vue
+ M application/web/router/SettingsRoute.vue
+ M application/web/router/index.ts
+ M application/web/styles/index.ts
+ M docs/delivery/application/ISSUE-35-COMPLETION.md
+ M docs/delivery/application/ISSUE-37-PROGRESS.md
+ M docs/engineering-scaffold.md
+ M "\351\234\200\346\261\202\350\256\276\350\256\241/10-\346\216\247\345\210\266\345\217\260\350\247\222\350\211\262\345\257\274\350\210\252\344\270\216\351\241\265\351\235\242\350\277\201\347\247\273Spec.md"
+?? .scratch/console-navigation-tickets/issue34-after-layout-feedback.json
+?? .scratch/console-navigation-tickets/issue34-before-layout-feedback.json
+?? .scratch/console-navigation-tickets/layout-feedback-2026-10-28.md
+?? .scratch/console-navigation-tickets/update-layout-feedback.py
+?? application/.scratch/account-header-desktop.png
+?? application/.scratch/issue34-baseline/
+?? application/.scratch/issue35_browser_test.env
+?? application/.scratch/issue35_identity_test.env
+?? application/.scratch/issue35_reset_test.env
+?? application/.scratch/issue42-results/
+?? application/.scratch/issue42.config.ts
+?? application/.scratch/t28-web/assets/index-DveEKvGJ.js
+?? application/.scratch/t28-web/assets/index-DyIoLZDo.css
+?? application/.scratch/verified-issue35_browser_test.env
+?? application/.scratch/verified-issue35_identity_test.env
+?? application/.scratch/verified-issue35_reset_test.env
+?? application/config/playwright/playwright.issue35-completion.config.ts
+?? application/config/playwright/playwright.issue37-real.config.ts
+?? application/config/playwright/playwright.issue37.config.ts
+?? application/config/playwright/playwright.issue40.config.ts
+?? application/config/playwright/playwright.issue42.config.ts
+?? application/config/playwright/playwright.issue43.config.ts
+?? application/config/playwright/playwright.issue46.config.ts
+?? application/config/playwright/playwright.issue57.config.ts
+?? application/issue35-test-web/assets/index-BaBOZb6L.js
+?? application/issue35-test-web/assets/index-p6GwGVFV.css
+?? application/issue46-tests/
+?? application/issue57-tests/
+?? application/scripts/issue43-test-db.mjs
+?? application/server/commerce/business-data.test.ts
+?? application/tests/browser/account-header.spec.ts
+?? application/tests/browser/issue43-email-settings.spec.ts
+?? application/tests/issue37-platform.spec.ts
+?? application/tests/issue37-real.spec.ts
+?? application/tests/issue40-point-orders.spec.ts
+?? application/web/pages/commerce/PlatformSettingsPage.vue
+?? application/web/pages/commerce/components/PricingSettings.vue
+?? application/web/pages/email/TeamSendingSettingsPage.vue
+?? application/web/pages/organizations/PlatformOrganizationsPage.vue
+?? application/web/pages/reports/PlatformBusinessData.vue
+?? application/web/pages/upstream/components/DetailReconciliation.vue
+?? application/web/router/formLeave.ts
+?? docs/console-interaction-proposal-2026-10-28.md
+?? docs/delivery/application/ACCOUNT-HEADER-COMPLETION.md
+?? docs/delivery/application/ISSUE-35-DEPENDENCY-AUDIT.md
+?? docs/delivery/application/ISSUE-37-COMPLETION.md
+?? docs/delivery/application/ISSUE-37-EVIDENCE.json
+?? docs/delivery/application/ISSUE-37-IMPLEMENTATION.md
+?? docs/delivery/application/ISSUE-37-RECHECK.md
+?? docs/delivery/application/ISSUE-43-COMPLETION.md
+?? docs/delivery/application/ISSUE-43-PRECHECK.md
+?? docs/delivery/application/ISSUE-44-PROGRESS.md
+?? docs/delivery/application/ISSUE-46-COMPLETION.md
+?? docs/delivery/application/ISSUE-46-EVIDENCE.json
+?? docs/delivery/application/ISSUE-46-PROGRESS.md
+?? docs/delivery/application/ISSUE-57-PROGRESS.md

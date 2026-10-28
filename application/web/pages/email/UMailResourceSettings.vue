@@ -1,9 +1,8 @@
 <template>
   <section class="umail-section">
+    <RouterLink to="/platform/settings">返回平台设置</RouterLink>
     <div class="page-heading">
-      <p class="eyebrow">平台配置 / U-Mail</p>
-      <h2>企业隔离资源</h2>
-      <p>平台统一采购并承担第一阶段费用；资源隔离实证留待 T32 正式联调。</p>
+      <p>选择终端企业并配置专属资源；费用由平台承担。</p>
     </div>
     <el-alert
       v-if="error"
@@ -18,13 +17,18 @@
       :title="notice"
       :closable="false"
     />
-    <el-form class="identity-card umail-form" label-position="top" @submit.prevent="save">
+    <el-form
+      class="identity-card umail-form"
+      label-position="top"
+      :disabled="busy || resultUnknown"
+      @submit.prevent="save"
+    >
       <el-form-item label="终端企业" for="umail-organization">
         <select
           id="umail-organization"
           v-model="organizationId"
           required
-          :disabled="busy"
+          :disabled="busy || resultUnknown"
         >
           <option value="" disabled>请选择企业</option>
           <option v-for="item in organizations" :key="item.organizationId" :value="item.organizationId">
@@ -37,10 +41,10 @@
           id="umail-resource-id"
           v-model="resourceId"
           required
-          :disabled="busy"
+          :disabled="busy || resultUnknown"
         />
       </el-form-item>
-      <el-button class="primary-button" native-type="submit" :disabled="busy">
+      <el-button class="primary-button" native-type="submit" :disabled="busy || resultUnknown">
         {{ busy ? '正在核验并保存…' : '核验资源并保存' }}
       </el-button>
     </el-form>
@@ -56,6 +60,8 @@ import {
   ElFormItem,
   ElInput
 } from 'element-plus';
+import { useFormLeave } from '../../router/formLeave';
+import { RouterLink } from 'vue-router';
 
 interface OrganizationResource {
   organizationId: string;
@@ -68,10 +74,25 @@ const props = defineProps<{
 const organizations = shallowRef<OrganizationResource[]>([]);
 const organizationId = ref('');
 const resourceId = ref('');
+const committedOrganizationId = ref('');
 const requestId = ref(crypto.randomUUID());
 const busy = ref(false);
 const error = ref('');
 const notice = ref('');
+const resultUnknown = ref(false);
+function hasUnsavedChanges() {
+  return organizationId.value !== committedOrganizationId.value || !!resourceId.value;
+}
+useFormLeave({
+  state: () => busy.value ? 'submitting' : resultUnknown.value ? 'unknown' : hasUnsavedChanges() ? 'dirty' : 'clean',
+  retainUnknown: true,
+  discard: () => {
+    organizationId.value = '';
+    committedOrganizationId.value = '';
+    resourceId.value = '';
+    requestId.value = crypto.randomUUID();
+  }
+});
 function statusLabel(value: string | null) {
   if (value === 'available') return '受控验证可用';
   if (value === 'unavailable') return '受控验证不可用';
@@ -82,22 +103,28 @@ async function refresh() {
   organizations.value = result.organizations;
 }
 async function save() {
-  if (busy.value) return;
+  if (busy.value || resultUnknown.value) return;
   busy.value = true;
   error.value = '';
   notice.value = '';
   try {
-    await props.request('umail/resources', {
-      organizationId: organizationId.value,
-      resourceId: resourceId.value,
-      requestId: requestId.value
-    });
+    try {
+      await props.request('umail/resources', {
+        organizationId: organizationId.value,
+        resourceId: resourceId.value,
+        requestId: requestId.value
+      });
+    } catch (failure) {
+      if (failure instanceof TypeError || failure instanceof SyntaxError) resultUnknown.value = true;
+      throw failure;
+    }
     requestId.value = crypto.randomUUID();
     resourceId.value = '';
+    committedOrganizationId.value = organizationId.value;
     notice.value = '企业 U-Mail 资源已保存；第一阶段费用由平台承担';
     await refresh();
   } catch (failure) {
-    error.value = failure instanceof Error ? failure.message : '资源保存失败';
+    error.value = resultUnknown.value ? '资源配置结果尚未确认，请联系平台核实；勿重复提交。' : failure instanceof Error ? failure.message : '资源保存失败';
   } finally {
     busy.value = false;
   }

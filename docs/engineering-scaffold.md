@@ -22,7 +22,9 @@
 
 ### 控制台页面迁移现状（2026-10-28）
 
-`/platform/reconciliation` 已由 `pages/upstream/ReconciliationPage.vue` 作为真实路由页承载查询结果人工核对与上游快照入口；`/platform/reconciliation/upstream` 仍为独立上游监控页。前者只缓存本页实例，往返子页时保留核对表单，不在返回时重发列表请求或业务提交。`App.vue` 不再逐个引入业务组件；未迁移内容集中由 `layout/CompatWorkspace.vue` 承载，仍按原角色条件挂载并在兼容菜单间保持实例。除上述对账页外，现有菜单仍有指向 `EmptyRoute.vue` 的兼容定位路由；菜单可用不代表独立页面已交付。
+平台直属下级管理已由 `pages/organizations/PlatformOrganizationsPage.vue` 承载；列表、开户和详情分别通过 `/platform/organizations`、`?view=new`、`?id=<直属组织ID>` 定位，平台兼容容器不再挂载旧开户组件。页面按范围缓存以保留请求未确认上下文，采用公共离开保护；分销仍使用原组件。实际验收见 [#37交付记录](delivery/application/ISSUE-37-COMPLETION.md)。
+
+`/platform/reconciliation` 已由 `pages/upstream/ReconciliationPage.vue` 作为真实路由页承载查询结果人工核对与上游快照入口；`/platform/reconciliation/upstream` 仍为独立上游监控页。前者只缓存本页实例，核对表单接入公共 `useFormLeave`：未提交修改离开时可继续编辑或确认放弃；提交中阻止离开；提交结果未知时保留核对上下文，经确认可离开并返回主动刷新核实。确认放弃会清除选择，返回不重发列表请求或业务提交。详见 [Issue #46 交付与真实业务验证](delivery/application/ISSUE-46-COMPLETION.md)。`App.vue` 不再逐个引入业务组件；未迁移内容集中由 `layout/CompatWorkspace.vue` 承载，仍按原角色条件挂载并在兼容菜单间保持实例。除上述对账页外，现有菜单仍有指向 `EmptyRoute.vue` 的兼容定位路由；菜单可用不代表独立页面已交付。
 
 迁移下一域前先从 `router/index.ts` 和兼容容器核对该域是否重复挂载，确定表单、结果未确认请求及页面缓存边界，再记录前后请求字段和值来源。当前批次的前端核对与未验证范围见[对账页迁移记录](delivery/application/RECONCILIATION-ROUTE-MIGRATION.md)。平台其他业务页、分销与终端独立页仍按[控制台页面迁移 Spec](../需求设计/10-控制台角色导航与页面迁移Spec.md) 分批完成。
 

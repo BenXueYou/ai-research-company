@@ -28,7 +28,22 @@ application/.scratch/t26-playwright.config.mjs
 application/.scratch/t26-regression.config.mjs
 application/.scratch/t26-regression-output/
 !application/tests/browser/console-navigation.spec.ts
+!application/tests/browser/account-header.spec.ts
 
 !application/tests/browser/issue35-navigation.spec.ts
 !application/tests/browser/router-navigation.spec.ts
 !application/tests/role-help.spec.ts
+!application/tests/issue37-platform.spec.ts
+!application/tests/issue40-point-orders.spec.ts
+
+application/.scratch/issue46-dist/
+application/.scratch/issue46-web/
+application/.scratch/issue46-evidence.json
+
+!application/tests/browser/issue43-email-settings.spec.ts
+application/.scratch/issue43-*
+
+!application/tests/issue37-real.spec.ts
+
+!application/tests/browser/issue34-layout.spec.ts
+!application/tests/browser/issue34-contract.spec.ts

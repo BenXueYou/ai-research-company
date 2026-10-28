@@ -1,0 +1,74 @@
+{
+  "selected": {
+    "id": "9c7b508d-e7d2-4228-a46a-4300dcafb87a",
+    "parent_id": "ceb3cdf1-ec4e-4a6b-9386-1ec496830238",
+    "account_id": "958f2315-e109-4771-90fc-f0bd172dd973",
+    "email": "browser37@example.com"
+  },
+  "requests": [
+    {
+      "path": "/api/organizations",
+      "body": {
+        "name": "Issue37 Browser Terminal",
+        "kind": "terminal",
+        "countryCode": "+86",
+        "phone": "13937001234",
+        "email": "browser37@example.com",
+        "requestId": "9845871a-f2a2-4c30-bf49-831aeccc173c"
+      }
+    },
+    {
+      "path": "/api/organizations/state",
+      "body": {
+        "organizationId": "9c7b508d-e7d2-4228-a46a-4300dcafb87a",
+        "active": false
+      }
+    },
+    {
+      "path": "/api/organizations/state",
+      "body": {
+        "organizationId": "9c7b508d-e7d2-4228-a46a-4300dcafb87a",
+        "active": true
+      }
+    },
+    {
+      "path": "/api/password-resets",
+      "body": {
+        "accountId": "958f2315-e109-4771-90fc-f0bd172dd973",
+        "requestId": "e74add67-edf9-4c06-b340-b7fcda49d7e6"
+      }
+    },
+    {
+      "path": "/api/password-resets",
+      "body": {
+        "accountId": "958f2315-e109-4771-90fc-f0bd172dd973",
+        "requestId": "75cd9acd-68c4-4a9a-8b19-ef1d3e44bb37"
+      }
+    },
+    {
+      "path": "/api/organizations",
+      "body": {
+        "name": "Issue37 Lost Response",
+        "kind": "terminal",
+        "countryCode": "+86",
+        "phone": "13937005678",
+        "email": "lost37@example.com",
+        "requestId": "e07efd8f-a7a6-4aa3-9a24-965357bad3df"
+      }
+    },
+    {
+      "path": "/api/organizations",
+      "body": {
+        "name": "Issue37 Lost Response",
+        "kind": "terminal",
+        "countryCode": "+86",
+        "phone": "13937005678",
+        "email": "lost37@example.com",
+        "requestId": "e07efd8f-a7a6-4aa3-9a24-965357bad3df"
+      }
+    }
+  ],
+  "resetRecords": "2",
+  "openingRows": 1,
+  "openingRetryStatus": 409
+}

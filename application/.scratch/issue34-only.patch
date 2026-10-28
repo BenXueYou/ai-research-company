@@ -1,0 +1,891 @@
+--- before/application\web\App.vue
++++ after/application\web\App.vue
+@@ -1,13 +1,28 @@
+ <template>
+-  <div class="app-shell" :class="{ 'workspace-mode': session && !session.mustChange }">
++  <ConsoleFrame :workspace="!!session && !session.mustChange" :generation="generation">
++    <template #header="{ sidebarOpen, toggleSidebar }">
+     <ConsoleHeader
+       :session="session"
+       :busy="busy"
+       @settings="openSettings"
+       @logout="logout"
+-    />
+-    <ConsoleSidebar v-if="session && !session.mustChange" :session="session" />
+-    <main>
++    >
++      <template v-if="session && !session.mustChange" #navigation>
++        <button
++          type="button"
++          class="sidebar-toggle"
++          aria-controls="console-sidebar"
++          :aria-expanded="sidebarOpen"
++          :aria-label="sidebarOpen ? '收起菜单' : '展开菜单'"
++          @click="toggleSidebar"
++        ><span aria-hidden="true">☰</span><span class="sidebar-toggle-label">{{ sidebarOpen ? '收起菜单' : '展开菜单' }}</span></button>
++        <ConsoleBreadcrumb />
++      </template>
++    </ConsoleHeader>
++    </template>
++    <template #sidebar>
++      <ConsoleSidebar v-if="session && !session.mustChange" :session="session" />
++    </template>
+       <p v-if="loading" role="status">正在验证会话…</p>
+       <template v-else>
+         <section v-if="sessionStatus === 'error'" class="identity-layout">
+@@ -67,8 +82,7 @@
+         </section>
+         <section v-else-if="session.mustChange || path === '/account/settings'" class="password-layout">
+           <div class="page-heading">
+-            <p class="eyebrow">账号设置 / 修改密码</p>
+-            <h1>{{ session.mustChange ? '先保护好您的账号' : '修改本人密码' }}</h1>
++            <h1 v-if="session.mustChange">先保护好您的账号</h1>
+             <p>{{ session.mustChange ? '当前使用临时凭据，完成改密前无法访问工作台。' : '更新密码后，所有设备将退出登录。' }}</p>
+           </div>
+           <el-form class="identity-card" label-position="top" @submit.prevent="changePassword">
+@@ -132,19 +146,21 @@
+         />
+         </template>
+       </template>
+-    </main>
+     <footer>安全会话 · 最长8小时 / 空闲30分钟自动失效</footer>
+-  </div>
++  </ConsoleFrame>
+ </template>
+ 
+ <script setup lang="ts">
+-import { computed, nextTick, ref, watch } from 'vue';
++import { computed, ref, watch } from 'vue';
+ import { storeToRefs } from 'pinia';
+ import { useRoute, useRouter } from 'vue-router';
+ import { defaultPath, isBusinessPath, navigation } from './router';
+ import { useSessionStore } from './stores/session';
+ import { provideFormLeave } from './router/formLeave';
+ import ConsoleHeader from './layout/ConsoleHeader.vue';
++import ConsoleFrame from './layout/ConsoleFrame.vue';
++import ConsoleBreadcrumb from './layout/ConsoleBreadcrumb.vue';
++import { provideBreadcrumbTitle } from './layout/breadcrumb';
+ import ConsoleSidebar from './layout/ConsoleSidebar.vue';
+ import CompatWorkspace from './layout/CompatWorkspace.vue';
+ import {
+@@ -154,6 +170,7 @@
+   ElFormItem,
+   ElInput
+ } from 'element-plus';
++provideBreadcrumbTitle();
+ const router = useRouter();
+ const route = useRoute();
+ const auth = useSessionStore();
+@@ -302,10 +319,7 @@
+   }
+   if (session.value && isCompatPath.value) {
+     workspaceVisited.value = true;
+-    void nextTick(() => {
+-      const target = menu.value.find(item => item.path === next)?.target;
+-      if (target) document.getElementById(target)?.scrollIntoView();
+-    });
++
+   }
+ }, { immediate: true });
+ watch(session, value => {
+--- before/application\web\layout\breadcrumb.ts
++++ after/application\web\layout\breadcrumb.ts
+@@ -0,0 +1,20 @@
++import {
++  inject,
++  provide,
++  shallowReactive,
++  type InjectionKey
++} from 'vue';
++
++type TitleSource = () => string;
++const titleKey: InjectionKey<{ source?: TitleSource }> = Symbol('breadcrumbTitle');
++
++export function provideBreadcrumbTitle() {
++  const state = shallowReactive<{ source?: TitleSource }>({});
++  provide(titleKey, state);
++}
++
++export function useBreadcrumbTitle(source?: TitleSource) {
++  const state = inject(titleKey);
++  if (state && source) state.source = source;
++  return () => state?.source?.() ?? '';
++}
+--- before/application\web\layout\CompatWorkspace.vue
++++ after/application\web\layout\CompatWorkspace.vue
+@@ -1,9 +1,6 @@
+ <template>
+   <section class="workspace">
+     <CoefficientNotice :request="request" />
+-    <div class="page-heading">
+-      <h1>{{ title }}</h1>
+-    </div>
+     <OrganizationOpening
+       id="compat-organizations"
+       v-if="session.role === 'distributor'"
+--- before/application\web\layout\ConsoleBreadcrumb.vue
++++ after/application\web\layout\ConsoleBreadcrumb.vue
+@@ -0,0 +1,49 @@
++<script setup lang="ts">
++import { computed } from 'vue';
++import { ElBreadcrumb } from 'element-plus';
++import { useRoute, useRouter } from 'vue-router';
++import { useSessionStore } from '../stores/session';
++import { useBreadcrumbTitle } from './breadcrumb';
++
++const route = useRoute();
++const router = useRouter();
++const auth = useSessionStore();
++const objectTitle = useBreadcrumbTitle();
++const crumbs = computed(() => {
++  const items = (route.meta.breadcrumbs ?? [{ label: route.meta.title ?? '工作台' }]).map(item =>
++    ({ ...item })
++  );
++  if (route.path === '/platform/organizations' && (route.query.id || route.query.view === 'new')) {
++    items[items.length - 1].path = '/platform/organizations';
++    items.push({ label: route.query.view === 'new' ? '开户' : objectTitle() || '下级详情' });
++  }
++  return items.map((item, index) =>
++    ({
++      label: item.label,
++      path: index < items.length - 1 && item.path && router.resolve(item.path).meta.roles?.includes(auth.session?.role as 'platform' | 'distributor' | 'admin' | 'sales')
++        ? item.path : undefined
++    })
++  );
++});
++</script>
++
++<template>
++  <el-breadcrumb class="console-breadcrumb" aria-label="面包屑" separator="/">
++    <span v-for="(item, index) in crumbs" :key="index" class="console-crumb">
++      <RouterLink
++        v-if="item.path"
++        :to="item.path"
++        :title="item.label"
++        class="crumb-label"
++      >{{ item.label }}</RouterLink>
++      <span
++        v-else
++        class="crumb-label"
++        :title="item.label"
++        :aria-current="index === crumbs.length - 1 ? 'page' : undefined"
++        tabindex="0"
++      >{{ item.label }}</span>
++      <span v-if="index < crumbs.length - 1" class="crumb-separator" aria-hidden="true">/</span>
++    </span>
++  </el-breadcrumb>
++</template>
+--- before/application\web\layout\ConsoleFrame.vue
++++ after/application\web\layout\ConsoleFrame.vue
+@@ -0,0 +1,116 @@
++<script setup lang="ts">
++import {
++  nextTick,
++  onMounted,
++  onScopeDispose,
++  ref,
++  watch
++} from 'vue';
++import {
++  ElAside,
++  ElContainer,
++  ElHeader,
++  ElMain
++} from 'element-plus';
++import { useRoute } from 'vue-router';
++
++const props = defineProps<{ workspace: boolean; generation: number }>();
++const route = useRoute();
++const narrow = ref(window.matchMedia('(max-width: 760px)').matches);
++const sidebarOpen = ref(!narrow.value);
++const aside = ref<HTMLElement>();
++let returnFocus: HTMLElement | null = null;
++const media = window.matchMedia('(max-width: 760px)');
++function resize() {
++  narrow.value = media.matches;
++  sidebarOpen.value = !media.matches;
++}
++function closeSidebar() {
++  sidebarOpen.value = false;
++  if (narrow.value) returnFocus?.focus({ preventScroll: true });
++}
++async function toggleSidebar() {
++  returnFocus = document.activeElement as HTMLElement;
++  sidebarOpen.value = !sidebarOpen.value;
++  if (sidebarOpen.value && narrow.value) {
++    await nextTick();
++    aside.value?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true });
++  }
++}
++function onMenuClick(event: MouseEvent) {
++  const link = (event.target as HTMLElement).closest('a');
++  if (narrow.value && link && link.pathname + link.search + link.hash === route.fullPath) closeSidebar();
++}
++function trapFocus(event: KeyboardEvent) {
++  if (!narrow.value || !sidebarOpen.value) return;
++  if (event.key === 'Escape') {
++    event.preventDefault();
++    closeSidebar();
++  }
++  if (event.key !== 'Tab') return;
++  const focusable = Array.from(aside.value?.querySelectorAll<HTMLElement>('a[href], button') ?? []).filter(item =>
++    item.getClientRects().length > 0
++  );
++  const first = focusable[0];
++  const last = focusable[focusable.length - 1];
++  if ((event.shiftKey && document.activeElement === first) || (!event.shiftKey && document.activeElement === last)) {
++    event.preventDefault();
++    (event.shiftKey ? last : first)?.focus();
++  }
++}
++watch(() => route.fullPath, () => {
++  if (narrow.value && sidebarOpen.value) closeSidebar();
++});
++watch(() => props.generation, () => { sidebarOpen.value = !narrow.value; });
++onMounted(() => media.addEventListener('change', resize));
++onScopeDispose(() => media.removeEventListener('change', resize));
++</script>
++
++<template>
++  <el-container class="app-shell" :class="{ 'workspace-mode': workspace }">
++    <el-aside
++      v-if="workspace"
++      v-show="sidebarOpen"
++      class="console-aside"
++      width="224px"
++    >
++      <div
++        id="console-sidebar"
++        ref="aside"
++        class="sidebar-panel"
++        :role="narrow ? 'dialog' : undefined"
++        :aria-modal="narrow ? true : undefined"
++        aria-label="工作台导航"
++        @keydown="trapFocus"
++        @click="onMenuClick"
++      >
++        <button
++          v-if="narrow"
++          class="sidebar-close"
++          type="button"
++          @click="closeSidebar"
++        >关闭菜单</button>
++        <slot name="sidebar" />
++      </div>
++    </el-aside>
++    <button
++      v-if="workspace && narrow && sidebarOpen"
++      class="sidebar-backdrop"
++      aria-label="关闭菜单"
++      tabindex="-1"
++      @click="closeSidebar"
++    />
++    <el-container class="console-column" direction="vertical" :inert="workspace && narrow && sidebarOpen">
++      <el-header class="console-header" height="auto">
++        <slot
++          name="header"
++          :sidebar-open="sidebarOpen"
++          :toggle-sidebar="toggleSidebar"
++        />
++      </el-header>
++      <el-main id="console-main" class="console-main" tabindex="-1">
++        <slot />
++      </el-main>
++    </el-container>
++  </el-container>
++</template>
+--- before/application\web\layout\ConsoleHeader.vue
++++ after/application\web\layout\ConsoleHeader.vue
+@@ -34,7 +34,11 @@
+ 
+ <template>
+   <header class="top-bar">
++    <div class="header-location">
++      <slot name="navigation">
+     <RouterLink class="brand" :to="session ? defaultPath(session.role) : '/'">◈ <span>智能获客</span><small>账号中心</small></RouterLink>
++      </slot>
++    </div>
+     <nav v-if="session" class="account-navigation" aria-label="账号导航">
+       <el-dropdown
+         ref="dropdown"
+--- before/application\web\layout\ConsoleSidebar.vue
++++ after/application\web\layout\ConsoleSidebar.vue
+@@ -1,37 +1,78 @@
+ <script setup lang="ts">
+-import { computed } from 'vue';
+-import { useRoute } from 'vue-router';
+-import { defaultPath, navigation } from '../router';
++import { computed, reactive, watch } from 'vue';
++import { useRoute, useRouter } from 'vue-router';
++import { defaultPath } from '../router';
+ import type { Session } from '../stores/session';
+-
+ const props = defineProps<{ session: Session }>();
+ const route = useRoute();
+-const menu = computed(() => navigation.filter(item =>
+-  item.roles.includes(props.session.role as 'platform' | 'distributor' | 'admin' | 'sales')
+-));
+-const active = (value: string) => route.path === value ||
+-  (value === '/platform/reconciliation' && route.path === '/platform/reconciliation/upstream') ||
+-  (value === '/platform/ledger' && route.path.startsWith('/platform/ledger/')) ||
+-  (value === '/platform/settings' && route.path.startsWith('/platform/settings/'));
++const router = useRouter();
++const expanded = reactive<Record<string, boolean>>({});
++const menu = computed(() => router.getRoutes().filter(item =>
++  item.meta.navigation && item.meta.roles?.includes(props.session.role as 'platform' | 'distributor' | 'admin' | 'sales')
++).sort((a, b) => a.meta.navigation!.order - b.meta.navigation!.order));
++const groups = computed(() => {
++  const result: { label: string; path?: string; children: { label: string; path: string }[] }[] = [];
++  for (const item of menu.value) {
++    const metadata = item.meta.navigation!;
++    if (!metadata.group) result.push({ label: metadata.label, path: item.path, children: [] });
++    else {
++      let group = result.find(entry =>
++        entry.label === metadata.group
++      );
++      if (!group) {
++        group = { label: metadata.group, children: [] };
++        result.push(group);
++      }
++      group.children.push({ label: metadata.label, path: item.path });
++    }
++  }
++  return result;
++});
++const activePath = computed(() => route.path === '/platform/organizations/business-data' ? '/platform/organizations' : route.path);
++watch(() => route.fullPath, () => {
++  const current = menu.value.find(item =>
++    item.path === activePath.value
++  )?.meta.navigation;
++  if (current?.group) expanded[current.group] = true;
++}, { immediate: true });
+ </script>
+-
+ <template>
+-  <aside class="workspace-sidebar" aria-label="工作台导航">
++  <div class="workspace-sidebar">
+     <RouterLink class="workspace-brand" :to="defaultPath(session.role)">◈ <strong>智能获客</strong><small>SMART ACQUISITION</small></RouterLink>
+-    <p class="sidebar-group">工作台</p>
+-    <RouterLink
+-      v-for="item in menu"
+-      :key="item.path"
+-      class="sidebar-link"
+-      :class="{ active: active(item.path) }"
+-      :to="item.path"
+-      :aria-current="active(item.path) ? 'page' : undefined"
+-    ><span>{{ item.label }}</span></RouterLink>
+-    <RouterLink
+-      class="sidebar-link"
+-      :class="{ active: route.path === '/help', 'sidebar-help': session.role !== 'platform' }"
+-      to="/help"
+-      :aria-current="route.path === '/help' ? 'page' : undefined"
+-    >帮助中心</RouterLink>
+-  </aside>
++    <nav class="sidebar-scroll console-scroll" aria-label="主菜单">
++      <p class="sidebar-group">工作台</p>
++      <template v-for="(item, index) in groups" :key="item.label">
++        <RouterLink
++          v-if="item.path"
++          class="sidebar-link"
++          :class="{ active: activePath === item.path }"
++          :to="item.path"
++          :aria-current="activePath === item.path ? 'page' : undefined"
++        >{{ item.label }}</RouterLink>
++        <template v-else>
++          <button
++            type="button"
++            class="sidebar-link sidebar-parent"
++            :aria-expanded="!!expanded[item.label]"
++            :aria-controls="`sidebar-group-${index}`"
++            @click="expanded[item.label] = !expanded[item.label]"
++          ><span>{{ item.label }}</span><span aria-hidden="true">{{ expanded[item.label] ? '⌄' : '›' }}</span></button>
++          <div :id="`sidebar-group-${index}`" v-show="expanded[item.label]"><RouterLink
++            v-for="child in item.children"
++            :key="child.path"
++            class="sidebar-link sidebar-child"
++            :class="{ active: activePath === child.path }"
++            :to="child.path"
++            :aria-current="activePath === child.path ? 'page' : undefined"
++          >{{ child.label }}</RouterLink></div>
++        </template>
++      </template>
++      <RouterLink
++        class="sidebar-link"
++        :class="{ active: route.path === '/help', 'sidebar-help': session.role !== 'platform' }"
++        to="/help"
++        :aria-current="route.path === '/help' ? 'page' : undefined"
++      >帮助中心</RouterLink>
++    </nav>
++  </div>
+ </template>
+--- before/application\web\router\index.ts
++++ after/application\web\router\index.ts
+@@ -22,6 +22,8 @@
+     roles?: Role[];
+     target?: string;
+     business?: boolean;
++    navigation?: { label: string; group?: string; order: number };
++    breadcrumbs?: { label: string; path?: string }[];
+   }
+ }
+ interface NavigationItem {
+@@ -113,6 +115,44 @@
+   { path: '/:pathMatch(.*)*', name: 'unknown', component: EmptyRoute }
+ ];
+ 
++// All entries below point to existing pages. Groups have no navigation action.
++const platformNavigation: Record<string, { label: string; group?: string; order: number }> = {
++  '/platform/overview': { label: '运营概览', order: 0 },
++  '/platform/organizations': { label: '下级管理', order: 1 },
++  '/platform/ledger': { label: '点数订单', group: '点数与账务', order: 2 },
++  '/platform/ledger/profit': { label: '交易与利润', group: '点数与账务', order: 3 },
++  '/platform/ledger/flows': { label: '账务流水', group: '点数与账务', order: 4 },
++  '/platform/reconciliation/upstream': { label: '上游账号监控', group: '上游与对账', order: 5 },
++  '/platform/reconciliation': { label: '查询异常核对', group: '上游与对账', order: 6 },
++  '/platform/settings': { label: '计价配置', group: '平台设置', order: 7 },
++  '/platform/settings/umail': { label: 'U-Mail 企业资源', group: '平台设置', order: 8 },
++  '/platform/settings/email-quota': { label: '企业邮件日额度', group: '平台设置', order: 9 }
++};
++for (const record of routes) {
++  if (!record.meta?.roles) continue;
++  const legacy = navigation.find(entry =>
++    entry.path === record.path
++  );
++  const metadata = platformNavigation[record.path] ?? (legacy ? { label: legacy.label, order: navigation.indexOf(legacy) } : undefined);
++  if (metadata) {
++    record.meta.navigation = metadata;
++    record.meta.breadcrumbs = [
++      ...('group' in metadata && metadata.group ? [{ label: metadata.group }] : []),
++      { label: metadata.label }
++    ];
++  }
++}
++for (const record of routes) {
++  if (record.path.startsWith('/platform/settings/')) record.meta!.breadcrumbs![0].path = '/platform/settings';
++}
++const organizations = routes.find(record => record.path === '/platform/organizations')!;
++organizations.meta!.breadcrumbs = [{ label: '下级管理' }, { label: '直属下级' }];
++const businessData = routes.find(record => record.path === '/platform/organizations/business-data')!;
++businessData.meta!.breadcrumbs = [
++  { label: '下级管理', path: '/platform/organizations' },
++  { label: '业务数据查看' }
++];
++
+ export function defaultPath(role: string): string {
+   if (role === 'platform') return '/platform/overview';
+   if (role === 'distributor') return '/distribution/organizations';
+@@ -126,20 +166,32 @@
+ }
+ 
+ export function createConsoleRouter(pinia: Pinia) {
++  const positions = new Map<number, number>();
++  let currentPosition: number | undefined;
+   const router = createRouter({
+     history: createWebHistory(),
+     routes,
+-    async scrollBehavior(to) {
++    async scrollBehavior(to, _from, savedPosition) {
+       await nextTick();
+-      const target = to.meta.target;
+-      if (typeof target === 'string') {
+-        document.getElementById(target)?.scrollIntoView();
+-        return false;
++      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
++      const main = document.getElementById('console-main');
++      const position = window.history.state?.position as number | undefined;
++      const restored = savedPosition && position !== undefined ? positions.get(position) : undefined;
++      if (main) {
++        if (restored !== undefined) main.scrollTop = restored;
++        else {
++          main.scrollTop = 0;
++          const target = typeof to.meta.target === 'string' ? document.getElementById(to.meta.target) : null;
++          if (target) main.scrollTop = target.getBoundingClientRect().top - main.getBoundingClientRect().top;
++        }
+       }
+-      return { top: 0 };
++      currentPosition = position;
++      return false as const;
+     }
+   });
+   router.beforeEach(async to => {
++    const main = document.getElementById('console-main');
++    if (main && currentPosition !== undefined) positions.set(currentPosition, main.scrollTop);
+     const auth = useSessionStore(pinia);
+     await auth.initialize();
+     if (auth.status !== 'authenticated' || !auth.session || auth.session.mustChange) return true;
+--- before/application\web\styles\console.css
++++ after/application\web\styles\console.css
+@@ -0,0 +1,63 @@
++/* Public console owns the viewport; page components keep their lifecycle. */
++.app-shell.el-container { min-width: 0; }
++.app-shell:not(.workspace-mode) { display: block; }
++.console-header { padding: 0; }
++.console-column { min-width: 0; min-height: 0; }
++.workspace-mode.el-container { height: 100vh; height: 100dvh; overflow: hidden; background: #f2f4f9; }
++.workspace-mode .console-column { overflow: hidden; }
++.workspace-mode .console-header { flex: none; z-index: 5; background: #fff; }
++.workspace-mode .top-bar { min-height: 68px; padding: 10px 24px; flex-wrap: nowrap; align-items: center; gap: 16px; }
++.header-location { display: flex; align-items: center; gap: 16px; min-width: 0; flex: 1; }
++.workspace-mode .account-navigation { flex: none; margin-left: auto; }
++.workspace-mode .console-main { flex: 1; min-height: 0; min-width: 0; max-width: none; width: 100%; margin: 0; overflow: auto; overscroll-behavior: contain; padding: 24px; }
++.console-aside { flex: none; min-height: 0; overflow: hidden; background: #4657da; }
++.sidebar-panel, .workspace-sidebar { height: 100%; min-height: 0; display: flex; flex-direction: column; }
++.workspace-sidebar { color: #fff; padding: 0 12px; }
++.workspace-brand { flex: none; padding: 24px 10px; }
++.sidebar-scroll { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; display: flex; flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 0; padding: 0 0 20px; }
++.sidebar-group { margin: 12px 12px 8px; color: #d9deff; }
++.sidebar-link { width: 100%; flex: none; min-height: 44px; border: 0; background: transparent; text-align: left; cursor: pointer; font: inherit; font-size: 13px; }
++.sidebar-link.active { background: #6574e2; border: 0; box-shadow: none; color: #fff; }
++.sidebar-link:not(.active):hover { background: #5667df; border: 0; }
++.sidebar-child { padding-left: 30px; }
++.sidebar-parent { justify-content: space-between; }
++.sidebar-help { margin-top: auto; }
++.sidebar-toggle, .sidebar-close { flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 8px; border: 0; border-radius: 6px; font: inherit; font-size: 12px; color: #53617e; background: transparent; cursor: pointer; white-space: nowrap; }
++.sidebar-toggle:hover { background: #eef0f8; }
++.sidebar-close { color: #fff; margin: 8px; }
++.console-breadcrumb { display: flex; align-items: center; min-width: 0; flex: 1; line-height: 1.5; }
++.console-crumb { display: flex; min-width: 0; align-items: center; }
++.console-crumb:not(:last-child) .crumb-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
++.console-crumb:last-child { flex-shrink: 0; max-width: 100%; }
++.console-crumb:last-child .crumb-label { overflow-wrap: anywhere; }
++.crumb-separator { margin: 0 9px; color: #929bb1; }
++.console-breadcrumb a { color: #4356e0; font-weight: 400; }
++.workspace-mode .console-main, .console-scroll { --console-scroll-thumb: #a6afd6; --console-scroll-hover: #8794c0; scrollbar-width: thin; scrollbar-color: var(--console-scroll-thumb) transparent; }
++.workspace-mode .console-main:hover, .workspace-mode .console-main:focus-within, .console-scroll:hover, .console-scroll:focus-within { scrollbar-color: var(--console-scroll-hover) transparent; }
++.workspace-mode .console-main::-webkit-scrollbar, .console-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
++.workspace-mode .console-main::-webkit-scrollbar-track, .console-scroll::-webkit-scrollbar-track { background: transparent; }
++.workspace-mode .console-main::-webkit-scrollbar-thumb, .console-scroll::-webkit-scrollbar-thumb { background: var(--console-scroll-thumb); border-radius: 6px; }
++.workspace-mode .console-main:hover::-webkit-scrollbar-thumb, .workspace-mode .console-main:focus-within::-webkit-scrollbar-thumb, .console-scroll:hover::-webkit-scrollbar-thumb, .console-scroll:focus-within::-webkit-scrollbar-thumb { background: var(--console-scroll-hover); }
++.workspace-mode .console-main::-webkit-scrollbar-button, .console-scroll::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
++.workspace-mode .console-main::-webkit-scrollbar-corner, .console-scroll::-webkit-scrollbar-corner { background: transparent; }
++.workspace-mode .console-main > * { min-width: 0; }
++.workspace-mode .platform-report { max-width: 100%; overflow-x: auto; }
++.workspace-mode pre { max-width: 100%; overflow: auto; }
++.sidebar-backdrop { position: fixed; inset: 0; z-index: 19; background: #18213e66; border: 0; }
++@media (prefers-color-scheme: dark) {
++  .workspace-mode .console-main, .console-scroll { --console-scroll-thumb: #8492bd; --console-scroll-hover: #a6afd6; }
++}
++@media (forced-colors: active) {
++  .workspace-mode .console-main, .console-scroll { scrollbar-color: auto; }
++  .sidebar-link.active { outline: 1px solid Highlight; }
++}
++@media (max-width: 760px) {
++  .workspace-mode .console-aside { position: fixed; inset: 0 auto 0 0; z-index: 20; width: min(280px, 85vw) !important; }
++  .workspace-mode .top-bar { padding: 8px 12px; gap: 8px; }
++  .header-location { gap: 8px; flex-wrap: wrap; }
++  .workspace-mode .console-main { padding: 18px 12px; }
++  .workspace-mode .account-trigger { max-width: 130px; }
++  .console-breadcrumb { flex-basis: 100%; font-size: 12px; }
++  .console-crumb:last-child { flex-shrink: 1; }
++  .sidebar-toggle-label { display: none; }
++}
+--- before/application\web\styles\global.css
++++ after/application\web\styles\global.css
+@@ -30,40 +30,6 @@
+   border-bottom: 1px solid #e5e9f3;
+   gap: 20px;
+ }
+-.workspace-mode {
+-  display: grid;
+-  grid-template-columns: 224px minmax(0, 1fr);
+-  min-height: 100vh;
+-  background: #f2f4f9;
+-}
+-.workspace-mode .top-bar {
+-  grid-column: 2;
+-  grid-row: 1;
+-  min-height: 75px;
+-  padding: 0 30px;
+-  background: transparent;
+-  border-bottom: 1px solid #e6e9f0;
+-}
+-.workspace-mode .top-bar .brand { display: none; }
+-.workspace-mode .top-bar nav { margin-left: auto; justify-content: flex-end; }
+-.workspace-mode main {
+-  grid-column: 2;
+-  grid-row: 2;
+-  max-width: 1700px;
+-  width: 100%;
+-  padding: 30px 30px 100px;
+-}
+-.workspace-mode footer { grid-column: 2; grid-row: 3; }
+-.workspace-sidebar {
+-  grid-column: 1;
+-  grid-row: 1 / span 3;
+-  padding: 27px 12px 190px;
+-  color: white;
+-  background: linear-gradient(170deg, #4a5ce4, #3f50d6);
+-  display: flex;
+-  flex-direction: column;
+-}
+-.sidebar-help { margin-top: auto; }
+ .workspace-brand {
+   display: grid;
+   grid-template-columns: 32px 1fr;
+@@ -298,10 +264,6 @@
+   white-space: pre-wrap;
+ }
+ @media (max-width: 760px) {
+-.workspace-mode { display: block; }
+-.workspace-sidebar { padding: 15px; }
+-.workspace-mode .top-bar { padding: 12px 18px; }
+-.workspace-mode main { padding: 28px 18px 100px; }
+ .workspace-mode .company-search > form { grid-template-columns: 1fr; }
+   .identity-layout {
+     grid-template-columns: 1fr;
+--- before/application\web\styles\index.ts
++++ after/application\web\styles\index.ts
+@@ -5,3 +5,9 @@
+ import 'element-plus/es/components/input/style/css';
+ import './theme.css';
+ import './global.css';
++import 'element-plus/es/components/container/style/css';
++import 'element-plus/es/components/aside/style/css';
++import 'element-plus/es/components/header/style/css';
++import 'element-plus/es/components/main/style/css';
++import 'element-plus/es/components/breadcrumb/style/css';
++import './console.css';
+--- before/application\web\pages\commerce\PlatformSettingsPage.vue
++++ after/application\web\pages\commerce\PlatformSettingsPage.vue
+@@ -11,8 +11,6 @@
+ <template>
+   <div class="platform-settings-page">
+     <div class="page-heading">
+-      <p class="eyebrow">平台设置</p>
+-      <h1>计价与换算系数</h1>
+       <p>维护接口单价、最低加价率和换算系数；既有余额及已确认查询按原规则保留。</p>
+     </div>
+     <PricingSettings :request="request" />
+--- before/application\web\pages\email\PlatformEmailQuota.vue
++++ after/application\web\pages\email\PlatformEmailQuota.vue
+@@ -1,7 +1,6 @@
+ <template>
+   <section>
+     <RouterLink to="/platform/settings">返回平台设置</RouterLink>
+-    <h1>企业邮件日额度</h1>
+     <p>默认每企业每日 2000 封；按北京时间零点计算。</p>
+     <el-form label-position="top" :disabled="busy || resultUnknown" @submit.prevent="save">
+       <el-form-item label="终端企业">
+--- before/application\web\pages\email\UMailResourceSettings.vue
++++ after/application\web\pages\email\UMailResourceSettings.vue
+@@ -2,8 +2,6 @@
+   <section class="umail-section">
+     <RouterLink to="/platform/settings">返回平台设置</RouterLink>
+     <div class="page-heading">
+-      <p class="eyebrow">平台配置 / U-Mail</p>
+-      <h1>企业隔离资源</h1>
+       <p>选择终端企业并配置专属资源；费用由平台承担。</p>
+     </div>
+     <el-alert
+--- before/application\web\pages\help\RoleHelpPage.vue
++++ after/application\web\pages\help\RoleHelpPage.vue
+@@ -40,9 +40,8 @@
+ </script>
+ 
+ <template>
+-  <section class="role-help" aria-labelledby="help-title">
++  <section class="role-help" aria-label="帮助中心">
+     <header>
+-      <h1 id="help-title">帮助中心</h1>
+       <p>{{ roleName }}操作指南</p>
+     </header>
+     <section v-for="guide in currentGuides" :key="guide.title" class="help-section">
+--- before/application\web\pages\organizations\PlatformOrganizationsPage.vue
++++ after/application\web\pages\organizations\PlatformOrganizationsPage.vue
+@@ -1,8 +1,6 @@
+ <template>
+   <section class="workspace organization-section">
+     <div class="page-heading">
+-      <p class="eyebrow">直属组织 / 管理员交付</p>
+-      <h1>下级管理</h1>
+       <p>直属上级：{{ parentName }}。开户后上级固定，最多两级分销。</p>
+     </div>
+     <el-alert
+@@ -14,6 +12,7 @@
+     <nav aria-label="下级管理页面">
+       <RouterLink to="/platform/organizations">直属下级</RouterLink> ·
+       <RouterLink :to="{ path: '/platform/organizations', query: { view: 'new' } }">开户</RouterLink> ·
++      <RouterLink :to="{ path: '/platform/organizations', query: { view: 'accounts' } }">下级账户</RouterLink> ·
+       <RouterLink to="/platform/organizations/business-data">业务数据查看</RouterLink>
+     </nav>
+     <p v-if="openingUnknown" role="status">开户结果尚未确认。请刷新直属列表核实；重试将沿用本次请求标识，不会自动重新开户。</p>
+@@ -113,9 +112,26 @@
+         <h4>{{ child.name }}</h4>
+         <p>{{ child.kind === 'terminal' ? '终端企业' : `${child.distributorLevel}级分销` }} · {{ child.active ? '启用' : '停用' }}</p>
+         <p>联系号码：{{ child.phoneMasked }} · 管理员：{{ child.email }}</p>
++        <PointAccountSummary :account="pointAccounts.get(child.id)" :state="pointsState" />
+         <RouterLink :to="{ path: '/platform/organizations', query: { id: child.id } }">下级详情</RouterLink>
+       </article>
+     </div>
++    <section v-if="view === 'accounts'" class="workspace-card children-list" aria-label="下级账户">
++      <h3>下级账户</h3>
++      <p>查看授权范围内各层下级的内部点数。此页仅供查看；直属下级的管理请返回直属列表。</p>
++      <el-button :disabled="pointsState === 'loading'" @click="refreshPoints">刷新账户</el-button>
++      <p v-if="pointsState === 'loading'" role="status">账户读取中…</p>
++      <p v-else-if="pointsState === 'error'" role="alert">下级账户读取失败，请刷新重试。</p>
++      <template v-else>
++        <p v-if="!visibleOrganizations.length">暂无授权下级</p>
++        <article v-for="organization in visibleOrganizations" :key="organization.id" class="child-row">
++          <h4>{{ organization.name }}</h4>
++          <p>{{ organization.kind === 'terminal' ? '终端企业' : '分销组织' }} · {{ organization.active ? '启用' : '停用' }} · 第{{ organization.depth }}层下级</p>
++          <p>直属上级：{{ organizationName(organization.parentId) }}</p>
++          <PointAccountSummary :account="pointAccounts.get(organization.id)" :state="pointsState" />
++        </article>
++      </template>
++    </section>
+     <div v-if="view === 'detail'" class="workspace-card children-list">
+       <h3>下级详情</h3>
+       <template v-if="selectedChild">
+@@ -139,8 +155,10 @@
+   ref,
+   shallowRef
+ } from 'vue';
++import PointAccountSummary, { type PointAccount } from './components/PointAccountSummary.vue';
+ import { useRoute, useRouter } from 'vue-router';
+ import { useFormLeave } from '../../router/formLeave';
++import { useBreadcrumbTitle } from '../../layout/breadcrumb';
+ import {
+   ElAlert,
+   ElButton,
+@@ -169,13 +187,14 @@
+ }>();
+ const route = useRoute();
+ const router = useRouter();
+-const view = computed(() => route.query.view === 'new' ? 'new' : route.query.id ? 'detail' : 'list');
++const view = computed(() => route.query.view === 'new' ? 'new' : route.query.view === 'accounts' ? 'accounts' : route.query.id ? 'detail' : 'list');
+ const selectedChild = computed(() => children.value.find(child =>
+   child.id === route.query.id
+ ));
+ const parentName = ref('');
+ const allowedKinds = shallowRef<string[]>([]);
+ const children = shallowRef<Child[]>([]);
++useBreadcrumbTitle(() => view.value === 'accounts' ? '下级账户' : selectedChild.value?.name ?? '下级详情');
+ const credentials = shallowRef<Credentials | null>(null);
+ const credentialAction = ref<'open' | 'reset'>('open');
+ const name = ref('');
+@@ -190,7 +209,52 @@
+ const copyMessage = ref('');
+ const resetUnknown = ref(false);
+ const openingUnknown = ref(false);
++interface VisibleOrganization {
++  id: string;
++  name: string;
++  parentId: string | null;
++  kind: string;
++  active: boolean;
++  depth: number;
++}
++const pointsState = ref<'loading' | 'ready' | 'error'>('loading');
++const pointAccounts = shallowRef(new Map<string, PointAccount>());
++const organizations = shallowRef<VisibleOrganization[]>([]);
++const visibleOrganizations = computed(() => organizations.value.filter(item =>
++  item.depth > 0
++));
++function organizationName(id: string | null) {
++  return organizations.value.find(item =>
++    item.id === id)?.name ?? '上级信息缺失';
++}
++async function refreshPoints() {
++  if (pointsState.value === 'loading' && pointsRequestPending) return;
++  pointsRequestPending = true;
++  pointsState.value = 'loading';
++  pointAccounts.value = new Map();
++  organizations.value = [];
++  try {
++    const report = await props.request('reports') as {
++      role: string;
++      organizations: VisibleOrganization[];
++      accounts: PointAccount[];
++    };
++    if (report.role !== 'platform' || !Array.isArray(report.organizations) || !Array.isArray(report.accounts))
++      throw new Error('账户数据不可用');
++    organizations.value = report.organizations;
++    pointAccounts.value = new Map(report.accounts.map(account =>
++      [account.organizationId, account]
++    ));
++    pointsState.value = 'ready';
++  } catch {
++    pointsState.value = 'error';
++  } finally {
++    pointsRequestPending = false;
++  }
++}
++let pointsRequestPending = false;
+ async function refresh() {
++  void refreshPoints();
+   try {
+     const result = await props.request('organizations') as { parentName: string; allowedKinds: string[]; children: Child[] };
+     parentName.value = result.parentName;
+--- before/application\web\pages\reports\PlatformBusinessData.vue
++++ after/application\web\pages\reports\PlatformBusinessData.vue
+@@ -1,7 +1,6 @@
+ <template>
+   <section class="business-data">
+     <header>
+-      <h1>业务数据查看</h1>
+       <RouterLink to="/platform/organizations">返回下级管理</RouterLink>
+       <el-button :disabled="loading" @click="load">刷新</el-button>
+     </header>
+--- before/application\web\pages\reports\PlatformReportPage.vue
++++ after/application\web\pages\reports\PlatformReportPage.vue
+@@ -1,7 +1,6 @@
+ <template>
+   <section class="platform-report">
+     <header>
+-      <h1>{{ kind === 'profit' ? '交易与利润' : '账务流水' }}</h1>
+       <el-button @click="load">刷新</el-button>
+       <RouterLink to="/platform/ledger">返回点数与账务</RouterLink>
+       <a href="/api/reports/own-ledger.csv" download="own-ledger.csv">导出自有账务</a>
+--- before/application\web\pages\upstream\ReconciliationPage.vue
++++ after/application\web\pages\upstream\ReconciliationPage.vue
+@@ -1,8 +1,5 @@
+ <template>
+   <section class="workspace">
+-    <div class="page-heading">
+-      <h1>上游与对账</h1>
+-    </div>
+     <DetailReconciliation :request="request" />
+     <UpstreamMonitor :request="request" />
+   </section>
+--- before/application\web\pages\organizations\components\PointAccountSummary.vue
++++ after/application\web\pages\organizations\components\PointAccountSummary.vue
+@@ -0,0 +1,39 @@
++<template>
++  <div class="point-summary" aria-label="内部点数摘要">
++    <p v-if="state === 'loading'" role="status">点数读取中…</p>
++    <p v-else-if="state === 'error'" role="alert">点数读取失败，请刷新重试。</p>
++    <p v-else-if="!account">暂无点数账户数据</p>
++    <dl v-else>
++      <div v-for="field in fields" :key="field.key">
++        <dt>{{ field.label }}（内部点数）</dt>
++        <dd>{{ account[field.key] ?? '数据缺失' }}</dd>
++      </div>
++    </dl>
++  </div>
++</template>
++
++<script setup lang="ts">
++export interface PointAccount {
++  organizationId: string;
++  balance: string | null;
++  queryFrozen: string | null;
++  salesReserved: string | null;
++  available: string | null;
++}
++defineProps<{
++  account?: PointAccount;
++  state: 'loading' | 'ready' | 'error';
++}>();
++const fields = [
++  { key: 'balance', label: '余额' },
++  { key: 'queryFrozen', label: '查询冻结' },
++  { key: 'salesReserved', label: '销售预留' },
++  { key: 'available', label: '可用余额' }
++] as const;
++</script>
++
++<style scoped>
++.point-summary dl { display: flex; flex-wrap: wrap; gap: 16px 32px; margin: 16px 0; }
++.point-summary dt { color: #606266; font-size: 13px; }
++.point-summary dd { margin: 6px 0 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
++</style>

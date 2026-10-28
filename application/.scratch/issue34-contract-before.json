@@ -1,0 +1,74 @@
+{
+  "baseline": "before",
+  "ids": {
+    "platform": "646744d2-56a3-41f6-bbeb-b21bff98e620",
+    "account": "693a74e8-3ec6-44ea-8802-0995b5035775",
+    "organization": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+    "administrator": "80249851-bcc8-47b4-be4a-2fff5481b660"
+  },
+  "requests": [
+    {
+      "path": "/api/organizations/state",
+      "body": {
+        "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+        "active": false
+      }
+    },
+    {
+      "path": "/api/organizations/state",
+      "body": {
+        "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+        "active": true
+      }
+    },
+    {
+      "path": "/api/password-resets",
+      "body": {
+        "accountId": "80249851-bcc8-47b4-be4a-2fff5481b660",
+        "requestId": "a04cc585-0fbd-4da4-890d-6ad0b524198e"
+      }
+    },
+    {
+      "path": "/api/email-quota/configure",
+      "body": {
+        "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+        "dailyLimit": 2345
+      }
+    },
+    {
+      "path": "/api/email-quota/configure",
+      "body": {
+        "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+        "dailyLimit": 0
+      }
+    },
+    {
+      "path": "/api/organizations/state",
+      "body": {
+        "organizationId": "80249851-bcc8-47b4-be4a-2fff5481b660",
+        "active": false
+      }
+    },
+    {
+      "path": "/api/password-resets",
+      "body": {
+        "accountId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+        "requestId": "f843fe74-8c98-416c-9c10-fae54c2e7f57"
+      }
+    },
+    {
+      "path": "/api/email-quota/configure",
+      "body": {
+        "organizationId": "fdfd3aa7-30d6-4793-a64d-43d5537956b7",
+        "dailyLimit": 9999
+      }
+    }
+  ],
+  "result": {
+    "limit": 2345,
+    "invalidLimit": 400,
+    "wrongOrganizationIdentifier": 403,
+    "wrongAccountIdentifier": 403,
+    "salesDenied": 403
+  }
+}

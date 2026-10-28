@@ -1,0 +1,128 @@
+[
+  {
+    "variant": "before",
+    "scenario": "platform",
+    "body": {
+      "email": "super_admin",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "before",
+    "scenario": "distributor",
+    "body": {
+      "email": "Distinct.Local+tag@EXAMPLE.COM",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "before",
+    "scenario": "admin",
+    "body": {
+      "email": "admin@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "before",
+    "scenario": "sales",
+    "body": {
+      "email": "sales@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "before",
+    "scenario": "temporary",
+    "body": {
+      "email": "temporary@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "before",
+    "scenario": "invalid",
+    "body": {
+      "email": "wrong@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "before",
+    "scenario": "network",
+    "body": {
+      "email": "network@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "after",
+    "scenario": "platform",
+    "body": {
+      "email": "super_admin",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "after",
+    "scenario": "distributor",
+    "body": {
+      "email": "Distinct.Local+tag@EXAMPLE.COM",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "after",
+    "scenario": "admin",
+    "body": {
+      "email": "admin@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "after",
+    "scenario": "sales",
+    "body": {
+      "email": "sales@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "after",
+    "scenario": "temporary",
+    "body": {
+      "email": "temporary@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "after",
+    "scenario": "invalid",
+    "body": {
+      "email": "wrong@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  },
+  {
+    "variant": "after",
+    "scenario": "network",
+    "body": {
+      "email": "network@example.com",
+      "password": "MigrationPwd123!"
+    },
+    "result": "passed"
+  }
+]

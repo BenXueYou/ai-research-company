@@ -8,6 +8,12 @@ import RoleHelpPage from '../pages/help/RoleHelpPage.vue';
 import UpstreamMonitorPage from '../pages/upstream/UpstreamMonitorPage.vue';
 import ReconciliationPage from '../pages/upstream/ReconciliationPage.vue';
 import PlatformReportPage from '../pages/reports/PlatformReportPage.vue';
+import PlatformBusinessData from '../pages/reports/PlatformBusinessData.vue';
+import PointOrders from '../pages/commerce/PointOrders.vue';
+import PlatformOrganizationsPage from '../pages/organizations/PlatformOrganizationsPage.vue';
+import PlatformSettingsPage from '../pages/commerce/PlatformSettingsPage.vue';
+import UMailResourceSettings from '../pages/email/UMailResourceSettings.vue';
+import PlatformEmailQuota from '../pages/email/PlatformEmailQuota.vue';
 
 type Role = 'platform' | 'distributor' | 'admin' | 'sales';
 declare module 'vue-router' {
@@ -16,6 +22,8 @@ declare module 'vue-router' {
     roles?: Role[];
     target?: string;
     business?: boolean;
+    navigation?: { label: string; group?: string; order: number };
+    breadcrumbs?: { label: string; path?: string }[];
   }
 }
 interface NavigationItem {
@@ -27,10 +35,10 @@ interface NavigationItem {
 
 export const navigation: NavigationItem[] = [
   { path: '/platform/overview', label: '运营概览', roles: ['platform'] },
-  { path: '/platform/organizations', label: '下级管理', roles: ['platform'], target: 'compat-organizations' },
-  { path: '/platform/ledger', label: '点数与账务', roles: ['platform'], target: 'compat-orders' },
+  { path: '/platform/organizations', label: '下级管理', roles: ['platform'] },
+  { path: '/platform/ledger', label: '点数与账务', roles: ['platform'] },
   { path: '/platform/reconciliation', label: '上游与对账', roles: ['platform'] },
-  { path: '/platform/settings', label: '平台设置', roles: ['platform'], target: 'compat-settings' },
+  { path: '/platform/settings', label: '平台设置', roles: ['platform'] },
   { path: '/distribution/organizations', label: '下级管理', roles: ['distributor'], target: 'compat-organizations' },
   { path: '/distribution/orders', label: '点数订单', roles: ['distributor'], target: 'compat-orders' },
   { path: '/distribution/profit', label: '交易与利润', roles: ['distributor'], target: 'compat-usage' },
@@ -45,12 +53,30 @@ export const navigation: NavigationItem[] = [
 const businessRoutes: RouteRecordRaw[] = navigation.map(item => ({
   path: item.path,
   name: item.path.slice(1).replaceAll('/', '-'),
-  component: item.path === '/platform/reconciliation' ? ReconciliationPage : EmptyRoute,
+  component: item.path === '/platform/reconciliation' ? ReconciliationPage :
+    item.path === '/platform/organizations' ? PlatformOrganizationsPage :
+    item.path === '/platform/ledger' ? PointOrders :
+    item.path === '/platform/settings' ? PlatformSettingsPage : EmptyRoute,
   meta: { title: item.label, roles: item.roles, target: item.target, business: true }
 }));
 
 const routes: RouteRecordRaw[] = [
   ...businessRoutes,
+  {
+    path: '/platform/settings/umail',
+    component: UMailResourceSettings,
+    meta: { title: 'U-Mail 企业资源', roles: ['platform'], business: true }
+  },
+  {
+    path: '/platform/settings/email-quota',
+    component: PlatformEmailQuota,
+    meta: { title: '企业邮件日额度', roles: ['platform'], business: true }
+  },
+  {
+    path: '/platform/organizations/business-data',
+    component: PlatformBusinessData,
+    meta: { title: '业务数据查看', roles: ['platform'], business: true }
+  },
   {
     path: '/platform/ledger/profit',
     component: PlatformReportPage,
@@ -89,6 +115,44 @@ const routes: RouteRecordRaw[] = [
   { path: '/:pathMatch(.*)*', name: 'unknown', component: EmptyRoute }
 ];
 
+// All entries below point to existing pages. Groups have no navigation action.
+const platformNavigation: Record<string, { label: string; group?: string; order: number }> = {
+  '/platform/overview': { label: '运营概览', order: 0 },
+  '/platform/organizations': { label: '下级管理', order: 1 },
+  '/platform/ledger': { label: '点数订单', group: '点数与账务', order: 2 },
+  '/platform/ledger/profit': { label: '交易与利润', group: '点数与账务', order: 3 },
+  '/platform/ledger/flows': { label: '账务流水', group: '点数与账务', order: 4 },
+  '/platform/reconciliation/upstream': { label: '上游账号监控', group: '上游与对账', order: 5 },
+  '/platform/reconciliation': { label: '查询异常核对', group: '上游与对账', order: 6 },
+  '/platform/settings': { label: '计价配置', group: '平台设置', order: 7 },
+  '/platform/settings/umail': { label: 'U-Mail 企业资源', group: '平台设置', order: 8 },
+  '/platform/settings/email-quota': { label: '企业邮件日额度', group: '平台设置', order: 9 }
+};
+for (const record of routes) {
+  if (!record.meta?.roles) continue;
+  const legacy = navigation.find(entry =>
+    entry.path === record.path
+  );
+  const metadata = platformNavigation[record.path] ?? (legacy ? { label: legacy.label, order: navigation.indexOf(legacy) } : undefined);
+  if (metadata) {
+    record.meta.navigation = metadata;
+    record.meta.breadcrumbs = [
+      ...('group' in metadata && metadata.group ? [{ label: metadata.group }] : []),
+      { label: metadata.label }
+    ];
+  }
+}
+for (const record of routes) {
+  if (record.path.startsWith('/platform/settings/')) record.meta!.breadcrumbs![0].path = '/platform/settings';
+}
+const organizations = routes.find(record => record.path === '/platform/organizations')!;
+organizations.meta!.breadcrumbs = [{ label: '下级管理' }, { label: '直属下级' }];
+const businessData = routes.find(record => record.path === '/platform/organizations/business-data')!;
+businessData.meta!.breadcrumbs = [
+  { label: '下级管理', path: '/platform/organizations' },
+  { label: '业务数据查看' }
+];
+
 export function defaultPath(role: string): string {
   if (role === 'platform') return '/platform/overview';
   if (role === 'distributor') return '/distribution/organizations';
@@ -96,25 +160,39 @@ export function defaultPath(role: string): string {
 }
 
 export function isBusinessPath(path: string, role: string): boolean {
-  return (['/platform/reconciliation/upstream', '/platform/ledger/profit', '/platform/ledger/flows'].includes(path) && role === 'platform') ||
+  if (['/platform/settings/umail', '/platform/settings/email-quota'].includes(path) && role === 'platform') return true;
+  return (['/platform/organizations/business-data', '/platform/reconciliation/upstream', '/platform/ledger/profit', '/platform/ledger/flows'].includes(path) && role === 'platform') ||
     navigation.some(item => item.path === path && item.roles.includes(role as Role));
 }
 
 export function createConsoleRouter(pinia: Pinia) {
+  const positions = new Map<number, number>();
+  let currentPosition: number | undefined;
   const router = createRouter({
     history: createWebHistory(),
     routes,
-    async scrollBehavior(to) {
+    async scrollBehavior(to, _from, savedPosition) {
       await nextTick();
-      const target = to.meta.target;
-      if (typeof target === 'string') {
-        document.getElementById(target)?.scrollIntoView();
-        return false;
+      const main = document.getElementById('console-main');
+      const position = window.history.state?.position as number | undefined;
+      const restored = savedPosition && position !== undefined ? positions.get(position) : undefined;
+      if (main) {
+        if (restored !== undefined) main.scrollTop = restored;
+        else {
+          main.scrollTop = 0;
+          const target = typeof to.meta.target === 'string' ? document.getElementById(to.meta.target) : null;
+          if (target) main.scrollTop = target.getBoundingClientRect().top - main.getBoundingClientRect().top;
+        }
       }
-      return { top: 0 };
+      return false as const;
     }
   });
+  router.afterEach((_to, _from, failure) => {
+    if (!failure) currentPosition = window.history.state?.position as number | undefined;
+  });
   router.beforeEach(async to => {
+    const main = document.getElementById('console-main');
+    if (main && currentPosition !== undefined) positions.set(currentPosition, main.scrollTop);
     const auth = useSessionStore(pinia);
     await auth.initialize();
     if (auth.status !== 'authenticated' || !auth.session || auth.session.mustChange) return true;

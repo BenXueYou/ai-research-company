@@ -1,0 +1,335 @@
+{
+  "database": "issue44_c01a935176454c40bf5435fa81d87185_test",
+  "origin": "http://127.0.0.1:3344",
+  "platform": "bc0ae55b-0eb3-416b-bff0-e52599265746",
+  "distributor": "011364d5-e491-4781-97e2-902b9bc9cfbb",
+  "terminal": "43af3d2c-7636-492f-9d75-5a3e890dc08b",
+  "platformAccount": "d256368e-295c-4011-99ed-43f67ae3bff2",
+  "orderId": "d2902be7-22ae-4153-aeb1-6cbdc8a78839",
+  "platformOrderId": "fdeea453-4fed-48d2-8dbb-d16e08300168",
+  "expenseId": "9536828e-1396-41e6-b6de-bf10b9e6b527",
+  "secondExpenseId": "80717096-98eb-4778-bd25-067e11614011",
+  "purchaseIds": [
+    "4d56b8b6-5f01-4d4c-8b54-d525791f91cb",
+    "0e431296-09a3-457a-aa60-7fbac03ebe36"
+  ],
+  "salePurchaseId": "ddebc120-8550-4cdf-ad0a-8cec8259ad4e",
+  "totals": {
+    "salesGrossProfit": "1.5000",
+    "platformExpenses": "0.7500",
+    "afterPlatformExpenses": "0.7500"
+  },
+  "inventory": {
+    "balance": "10.0000",
+    "frozen": "0.0000",
+    "reserved": "0.0000",
+    "averageCost": "1.2500"
+  },
+  "procurement": [
+    {
+      "id": "1",
+      "event": "purchase",
+      "reference": "4d56b8b6-5f01-4d4c-8b54-d525791f91cb",
+      "internalDelta": "0.0000",
+      "upstreamDelta": "1.0000",
+      "cashOutflow": "0.5000",
+      "expenseDelta": "0.0000",
+      "balanceAfter": "0.0000",
+      "createdAt": "2026-10-28T10:18:12.804Z"
+    },
+    {
+      "id": "2",
+      "event": "purchase",
+      "reference": "0e431296-09a3-457a-aa60-7fbac03ebe36",
+      "internalDelta": "0.0000",
+      "upstreamDelta": "1.0000",
+      "cashOutflow": "0.5000",
+      "expenseDelta": "0.0000",
+      "balanceAfter": "0.0000",
+      "createdAt": "2026-10-28T10:18:12.893Z"
+    },
+    {
+      "id": "3",
+      "event": "purchase",
+      "reference": "ddebc120-8550-4cdf-ad0a-8cec8259ad4e",
+      "internalDelta": "10.0000",
+      "upstreamDelta": "10.0000",
+      "cashOutflow": "12.5000",
+      "expenseDelta": "0.0000",
+      "balanceAfter": "10.0000",
+      "createdAt": "2026-10-28T10:18:12.953Z"
+    },
+    {
+      "id": "4",
+      "event": "expense",
+      "reference": "9536828e-1396-41e6-b6de-bf10b9e6b527",
+      "internalDelta": "0.0000",
+      "upstreamDelta": "0.0000",
+      "cashOutflow": "0.0000",
+      "expenseDelta": "0.5000",
+      "balanceAfter": "10.0000",
+      "createdAt": "2026-10-28T10:18:12.959Z"
+    },
+    {
+      "id": "5",
+      "event": "expense",
+      "reference": "80717096-98eb-4778-bd25-067e11614011",
+      "internalDelta": "0.0000",
+      "upstreamDelta": "0.0000",
+      "cashOutflow": "0.0000",
+      "expenseDelta": "0.2500",
+      "balanceAfter": "10.0000",
+      "createdAt": "2026-10-28T10:18:12.959Z"
+    }
+  ],
+  "ledger": [
+    {
+      "source": "product",
+      "id": "1",
+      "organizationId": "43af3d2c-7636-492f-9d75-5a3e890dc08b",
+      "referenceId": "098d5e9b-38b4-4146-8276-db4be1c892d4",
+      "event": "settle",
+      "amount": "1.0000",
+      "balanceAfter": "9.0000",
+      "frozenAfter": "0.0000",
+      "createdAt": "2026-10-28T10:18:12.584Z"
+    },
+    {
+      "source": "product",
+      "id": "2",
+      "organizationId": "01efe1c2-c57c-43c2-b79a-6b5cb28cee77",
+      "referenceId": "65e0d1ce-69ce-4e4d-a1e8-90a2cc13549f",
+      "event": "settle",
+      "amount": "2.0000",
+      "balanceAfter": "9.0000",
+      "frozenAfter": "0.0000",
+      "createdAt": "2026-10-28T10:18:12.593Z"
+    }
+  ],
+  "csvRows": [
+    [
+      "type",
+      "reference",
+      "event",
+      "amount",
+      "balance_or_cost",
+      "frozen_or_gross",
+      "created_at"
+    ],
+    [
+      "procurement",
+      "4d56b8b6-5f01-4d4c-8b54-d525791f91cb",
+      "purchase",
+      "0.5000",
+      "0.0000",
+      "0.0000",
+      "Wed Oct 28 2026 18:18:12 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "procurement",
+      "0e431296-09a3-457a-aa60-7fbac03ebe36",
+      "purchase",
+      "0.5000",
+      "0.0000",
+      "0.0000",
+      "Wed Oct 28 2026 18:18:12 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "procurement",
+      "ddebc120-8550-4cdf-ad0a-8cec8259ad4e",
+      "purchase",
+      "12.5000",
+      "10.0000",
+      "0.0000",
+      "Wed Oct 28 2026 18:18:12 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "procurement",
+      "9536828e-1396-41e6-b6de-bf10b9e6b527",
+      "expense",
+      "0.0000",
+      "10.0000",
+      "0.5000",
+      "Wed Oct 28 2026 18:18:12 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "procurement",
+      "80717096-98eb-4778-bd25-067e11614011",
+      "expense",
+      "0.0000",
+      "10.0000",
+      "0.2500",
+      "Wed Oct 28 2026 18:18:12 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "sale",
+      "fdeea453-4fed-48d2-8dbb-d16e08300168",
+      "transferred",
+      "3.0000",
+      "1.5000",
+      "1.5000",
+      "Wed Oct 28 2026 18:18:12 GMT+0800 (中国标准时间)"
+    ]
+  ],
+  "reportRequests": [
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/coefficient/notices",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/procurement",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/coefficient",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    }
+  ],
+  "devChecks": [
+    {
+      "path": "/platform/ledger/profit",
+      "status": 200
+    },
+    {
+      "path": "/platform/ledger/flows",
+      "status": 200
+    },
+    {
+      "path": "/api/unknown-issue44",
+      "status": 404
+    },
+    {
+      "path": "/assets/missing-issue44.js",
+      "status": 404
+    },
+    {
+      "path": "/unknown-issue44",
+      "status": 404
+    }
+  ],
+  "completed": [
+    "CSV download from both pages: seven columns match DB",
+    "profit and flows: direct access, refresh, back/forward",
+    "distributor/admin/sales page denial and scoped HTTP",
+    "platform/distributor/admin/sales/platform login/logout",
+    "must-change gate, password change and old-session revocation"
+  ],
+  "accountingAfter": {
+    "salesGrossProfit": "1.5000",
+    "platformExpenses": "0.7500",
+    "afterPlatformExpenses": "0.7500"
+  },
+  "sourceHashes": [
+    {
+      "path": "application/server/reporting.test.ts",
+      "sha256": "BC8E8C63E3A33B398FA3CEAFB0BD8A825213AA1090D14A08595D7E928141A25C"
+    },
+    {
+      "path": "application/server/commerce/reporting.ts",
+      "sha256": "2DC0EA77A8E331D82D9C9EC9A9BE37BBC71974AFFA1FE451DBB59AF668449CC7"
+    },
+    {
+      "path": "application/web/pages/reports/PlatformReportPage.vue",
+      "sha256": "50865C9C417EA80FDDD7A4B37A8DF6543A3F7BAD4DD3205F6AA754A367821396"
+    },
+    {
+      "path": "application/web/App.vue",
+      "sha256": "4FC5C5BE4E5E086198F8E301D138C346C9B291F926BDA19C7B5015E8E6E5A266"
+    },
+    {
+      "path": "application/web/router/index.ts",
+      "sha256": "8774661AEF7DA2544DBCE42FF295BFE18C222EA9161992CF2E8F19BC6434BA18"
+    },
+    {
+      "path": "application/web/layout/CompatWorkspace.vue",
+      "sha256": "7DC9A5E188D7C79185822E61170D7453D0AEBADE89803D51E94D180AAE2B8E59"
+    },
+    {
+      "path": "application/web/layout/ConsoleBreadcrumb.vue",
+      "sha256": "C97DBEE479D8323F8C014F1C04BAC33F90B41CF422EC7DB486B6FB7810C5197D"
+    },
+    {
+      "path": "application/web/layout/ConsoleSidebar.vue",
+      "sha256": "0D71E79C7A0E54B33267CB6BBEFCAE3D75B8710ED6E38F4BCC8149F73B9A7620"
+    },
+    {
+      "path": "application/server/app.ts",
+      "sha256": "F2D679995B6C70853B0F8EAF5549BC5562BF41A8C19F8B7EF16F1B5F0349F976"
+    },
+    {
+      "path": "application/vite.config.ts",
+      "sha256": "E0E313D491BF842397F70888552DF42DEBD9349681C50163E0C172FB2281D3F3"
+    }
+  ],
+  "validatedAt": "2026-10-28T18:18:30+08:00",
+  "frameworkRegression": [
+    "platform legacy UsageReports absent, distributor and terminal preserved",
+    "overview RouterLink entry: exactly one reports request",
+    "profit and flows sidebar selection and breadcrumb",
+    "account settings return: one read, no business replay",
+    "Vite direct access and refresh with real backend"
+  ]
+}

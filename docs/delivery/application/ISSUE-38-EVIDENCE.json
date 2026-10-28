@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-28",
+  "timezone": "Asia/Shanghai",
+  "source": "real Nest HTTP / PostgreSQL / Chromium",
+  "organizations": [
+    {
+      "id": "ba87151e-0fdf-4415-b70c-321431b2b52f",
+      "accountId": "2441d6a1-a26b-449a-8a3e-54de708fbbf8",
+      "parent": "847e0aca-ea61-4583-a485-bbc7567d3204",
+      "name": "Direct distribution"
+    },
+    {
+      "id": "4ff392f9-4a0c-42a4-ab35-0ed7d15838f0",
+      "accountId": "2721b108-7f6e-43b5-8c5e-3b9fe07153a7",
+      "parent": "847e0aca-ea61-4583-a485-bbc7567d3204",
+      "name": "Direct terminal missing"
+    },
+    {
+      "id": "3a37a50d-6838-4d40-b88f-aa9974f54ade",
+      "accountId": "e679d9c2-d71f-448c-bf73-d64b0d0cf65b",
+      "parent": "ba87151e-0fdf-4415-b70c-321431b2b52f",
+      "name": "Second distribution"
+    },
+    {
+      "id": "ac6fa4de-70ce-4af7-bbb4-eb81d30c7920",
+      "accountId": "f14cc30e-68db-475a-8020-dc0c59c98c87",
+      "parent": "3a37a50d-6838-4d40-b88f-aa9974f54ade",
+      "name": "Disabled deep terminal"
+    }
+  ],
+  "directAccount": {
+    "balance": "111.1234",
+    "queryFrozen": "11.0001",
+    "salesReserved": "3.0002",
+    "available": "97.1231"
+  },
+  "disabledDeepAccount": {
+    "balance": "333.3456",
+    "queryFrozen": "33.0003",
+    "salesReserved": "5.0004",
+    "available": "295.3449"
+  },
+  "database": "issue38_064a4660c5b141d5874270376a39758b_test",
+  "databaseDropped": true,
+  "port": 3398,
+  "browserPostCount": 0,
+  "stateEventCount": 0,
+  "passwordResetCount": 0,
+  "transferCount": 0,
+  "queryLedgerCounts": [
+    0,
+    0,
+    0
+  ],
+  "result": "1 passed"
+}

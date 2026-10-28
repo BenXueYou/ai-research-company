@@ -4,13 +4,15 @@
     <p>为直属下级建单，核实线下足额收款后确认预留，再一次完整划拨。</p>
     <el-alert v-if="error" type="error" :title="error" :closable="false" />
     <el-alert v-if="notice" type="success" :title="notice" :closable="false" />
-    <p v-if="snapshot">库存 {{ snapshot.inventory.balance }}，已预留 {{ snapshot.inventory.reserved }}，当前平均成本 {{ snapshot.inventory.average_cost }}，最低加价率 {{ snapshot.pricing.minimum_markup }}</p>
+    <p v-if="snapshot">库存 {{ snapshot.inventory.balance }}，已预留 {{ snapshot.inventory.reserved }}，当前平均成本 {{
+      snapshot.inventory.average_cost }}，最低加价率 {{ snapshot.pricing.minimum_markup }}</p>
     <el-form label-position="top" @submit.prevent="createOrder">
       <h3>创建订单</h3>
       <el-form-item label="直属买方" for="order-buyer">
         <select id="order-buyer" v-model="buyerId" required :disabled="busy">
           <option value="">请选择</option>
-          <option v-for="child in snapshot?.children ?? []" :key="child.id" :value="child.id">{{ child.name }}（{{ child.kind }}）</option>
+          <option v-for="child in snapshot?.children ?? []" :key="child.id" :value="child.id">{{ child.name }}（{{
+            child.kind }}）</option>
         </select>
       </el-form-item>
       <el-form-item label="点数数量" for="order-quantity">
@@ -22,7 +24,8 @@
       <el-button class="primary-button" native-type="submit" :disabled="busy || !buyerId">建单</el-button>
     </el-form>
     <div v-for="order in snapshot?.orders ?? []" :key="order.id" class="workspace-card">
-      <h3>{{ order.buyerName }} · {{ order.status === 'transferred' ? '已划拨' : order.status === 'refunded' ? '已整单退款' : order.status === 'reserved' ? '已收款并预留' : '待收款' }}</h3>
+      <h3>{{ order.buyerName }} · {{ order.status === 'transferred' ? '已划拨' : order.status === 'refunded' ? '已整单退款' :
+        order.status === 'reserved' ? '已收款并预留' : '待收款' }}</h3>
       <p v-if="!order.buyerActive && order.status === 'reserved'">买方组织已停用，划拨暂停；预留继续保留。</p>
       <p>数量 {{ order.quantity }} × 单价 {{ order.unitPrice }} = {{ order.amount }} 元</p>
       <template v-if="order.status === 'unpaid'">
@@ -30,21 +33,25 @@
         <el-button :disabled="busy" @click="selectConfirm(order)">确认足额收款</el-button>
       </template>
       <p v-else>收款凭证：{{ order.receiptReference }}</p>
-      <el-button v-if="order.status === 'reserved'" :disabled="busy || !order.buyerActive" @click="transfer(order)">完整划拨</el-button>
+      <el-button v-if="order.status === 'reserved'" :disabled="busy || !order.buyerActive"
+        @click="transfer(order)">完整划拨</el-button>
       <el-button v-if="order.status === 'reserved'" :disabled="busy" @click="selectRefund(order)">确认线下整单退款</el-button>
       <p v-if="order.status === 'transferred'">历史销售成本 {{ order.salesCost }} 元，毛利 {{ order.grossProfit }} 元</p>
       <p v-if="order.status === 'refunded'">退款 {{ order.refundAmount }} 元；依据：{{ order.refundEvidence }}</p>
     </div>
     <el-form v-if="selected && mode === 'reprice'" label-position="top" @submit.prevent="reprice">
       <h3>调整订单 · {{ selected.buyerName }}</h3>
-      <el-form-item label="点数数量" for="reprice-quantity"><el-input id="reprice-quantity" v-model="editQuantity" required /></el-form-item>
-      <el-form-item label="每点售价" for="reprice-price"><el-input id="reprice-price" v-model="editPrice" required /></el-form-item>
+      <el-form-item label="点数数量" for="reprice-quantity"><el-input id="reprice-quantity" v-model="editQuantity"
+          required /></el-form-item>
+      <el-form-item label="每点售价" for="reprice-price"><el-input id="reprice-price" v-model="editPrice"
+          required /></el-form-item>
       <el-button native-type="submit" :disabled="busy">保存调整</el-button>
       <el-button @click="selected = null">取消</el-button>
     </el-form>
     <el-form v-if="selected && mode === 'confirm'" label-position="top" @submit.prevent="confirm">
       <h3>确认足额收款 · {{ selected.buyerName }} · {{ selected.amount }} 元</h3>
-      <el-form-item label="唯一线下收款凭证" for="receipt-reference"><el-input id="receipt-reference" v-model="receiptReference" required /></el-form-item>
+      <el-form-item label="唯一线下收款凭证" for="receipt-reference"><el-input id="receipt-reference" v-model="receiptReference"
+          required /></el-form-item>
       <p>库存不足时系统拒绝确认，线下款仍可能已到账，须人工核对。</p>
       <el-button native-type="submit" :disabled="busy">确认并预留</el-button>
       <el-button @click="selected = null">取消</el-button>
@@ -52,7 +59,8 @@
     <el-form v-if="selected && mode === 'refund'" label-position="top" @submit.prevent="refund">
       <h3>确认线下整单退款 · {{ selected.buyerName }} · {{ selected.amount }} 元</h3>
       <p>请先核实整单款项已在线下退回。提交后订单关闭并释放 {{ selected.quantity }} 点预留。</p>
-      <el-form-item label="线下退款完成依据" for="refund-evidence"><el-input id="refund-evidence" v-model="refundEvidence" required :disabled="busy" /></el-form-item>
+      <el-form-item label="线下退款完成依据" for="refund-evidence"><el-input id="refund-evidence" v-model="refundEvidence"
+          required :disabled="busy" /></el-form-item>
       <el-button native-type="submit" :disabled="busy || !refundEvidence.trim()">确认已退款并释放预留</el-button>
       <el-button :disabled="busy" @click="selected = null">取消</el-button>
     </el-form>

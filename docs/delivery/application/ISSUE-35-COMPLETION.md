@@ -1,5 +1,9 @@
 # #35 独立账号设置与离开交互（部分验证，尚未完成全部验收）
 
+## 2026-10-28 依赖状态复核
+
+当前阻塞点是尚未交付可供其他业务表单接入的公共离开机制。#35 负责公共能力及真实账号表单验证；各业务票负责自身接入及业务验收，不应等待全部下游验收后才完成 #35。当前源码已使用 Vue Router，本文的手写 History 描述属于历史基线。依赖清单、现状证据及解除条件见 [依赖阻塞复核](ISSUE-35-DEPENDENCY-AUDIT.md)。本次复核未运行新的业务测试或修改远端工单。
+
 ## 2026-10-28 当前工作区复验
 
 保留工作区已有的依赖、会话和 HTTP 改动，使用独立 Docker PostgreSQL `codex-issue36-test`（127.0.0.1:55441，`console36_test`），顺序运行 `npx tsc -p tsconfig.server.json --outDir .scratch/issue35-dist`、`npx vite build --outDir issue35-test-web` 和 `npx playwright test --config config/playwright/playwright.issue35.config.ts`，均通过；构建提示 chunk 超过 500 kB。浏览器场景包括账号设置导航、强制和主动改密、四角色、开户响应丢失重试以及直属组织与账号不同 ID 的参数核对，具体范围见下方补充验收。

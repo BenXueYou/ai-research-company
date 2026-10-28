@@ -1,0 +1,1018 @@
+{
+  "database": "issue46_test",
+  "port": 3466,
+  "databasePort": 55466,
+  "selectedRecords": [
+    {
+      "id": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+      "kind": "detail",
+      "name": "detail-settled",
+      "outcome": "settled",
+      "candidate": "69ee0c9a-d735-45e8-8517-d0c46bbf77d5",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "company-details",
+      "table": "company_detail_queries",
+      "ledger": "query_point_ledger",
+      "result": {
+        "id": "supplier-result-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "fileId": "file-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "countryCode3": "TUR"
+      },
+      "lateResult": {
+        "id": "late-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "countryCode3": "TUR"
+      }
+    },
+    {
+      "id": "bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+      "kind": "detail",
+      "name": "detail-zero",
+      "outcome": "zero",
+      "candidate": "f66c1f44-68bf-4cce-9cfc-10ac3c95d4af",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "company-details",
+      "table": "company_detail_queries",
+      "ledger": "query_point_ledger",
+      "result": {
+        "id": null
+      },
+      "lateResult": {
+        "id": "late-bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "countryCode3": "TUR"
+      }
+    },
+    {
+      "id": "72422bd6-20ca-4aec-b280-8e8e42916459",
+      "kind": "detail",
+      "name": "detail-failed",
+      "outcome": "failed",
+      "candidate": "a7281bf6-4fa9-4154-8f7f-d14a74497389",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "company-details",
+      "table": "company_detail_queries",
+      "ledger": "query_point_ledger",
+      "result": {
+        "id": "supplier-result-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "fileId": "file-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "countryCode3": "TUR"
+      },
+      "lateResult": {
+        "id": "late-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "countryCode3": "TUR"
+      }
+    },
+    {
+      "id": "878aa9e7-e708-4965-a3f9-af3e043d82d4",
+      "kind": "detail",
+      "name": "detail-unknown",
+      "outcome": "settled",
+      "candidate": "313527c8-55e5-45f7-a404-16bc699a4e9f",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "company-details",
+      "table": "company_detail_queries",
+      "ledger": "query_point_ledger",
+      "result": {
+        "id": "supplier-result-878aa9e7-e708-4965-a3f9-af3e043d82d4",
+        "fileId": "file-878aa9e7-e708-4965-a3f9-af3e043d82d4",
+        "countryCode3": "TUR"
+      },
+      "lateResult": {
+        "id": "late-878aa9e7-e708-4965-a3f9-af3e043d82d4",
+        "countryCode3": "TUR"
+      }
+    },
+    {
+      "id": "7f7205ec-ce3c-4296-b957-78de1ce314ff",
+      "kind": "contact",
+      "name": "contact-settled",
+      "outcome": "settled",
+      "candidate": "5a7be77b-a0f5-41a7-9ac2-b900b7c5f0f9",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "company-contacts",
+      "table": "company_contact_queries",
+      "ledger": "company_contact_point_ledger",
+      "result": {
+        "list": [
+          {
+            "mailsouId": "mailsou-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+            "companyName": "Other Returned Company",
+            "email": "person@example.com"
+          }
+        ],
+        "pageNo": 1,
+        "pageSize": 20,
+        "total": 1
+      },
+      "lateResult": {
+        "list": [],
+        "pageNo": 1,
+        "pageSize": 20,
+        "total": 0
+      }
+    },
+    {
+      "id": "50c40be3-4465-4e09-848f-fc63dec075c3",
+      "kind": "contact",
+      "name": "contact-zero",
+      "outcome": "zero",
+      "candidate": "5a7be77b-a0f5-41a7-9ac2-b900b7c5f0f9",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "company-contacts",
+      "table": "company_contact_queries",
+      "ledger": "company_contact_point_ledger",
+      "result": {
+        "list": [],
+        "pageNo": 2,
+        "pageSize": 20,
+        "total": 0
+      },
+      "lateResult": {
+        "list": [],
+        "pageNo": 2,
+        "pageSize": 20,
+        "total": 0
+      }
+    },
+    {
+      "id": "9431e614-f32c-44f4-a42f-7728f66e1a66",
+      "kind": "contact",
+      "name": "contact-failed",
+      "outcome": "failed",
+      "candidate": "5a7be77b-a0f5-41a7-9ac2-b900b7c5f0f9",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "company-contacts",
+      "table": "company_contact_queries",
+      "ledger": "company_contact_point_ledger",
+      "result": {
+        "list": [
+          {
+            "mailsouId": "mailsou-9431e614-f32c-44f4-a42f-7728f66e1a66",
+            "companyName": "Other Returned Company",
+            "email": "person@example.com"
+          }
+        ],
+        "pageNo": 3,
+        "pageSize": 20,
+        "total": 1
+      },
+      "lateResult": {
+        "list": [],
+        "pageNo": 3,
+        "pageSize": 20,
+        "total": 0
+      }
+    },
+    {
+      "id": "71363a11-6489-4e79-ad84-fccf38aa5a0b",
+      "kind": "product",
+      "name": "product-settled",
+      "outcome": "settled",
+      "candidate": "5a7be77b-a0f5-41a7-9ac2-b900b7c5f0f9",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "product-searches",
+      "table": "product_search_pages",
+      "ledger": "product_search_ledger",
+      "result": {
+        "content": [
+          {
+            "name": "Trade Buyer",
+            "id": "upstream-item-distinct"
+          }
+        ],
+        "page": 1,
+        "size": 20,
+        "total": 1
+      },
+      "lateResult": {
+        "content": [
+          {
+            "name": "Late Buyer"
+          }
+        ],
+        "page": 1,
+        "size": 20,
+        "total": 1
+      }
+    },
+    {
+      "id": "abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+      "kind": "product",
+      "name": "product-zero",
+      "outcome": "zero",
+      "candidate": "5a7be77b-a0f5-41a7-9ac2-b900b7c5f0f9",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "product-searches",
+      "table": "product_search_pages",
+      "ledger": "product_search_ledger",
+      "result": {
+        "content": [],
+        "page": 1,
+        "size": 20,
+        "total": 0
+      },
+      "lateResult": {
+        "content": [
+          {
+            "name": "Late Buyer"
+          }
+        ],
+        "page": 1,
+        "size": 20,
+        "total": 1
+      }
+    },
+    {
+      "id": "888340ff-a076-4508-8920-7754ad1c92dc",
+      "kind": "product",
+      "name": "product-failed",
+      "outcome": "failed",
+      "candidate": "5a7be77b-a0f5-41a7-9ac2-b900b7c5f0f9",
+      "profile": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "base": "product-searches",
+      "table": "product_search_pages",
+      "ledger": "product_search_ledger",
+      "result": {
+        "content": [
+          {
+            "name": "Trade Buyer",
+            "id": "upstream-item-distinct"
+          }
+        ],
+        "page": 1,
+        "size": 20,
+        "total": 1
+      },
+      "lateResult": {
+        "content": [
+          {
+            "name": "Late Buyer"
+          }
+        ],
+        "page": 1,
+        "size": 20,
+        "total": 1
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "billingReference": "bill-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "traceId": "trace-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "evidence": "evidence-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "result": {
+          "id": "wrong-country",
+          "countryCode3": "USA"
+        },
+        "upstreamPoints": "1.2500",
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "billingReference": "bill-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "traceId": "trace-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "evidence": "evidence-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "result": {
+          "id": "supplier-result-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+          "fileId": "file-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+          "countryCode3": "TUR"
+        },
+        "upstreamPoints": "1.2500",
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "billingReference": "bill-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "traceId": "trace-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "evidence": "evidence-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "upstreamPoints": "1.2500",
+        "result": {
+          "id": "supplier-result-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+          "fileId": "file-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+          "countryCode3": "TUR"
+        },
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "billingReference": "bill-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "traceId": "trace-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "evidence": "evidence-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+        "upstreamPoints": "1.5000",
+        "result": {
+          "id": "supplier-result-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+          "fileId": "file-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+          "countryCode3": "TUR"
+        },
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "billingReference": "bill-bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "traceId": "trace-bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "evidence": "evidence-bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "result": {
+          "id": null
+        },
+        "upstreamPoints": "0.1000",
+        "outcome": "zero"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "billingReference": "bill-bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "traceId": "trace-bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "evidence": "evidence-bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "upstreamPoints": "0.1000",
+        "result": {
+          "id": null
+        },
+        "outcome": "zero"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "billingReference": "bill-bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "traceId": "trace-bbcfc31a-188a-4d3c-b4a6-e7aa16403dbe",
+        "evidence": "conflicting-evidence",
+        "upstreamPoints": "0.1000",
+        "result": {
+          "id": null
+        },
+        "outcome": "zero"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "72422bd6-20ca-4aec-b280-8e8e42916459",
+        "billingReference": "bill-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "traceId": "trace-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "evidence": "evidence-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "upstreamPoints": "0.1000",
+        "outcome": "failed"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "72422bd6-20ca-4aec-b280-8e8e42916459",
+        "billingReference": "bill-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "traceId": "trace-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "evidence": "evidence-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "upstreamPoints": "0.1000",
+        "outcome": "failed"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "72422bd6-20ca-4aec-b280-8e8e42916459",
+        "billingReference": "bill-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "traceId": "trace-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "evidence": "conflicting-evidence",
+        "upstreamPoints": "0.1000",
+        "outcome": "failed"
+      }
+    },
+    {
+      "path": "company-details/late-results",
+      "body": {
+        "queryId": "72422bd6-20ca-4aec-b280-8e8e42916459",
+        "billingReference": "bill-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "traceId": "trace-72422bd6-20ca-4aec-b280-8e8e42916459-late",
+        "evidence": "evidence-72422bd6-20ca-4aec-b280-8e8e42916459-late",
+        "result": {
+          "id": "late-72422bd6-20ca-4aec-b280-8e8e42916459",
+          "countryCode3": "TUR"
+        }
+      }
+    },
+    {
+      "path": "company-details/late-results",
+      "body": {
+        "queryId": "72422bd6-20ca-4aec-b280-8e8e42916459",
+        "billingReference": "bill-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "traceId": "trace-72422bd6-20ca-4aec-b280-8e8e42916459-late",
+        "evidence": "evidence-72422bd6-20ca-4aec-b280-8e8e42916459-late",
+        "result": {
+          "id": "late-72422bd6-20ca-4aec-b280-8e8e42916459",
+          "countryCode3": "TUR"
+        }
+      }
+    },
+    {
+      "path": "company-details/late-results",
+      "body": {
+        "queryId": "72422bd6-20ca-4aec-b280-8e8e42916459",
+        "billingReference": "bill-72422bd6-20ca-4aec-b280-8e8e42916459",
+        "traceId": "trace-72422bd6-20ca-4aec-b280-8e8e42916459-late",
+        "evidence": "conflicting-late",
+        "result": {
+          "id": "late-72422bd6-20ca-4aec-b280-8e8e42916459",
+          "countryCode3": "TUR"
+        }
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "878aa9e7-e708-4965-a3f9-af3e043d82d4",
+        "billingReference": "bill-878aa9e7-e708-4965-a3f9-af3e043d82d4",
+        "traceId": "trace-878aa9e7-e708-4965-a3f9-af3e043d82d4",
+        "evidence": "evidence-878aa9e7-e708-4965-a3f9-af3e043d82d4",
+        "result": {
+          "id": "supplier-result-878aa9e7-e708-4965-a3f9-af3e043d82d4",
+          "fileId": "file-878aa9e7-e708-4965-a3f9-af3e043d82d4",
+          "countryCode3": "TUR"
+        },
+        "upstreamPoints": "1.2500",
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "billingReference": "bill-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "traceId": "trace-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "evidence": "evidence-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "result": {
+          "list": [
+            {
+              "mailsouId": "mailsou-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+              "companyName": "Other Returned Company",
+              "email": "person@example.com"
+            }
+          ],
+          "pageNo": 1,
+          "pageSize": 20,
+          "total": 1
+        },
+        "upstreamPoints": "1.2500",
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "billingReference": "bill-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "traceId": "trace-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "evidence": "evidence-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "upstreamPoints": "1.2500",
+        "result": {
+          "list": [
+            {
+              "mailsouId": "mailsou-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+              "companyName": "Other Returned Company",
+              "email": "person@example.com"
+            }
+          ],
+          "pageNo": 1,
+          "pageSize": 20,
+          "total": 1
+        },
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "billingReference": "bill-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "traceId": "trace-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+        "evidence": "conflicting-evidence",
+        "upstreamPoints": "1.2500",
+        "result": {
+          "list": [
+            {
+              "mailsouId": "mailsou-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+              "companyName": "Other Returned Company",
+              "email": "person@example.com"
+            }
+          ],
+          "pageNo": 1,
+          "pageSize": 20,
+          "total": 1
+        },
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "50c40be3-4465-4e09-848f-fc63dec075c3",
+        "billingReference": "bill-50c40be3-4465-4e09-848f-fc63dec075c3",
+        "traceId": "trace-50c40be3-4465-4e09-848f-fc63dec075c3",
+        "evidence": "evidence-50c40be3-4465-4e09-848f-fc63dec075c3",
+        "result": {
+          "list": [],
+          "pageNo": 2,
+          "pageSize": 20,
+          "total": 0
+        },
+        "upstreamPoints": "0.1000",
+        "outcome": "zero"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "50c40be3-4465-4e09-848f-fc63dec075c3",
+        "billingReference": "bill-50c40be3-4465-4e09-848f-fc63dec075c3",
+        "traceId": "trace-50c40be3-4465-4e09-848f-fc63dec075c3",
+        "evidence": "evidence-50c40be3-4465-4e09-848f-fc63dec075c3",
+        "upstreamPoints": "0.1000",
+        "result": {
+          "list": [],
+          "pageNo": 2,
+          "pageSize": 20,
+          "total": 0
+        },
+        "outcome": "zero"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "50c40be3-4465-4e09-848f-fc63dec075c3",
+        "billingReference": "bill-50c40be3-4465-4e09-848f-fc63dec075c3",
+        "traceId": "trace-50c40be3-4465-4e09-848f-fc63dec075c3",
+        "evidence": "conflicting-evidence",
+        "upstreamPoints": "0.1000",
+        "result": {
+          "list": [],
+          "pageNo": 2,
+          "pageSize": 20,
+          "total": 0
+        },
+        "outcome": "zero"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "billingReference": "bill-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "traceId": "trace-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "evidence": "evidence-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "upstreamPoints": "0.1000",
+        "outcome": "failed"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "billingReference": "bill-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "traceId": "trace-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "evidence": "evidence-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "upstreamPoints": "0.1000",
+        "outcome": "failed"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "billingReference": "bill-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "traceId": "trace-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "evidence": "conflicting-evidence",
+        "upstreamPoints": "0.1000",
+        "outcome": "failed"
+      }
+    },
+    {
+      "path": "company-contacts/late-results",
+      "body": {
+        "queryId": "9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "billingReference": "bill-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "traceId": "trace-9431e614-f32c-44f4-a42f-7728f66e1a66-late",
+        "evidence": "evidence-9431e614-f32c-44f4-a42f-7728f66e1a66-late",
+        "result": {
+          "list": [],
+          "pageNo": 3,
+          "pageSize": 20,
+          "total": 0
+        }
+      }
+    },
+    {
+      "path": "company-contacts/late-results",
+      "body": {
+        "queryId": "9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "billingReference": "bill-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "traceId": "trace-9431e614-f32c-44f4-a42f-7728f66e1a66-late",
+        "evidence": "evidence-9431e614-f32c-44f4-a42f-7728f66e1a66-late",
+        "result": {
+          "list": [],
+          "pageNo": 3,
+          "pageSize": 20,
+          "total": 0
+        }
+      }
+    },
+    {
+      "path": "company-contacts/late-results",
+      "body": {
+        "queryId": "9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "billingReference": "bill-9431e614-f32c-44f4-a42f-7728f66e1a66",
+        "traceId": "trace-9431e614-f32c-44f4-a42f-7728f66e1a66-late",
+        "evidence": "conflicting-late",
+        "result": {
+          "list": [],
+          "pageNo": 3,
+          "pageSize": 20,
+          "total": 0
+        }
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "billingReference": "bill-71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "traceId": "trace-71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "evidence": "evidence-71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "result": {
+          "content": [
+            {
+              "name": "Trade Buyer",
+              "id": "upstream-item-distinct"
+            }
+          ],
+          "page": 1,
+          "size": 20,
+          "total": 1
+        },
+        "upstreamPoints": "1.2500",
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "billingReference": "bill-71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "traceId": "trace-71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "evidence": "evidence-71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "upstreamPoints": "1.2500",
+        "result": {
+          "content": [
+            {
+              "name": "Trade Buyer",
+              "id": "upstream-item-distinct"
+            }
+          ],
+          "page": 1,
+          "size": 20,
+          "total": 1
+        },
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "billingReference": "bill-71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "traceId": "trace-71363a11-6489-4e79-ad84-fccf38aa5a0b",
+        "evidence": "conflicting-evidence",
+        "upstreamPoints": "1.2500",
+        "result": {
+          "content": [
+            {
+              "name": "Trade Buyer",
+              "id": "upstream-item-distinct"
+            }
+          ],
+          "page": 1,
+          "size": 20,
+          "total": 1
+        },
+        "outcome": "settled"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "billingReference": "bill-abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "traceId": "trace-abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "evidence": "evidence-abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "result": {
+          "content": [],
+          "page": 1,
+          "size": 20,
+          "total": 0
+        },
+        "upstreamPoints": "0.1000",
+        "outcome": "zero"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "billingReference": "bill-abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "traceId": "trace-abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "evidence": "evidence-abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "upstreamPoints": "0.1000",
+        "result": {
+          "content": [],
+          "page": 1,
+          "size": 20,
+          "total": 0
+        },
+        "outcome": "zero"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "billingReference": "bill-abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "traceId": "trace-abd1e3ed-1eb5-4a8e-824a-fb741e5f5f92",
+        "evidence": "conflicting-evidence",
+        "upstreamPoints": "0.1000",
+        "result": {
+          "content": [],
+          "page": 1,
+          "size": 20,
+          "total": 0
+        },
+        "outcome": "zero"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "888340ff-a076-4508-8920-7754ad1c92dc",
+        "billingReference": "bill-888340ff-a076-4508-8920-7754ad1c92dc",
+        "traceId": "trace-888340ff-a076-4508-8920-7754ad1c92dc",
+        "evidence": "evidence-888340ff-a076-4508-8920-7754ad1c92dc",
+        "upstreamPoints": "0.1000",
+        "outcome": "failed"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "888340ff-a076-4508-8920-7754ad1c92dc",
+        "billingReference": "bill-888340ff-a076-4508-8920-7754ad1c92dc",
+        "traceId": "trace-888340ff-a076-4508-8920-7754ad1c92dc",
+        "evidence": "evidence-888340ff-a076-4508-8920-7754ad1c92dc",
+        "upstreamPoints": "0.1000",
+        "outcome": "failed"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "888340ff-a076-4508-8920-7754ad1c92dc",
+        "billingReference": "bill-888340ff-a076-4508-8920-7754ad1c92dc",
+        "traceId": "trace-888340ff-a076-4508-8920-7754ad1c92dc",
+        "evidence": "conflicting-evidence",
+        "upstreamPoints": "0.1000",
+        "outcome": "failed"
+      }
+    },
+    {
+      "path": "product-searches/late-results",
+      "body": {
+        "queryId": "888340ff-a076-4508-8920-7754ad1c92dc",
+        "billingReference": "bill-888340ff-a076-4508-8920-7754ad1c92dc",
+        "traceId": "trace-888340ff-a076-4508-8920-7754ad1c92dc-late",
+        "evidence": "evidence-888340ff-a076-4508-8920-7754ad1c92dc-late",
+        "result": {
+          "content": [
+            {
+              "name": "Late Buyer"
+            }
+          ],
+          "page": 1,
+          "size": 20,
+          "total": 1
+        }
+      }
+    },
+    {
+      "path": "product-searches/late-results",
+      "body": {
+        "queryId": "888340ff-a076-4508-8920-7754ad1c92dc",
+        "billingReference": "bill-888340ff-a076-4508-8920-7754ad1c92dc",
+        "traceId": "trace-888340ff-a076-4508-8920-7754ad1c92dc-late",
+        "evidence": "evidence-888340ff-a076-4508-8920-7754ad1c92dc-late",
+        "result": {
+          "content": [
+            {
+              "name": "Late Buyer"
+            }
+          ],
+          "page": 1,
+          "size": 20,
+          "total": 1
+        }
+      }
+    },
+    {
+      "path": "product-searches/late-results",
+      "body": {
+        "queryId": "888340ff-a076-4508-8920-7754ad1c92dc",
+        "billingReference": "bill-888340ff-a076-4508-8920-7754ad1c92dc",
+        "traceId": "trace-888340ff-a076-4508-8920-7754ad1c92dc-late",
+        "evidence": "conflicting-late",
+        "result": {
+          "content": [
+            {
+              "name": "Late Buyer"
+            }
+          ],
+          "page": 1,
+          "size": 20,
+          "total": 1
+        }
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-details/late-results",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-contacts/late-results",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "product-searches/late-results",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-details/late-results",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-contacts/late-results",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "product-searches/late-results",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-details/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-details/late-results",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-contacts/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "company-contacts/late-results",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "product-searches/reconciliations",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    },
+    {
+      "path": "product-searches/late-results",
+      "body": {
+        "queryId": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+      }
+    }
+  ],
+  "balances": {
+    "balance": "96.0000",
+    "query_frozen": "0.0000"
+  },
+  "supplierCalls": [],
+  "platformActor": "4833a8dc-06ed-4dcd-915d-b0a810831bf2",
+  "terminalOrganization": "432f3511-a745-4510-b6a4-f85e184a18a7",
+  "storedProfiles": [
+    {
+      "id": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "query_id": "161c1c44-ab62-40b3-b80b-95659d0a6c66",
+      "detail_id": "supplier-detail-distinct"
+    },
+    {
+      "id": "9719b3d2-e5a4-470a-92fa-9ed4c8834f57",
+      "query_id": "c37615a3-aa1b-4d34-b1b0-70a1b498a1f7",
+      "detail_id": "supplier-result-c37615a3-aa1b-4d34-b1b0-70a1b498a1f7"
+    },
+    {
+      "id": "1b0de79e-4162-4ffc-b9c0-17234e6f9f00",
+      "query_id": "878aa9e7-e708-4965-a3f9-af3e043d82d4",
+      "detail_id": "supplier-result-878aa9e7-e708-4965-a3f9-af3e043d82d4"
+    }
+  ],
+  "contacts": [
+    {
+      "id": "153c1bbd-92ce-4048-9353-0d41cc387bde",
+      "query_id": "7f7205ec-ce3c-4296-b957-78de1ce314ff",
+      "profile_id": "7e109e84-798f-41de-8645-05a4a84f3704",
+      "mailsou_id": "mailsou-7f7205ec-ce3c-4296-b957-78de1ce314ff",
+      "ownership_status": "pending"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "004db26f-519d-4fed-9dbe-802dbc16a32f",
+      "detail_loss_query_id": "72422bd6-20ca-4aec-b280-8e8e42916459",
+      "contact_loss_query_id": null,
+      "product_loss_page_id": null
+    },
+    {
+      "id": "add031a2-fcd4-46d0-9166-54c8dd1472d9",
+      "detail_loss_query_id": null,
+      "contact_loss_query_id": "9431e614-f32c-44f4-a42f-7728f66e1a66",
+      "product_loss_page_id": null
+    },
+    {
+      "id": "d342adce-9372-4720-b85b-c8c67a1f10f8",
+      "detail_loss_query_id": null,
+      "contact_loss_query_id": null,
+      "product_loss_page_id": "888340ff-a076-4508-8920-7754ad1c92dc"
+    }
+  ]
+}

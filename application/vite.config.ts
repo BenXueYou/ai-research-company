@@ -7,6 +7,7 @@ export default defineConfig({
     configureServer(server) {
       const paths = new Set([
         '/platform/overview', '/platform/organizations', '/platform/ledger', '/platform/reconciliation', '/platform/reconciliation/upstream', '/platform/settings',
+        '/platform/ledger/profit', '/platform/ledger/flows',
         '/distribution/organizations', '/distribution/orders', '/distribution/profit',
         '/terminal/search', '/terminal/profiles', '/terminal/emails', '/terminal/sending-settings', '/terminal/members', '/terminal/usage',
         '/account/settings', '/help'

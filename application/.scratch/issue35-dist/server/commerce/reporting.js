@@ -74,11 +74,12 @@ export class ReportingService {
       customer_status AS "customerStatus",deleted_at AS "deletedAt",fetched_at AS "fetchedAt",
       main_products AS "mainProducts",purchasing_needs AS "purchasingNeeds",
       cooperation_intent AS "cooperationIntent",detail
-      FROM company_profiles ORDER BY organization_id,id`)).rows;
+      FROM company_profiles WHERE organization_id=ANY($1::uuid[]) ORDER BY organization_id,id`, [ids])).rows;
         const emails = (await this.pool.query(`SELECT b.id,b.organization_id AS "organizationId",b.profile_id AS "profileId",
       b.channel_kind AS "channelKind",b.usage_day AS "usageDay",r.id AS "recipientId",r.status,
       r.email,r.subject,r.content
-      FROM email_batches b JOIN email_recipients r ON r.batch_id=b.id ORDER BY b.created_at,b.id,r.id`)).rows;
+      FROM email_batches b JOIN email_recipients r ON r.batch_id=b.id AND r.organization_id=b.organization_id
+      WHERE b.organization_id=ANY($1::uuid[]) ORDER BY b.created_at,b.id,r.id`, [ids])).rows;
         const procurement = (await this.pool.query(`SELECT id,event,reference,internal_delta AS "internalDelta",
       upstream_delta AS "upstreamDelta",cash_outflow AS "cashOutflow",expense_delta AS "expenseDelta",
       balance_after AS "balanceAfter",created_at AS "createdAt"

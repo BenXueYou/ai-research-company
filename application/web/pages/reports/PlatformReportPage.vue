@@ -1,7 +1,6 @@
 <template>
   <section class="platform-report">
     <header>
-      <h1>{{ kind === 'profit' ? '交易与利润' : '账务流水' }}</h1>
       <el-button @click="load">刷新</el-button>
       <RouterLink to="/platform/ledger">返回点数与账务</RouterLink>
       <a href="/api/reports/own-ledger.csv" download="own-ledger.csv">导出自有账务</a>
