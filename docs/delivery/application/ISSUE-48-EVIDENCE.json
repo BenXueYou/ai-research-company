@@ -1,0 +1,115 @@
+{
+  "selected": {
+    "id": "807836af-cc5b-4ce5-b4a4-9efb386b11dc",
+    "parent_id": "b20df205-f222-4961-a351-c3452fbbcea0",
+    "account_id": "e8daef4b-e641-44a8-ab1d-1c9f27238eca",
+    "email": "browser48@example.com"
+  },
+  "contact": [
+    "+852",
+    "13948001234"
+  ],
+  "requests": [
+    {
+      "path": "/api/organizations",
+      "body": {
+        "name": "Issue48 Browser Terminal",
+        "kind": "terminal",
+        "countryCode": "+852",
+        "phone": "13948001234",
+        "email": "browser48@example.com",
+        "requestId": "43110b7c-9bee-4c02-a95c-33528de71933"
+      }
+    },
+    {
+      "path": "/api/organizations/state",
+      "body": {
+        "organizationId": "807836af-cc5b-4ce5-b4a4-9efb386b11dc",
+        "active": false
+      }
+    },
+    {
+      "path": "/api/organizations/state",
+      "body": {
+        "organizationId": "807836af-cc5b-4ce5-b4a4-9efb386b11dc",
+        "active": true
+      }
+    },
+    {
+      "path": "/api/organizations/state",
+      "body": {
+        "organizationId": "807836af-cc5b-4ce5-b4a4-9efb386b11dc",
+        "active": false
+      }
+    },
+    {
+      "path": "/api/organizations/state",
+      "body": {
+        "organizationId": "807836af-cc5b-4ce5-b4a4-9efb386b11dc",
+        "active": true
+      }
+    },
+    {
+      "path": "/api/password-resets",
+      "body": {
+        "accountId": "e8daef4b-e641-44a8-ab1d-1c9f27238eca",
+        "requestId": "91cff2e3-924d-4de2-876b-5c32ba9b5e57"
+      }
+    },
+    {
+      "path": "/api/password-resets",
+      "body": {
+        "accountId": "e8daef4b-e641-44a8-ab1d-1c9f27238eca",
+        "requestId": "f4772e80-db60-4080-b6dc-dbc137628794"
+      }
+    },
+    {
+      "path": "/api/organizations",
+      "body": {
+        "name": "Issue48 Lost Response",
+        "kind": "terminal",
+        "countryCode": "+86",
+        "phone": "13948005678",
+        "email": "lost48@example.com",
+        "requestId": "951489ad-7d1f-4931-bcf6-cd1c60758da2"
+      }
+    },
+    {
+      "path": "/api/organizations",
+      "body": {
+        "name": "Issue48 Lost Response",
+        "kind": "terminal",
+        "countryCode": "+86",
+        "phone": "13948005678",
+        "email": "lost48@example.com",
+        "requestId": "951489ad-7d1f-4931-bcf6-cd1c60758da2"
+      }
+    },
+    {
+      "path": "/api/organizations",
+      "body": {
+        "name": "Issue48 Level Two Terminal",
+        "kind": "terminal",
+        "countryCode": "+86",
+        "phone": "13948009998",
+        "email": "level2-browser48@example.com",
+        "requestId": "a6803d69-c95e-4280-9643-8410e1d04137"
+      }
+    }
+  ],
+  "resetRecords": "2",
+  "openingRows": 1,
+  "openingRetryStatus": 409,
+  "externalCalls": 0,
+  "queryLedgerRows": 0,
+  "transfers": 0,
+  "navigationReads": 1,
+  "viteHistory": true,
+  "crossLevelReprice": {
+    "orderId": "82dae7b7-6f8c-4331-a28e-92d959681245",
+    "status": 403,
+    "quantity": "1.0000",
+    "unitPrice": "1.1000"
+  },
+  "forgedParentStatus": 400
+}

@@ -1,0 +1,1330 @@
+{
+  "database": "issue50_7b10fd6c28a24bef9b39b5072a8e3954_test",
+  "platformId": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+  "selectedId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+  "otherId": "faef6eb8-8728-4824-94f5-850b33feb3fb",
+  "terminalId": "b5ac4736-40cc-4154-bae8-0a63de761dc0",
+  "nestedId": "801755cd-2901-47f0-9f6e-70d3715da48a",
+  "roles": [
+    {
+      "role": "distributor",
+      "organizationId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "email": "distributor@issue40.test",
+      "defaultPath": "/distribution/organizations"
+    },
+    {
+      "role": "admin",
+      "organizationId": "b5ac4736-40cc-4154-bae8-0a63de761dc0",
+      "id": "40ecc2f4-2e9c-4589-830a-b4aa79654b02",
+      "email": "admin@issue40.test",
+      "defaultPath": "/terminal/search"
+    },
+    {
+      "role": "sales",
+      "organizationId": "b5ac4736-40cc-4154-bae8-0a63de761dc0",
+      "id": "77f3d3a7-6202-49f2-a05f-fbe0835f2642",
+      "email": "sales@issue40.test",
+      "defaultPath": "/terminal/search"
+    }
+  ],
+  "submissions": [
+    {
+      "requestId": "cc71c94f-491a-4ff3-b0c4-99a11db5a9d2",
+      "buyerId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "quantity": "2",
+      "unitPrice": "2.2"
+    },
+    {
+      "requestId": "c6b3e06a-857f-4a17-95a0-21f1afc871dd",
+      "buyerId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "quantity": "2",
+      "unitPrice": "2.2"
+    },
+    {
+      "requestId": "c7ab5d30-a744-447f-8287-28c969bb5c8c",
+      "buyerId": "faef6eb8-8728-4824-94f5-850b33feb3fb",
+      "quantity": "8",
+      "unitPrice": "2.2"
+    },
+    {
+      "requestId": "ae243c7f-e09b-4a34-a5ba-4521692a7d49",
+      "buyerId": "801755cd-2901-47f0-9f6e-70d3715da48a",
+      "quantity": "4",
+      "unitPrice": "3"
+    },
+    {
+      "requestId": "bd467453-f971-4da7-88c1-aa29c151d61e",
+      "buyerId": "801755cd-2901-47f0-9f6e-70d3715da48a",
+      "quantity": "2",
+      "unitPrice": "55"
+    }
+  ],
+  "reprices": [
+    {
+      "requestId": "b6af6d0d-47b2-49ff-8128-a59619c4dfd2",
+      "orderId": "426ca34e-f037-4475-9d25-d704a323d932",
+      "quantity": "3",
+      "unitPrice": "2.2000"
+    },
+    {
+      "requestId": "b6af6d0d-47b2-49ff-8128-a59619c4dfd2",
+      "orderId": "426ca34e-f037-4475-9d25-d704a323d932",
+      "quantity": "3",
+      "unitPrice": "2.2000"
+    },
+    {
+      "requestId": "a1bb7555-f3b8-45b2-819a-d8da70883874",
+      "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+      "quantity": "5",
+      "unitPrice": "3.0000"
+    }
+  ],
+  "confirmations": [
+    {
+      "requestId": "b279335d-a747-4705-a535-5e9e1e3707b7",
+      "orderId": "426ca34e-f037-4475-9d25-d704a323d932",
+      "receiptReference": "T07-UI-RECEIPT"
+    },
+    {
+      "requestId": "b279335d-a747-4705-a535-5e9e1e3707b7",
+      "orderId": "426ca34e-f037-4475-9d25-d704a323d932",
+      "receiptReference": "T07-UI-RECEIPT"
+    },
+    {
+      "requestId": "81093cba-1183-4551-bd75-fe61e4dfa968",
+      "orderId": "977b87dc-b275-4128-8521-329e5ea71cde",
+      "receiptReference": "T09-UI-RECEIPT"
+    },
+    {
+      "requestId": "45ae176b-b1de-4432-90c1-807ca4325451",
+      "orderId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+      "receiptReference": "SHORTAGE"
+    },
+    {
+      "requestId": "45ae176b-b1de-4432-90c1-807ca4325451",
+      "orderId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+      "receiptReference": "SHORTAGE"
+    },
+    {
+      "requestId": "8931c549-9ef3-4364-bce8-8780db93fe36",
+      "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+      "receiptReference": "DISTRIBUTION-SHORTAGE"
+    },
+    {
+      "requestId": "8931c549-9ef3-4364-bce8-8780db93fe36",
+      "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+      "receiptReference": "DISTRIBUTION-SHORTAGE"
+    },
+    {
+      "requestId": "4b92f3a8-f03e-4669-9da1-e58f8c0a36da",
+      "orderId": "3f00c4d9-f3e9-406d-a424-2515ef181f02",
+      "receiptReference": "DISTRIBUTION-REFUND"
+    }
+  ],
+  "transfers": [
+    {
+      "requestId": "4c5efc7b-c2e6-44cb-b8ab-84531a77746f",
+      "orderId": "426ca34e-f037-4475-9d25-d704a323d932"
+    },
+    {
+      "requestId": "3a536345-7bde-415e-be1d-93fad5185a4d",
+      "orderId": "2647f11e-3221-41ba-ad25-416d753d7062"
+    },
+    {
+      "requestId": "3a536345-7bde-415e-be1d-93fad5185a4d",
+      "orderId": "2647f11e-3221-41ba-ad25-416d753d7062"
+    },
+    {
+      "requestId": "1b913990-ef7e-43e5-83d8-7fc8883801d0",
+      "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e"
+    },
+    {
+      "requestId": "1b913990-ef7e-43e5-83d8-7fc8883801d0",
+      "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e"
+    }
+  ],
+  "refunds": [
+    {
+      "requestId": "fdca7680-0da3-4324-b278-100e67be792c",
+      "orderId": "977b87dc-b275-4128-8521-329e5ea71cde",
+      "refundEvidence": "T09-UI-REFUND"
+    },
+    {
+      "requestId": "b58f8609-399f-40eb-b948-f9c54f0fe5b1",
+      "orderId": "3f00c4d9-f3e9-406d-a424-2515ef181f02",
+      "refundEvidence": "DISTRIBUTION-REFUND-EVIDENCE"
+    }
+  ],
+  "supplierCalls": {
+    "list": 0,
+    "detail": 0,
+    "contacts": 0
+  },
+  "distributionAudit": {
+    "selection": {
+      "accountId": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "organizationId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "snapshot": {
+        "sellerId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+        "children": [
+          {
+            "id": "801755cd-2901-47f0-9f6e-70d3715da48a",
+            "name": "跨级买方",
+            "kind": "terminal"
+          }
+        ],
+        "inventory": {
+          "balance": "3.0000",
+          "frozen": "0.0000",
+          "reserved": "0.0000",
+          "average_cost": "2.2000"
+        },
+        "pricing": {
+          "minimum_markup": "0.1000"
+        },
+        "orders": []
+      }
+    },
+    "competition": {
+      "inputs": [
+        {
+          "requestId": "2db87628-c612-4cfc-998c-7754642479fb",
+          "orderId": "0977a4b8-1008-4e1a-b014-caecc3ce4eac"
+        },
+        {
+          "requestId": "5b6b012d-173e-4fc4-99a8-f747b7524d1b",
+          "orderId": "7477df32-d7bf-44b6-8be5-74959f2ee194"
+        }
+      ],
+      "statuses": [
+        201,
+        409
+      ]
+    },
+    "transferReplay": {
+      "input": {
+        "requestId": "8b700c61-b7fc-4281-b449-fa4810feb631",
+        "orderId": "0977a4b8-1008-4e1a-b014-caecc3ce4eac"
+      },
+      "statuses": [
+        201,
+        201,
+        201
+      ]
+    }
+  },
+  "reserveRequests": [
+    {
+      "requestId": "e44ab329-948f-4a4e-806d-203bfcdebff2",
+      "orderId": "2647f11e-3221-41ba-ad25-416d753d7062"
+    },
+    {
+      "requestId": "e44ab329-948f-4a4e-806d-203bfcdebff2",
+      "orderId": "2647f11e-3221-41ba-ad25-416d753d7062"
+    },
+    {
+      "requestId": "b56c81a6-9710-44ae-adf2-7f116e359b32",
+      "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e"
+    }
+  ],
+  "competition": {
+    "shortageId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+    "competitorId": "2647f11e-3221-41ba-ad25-416d753d7062",
+    "winningId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+    "waitingId": "2647f11e-3221-41ba-ad25-416d753d7062",
+    "statuses": [
+      201,
+      409
+    ]
+  },
+  "orders": [
+    {
+      "id": "426ca34e-f037-4475-9d25-d704a323d932",
+      "buyer_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "3.0000",
+      "unit_price": "2.2000",
+      "amount": "6.6000",
+      "status": "transferred",
+      "shortage_receipt": false,
+      "receipt_reference": "T07-UI-RECEIPT",
+      "created_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_at": "2026-10-28T14:18:50.093Z"
+    },
+    {
+      "id": "977b87dc-b275-4128-8521-329e5ea71cde",
+      "buyer_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "2.0000",
+      "unit_price": "2.2000",
+      "amount": "4.4000",
+      "status": "refunded",
+      "shortage_receipt": false,
+      "receipt_reference": "T09-UI-RECEIPT",
+      "created_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_at": "2026-10-28T14:18:51.197Z"
+    },
+    {
+      "id": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+      "buyer_id": "faef6eb8-8728-4824-94f5-850b33feb3fb",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "8.0000",
+      "unit_price": "2.2000",
+      "amount": "17.6000",
+      "status": "transferred",
+      "shortage_receipt": true,
+      "receipt_reference": "SHORTAGE",
+      "created_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_at": "2026-10-28T14:18:51.910Z"
+    },
+    {
+      "id": "2647f11e-3221-41ba-ad25-416d753d7062",
+      "buyer_id": "faef6eb8-8728-4824-94f5-850b33feb3fb",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "8.0000",
+      "unit_price": "2.2000",
+      "amount": "17.6000",
+      "status": "transferred",
+      "shortage_receipt": true,
+      "receipt_reference": "COMPETITOR",
+      "created_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_at": "2026-10-28T14:18:52.352Z"
+    },
+    {
+      "id": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+      "buyer_id": "801755cd-2901-47f0-9f6e-70d3715da48a",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "quantity": "5.0000",
+      "unit_price": "3.0000",
+      "amount": "15.0000",
+      "status": "transferred",
+      "shortage_receipt": true,
+      "receipt_reference": "DISTRIBUTION-SHORTAGE",
+      "created_by": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "confirmed_by": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "confirmed_at": "2026-10-28T14:18:57.134Z"
+    },
+    {
+      "id": "4f25deae-6c90-429f-81ea-9cec69c92b2a",
+      "buyer_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "2.0000",
+      "unit_price": "50.0000",
+      "amount": "100.0000",
+      "status": "transferred",
+      "shortage_receipt": false,
+      "receipt_reference": "DISTRIBUTOR-TOPUP",
+      "created_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_at": "2026-10-28T14:18:57.707Z"
+    },
+    {
+      "id": "080f9407-065d-484b-8e0e-3cf92d3d842d",
+      "buyer_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "2.0000",
+      "unit_price": "50.0000",
+      "amount": "100.0000",
+      "status": "transferred",
+      "shortage_receipt": false,
+      "receipt_reference": "DISTRIBUTION-REFUND-STOCK",
+      "created_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_at": "2026-10-28T14:18:59.095Z"
+    },
+    {
+      "id": "3f00c4d9-f3e9-406d-a424-2515ef181f02",
+      "buyer_id": "801755cd-2901-47f0-9f6e-70d3715da48a",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "quantity": "2.0000",
+      "unit_price": "55.0000",
+      "amount": "110.0000",
+      "status": "refunded",
+      "shortage_receipt": false,
+      "receipt_reference": "DISTRIBUTION-REFUND",
+      "created_by": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "confirmed_by": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "confirmed_at": "2026-10-28T14:18:59.485Z"
+    },
+    {
+      "id": "0977a4b8-1008-4e1a-b014-caecc3ce4eac",
+      "buyer_id": "801755cd-2901-47f0-9f6e-70d3715da48a",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "quantity": "3.0000",
+      "unit_price": "55.0000",
+      "amount": "165.0000",
+      "status": "transferred",
+      "shortage_receipt": true,
+      "receipt_reference": "DISTRIBUTION-RACE-A",
+      "created_by": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "confirmed_by": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "confirmed_at": "2026-10-28T14:18:59.840Z"
+    },
+    {
+      "id": "7477df32-d7bf-44b6-8be5-74959f2ee194",
+      "buyer_id": "801755cd-2901-47f0-9f6e-70d3715da48a",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "quantity": "3.0000",
+      "unit_price": "55.0000",
+      "amount": "165.0000",
+      "status": "awaiting_stock",
+      "shortage_receipt": true,
+      "receipt_reference": "DISTRIBUTION-RACE-B",
+      "created_by": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "confirmed_by": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "confirmed_at": "2026-10-28T14:18:59.899Z"
+    },
+    {
+      "id": "c59c0b80-2577-4aa1-bd4c-853325843035",
+      "buyer_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "1.0000",
+      "unit_price": "50.0000",
+      "amount": "50.0000",
+      "status": "transferred",
+      "shortage_receipt": false,
+      "receipt_reference": "DISTRIBUTION-RACE-STOCK",
+      "created_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_by": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "confirmed_at": "2026-10-28T14:18:59.945Z"
+    }
+  ],
+  "inventory": [
+    {
+      "balance": "5.0000",
+      "reserved": "0.0000",
+      "average_cost": "10.0000"
+    }
+  ],
+  "distributorInventory": [
+    {
+      "organization_id": "faef6eb8-8728-4824-94f5-850b33feb3fb",
+      "balance": "16.0000",
+      "frozen": "0.0000",
+      "reserved": "0.0000",
+      "average_cost": "2.2000"
+    },
+    {
+      "organization_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "balance": "0.0000",
+      "frozen": "0.0000",
+      "reserved": "0.0000",
+      "average_cost": "50.0000"
+    }
+  ],
+  "buyerBalances": [
+    {
+      "organization_id": "801755cd-2901-47f0-9f6e-70d3715da48a",
+      "balance": "8.0000"
+    }
+  ],
+  "reservationLedger": [
+    {
+      "id": "1",
+      "order_id": "426ca34e-f037-4475-9d25-d704a323d932",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "3.0000",
+      "balance_after": "10.0000",
+      "reserved_after": "3.0000",
+      "created_at": "2026-10-28T14:18:50.096Z"
+    },
+    {
+      "id": "2",
+      "order_id": "977b87dc-b275-4128-8521-329e5ea71cde",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "2.0000",
+      "balance_after": "7.0000",
+      "reserved_after": "2.0000",
+      "created_at": "2026-10-28T14:18:51.200Z"
+    },
+    {
+      "id": "3",
+      "order_id": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "8.0000",
+      "balance_after": "15.0000",
+      "reserved_after": "8.0000",
+      "created_at": "2026-10-28T14:18:52.625Z"
+    },
+    {
+      "id": "4",
+      "order_id": "2647f11e-3221-41ba-ad25-416d753d7062",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "8.0000",
+      "balance_after": "8.0000",
+      "reserved_after": "8.0000",
+      "created_at": "2026-10-28T14:18:53.114Z"
+    },
+    {
+      "id": "5",
+      "order_id": "4f25deae-6c90-429f-81ea-9cec69c92b2a",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "2.0000",
+      "balance_after": "10.0000",
+      "reserved_after": "2.0000",
+      "created_at": "2026-10-28T14:18:57.709Z"
+    },
+    {
+      "id": "6",
+      "order_id": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "quantity": "5.0000",
+      "balance_after": "5.0000",
+      "reserved_after": "5.0000",
+      "created_at": "2026-10-28T14:18:58.446Z"
+    },
+    {
+      "id": "7",
+      "order_id": "080f9407-065d-484b-8e0e-3cf92d3d842d",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "2.0000",
+      "balance_after": "8.0000",
+      "reserved_after": "2.0000",
+      "created_at": "2026-10-28T14:18:59.097Z"
+    },
+    {
+      "id": "8",
+      "order_id": "3f00c4d9-f3e9-406d-a424-2515ef181f02",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "quantity": "2.0000",
+      "balance_after": "2.0000",
+      "reserved_after": "2.0000",
+      "created_at": "2026-10-28T14:18:59.488Z"
+    },
+    {
+      "id": "9",
+      "order_id": "c59c0b80-2577-4aa1-bd4c-853325843035",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "quantity": "1.0000",
+      "balance_after": "6.0000",
+      "reserved_after": "1.0000",
+      "created_at": "2026-10-28T14:18:59.947Z"
+    },
+    {
+      "id": "10",
+      "order_id": "0977a4b8-1008-4e1a-b014-caecc3ce4eac",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "quantity": "3.0000",
+      "balance_after": "3.0000",
+      "reserved_after": "3.0000",
+      "created_at": "2026-10-28T14:18:59.995Z"
+    }
+  ],
+  "procurementLedger": [
+    {
+      "id": "1",
+      "event": "purchase",
+      "reference": "1fd54d81-761b-4af6-ad0e-08d1f85c180c",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "internal_delta": "8.0000",
+      "upstream_delta": "8.0000",
+      "cash_outflow": "80.0000",
+      "expense_delta": "0.0000",
+      "balance_after": "15.0000",
+      "average_cost_after": "6.2667",
+      "details": {
+        "purpose": "sale",
+        "expenseId": null,
+        "receiptReference": "eac3ff4a-88c9-4d87-870f-1026647bf5d9",
+        "coefficientSnapshot": "1.0000"
+      },
+      "created_at": "2026-10-28T14:18:52.395Z"
+    },
+    {
+      "id": "2",
+      "event": "purchase",
+      "reference": "a9d4f074-bacb-4ddd-9992-6d0ba86d46ff",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "internal_delta": "1.0000",
+      "upstream_delta": "1.0000",
+      "cash_outflow": "10.0000",
+      "expense_delta": "0.0000",
+      "balance_after": "8.0000",
+      "average_cost_after": "6.7334",
+      "details": {
+        "purpose": "sale",
+        "expenseId": null,
+        "receiptReference": "6cd2aa68-9fd3-4d1f-bd44-613f2d490811",
+        "coefficientSnapshot": "1.0000"
+      },
+      "created_at": "2026-10-28T14:18:52.927Z"
+    },
+    {
+      "id": "3",
+      "event": "purchase",
+      "reference": "a95e9745-1059-4201-9441-4f3453cc8d5e",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "internal_delta": "10.0000",
+      "upstream_delta": "10.0000",
+      "cash_outflow": "100.0000",
+      "expense_delta": "0.0000",
+      "balance_after": "10.0000",
+      "average_cost_after": "10.0000",
+      "details": {
+        "purpose": "sale",
+        "expenseId": null,
+        "receiptReference": "5caabbde-ed99-4c50-8daa-e38839b404a3",
+        "coefficientSnapshot": "1.0000"
+      },
+      "created_at": "2026-10-28T14:18:57.659Z"
+    }
+  ],
+  "transfersLedger": [
+    {
+      "order_id": "426ca34e-f037-4475-9d25-d704a323d932",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "buyer_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "quantity": "3.0000",
+      "seller_balance_after": "7.0000",
+      "seller_reserved_after": "0.0000",
+      "buyer_balance_after": "3.0000",
+      "buyer_average_cost_after": "2.2000",
+      "sales_unit_cost": "2.0000",
+      "sales_cost": "6.0000",
+      "sales_amount": "6.6000",
+      "gross_profit": "0.6000",
+      "created_at": "2026-10-28T14:18:50.761Z"
+    },
+    {
+      "order_id": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "buyer_id": "faef6eb8-8728-4824-94f5-850b33feb3fb",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "quantity": "8.0000",
+      "seller_balance_after": "7.0000",
+      "seller_reserved_after": "0.0000",
+      "buyer_balance_after": "8.0000",
+      "buyer_average_cost_after": "2.2000",
+      "sales_unit_cost": "6.2667",
+      "sales_cost": "50.1336",
+      "sales_amount": "17.6000",
+      "gross_profit": "-32.5336",
+      "created_at": "2026-10-28T14:18:52.825Z"
+    },
+    {
+      "order_id": "2647f11e-3221-41ba-ad25-416d753d7062",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "buyer_id": "faef6eb8-8728-4824-94f5-850b33feb3fb",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "quantity": "8.0000",
+      "seller_balance_after": "0.0000",
+      "seller_reserved_after": "0.0000",
+      "buyer_balance_after": "16.0000",
+      "buyer_average_cost_after": "2.2000",
+      "sales_unit_cost": "6.7334",
+      "sales_cost": "53.8672",
+      "sales_amount": "17.6000",
+      "gross_profit": "-36.2672",
+      "created_at": "2026-10-28T14:18:53.486Z"
+    },
+    {
+      "order_id": "4f25deae-6c90-429f-81ea-9cec69c92b2a",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "buyer_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "quantity": "2.0000",
+      "seller_balance_after": "8.0000",
+      "seller_reserved_after": "0.0000",
+      "buyer_balance_after": "5.0000",
+      "buyer_average_cost_after": "21.3200",
+      "sales_unit_cost": "10.0000",
+      "sales_cost": "20.0000",
+      "sales_amount": "100.0000",
+      "gross_profit": "80.0000",
+      "created_at": "2026-10-28T14:18:57.734Z"
+    },
+    {
+      "order_id": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "buyer_id": "801755cd-2901-47f0-9f6e-70d3715da48a",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "quantity": "5.0000",
+      "seller_balance_after": "0.0000",
+      "seller_reserved_after": "0.0000",
+      "buyer_balance_after": "5.0000",
+      "buyer_average_cost_after": null,
+      "sales_unit_cost": "21.3200",
+      "sales_cost": "106.6000",
+      "sales_amount": "15.0000",
+      "gross_profit": "-91.6000",
+      "created_at": "2026-10-28T14:18:58.872Z"
+    },
+    {
+      "order_id": "080f9407-065d-484b-8e0e-3cf92d3d842d",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "buyer_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "quantity": "2.0000",
+      "seller_balance_after": "6.0000",
+      "seller_reserved_after": "0.0000",
+      "buyer_balance_after": "2.0000",
+      "buyer_average_cost_after": "50.0000",
+      "sales_unit_cost": "10.0000",
+      "sales_cost": "20.0000",
+      "sales_amount": "100.0000",
+      "gross_profit": "80.0000",
+      "created_at": "2026-10-28T14:18:59.129Z"
+    },
+    {
+      "order_id": "c59c0b80-2577-4aa1-bd4c-853325843035",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "buyer_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "quantity": "1.0000",
+      "seller_balance_after": "5.0000",
+      "seller_reserved_after": "0.0000",
+      "buyer_balance_after": "3.0000",
+      "buyer_average_cost_after": "50.0000",
+      "sales_unit_cost": "10.0000",
+      "sales_cost": "10.0000",
+      "sales_amount": "50.0000",
+      "gross_profit": "40.0000",
+      "created_at": "2026-10-28T14:18:59.971Z"
+    },
+    {
+      "order_id": "0977a4b8-1008-4e1a-b014-caecc3ce4eac",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "buyer_id": "801755cd-2901-47f0-9f6e-70d3715da48a",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "quantity": "3.0000",
+      "seller_balance_after": "0.0000",
+      "seller_reserved_after": "0.0000",
+      "buyer_balance_after": "8.0000",
+      "buyer_average_cost_after": null,
+      "sales_unit_cost": "50.0000",
+      "sales_cost": "150.0000",
+      "sales_amount": "165.0000",
+      "gross_profit": "15.0000",
+      "created_at": "2026-10-28T14:19:00.056Z"
+    }
+  ],
+  "refundsLedger": [
+    {
+      "order_id": "977b87dc-b275-4128-8521-329e5ea71cde",
+      "seller_id": "ca76409a-7118-43d8-9aea-11fa1b239dfc",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "amount": "4.4000",
+      "evidence": "T09-UI-REFUND",
+      "released_quantity": "2.0000",
+      "reserved_after": "0.0000",
+      "created_at": "2026-10-28T14:18:51.378Z"
+    },
+    {
+      "order_id": "3f00c4d9-f3e9-406d-a424-2515ef181f02",
+      "seller_id": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "amount": "110.0000",
+      "evidence": "DISTRIBUTION-REFUND-EVIDENCE",
+      "released_quantity": "2.0000",
+      "reserved_after": "0.0000",
+      "created_at": "2026-10-28T14:18:59.673Z"
+    }
+  ],
+  "requestRecords": [
+    {
+      "request_id": "1b913990-ef7e-43e5-83d8-7fc8883801d0",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "transfer",
+      "payload": {
+        "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+        "requestId": "1b913990-ef7e-43e5-83d8-7fc8883801d0"
+      },
+      "result": {
+        "status": "transferred",
+        "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+        "quantity": "5.0000"
+      }
+    },
+    {
+      "request_id": "2054d25f-438b-41c1-92c7-5c0eb018f7fe",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "reserve",
+      "payload": {
+        "orderId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+        "requestId": "2054d25f-438b-41c1-92c7-5c0eb018f7fe"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+        "reserved": "8.0000"
+      }
+    },
+    {
+      "request_id": "206a1979-bb8e-4334-826a-2866eac0b64a",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "create",
+      "payload": {
+        "buyerId": "faef6eb8-8728-4824-94f5-850b33feb3fb",
+        "quantity": "8",
+        "requestId": "206a1979-bb8e-4334-826a-2866eac0b64a",
+        "unitPrice": "2.2"
+      },
+      "result": {
+        "amount": "17.6000",
+        "status": "unpaid",
+        "orderId": "2647f11e-3221-41ba-ad25-416d753d7062"
+      }
+    },
+    {
+      "request_id": "2bad870a-7ff4-48ef-8eba-8f646d2ff4b2",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "080f9407-065d-484b-8e0e-3cf92d3d842d",
+        "requestId": "2bad870a-7ff4-48ef-8eba-8f646d2ff4b2",
+        "receiptReference": "DISTRIBUTION-REFUND-STOCK"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "080f9407-065d-484b-8e0e-3cf92d3d842d",
+        "reserved": "2.0000"
+      }
+    },
+    {
+      "request_id": "2db87628-c612-4cfc-998c-7754642479fb",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "reserve",
+      "payload": {
+        "orderId": "0977a4b8-1008-4e1a-b014-caecc3ce4eac",
+        "requestId": "2db87628-c612-4cfc-998c-7754642479fb"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "0977a4b8-1008-4e1a-b014-caecc3ce4eac",
+        "reserved": "3.0000"
+      }
+    },
+    {
+      "request_id": "30f66d19-fd0b-4cd4-80b3-86834d1b2111",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "4f25deae-6c90-429f-81ea-9cec69c92b2a",
+        "requestId": "30f66d19-fd0b-4cd4-80b3-86834d1b2111",
+        "receiptReference": "DISTRIBUTOR-TOPUP"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "4f25deae-6c90-429f-81ea-9cec69c92b2a",
+        "reserved": "2.0000"
+      }
+    },
+    {
+      "request_id": "3732cefc-3887-4553-8604-3baf6b421587",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "create",
+      "payload": {
+        "buyerId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+        "quantity": "2",
+        "requestId": "3732cefc-3887-4553-8604-3baf6b421587",
+        "unitPrice": "50"
+      },
+      "result": {
+        "amount": "100.0000",
+        "status": "unpaid",
+        "orderId": "4f25deae-6c90-429f-81ea-9cec69c92b2a"
+      }
+    },
+    {
+      "request_id": "3a536345-7bde-415e-be1d-93fad5185a4d",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "transfer",
+      "payload": {
+        "orderId": "2647f11e-3221-41ba-ad25-416d753d7062",
+        "requestId": "3a536345-7bde-415e-be1d-93fad5185a4d"
+      },
+      "result": {
+        "status": "transferred",
+        "orderId": "2647f11e-3221-41ba-ad25-416d753d7062",
+        "quantity": "8.0000"
+      }
+    },
+    {
+      "request_id": "45ae176b-b1de-4432-90c1-807ca4325451",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+        "requestId": "45ae176b-b1de-4432-90c1-807ca4325451",
+        "receiptReference": "SHORTAGE"
+      },
+      "result": {
+        "status": "awaiting_stock",
+        "orderId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+        "reserved": "0.0000"
+      }
+    },
+    {
+      "request_id": "4ab040ff-9e32-4af1-b495-50ce80c28bb7",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "7477df32-d7bf-44b6-8be5-74959f2ee194",
+        "requestId": "4ab040ff-9e32-4af1-b495-50ce80c28bb7",
+        "receiptReference": "DISTRIBUTION-RACE-B"
+      },
+      "result": {
+        "status": "awaiting_stock",
+        "orderId": "7477df32-d7bf-44b6-8be5-74959f2ee194",
+        "reserved": "0.0000"
+      }
+    },
+    {
+      "request_id": "4b92f3a8-f03e-4669-9da1-e58f8c0a36da",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "3f00c4d9-f3e9-406d-a424-2515ef181f02",
+        "requestId": "4b92f3a8-f03e-4669-9da1-e58f8c0a36da",
+        "receiptReference": "DISTRIBUTION-REFUND"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "3f00c4d9-f3e9-406d-a424-2515ef181f02",
+        "reserved": "2.0000"
+      }
+    },
+    {
+      "request_id": "4c5efc7b-c2e6-44cb-b8ab-84531a77746f",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "transfer",
+      "payload": {
+        "orderId": "426ca34e-f037-4475-9d25-d704a323d932",
+        "requestId": "4c5efc7b-c2e6-44cb-b8ab-84531a77746f"
+      },
+      "result": {
+        "status": "transferred",
+        "orderId": "426ca34e-f037-4475-9d25-d704a323d932",
+        "quantity": "3.0000"
+      }
+    },
+    {
+      "request_id": "607f8ecd-8b24-4adc-a60d-bf2493ae7685",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "transfer",
+      "payload": {
+        "orderId": "080f9407-065d-484b-8e0e-3cf92d3d842d",
+        "requestId": "607f8ecd-8b24-4adc-a60d-bf2493ae7685"
+      },
+      "result": {
+        "status": "transferred",
+        "orderId": "080f9407-065d-484b-8e0e-3cf92d3d842d",
+        "quantity": "2.0000"
+      }
+    },
+    {
+      "request_id": "735df5e0-ec4f-4df9-bcab-c2f0275c0efb",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "c59c0b80-2577-4aa1-bd4c-853325843035",
+        "requestId": "735df5e0-ec4f-4df9-bcab-c2f0275c0efb",
+        "receiptReference": "DISTRIBUTION-RACE-STOCK"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "c59c0b80-2577-4aa1-bd4c-853325843035",
+        "reserved": "1.0000"
+      }
+    },
+    {
+      "request_id": "79663513-c588-431c-9803-cf11d0aa7626",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "create",
+      "payload": {
+        "buyerId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+        "quantity": "2",
+        "requestId": "79663513-c588-431c-9803-cf11d0aa7626",
+        "unitPrice": "50"
+      },
+      "result": {
+        "amount": "100.0000",
+        "status": "unpaid",
+        "orderId": "080f9407-065d-484b-8e0e-3cf92d3d842d"
+      }
+    },
+    {
+      "request_id": "81093cba-1183-4551-bd75-fe61e4dfa968",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "977b87dc-b275-4128-8521-329e5ea71cde",
+        "requestId": "81093cba-1183-4551-bd75-fe61e4dfa968",
+        "receiptReference": "T09-UI-RECEIPT"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "977b87dc-b275-4128-8521-329e5ea71cde",
+        "reserved": "2.0000"
+      }
+    },
+    {
+      "request_id": "8931c549-9ef3-4364-bce8-8780db93fe36",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+        "requestId": "8931c549-9ef3-4364-bce8-8780db93fe36",
+        "receiptReference": "DISTRIBUTION-SHORTAGE"
+      },
+      "result": {
+        "status": "awaiting_stock",
+        "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+        "reserved": "0.0000"
+      }
+    },
+    {
+      "request_id": "8b700c61-b7fc-4281-b449-fa4810feb631",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "transfer",
+      "payload": {
+        "orderId": "0977a4b8-1008-4e1a-b014-caecc3ce4eac",
+        "requestId": "8b700c61-b7fc-4281-b449-fa4810feb631"
+      },
+      "result": {
+        "status": "transferred",
+        "orderId": "0977a4b8-1008-4e1a-b014-caecc3ce4eac",
+        "quantity": "3.0000"
+      }
+    },
+    {
+      "request_id": "97f9d5a9-faa5-4a87-92d6-2306e7bfe2b8",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "transfer",
+      "payload": {
+        "orderId": "4f25deae-6c90-429f-81ea-9cec69c92b2a",
+        "requestId": "97f9d5a9-faa5-4a87-92d6-2306e7bfe2b8"
+      },
+      "result": {
+        "status": "transferred",
+        "orderId": "4f25deae-6c90-429f-81ea-9cec69c92b2a",
+        "quantity": "2.0000"
+      }
+    },
+    {
+      "request_id": "a0961823-45c8-4516-bfd8-2fd37d66b77e",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "transfer",
+      "payload": {
+        "orderId": "c59c0b80-2577-4aa1-bd4c-853325843035",
+        "requestId": "a0961823-45c8-4516-bfd8-2fd37d66b77e"
+      },
+      "result": {
+        "status": "transferred",
+        "orderId": "c59c0b80-2577-4aa1-bd4c-853325843035",
+        "quantity": "1.0000"
+      }
+    },
+    {
+      "request_id": "a137ccfa-3209-4e14-9634-6cd2d2dad9bf",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "create",
+      "payload": {
+        "buyerId": "801755cd-2901-47f0-9f6e-70d3715da48a",
+        "quantity": "3",
+        "requestId": "a137ccfa-3209-4e14-9634-6cd2d2dad9bf",
+        "unitPrice": "55"
+      },
+      "result": {
+        "amount": "165.0000",
+        "status": "unpaid",
+        "orderId": "7477df32-d7bf-44b6-8be5-74959f2ee194"
+      }
+    },
+    {
+      "request_id": "a1bb7555-f3b8-45b2-819a-d8da70883874",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "reprice",
+      "payload": {
+        "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+        "quantity": "5",
+        "requestId": "a1bb7555-f3b8-45b2-819a-d8da70883874",
+        "unitPrice": "3.0000"
+      },
+      "result": {
+        "amount": "15.0000",
+        "status": "unpaid",
+        "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e"
+      }
+    },
+    {
+      "request_id": "ae243c7f-e09b-4a34-a5ba-4521692a7d49",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "create",
+      "payload": {
+        "buyerId": "801755cd-2901-47f0-9f6e-70d3715da48a",
+        "quantity": "4",
+        "requestId": "ae243c7f-e09b-4a34-a5ba-4521692a7d49",
+        "unitPrice": "3"
+      },
+      "result": {
+        "amount": "12.0000",
+        "status": "unpaid",
+        "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e"
+      }
+    },
+    {
+      "request_id": "b00b9fe0-a937-41ae-8b9e-2c873982c698",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "2647f11e-3221-41ba-ad25-416d753d7062",
+        "requestId": "b00b9fe0-a937-41ae-8b9e-2c873982c698",
+        "receiptReference": "COMPETITOR"
+      },
+      "result": {
+        "status": "awaiting_stock",
+        "orderId": "2647f11e-3221-41ba-ad25-416d753d7062",
+        "reserved": "0.0000"
+      }
+    },
+    {
+      "request_id": "b279335d-a747-4705-a535-5e9e1e3707b7",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "426ca34e-f037-4475-9d25-d704a323d932",
+        "requestId": "b279335d-a747-4705-a535-5e9e1e3707b7",
+        "receiptReference": "T07-UI-RECEIPT"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "426ca34e-f037-4475-9d25-d704a323d932",
+        "reserved": "3.0000"
+      }
+    },
+    {
+      "request_id": "b56c81a6-9710-44ae-adf2-7f116e359b32",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "reserve",
+      "payload": {
+        "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+        "requestId": "b56c81a6-9710-44ae-adf2-7f116e359b32"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "fded109a-e4da-43bb-85b3-3a9498d89a6e",
+        "reserved": "5.0000"
+      }
+    },
+    {
+      "request_id": "b58f8609-399f-40eb-b948-f9c54f0fe5b1",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "refund",
+      "payload": {
+        "orderId": "3f00c4d9-f3e9-406d-a424-2515ef181f02",
+        "requestId": "b58f8609-399f-40eb-b948-f9c54f0fe5b1",
+        "refundEvidence": "DISTRIBUTION-REFUND-EVIDENCE"
+      },
+      "result": {
+        "amount": "110.0000",
+        "status": "refunded",
+        "orderId": "3f00c4d9-f3e9-406d-a424-2515ef181f02",
+        "released": "2.0000"
+      }
+    },
+    {
+      "request_id": "b6af6d0d-47b2-49ff-8128-a59619c4dfd2",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "reprice",
+      "payload": {
+        "orderId": "426ca34e-f037-4475-9d25-d704a323d932",
+        "quantity": "3",
+        "requestId": "b6af6d0d-47b2-49ff-8128-a59619c4dfd2",
+        "unitPrice": "2.2000"
+      },
+      "result": {
+        "amount": "6.6000",
+        "status": "unpaid",
+        "orderId": "426ca34e-f037-4475-9d25-d704a323d932"
+      }
+    },
+    {
+      "request_id": "b95be98d-e6d4-43b6-aa1f-225b6447fdf5",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "transfer",
+      "payload": {
+        "orderId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+        "requestId": "b95be98d-e6d4-43b6-aa1f-225b6447fdf5"
+      },
+      "result": {
+        "status": "transferred",
+        "orderId": "1d1e6d4d-7735-48b9-a355-18221b80fc56",
+        "quantity": "8.0000"
+      }
+    },
+    {
+      "request_id": "bd467453-f971-4da7-88c1-aa29c151d61e",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "create",
+      "payload": {
+        "buyerId": "801755cd-2901-47f0-9f6e-70d3715da48a",
+        "quantity": "2",
+        "requestId": "bd467453-f971-4da7-88c1-aa29c151d61e",
+        "unitPrice": "55"
+      },
+      "result": {
+        "amount": "110.0000",
+        "status": "unpaid",
+        "orderId": "3f00c4d9-f3e9-406d-a424-2515ef181f02"
+      }
+    },
+    {
+      "request_id": "c6b3e06a-857f-4a17-95a0-21f1afc871dd",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "create",
+      "payload": {
+        "buyerId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+        "quantity": "2",
+        "requestId": "c6b3e06a-857f-4a17-95a0-21f1afc871dd",
+        "unitPrice": "2.2"
+      },
+      "result": {
+        "amount": "4.4000",
+        "status": "unpaid",
+        "orderId": "977b87dc-b275-4128-8521-329e5ea71cde"
+      }
+    },
+    {
+      "request_id": "c7ab5d30-a744-447f-8287-28c969bb5c8c",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "create",
+      "payload": {
+        "buyerId": "faef6eb8-8728-4824-94f5-850b33feb3fb",
+        "quantity": "8",
+        "requestId": "c7ab5d30-a744-447f-8287-28c969bb5c8c",
+        "unitPrice": "2.2"
+      },
+      "result": {
+        "amount": "17.6000",
+        "status": "unpaid",
+        "orderId": "1d1e6d4d-7735-48b9-a355-18221b80fc56"
+      }
+    },
+    {
+      "request_id": "cc71c94f-491a-4ff3-b0c4-99a11db5a9d2",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "create",
+      "payload": {
+        "buyerId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+        "quantity": "2",
+        "requestId": "cc71c94f-491a-4ff3-b0c4-99a11db5a9d2",
+        "unitPrice": "2.2"
+      },
+      "result": {
+        "amount": "4.4000",
+        "status": "unpaid",
+        "orderId": "426ca34e-f037-4475-9d25-d704a323d932"
+      }
+    },
+    {
+      "request_id": "d0373d07-12e8-4898-966e-f5c44cdb6171",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "create",
+      "payload": {
+        "buyerId": "fcc3a924-4e45-4f8d-973c-e5a840fe989d",
+        "quantity": "1",
+        "requestId": "d0373d07-12e8-4898-966e-f5c44cdb6171",
+        "unitPrice": "50"
+      },
+      "result": {
+        "amount": "50.0000",
+        "status": "unpaid",
+        "orderId": "c59c0b80-2577-4aa1-bd4c-853325843035"
+      }
+    },
+    {
+      "request_id": "e44ab329-948f-4a4e-806d-203bfcdebff2",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "reserve",
+      "payload": {
+        "orderId": "2647f11e-3221-41ba-ad25-416d753d7062",
+        "requestId": "e44ab329-948f-4a4e-806d-203bfcdebff2"
+      },
+      "result": {
+        "status": "reserved",
+        "orderId": "2647f11e-3221-41ba-ad25-416d753d7062",
+        "reserved": "8.0000"
+      }
+    },
+    {
+      "request_id": "ea4e4e2e-a357-4a8e-9c3a-070cf18b377b",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "create",
+      "payload": {
+        "buyerId": "801755cd-2901-47f0-9f6e-70d3715da48a",
+        "quantity": "3",
+        "requestId": "ea4e4e2e-a357-4a8e-9c3a-070cf18b377b",
+        "unitPrice": "55"
+      },
+      "result": {
+        "amount": "165.0000",
+        "status": "unpaid",
+        "orderId": "0977a4b8-1008-4e1a-b014-caecc3ce4eac"
+      }
+    },
+    {
+      "request_id": "fdca7680-0da3-4324-b278-100e67be792c",
+      "actor_id": "fc258965-94d9-454a-a60c-d69797e8ba7a",
+      "operation": "refund",
+      "payload": {
+        "orderId": "977b87dc-b275-4128-8521-329e5ea71cde",
+        "requestId": "fdca7680-0da3-4324-b278-100e67be792c",
+        "refundEvidence": "T09-UI-REFUND"
+      },
+      "result": {
+        "amount": "4.4000",
+        "status": "refunded",
+        "orderId": "977b87dc-b275-4128-8521-329e5ea71cde",
+        "released": "2.0000"
+      }
+    },
+    {
+      "request_id": "fee413ea-d15d-48c9-aa78-d7043bad23cd",
+      "actor_id": "79c1fb56-0658-49ea-a8c8-a756781c366b",
+      "operation": "confirm",
+      "payload": {
+        "orderId": "0977a4b8-1008-4e1a-b014-caecc3ce4eac",
+        "requestId": "fee413ea-d15d-48c9-aa78-d7043bad23cd",
+        "receiptReference": "DISTRIBUTION-RACE-A"
+      },
+      "result": {
+        "status": "awaiting_stock",
+        "orderId": "0977a4b8-1008-4e1a-b014-caecc3ce4eac",
+        "reserved": "0.0000"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "operation": "confirm",
+      "count": 11
+    },
+    {
+      "operation": "create",
+      "count": 11
+    },
+    {
+      "operation": "refund",
+      "count": 2
+    },
+    {
+      "operation": "reprice",
+      "count": 2
+    },
+    {
+      "operation": "reserve",
+      "count": 4
+    },
+    {
+      "operation": "transfer",
+      "count": 8
+    }
+  ]
+}

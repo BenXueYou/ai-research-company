@@ -1,0 +1,784 @@
+{
+  "database": "integration_terminal_1fab61d0f61745ea846b12eeb9b7f675_test",
+  "origin": "http://127.0.0.1:57706",
+  "mode": "real Chromium/Nest/PostgreSQL; controlled vendors only",
+  "countryMappingBlock": {
+    "status": 409,
+    "body": {
+      "message": "采购企业所在国映射尚未核实，不能付费查询",
+      "error": "Conflict",
+      "statusCode": 409
+    }
+  },
+  "crossDay": {
+    "queuedRecipientId": "954d68b7-eca0-492a-b40f-a3ff1da65e7e",
+    "laterBatchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094",
+    "originalUncertainId": "bfcfd7ca-71a3-4535-a511-a668f72c990a",
+    "usage": [
+      {
+        "usage_day": "2026-10-27",
+        "reserved": 0,
+        "used": 2
+      },
+      {
+        "usage_day": "2026-10-28",
+        "reserved": 0,
+        "used": 1
+      }
+    ]
+  },
+  "duplicateHandoff": {
+    "linkCount": 0,
+    "profileCount": 1,
+    "queryState": "settled",
+    "queryId": "0f2a9676-035a-47f6-8d76-387a0b2864be",
+    "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+  },
+  "productPageId": "4289e68c-1568-4b18-93a9-7d43870245ce",
+  "pointSnapshot": {
+    "internal_point_accounts": [
+      {
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "balance": "18.7179",
+        "query_frozen": "0.5000",
+        "sales_reserved": "0.0000"
+      },
+      {
+        "organization_id": "f278a4de-685b-4f00-8886-cfc62a7cc6ed",
+        "balance": "90.0000",
+        "query_frozen": "0.0000",
+        "sales_reserved": "0.0000"
+      }
+    ],
+    "platform_inventory": [
+      {
+        "singleton": true,
+        "balance": "0.0000",
+        "frozen": "0.0000",
+        "reserved": "0.0000",
+        "average_cost": "0.0000"
+      }
+    ],
+    "query_point_ledger": [
+      {
+        "id": "1",
+        "query_id": "1713d429-2e91-4fe5-940b-deddf2faa170",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "event": "freeze",
+        "amount": "1.0000",
+        "balance_after": "20.0000",
+        "frozen_after": "1.0000",
+        "created_at": "2026-10-28T15:15:40.620Z"
+      },
+      {
+        "id": "2",
+        "query_id": "1713d429-2e91-4fe5-940b-deddf2faa170",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "event": "settle",
+        "amount": "0.3000",
+        "balance_after": "19.7000",
+        "frozen_after": "0.0000",
+        "created_at": "2026-10-28T15:15:40.637Z"
+      },
+      {
+        "id": "3",
+        "query_id": "1713d429-2e91-4fe5-940b-deddf2faa170",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "event": "release",
+        "amount": "0.7000",
+        "balance_after": "19.7000",
+        "frozen_after": "0.0000",
+        "created_at": "2026-10-28T15:15:40.639Z"
+      },
+      {
+        "id": "4",
+        "query_id": "0f2a9676-035a-47f6-8d76-387a0b2864be",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "event": "freeze",
+        "amount": "1.0000",
+        "balance_after": "19.0179",
+        "frozen_after": "1.5000",
+        "created_at": "2026-10-28T15:15:53.771Z"
+      },
+      {
+        "id": "5",
+        "query_id": "0f2a9676-035a-47f6-8d76-387a0b2864be",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "event": "settle",
+        "amount": "0.3000",
+        "balance_after": "18.7179",
+        "frozen_after": "0.5000",
+        "created_at": "2026-10-28T15:15:53.788Z"
+      },
+      {
+        "id": "6",
+        "query_id": "0f2a9676-035a-47f6-8d76-387a0b2864be",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "event": "release",
+        "amount": "0.7000",
+        "balance_after": "18.7179",
+        "frozen_after": "0.5000",
+        "created_at": "2026-10-28T15:15:53.789Z"
+      }
+    ],
+    "company_contact_point_ledger": [
+      {
+        "id": "1",
+        "query_id": "054c9824-d9fe-47c2-864d-eac7f37b376b",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "event": "freeze",
+        "amount": "0.5000",
+        "balance_after": "19.7000",
+        "frozen_after": "0.5000",
+        "created_at": "2026-10-28T15:15:41.035Z"
+      },
+      {
+        "id": "2",
+        "query_id": "054c9824-d9fe-47c2-864d-eac7f37b376b",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "event": "settle",
+        "amount": "0.2500",
+        "balance_after": "19.4500",
+        "frozen_after": "0.0000",
+        "created_at": "2026-10-28T15:15:41.062Z"
+      },
+      {
+        "id": "3",
+        "query_id": "054c9824-d9fe-47c2-864d-eac7f37b376b",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "c6e41927-313b-4458-b3e5-b3d0f07b76b2",
+        "event": "release",
+        "amount": "0.2500",
+        "balance_after": "19.4500",
+        "frozen_after": "0.0000",
+        "created_at": "2026-10-28T15:15:41.063Z"
+      },
+      {
+        "id": "4",
+        "query_id": "89aa1801-339b-4b4b-bfd3-46478fafa8b2",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "event": "freeze",
+        "amount": "0.5000",
+        "balance_after": "19.4500",
+        "frozen_after": "0.5000",
+        "created_at": "2026-10-28T15:15:49.249Z"
+      }
+    ],
+    "product_search_ledger": [
+      {
+        "id": "1",
+        "page_id": "4289e68c-1568-4b18-93a9-7d43870245ce",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "event": "freeze",
+        "amount": "1.0000",
+        "balance_after": "19.4500",
+        "frozen_after": "1.5000",
+        "created_at": "2026-10-28T15:15:53.304Z"
+      },
+      {
+        "id": "2",
+        "page_id": "4289e68c-1568-4b18-93a9-7d43870245ce",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "event": "settle",
+        "amount": "0.4321",
+        "balance_after": "19.0179",
+        "frozen_after": "0.5000",
+        "created_at": "2026-10-28T15:15:53.321Z"
+      },
+      {
+        "id": "3",
+        "page_id": "4289e68c-1568-4b18-93a9-7d43870245ce",
+        "organization_id": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+        "actor_id": "30c7a29a-aeae-42b5-b1c3-6545eeefa153",
+        "event": "release",
+        "amount": "0.5679",
+        "balance_after": "19.0179",
+        "frozen_after": "0.5000",
+        "created_at": "2026-10-28T15:15:53.322Z"
+      }
+    ]
+  },
+  "saved": {
+    "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21",
+    "detailId": "detail-data-222",
+    "queryId": "1713d429-2e91-4fe5-940b-deddf2faa170",
+    "candidateId": "756050ed-b5ca-473c-97fc-b5899c20d0a8",
+    "listSourceId": "list-terminal-111"
+  },
+  "contacts": [
+    {
+      "id": "26bf870a-ee88-4fab-bb38-50f447518cc9",
+      "mailsou_id": "mailsou-terminal-0",
+      "source_payload": {
+        "id": "contact-source-0",
+        "email": "uncertain@terminal.test",
+        "fileId": "contact-file-0",
+        "mailsouId": "mailsou-terminal-0",
+        "companyName": "Terminal Buyer",
+        "positionTag": "TECHNOLGY",
+        "personalEmail": "personal-uncertain@terminal.test"
+      }
+    },
+    {
+      "id": "7d0742ba-8a67-4f37-86ad-7780e4e6c0e7",
+      "mailsou_id": "mailsou-terminal-1",
+      "source_payload": {
+        "id": "contact-source-1",
+        "email": "accepted@terminal.test",
+        "fileId": "contact-file-1",
+        "mailsouId": "mailsou-terminal-1",
+        "companyName": "Terminal Buyer",
+        "positionTag": "TECHNOLGY",
+        "personalEmail": "personal-accepted@terminal.test"
+      }
+    },
+    {
+      "id": "34ae09e9-853e-49e0-9a02-d1d94017b5f7",
+      "mailsou_id": "mailsou-terminal-2",
+      "source_payload": {
+        "id": "contact-source-2",
+        "email": "failed@terminal.test",
+        "fileId": "contact-file-2",
+        "mailsouId": "mailsou-terminal-2",
+        "companyName": "Terminal Buyer",
+        "positionTag": "TECHNOLGY",
+        "personalEmail": "personal-failed@terminal.test"
+      }
+    }
+  ],
+  "templateId": "91704c95-efb6-4892-a1f5-248d627981a0",
+  "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf",
+  "recipients": [
+    {
+      "id": "f02d2b7d-21ec-439a-ab33-bc81a67a736e",
+      "contact_id": "7d0742ba-8a67-4f37-86ad-7780e4e6c0e7",
+      "mailsou_id": "mailsou-terminal-1",
+      "email": "accepted@terminal.test",
+      "subject": "Hello Buyer 1",
+      "content": "Terminal Buyer: Buyer 1",
+      "initialStatus": "accepted"
+    },
+    {
+      "id": "9e4fe4f7-ab0d-4dcd-a118-3ecb0a42546e",
+      "contact_id": "34ae09e9-853e-49e0-9a02-d1d94017b5f7",
+      "mailsou_id": "mailsou-terminal-2",
+      "email": "failed@terminal.test",
+      "subject": "Hello Buyer 2",
+      "content": "Terminal Buyer: Buyer 2",
+      "initialStatus": "not_submitted"
+    },
+    {
+      "id": "bfcfd7ca-71a3-4535-a511-a668f72c990a",
+      "contact_id": "26bf870a-ee88-4fab-bb38-50f447518cc9",
+      "mailsou_id": "mailsou-terminal-0",
+      "email": "uncertain@terminal.test",
+      "subject": "Hello Buyer 0",
+      "content": "Terminal Buyer: Buyer 0",
+      "initialStatus": "uncertain"
+    }
+  ],
+  "ledger": {
+    "balance": "18.7179",
+    "query_frozen": "0.5000"
+  },
+  "listCalls": [
+    {
+      "name": "Terminal",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "name": "Terminal Buyer",
+      "countryCodes": "TUR",
+      "pageNo": 1,
+      "pageSize": 20
+    }
+  ],
+  "detailCalls": [
+    {
+      "name": "Terminal Buyer",
+      "countryCode3": "TUR"
+    },
+    {
+      "name": "Terminal Buyer",
+      "countryCode3": "TUR"
+    }
+  ],
+  "contactCalls": [
+    {
+      "companyName": "Terminal Buyer",
+      "positionTags": [],
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "companyName": "Terminal Buyer",
+      "positionTags": [],
+      "pageNo": 1,
+      "pageSize": 20
+    }
+  ],
+  "productCalls": [
+    {
+      "catalog": "imports",
+      "productDesc": "ceramic pump",
+      "buyerCountryCode3": "TUR",
+      "startDate": "2026-01-01",
+      "endDate": "2026-06-30",
+      "pageNo": 1,
+      "pageSize": 20
+    }
+  ],
+  "sendCalls": [
+    {
+      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "resourceId": "integration-resource-333",
+      "recipientId": "9e4fe4f7-ab0d-4dcd-a118-3ecb0a42546e",
+      "senderAddress": "sender@mail.integration-terminal.test",
+      "relpy_to": "reply@integration-terminal.test",
+      "to": "failed@terminal.test",
+      "subject": "Hello Buyer 2",
+      "content": "Terminal Buyer: Buyer 2"
+    },
+    {
+      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "resourceId": "integration-resource-333",
+      "recipientId": "bfcfd7ca-71a3-4535-a511-a668f72c990a",
+      "senderAddress": "sender@mail.integration-terminal.test",
+      "relpy_to": "reply@integration-terminal.test",
+      "to": "uncertain@terminal.test",
+      "subject": "Hello Buyer 0",
+      "content": "Terminal Buyer: Buyer 0"
+    },
+    {
+      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "resourceId": "integration-resource-333",
+      "recipientId": "f02d2b7d-21ec-439a-ab33-bc81a67a736e",
+      "senderAddress": "sender@mail.integration-terminal.test",
+      "relpy_to": "reply@integration-terminal.test",
+      "to": "accepted@terminal.test",
+      "subject": "Hello Buyer 1",
+      "content": "Terminal Buyer: Buyer 1"
+    },
+    {
+      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "resourceId": "integration-resource-333",
+      "recipientId": "954d68b7-eca0-492a-b40f-a3ff1da65e7e",
+      "senderAddress": "sender@mail.integration-terminal.test",
+      "relpy_to": "reply@integration-terminal.test",
+      "to": "failed@terminal.test",
+      "subject": "Hello Buyer 2",
+      "content": "Terminal Buyer: Buyer 2"
+    }
+  ],
+  "channelCalls": [
+    {
+      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "resourceId": "integration-resource-333",
+      "domain": "mail.integration-terminal.test",
+      "senderAddress": "sender@mail.integration-terminal.test"
+    }
+  ],
+  "evidenceCalls": [
+    {
+      "organizationId": "fd869149-0f1f-4b4b-bbb3-e55423d65b19",
+      "recipientId": "bfcfd7ca-71a3-4535-a511-a668f72c990a",
+      "channelKind": "UMAIL",
+      "resourceId": "integration-resource-333",
+      "to": "uncertain@terminal.test",
+      "submittedAt": "2026-10-28T15:15:42.760Z"
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-searches",
+      "body": {
+        "name": "Terminal",
+        "countryCodes": "TUR",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "756050ed-b5ca-473c-97fc-b5899c20d0a8"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "756050ed-b5ca-473c-97fc-b5899c20d0a8"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "1713d429-2e91-4fe5-940b-deddf2faa170"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-contacts/quote",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21",
+        "positionTags": [],
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-contacts/execute",
+      "body": {
+        "queryId": "054c9824-d9fe-47c2-864d-eac7f37b376b"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "body": {
+        "domain": "mail.integration-terminal.test",
+        "senderAddress": "sender@mail.integration-terminal.test",
+        "replyAddress": "reply@integration-terminal.test",
+        "defaultChannel": false,
+        "requestId": "d498fcd0-ac11-448d-807c-0c0de8ad3a9e"
+      }
+    },
+    {
+      "path": "/api/email-drafts",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21",
+        "templateId": "91704c95-efb6-4892-a1f5-248d627981a0",
+        "templateVersion": 1,
+        "subject": "Hello {{contactName}}",
+        "content": "{{companyName}}: {{contactName}}",
+        "selections": [
+          {
+            "contactId": "34ae09e9-853e-49e0-9a02-d1d94017b5f7",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Buyer 2"
+            },
+            "confirmUnsubscribed": false
+          },
+          {
+            "contactId": "7d0742ba-8a67-4f37-86ad-7780e4e6c0e7",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Buyer 1"
+            },
+            "confirmUnsubscribed": false
+          },
+          {
+            "contactId": "26bf870a-ee88-4fab-bb38-50f447518cc9",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Buyer 0"
+            },
+            "confirmUnsubscribed": false
+          }
+        ]
+      }
+    },
+    {
+      "path": "/api/email-drafts/preview",
+      "body": {
+        "draftId": "863206bd-7692-4329-82bd-f2284e1269b0"
+      }
+    },
+    {
+      "path": "/api/email-previews/confirm",
+      "body": {
+        "previewId": "c11f79dd-f155-47a0-aaf1-609ddc9cea23"
+      }
+    },
+    {
+      "path": "/api/email-batches/confirm",
+      "body": {
+        "previewId": "c11f79dd-f155-47a0-aaf1-609ddc9cea23",
+        "channelId": "d9ecd313-1ecf-458c-a66b-e215c4a0082b",
+        "confirmUnsubscribeNotice": true,
+        "confirmQuota": true
+      }
+    },
+    {
+      "path": "/api/email-batches/execute",
+      "body": {
+        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconfirm",
+      "body": {
+        "recipientId": "954d68b7-eca0-492a-b40f-a3ff1da65e7e",
+        "confirmUnsubscribeNotice": true,
+        "confirmQuota": true
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094"
+      }
+    },
+    {
+      "path": "/api/email-recipients/execute",
+      "body": {
+        "recipientId": "954d68b7-eca0-492a-b40f-a3ff1da65e7e"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "bb04d1cf-da4f-44ec-a778-a4dbdec4f094"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconcile",
+      "body": {
+        "recipientId": "bfcfd7ca-71a3-4535-a511-a668f72c990a"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+      }
+    },
+    {
+      "path": "/api/members",
+      "body": {
+        "name": "Integration colleague",
+        "email": "created@integration-terminal.test",
+        "role": "sales",
+        "requestId": "3562efba-b477-4884-b44d-e36e8e387051"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "adefe7dd-6334-4e3d-a869-6c20022a40cf"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-contacts/refresh-quote",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21",
+        "positionTags": [],
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-contacts/execute",
+      "body": {
+        "queryId": "89aa1801-339b-4b4b-bfd3-46478fafa8b2"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "8625f520-8553-4e64-9313-f1a7376bcc21"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/product-searches/quote",
+      "body": {
+        "productDesc": "ceramic pump",
+        "buyerCountryCode3": "TUR",
+        "startDate": "2026-01-01",
+        "endDate": "2026-06-30",
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/product-searches/execute",
+      "body": {
+        "pageId": "4289e68c-1568-4b18-93a9-7d43870245ce"
+      }
+    },
+    {
+      "path": "/api/product-candidates/check",
+      "body": {
+        "candidateId": "bd4ddab1-3fe5-4129-acd6-cb9d86c052ad"
+      }
+    },
+    {
+      "path": "/api/company-candidates/verify",
+      "body": {
+        "candidateId": "15740f68-d1a0-4e84-98ae-0005503cfc9b"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "15740f68-d1a0-4e84-98ae-0005503cfc9b"
+      }
+    },
+    {
+      "path": "/api/company-details/execute",
+      "body": {
+        "queryId": "0f2a9676-035a-47f6-8d76-387a0b2864be"
+      }
+    },
+    {
+      "path": "/api/company-details/quote",
+      "body": {
+        "candidateId": "15740f68-d1a0-4e84-98ae-0005503cfc9b"
+      }
+    }
+  ],
+  "errors": [],
+  "devOrigin": "http://127.0.0.1:56449",
+  "executionCompleted": true,
+  "acceptance": "blocked: settled duplicate product detail has no profile link"
+}

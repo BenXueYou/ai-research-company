@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.server.json",
+  "compilerOptions": { "outDir": "../.scratch/integration-terminal/compiled", "rootDir": ".." },
+  "include": ["../server/**/*.ts", "./*.spec.ts", "../vite.config.ts"]
+}

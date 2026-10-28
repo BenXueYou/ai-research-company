@@ -1,0 +1,6 @@
+{
+  "extends": "../tsconfig.server.json",
+  "compilerOptions": { "rootDir": "..", "outDir": "./t15-style-compiled" },
+  "include": ["../server/**/*.ts", "../tests/issue52-profiles.spec.ts"],
+  "exclude": ["../server/**/*.test.ts"]
+}

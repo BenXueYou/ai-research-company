@@ -110,10 +110,14 @@ test('Issue52 real profiles, isolation, maintenance, attachments and paid refres
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       await page.screenshot({ path: resolve(root, 'profiles-mobile.png') });
       await page.setViewportSize({ width: 1440, height: 1100 });
+      await detail.locator('.contact-panel').screenshot({ path: resolve(root, 'contacts-desktop.png') });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await detail.locator('.contact-panel').screenshot({ path: resolve(root, 'contacts-mobile.png') });
+      await page.setViewportSize({ width: 1440, height: 1100 });
     }
     const composer = detail.locator('.email-composer');
     await expect(composer.getByText('来源 upstream-mailsou-52', { exact: true })).toBeVisible();
-    await composer.getByLabel('公共模板').click();
+    await composer.locator('.el-form-item').filter({ hasText: '公共模板' }).locator('.el-select').click();
     await page.getByRole('option', { name: 'Issue52 template · v1' }).click();
     await composer.getByPlaceholder('本次联系人称呼（模板变量 contactName）').fill('Buyer');
     await composer.getByRole('button', { name: '保存并预览本次邮件' }).click();
@@ -176,7 +180,7 @@ test('Issue52 real profiles, isolation, maintenance, attachments and paid refres
     await expect(detail.getByRole('heading', { name: 'Second Company · TUR' })).toBeVisible();
     await page.goBack();
     const timeline = detail.locator('.timeline-panel');
-    await timeline.getByLabel('记录类型').click();
+    await timeline.locator('.el-form-item').filter({ hasText: '记录类型' }).locator('.el-select').click();
     await page.getByRole('option', { name: '备注', exact: true }).click();
     await timeline.getByLabel('发生时间').fill('2026-10-28T10:30');
     await timeline.getByLabel('摘要', { exact: true }).fill('Issue52 follow-up');
@@ -209,6 +213,9 @@ test('Issue52 real profiles, isolation, maintenance, attachments and paid refres
       VALUES('/v2/company',0.5,2,'Issue52 controlled fixture','controlled_test',$1,$2)`, [randomUUID(), platform.id]);
     await detail.getByRole('button', { name: '主动更新企业详情', exact: true }).click();
     await expect(detail.getByRole('button', { name: '再次确认费用并更新' })).toBeVisible();
+    if (process.env.ISSUE52_VISUAL_CHECK === '1') {
+      await detail.locator('.profile-source').screenshot({ path: resolve(root, 'refresh-quote-desktop.png') });
+    }
     await detail.getByRole('button', { name: '取消', exact: true }).click();
     expect(vendorCalls).toHaveLength(0);
     await detail.getByRole('button', { name: '主动更新企业详情', exact: true }).click();

@@ -60,7 +60,7 @@
         <h3>{{ order.buyerName }} · <span class="order-status" :class="`status-${order.status}`">{{ order.status === 'transferred' ? '已划拨' : order.status === 'refunded' ? '已整单退款' :
           order.status === 'reserved' ? '已收款并预留' : order.status === 'awaiting_stock' ? '已收款待补库存' : '待收款' }}</span></h3>
       </div>
-      <p v-if="platformLifecycle" class="order-reference">订单编号：{{ order.id }}</p>
+      <p v-if="lifecycle" class="order-reference">订单编号：{{ order.id }}</p>
       <p v-if="!order.buyerActive && order.status === 'reserved'">买方组织已停用，划拨暂停；预留继续保留。</p>
       <p v-if="order.status === 'awaiting_stock'">本单尚未预留，买方尚未到账。补足库存后整单预留，再完整划拨；按原数量售价履约，不退款。</p>
       <p v-if="!order.buyerActive && order.status === 'awaiting_stock'">买方组织已停用，补库预留与划拨暂停，收款记录保留。</p>
@@ -86,14 +86,14 @@
       <p v-if="order.status === 'transferred'">历史销售成本 {{ order.salesCost }} 元，毛利 {{ order.grossProfit }} 元</p>
       <p v-if="order.status === 'refunded'">退款 {{ order.refundAmount }} 元；依据：{{ order.refundEvidence }}</p>
     </div>
-    <p v-if="platformLifecycle && selected" class="order-reference">当前操作订单：{{ selected.id }}</p>
+    <p v-if="lifecycle && selected" class="order-reference">当前操作订单：{{ selected.id }}</p>
     <el-form v-if="selected && mode === 'reprice'" label-position="top" @submit.prevent="reprice">
       <h3>调整订单 · {{ selected.buyerName }}</h3>
       <el-form-item label="点数数量" for="reprice-quantity">
         <el-input
           id="reprice-quantity"
           v-model="editQuantity"
-          :disabled="platformLifecycle && (busy || !!unknown)"
+          :disabled="lifecycle && (busy || !!unknown)"
           required
         />
       </el-form-item>
@@ -101,12 +101,12 @@
         <el-input
           id="reprice-price"
           v-model="editPrice"
-          :disabled="platformLifecycle && (busy || !!unknown)"
+          :disabled="lifecycle && (busy || !!unknown)"
           required
         />
       </el-form-item>
       <el-button native-type="submit" :disabled="busy || !!unknown">保存调整</el-button>
-      <el-button :disabled="platformLifecycle && (busy || !!unknown)" @click="selected = null">取消</el-button>
+      <el-button :disabled="lifecycle && (busy || !!unknown)" @click="selected = null">取消</el-button>
     </el-form>
     <el-form v-if="selected && mode === 'confirm'" label-position="top" @submit.prevent="confirm">
       <h3>确认足额收款 · {{ selected.buyerName }} · {{ selected.amount }} 元</h3>
@@ -114,13 +114,13 @@
         <el-input
           id="receipt-reference"
           v-model="receiptReference"
-          :disabled="platformLifecycle && (busy || !!unknown)"
+          :disabled="lifecycle && (busy || !!unknown)"
           required
         />
       </el-form-item>
       <p>仅在核实足额款已到账后确认。库存充足则整单预留；不足则登记待补库存，锁定数量售价，不退款。</p>
       <el-button native-type="submit" :disabled="busy || !!unknown">登记足额收款</el-button>
-      <el-button :disabled="platformLifecycle && (busy || !!unknown)" @click="selected = null">取消</el-button>
+      <el-button :disabled="lifecycle && (busy || !!unknown)" @click="selected = null">取消</el-button>
     </el-form>
     <el-form v-if="selected && mode === 'refund'" label-position="top" @submit.prevent="refund">
       <h3>确认线下整单退款 · {{ selected.buyerName }} · {{ selected.amount }} 元</h3>
@@ -160,7 +160,9 @@ type Snapshot = { children: { id: string; name: string; kind: string }[]; invent
 const props = defineProps<{
   request: (path: string, body?: Record<string, unknown>) => Promise<unknown>;
   platformLifecycle?: boolean;
+  distributionLifecycle?: boolean;
 }>();
+const lifecycle = computed(() => props.platformLifecycle || props.distributionLifecycle);
 const snapshot = shallowRef<Snapshot>();
 const busy = ref(false);
 const error = ref('');
@@ -236,7 +238,7 @@ function acknowledgeUnknown() {
   error.value = '';
 }
 async function run(path: string, body: Record<string, unknown>, retry = false) {
-  if (props.platformLifecycle && (busy.value || (unknown.value && !retry))) return;
+  if (lifecycle.value && (busy.value || (unknown.value && !retry))) return;
   busy.value = true;
   error.value = '';
   notice.value = '';
@@ -248,7 +250,7 @@ async function run(path: string, body: Record<string, unknown>, retry = false) {
     await props.request(path, { requestId, ...body });
     completed = true;
     pending.delete(key);
-    if (props.platformLifecycle) {
+    if (lifecycle.value) {
       unknown.value = undefined;
       if (path === 'point-orders') savedCreate = JSON.stringify([buyerId.value, quantity.value, unitPrice.value]);
       selected.value = null;
@@ -258,10 +260,10 @@ async function run(path: string, body: Record<string, unknown>, retry = false) {
     selected.value = null;
     notice.value = '订单操作已完成';
   } catch (failure) {
-    if (props.platformLifecycle && !completed && (failure instanceof TypeError || failure instanceof SyntaxError)) {
+    if (lifecycle.value && !completed && (failure instanceof TypeError || failure instanceof SyntaxError)) {
       unknown.value = { path, body: { ...body } };
     }
-    error.value = props.platformLifecycle && completed
+    error.value = lifecycle.value && completed
       ? '订单操作已完成，列表读取失败，请刷新订单核实。'
       : failure instanceof Error ? failure.message : '请求失败';
   } finally { busy.value = false; }

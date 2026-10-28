@@ -40,6 +40,18 @@ function onCommand(command: string) {
       </slot>
     </div>
     <nav v-if="session" class="account-navigation" aria-label="账号导航">
+      <RouterLink
+        v-if="!session.mustChange"
+        class="header-help"
+        to="/help"
+        :aria-current="route.path === '/help' ? 'page' : undefined"
+      >
+        <svg class="help-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 2-2.5 2-2.5 4m0 3h.01" />
+        </svg>
+        <span>帮助中心</span>
+      </RouterLink>
       <el-dropdown
         ref="dropdown"
         trigger="click"
@@ -94,7 +106,31 @@ function onCommand(command: string) {
 </template>
 
 <style scoped>
-.account-navigation { min-width: 0; }
+.account-navigation { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.header-help {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: #66738b;
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.header-help:hover, .header-help[aria-current='page'] { color: #4859db; background: #eef0ff; }
+.header-help:focus-visible { outline: 2px solid #4859db; outline-offset: 2px; }
+.help-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .account-trigger {
   display: flex;
   align-items: center;
@@ -175,5 +211,9 @@ function onCommand(command: string) {
 .account-navigation :deep(.account-menu-item.is-disabled .account-icon) { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .account-chevron { transition: none; }
+}
+@media (max-width: 760px) {
+  .account-navigation { gap: 4px; }
+  .header-help { padding: 6px; }
 }
 </style>

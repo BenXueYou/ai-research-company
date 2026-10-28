@@ -86,6 +86,16 @@ node --env-file-if-exists=.env.issue44 node_modules/tsx/dist/cli.mjs --tsconfig 
 
 ## 前端编码规范试点交付反馈
 
+### 原型样式续验（2026-10-28 22:19）
+
+按用户要求参考 `原型设计/原型V2.html` 及设计说明中的蓝紫主色、浅灰背景、白色细边卡片、浅色表头和紧凑字号，优化 `PlatformReportPage.vue` 的利润与流水两页。三个既有汇总值分卡展示，扣除后结果以浅蓝卡片强调；授权交易、销售明细、承担费用和各类流水独立成卡；返回、刷新与导出形成工具栏。表格保留全部原始字段和数值，增加可键盘聚焦的局部横向滚动区域，窄屏汇总卡纵向排列。未修改请求函数、参数、金额计算、字段绑定、CSV 边界或权限。
+
+共享目录中同一文件的并行样式修改曾产生重复容器与类名不一致，本轮合并展示改动后重新构建并验证；最终页面只有一层明细卡片和相匹配的按钮样式。测试原先依赖终端/分销旧兼容首页，在这些模块已迁移后改为直接访问 `/terminal/usage` 和 `/distribution/profit`，保留其余额和毛利断言，不修改其模块代码。
+
+实际执行 `npm run typecheck`、`npx vite build --outDir .scratch/issue44-web` 和本票真实 PostgreSQL/HTTP/Chromium 测试通过，最终测试 1 项通过、0 失败（约24.6秒）。原有 CSV 逐列数据库对照、采购费用去重、四角色、权限与强制改密断言继续通过。桌面1440×1000、手机375×900两页截图已查看，手机页面根宽度无横向溢出。截图保存在 `application/.scratch/issue44-results/{profit,flows}-{desktop,mobile}.png`；本轮独立证据见 [样式验收 JSON](./ISSUE-44-STYLE-EVIDENCE.json)。Vite 保留既有大 chunk 提示；未执行部署、正式供应商联调或全套无关测试。
+
+前端规范自动触发，规则版本0.0.1，使用 frontend-design、vue 与 frontend-coding-standards；触及代码遵循 ACTIVE MUST FCS-007、011、013、030，GUIDANCE FCS-014。类型检查、构建和专项测试通过；无现有 lint/formatter 命令，未执行；未改变依赖、工程格式配置或全局布局；无规则冲突，PENDING未提升为强制要求。
+
 - 规则版本：0.0.1；触发：自动；同时使用 vue 技能。
 - 应用规则：触及区域 ACTIVE MUST FCS-007、011、030；GUIDANCE FCS-032（不新增全局状态）。其他 ACTIVE 规则未引入对应变更，依赖与工程格式配置不变。
 - 校验结果：`npm run typecheck`、隔离 tsc/Vite 构建、真实 HTTP/PostgreSQL/Chromium 专项通过；lint/formatter 未执行，package.json 没有相应命令；全套无关测试与部署测试未执行，范围不适用。

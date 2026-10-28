@@ -21,13 +21,24 @@
       </div>
       <template v-if="!profile.deletedAt">
         <section class="profile-source">
-        <h3>企业源信息</h3>
-        <p>最近获取：{{ profile.fetchedAt ?? '历史获取时间未知' }}</p>
-        <button :disabled="!!inFlight || unknown" @click="quoteRefresh">主动更新企业详情</button>
-        <div v-if="refreshQuote" class="search-summary">
-          <span>更新 {{ refreshQuote.name }} · {{ refreshQuote.countryCode3 }}，最高扣点 {{ refreshQuote.maximumPoints }} · 系数 {{ refreshQuote.coefficient }}</span>
-          <button :disabled="!!inFlight || unknown" @click="executeRefresh">再次确认费用并更新</button>
-          <button :disabled="!!inFlight || unknown" @click="refreshQuote = null">取消</button>
+        <div class="source-heading">
+          <div>
+            <p class="source-kicker">企业信息</p>
+            <h3>企业详情</h3>
+            <p class="source-fetched">最近获取 <strong>{{ formatFetchedAt(profile.fetchedAt, '历史获取时间未知') }}</strong></p>
+          </div>
+          <button class="source-refresh" :disabled="!!inFlight || unknown" @click="quoteRefresh">主动更新企业详情</button>
+        </div>
+        <div v-if="refreshQuote" class="search-summary source-quote">
+          <div class="source-quote-copy">
+            <strong>确认本次企业详情费用</strong>
+            <span>{{ refreshQuote.name }} · {{ refreshQuote.countryCode3 }}</span>
+            <span>最高扣点 {{ refreshQuote.maximumPoints }} · 系数 {{ refreshQuote.coefficient }}</span>
+          </div>
+          <div class="source-quote-actions">
+            <button :disabled="!!inFlight || unknown" @click="refreshQuote = null">取消</button>
+            <button class="source-confirm" :disabled="!!inFlight || unknown" @click="executeRefresh">再次确认费用并更新</button>
+          </div>
         </div>
         <p v-if="status" role="status">{{ status }}</p>
         <details class="profile-source-data">
@@ -56,6 +67,7 @@ import { onActivated, ref, watch } from 'vue';
 import { HttpError } from '../../../api/http';
 import type { CompanyProfile, CompanyRequest } from '../../../api/companyProfiles';
 import { useFormLeave } from '../../../router/formLeave';
+import { formatFetchedAt } from '../../../utils/formatFetchedAt';
 import CompanyProfileEditor from './CompanyProfileEditor.vue';
 import CompanyContacts from './CompanyContacts.vue';
 import CompanyTimeline from './CompanyTimeline.vue';
@@ -116,7 +128,12 @@ const trackedRequest: CompanyRequest = async (path, body) => {
   if (mutation) inFlight.value += 1;
   try {
     const result = await props.request(path, body);
-    if (mutation && result && typeof result === 'object' && 'state' in result && result.state === 'pending') {
+    const pendingQuery = result && typeof result === 'object' && 'state' in result && result.state === 'pending';
+    const pendingRecipients = result && typeof result === 'object' && 'recipients' in result &&
+      Array.isArray(result.recipients) && result.recipients.some((recipient: { status: string }) =>
+        ['uncertain', 'submitting'].includes(recipient.status)
+      );
+    if (mutation && (pendingQuery || pendingRecipients)) {
       unknown.value = true;
       unresolved.value = { path, body: structuredClone(body!) };
     }
@@ -174,8 +191,20 @@ async function executeRefresh() {
 .profile-detail :deep(.el-input__wrapper), .profile-detail :deep(.el-textarea__inner), .profile-detail :deep(.el-select__wrapper) { border-radius: 8px; }
 .profile-detail :deep(select), .profile-detail :deep(input[type="datetime-local"]) { width: 100%; min-width: 0; min-height: 34px; padding: 6px 10px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #465064; font: inherit; font-size: 12px; }
 .profile-detail :deep(button) { max-width: 100%; font-size: 12px; white-space: normal; }
-.profile-source > button, .profile-source .search-summary > button { min-height: 34px; padding: 7px 12px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #4356e0; font: inherit; font-size: 12px; cursor: pointer; }
-.profile-source > button:hover, .profile-source .search-summary > button:hover { border-color: #b5bff6; background: #f4f6ff; }
+.source-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.source-heading > div { min-width: 0; }
+.profile-source .source-kicker { margin: 0 0 3px; color: #8190aa; font-size: 10px; letter-spacing: .1em; }
+.profile-source .source-heading h3 { margin: 0 0 5px; font-size: 16px; }
+.profile-source .source-fetched { margin: 0; color: #7a879c; font-size: 12px; }
+.source-fetched strong { margin-left: 5px; color: #42506c; font-weight: 500; font-variant-numeric: tabular-nums; }
+.profile-source .source-refresh, .source-quote-actions button { min-height: 36px; padding: 7px 13px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #4356e0; font: inherit; font-size: 12px; cursor: pointer; }
+.profile-source .source-refresh:hover, .source-quote-actions button:hover { border-color: #b5bff6; background: #f4f6ff; }
+.profile-detail :deep(.search-summary.source-quote) { display: flex; align-items: center; justify-content: space-between; margin: 18px 0 0; padding: 16px 18px; }
+.source-quote-copy { display: grid; gap: 3px; min-width: 0; }
+.source-quote-copy strong { color: #263052; font-size: 13px; }
+.source-quote-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.source-quote-actions .source-confirm { border-color: #4356e0; background: #4356e0; color: #fff; font-weight: 600; }
+.source-quote-actions .source-confirm:hover { border-color: #3343c9; background: #3343c9; color: #fff; }
 .profile-source button:disabled { opacity: .5; cursor: not-allowed; }
 .profile-detail :deep(.search-summary) { flex-wrap: wrap; gap: 10px; padding: 12px; border: 1px solid #e1e6fc; border-radius: 8px; background: #f6f8ff; color: #53617e; font-size: 12px; }
 .profile-source-data { margin-top: 16px; border-top: 1px solid #eef0f6; padding-top: 14px; color: #647087; font-size: 12px; }
@@ -200,5 +229,8 @@ async function executeRefresh() {
   .profile-detail-heading, .profile-detail :deep(.profile-editor), .profile-source, .profile-detail :deep(.contact-panel), .profile-detail :deep(.timeline-panel) { padding: 18px 16px; }
   .profile-detail-heading h2 { font-size: 16px; }
   .profile-avatar { width: 40px; height: 40px; font-size: 18px; }
+  .source-heading, .source-quote-actions { align-items: stretch; flex-direction: column; }
+  .profile-source .source-refresh, .source-quote-actions button { width: 100%; }
+  .profile-detail :deep(.search-summary.source-quote) { align-items: stretch; }
 }
 </style>

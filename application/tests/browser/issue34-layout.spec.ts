@@ -60,7 +60,7 @@ test('双区独立滚动、父级展开、唯一高亮、切换不丢输入、�
   await page.locator('#organization-name').fill('');
   await main.evaluate(el => { el.scrollTop = 250; });
   const saved = await main.evaluate(el => el.scrollTop);
-  await page.locator('.sidebar-link').filter({ hasText: '帮助中心' }).click();
+  await page.getByRole('link', { name: '帮助中心', exact: true }).click();
   await main.evaluate(el => { el.scrollTop = 130; });
   await page.goBack();
   await expect.poll(() => main.evaluate(el => el.scrollTop)).toBe(saved);
@@ -122,15 +122,25 @@ for (const role of ['platform', 'distributor', 'admin', 'sales']) {
     const close = page.getByRole('button', { name: '关闭菜单', exact: true }).first();
     await expect(close).toBeFocused();
     await page.keyboard.press('Shift+Tab');
-    await expect(page.locator('.sidebar-link').last()).toBeFocused();
+    await expect(page.locator('.sidebar-link:visible').last()).toBeFocused();
     await page.keyboard.press('Tab'); await expect(close).toBeFocused();
     await page.keyboard.press('Escape'); await expect(toggle).toBeFocused();
-    await toggle.click();
-    await page.locator('.sidebar-link').filter({ hasText: '帮助中心' }).click();
-    // Clicking the current page does not produce a route change; Escape always closes the menu.
-    await page.keyboard.press('Escape');
+    const help = page.locator('.top-bar').getByRole('link', { name: '帮助中心', exact: true });
+    await expect(help).toBeVisible();
+    await expect(page.locator('.workspace-sidebar a[href="/help"]')).toHaveCount(0);
+    await help.focus();
+    await page.keyboard.press('Enter');
+    await expect(help).toHaveAttribute('aria-current', 'page');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({ path: `.scratch/issue34-mobile-${role}.png` });
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const helpBox = await help.boundingBox();
+    const accountBox = await page.locator('.account-trigger').boundingBox();
+    expect(helpBox!.x + helpBox!.width).toBeLessThanOrEqual(accountBox!.x);
+    await page.locator('.role-help .help-link').first().click();
+    await expect(page).not.toHaveURL(`${origin}/help`);
+    await help.click();
+    await expect(page).toHaveURL(`${origin}/help`);
     if (role !== 'platform') {
       await page.goto(`${origin}/platform/settings/email-quota`);
       await expect(page).not.toHaveURL(`${origin}/platform/settings/email-quota`);

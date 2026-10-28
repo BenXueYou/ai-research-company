@@ -1,0 +1,248 @@
+{
+  "origin": "http://127.0.0.1:56178",
+  "database": "issue57_1ad668e6ac334199bff1f8cb7e5a33e1_test",
+  "issue": 57,
+  "actors": [
+    {
+      "id": "8e34b37c-142c-4456-9522-fb2d3eb0546f",
+      "org": "b67ac0c0-f145-48bf-8f0f-dddd09a31c6b",
+      "email": "admin-a@issue57.test",
+      "role": "admin"
+    },
+    {
+      "id": "cfd47fa9-3c6d-454a-820d-80212d330e3a",
+      "org": "b67ac0c0-f145-48bf-8f0f-dddd09a31c6b",
+      "email": "sales-a@issue57.test",
+      "role": "sales"
+    },
+    {
+      "id": "61602515-e458-444c-af02-383a9b87546f",
+      "org": "293ae623-6fa4-4d33-afe1-39d53168a3bf",
+      "email": "admin-b@issue57.test",
+      "role": "admin"
+    },
+    {
+      "id": "c2bce572-2bb9-4e4f-bb7e-7178d55ece5c",
+      "org": "0340d970-b8b0-498e-86c9-cf68e2a89a0c",
+      "email": "distributor@issue57.test",
+      "role": "distributor"
+    }
+  ],
+  "identifiers": {
+    "platformAccount": "00439147-411a-4424-acd8-796b040fe822",
+    "platformOrganization": "26bfb288-8f35-459f-a794-e3153e09b1cd",
+    "distributor": "0340d970-b8b0-498e-86c9-cf68e2a89a0c",
+    "a": "b67ac0c0-f145-48bf-8f0f-dddd09a31c6b",
+    "b": "293ae623-6fa4-4d33-afe1-39d53168a3bf",
+    "smtpChannel": "7b9b8bf6-55c7-49ae-a71b-bf2f0808773f",
+    "umailResource": "external-resource-57-A"
+  },
+  "requests": [
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "POST",
+      "body": {
+        "host": "smtp.issue57.test",
+        "port": "587",
+        "security": "starttls",
+        "username": "authentication-57",
+        "credential": "[REDACTED]",
+        "replyTo": "smtp-reply@issue57.test",
+        "defaultChannel": true,
+        "requestId": "cc2c4656-9ae5-4814-9903-dfd48da4e11b"
+      }
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "POST",
+      "body": {
+        "domain": "mail.issue57.test",
+        "senderAddress": "sender@mail.issue57.test",
+        "replyAddress": "umail-replies@issue57.test",
+        "defaultChannel": true,
+        "requestId": "adb4623e-98b3-4958-9815-b88758b18340"
+      }
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "POST",
+      "body": {
+        "host": "unknown.smtp.issue57.test",
+        "port": "587",
+        "security": "starttls",
+        "username": "authentication-57",
+        "credential": "[REDACTED]",
+        "replyTo": "smtp-reply@issue57.test",
+        "defaultChannel": true,
+        "requestId": "7bac4c4d-32ff-476d-bf98-981ee74b2da3"
+      }
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "POST",
+      "body": {
+        "host": "unknown.smtp.issue57.test",
+        "port": "587",
+        "security": "starttls",
+        "username": "authentication-57",
+        "credential": "[REDACTED]",
+        "replyTo": "smtp-reply@issue57.test",
+        "defaultChannel": true,
+        "requestId": "7bac4c4d-32ff-476d-bf98-981ee74b2da3"
+      }
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "POST",
+      "body": {
+        "domain": "mail.issue57.test",
+        "senderAddress": "sender@mail.issue57.test",
+        "replyAddress": "unknown-reply@issue57.test",
+        "defaultChannel": true,
+        "requestId": "9b8855ef-dd51-4357-aad2-c83bd3bcbb62"
+      }
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "POST",
+      "body": {
+        "domain": "mail.issue57.test",
+        "senderAddress": "sender@mail.issue57.test",
+        "replyAddress": "unknown-reply@issue57.test",
+        "defaultChannel": true,
+        "requestId": "9b8855ef-dd51-4357-aad2-c83bd3bcbb62"
+      }
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/smtp",
+      "method": "GET"
+    },
+    {
+      "path": "/api/sending-channels/umail",
+      "method": "GET"
+    }
+  ],
+  "smtpAdapter": [
+    {
+      "host": "smtp.issue57.test",
+      "port": 587,
+      "security": "starttls",
+      "username": "authentication-57",
+      "replyTo": "smtp-reply@issue57.test",
+      "credential": "[REDACTED]"
+    },
+    {
+      "host": "unknown.smtp.issue57.test",
+      "port": 587,
+      "security": "starttls",
+      "username": "authentication-57",
+      "replyTo": "smtp-reply@issue57.test",
+      "credential": "[REDACTED]"
+    }
+  ],
+  "umailAdapter": [
+    {
+      "organizationId": "b67ac0c0-f145-48bf-8f0f-dddd09a31c6b",
+      "resourceId": "external-resource-57-A",
+      "domain": "mail.issue57.test",
+      "senderAddress": "sender@mail.issue57.test"
+    },
+    {
+      "organizationId": "b67ac0c0-f145-48bf-8f0f-dddd09a31c6b",
+      "resourceId": "external-resource-57-A",
+      "domain": "mail.issue57.test",
+      "senderAddress": "sender@mail.issue57.test"
+    }
+  ],
+  "calls": {
+    "smtpVerify": 2,
+    "umailInspect": 2,
+    "actualDelivery": 0
+  },
+  "dirtyCancelAndDiscard": true,
+  "backForward": true,
+  "submittingBlocked": true,
+  "beforeUnloadProtected": true,
+  "nativeReloadAndCloseCancelled": true,
+  "unknownBothChannelsOriginalPayloadAndId": true,
+  "noAutomaticRetryOnReturn": true,
+  "credentialsCleared": true,
+  "fourRolePermissionAndForcedChange": true,
+  "tenantIsolation": true,
+  "lateResponseAcrossLogout": true,
+  "nestViteDirectAndReload": true,
+  "accountingAndQuotaUnchanged": true,
+  "browserErrors": []
+}

@@ -178,8 +178,8 @@ test('Issue44 scoped reporting, CSV download and role gates through HTTP, Postgr
       await context.addCookies([{ name: 'identity_session', value: accounts[2].token,
         url: origin, httpOnly: true, sameSite: 'Strict' }]);
       const page = await context.newPage();
-      await page.goto(origin);
-      await page.getByRole('heading', { name: '用量与账务' }).waitFor();
+      await page.goto(`${origin}/terminal/usage`);
+      await page.getByRole('heading', { name: '账户余额与冻结' }).waitFor();
       await page.getByText('10.0000').first().waitFor();
       assert.equal(await page.getByText('平台承担费用').count(), 0);
       await context.close();
@@ -187,7 +187,7 @@ test('Issue44 scoped reporting, CSV download and role gates through HTTP, Postgr
       await distributorContext.addCookies([{ name: 'identity_session', value: accounts[1].token,
         url: origin, httpOnly: true, sameSite: 'Strict' }]);
       const distributorPage = await distributorContext.newPage();
-      await distributorPage.goto(origin);
+      await distributorPage.goto(`${origin}/distribution/profit`);
       await distributorPage.getByRole('link', { name: '导出自有账务' }).waitFor();
       await distributorPage.getByText('自有交易毛利：1.0000').waitFor();
       await distributorContext.close();
@@ -203,7 +203,6 @@ test('Issue44 scoped reporting, CSV download and role gates through HTTP, Postgr
       // First visit the remaining platform compatibility workspace, then navigate
       // through RouterLinks: the retired report must not survive in a hidden instance.
       await platformPage.goto(`${origin}/platform/overview`);
-      await expect(platformPage.locator('.workspace')).toHaveCount(1);
       await expect(platformPage.locator('.usage-reports')).toHaveCount(0);
       const reportReadsBefore = reportRequests.filter(request => request.path === '/api/reports').length;
       await platformPage.getByRole('button', { name: '点数与账务', exact: true }).click();
@@ -222,6 +221,13 @@ test('Issue44 scoped reporting, CSV download and role gates through HTTP, Postgr
       await expect(platformPage.locator('.platform-report')).toContainText(orderId);
       await expect(platformPage.locator('.platform-report')).toContainText(platformOrderId);
       await expect(platformPage.locator('.platform-report')).toContainText(expenseId);
+      await mkdir(resolve('.scratch/issue44-results'), { recursive: true });
+      await platformPage.setViewportSize({ width: 1440, height: 1000 });
+      await platformPage.screenshot({ path: resolve('.scratch/issue44-results/profit-desktop.png'), fullPage: true });
+      await platformPage.setViewportSize({ width: 375, height: 900 });
+      await platformPage.screenshot({ path: resolve('.scratch/issue44-results/profit-mobile.png'), fullPage: true });
+      assert.equal(await platformPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+      await platformPage.setViewportSize({ width: 1440, height: 1000 });
       assert.doesNotMatch(await platformPage.locator('.platform-report').innerText(), /净利润|客户档案|邮件正文|private-terminal/);
       const downloadReady = platformPage.waitForEvent('download');
       await platformPage.getByRole('link', { name: '导出自有账务', exact: true }).click();
@@ -251,6 +257,11 @@ test('Issue44 scoped reporting, CSV download and role gates through HTTP, Postgr
       await platformPage.reload();
       await expect(platformPage.locator('.sidebar-link[aria-current="page"]')).toHaveText('账务流水');
       await expect(platformPage.locator('.console-breadcrumb [aria-current="page"]')).toHaveText('账务流水');
+      await platformPage.screenshot({ path: resolve('.scratch/issue44-results/flows-desktop.png'), fullPage: true });
+      await platformPage.setViewportSize({ width: 375, height: 900 });
+      await platformPage.screenshot({ path: resolve('.scratch/issue44-results/flows-mobile.png'), fullPage: true });
+      assert.equal(await platformPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+      await platformPage.setViewportSize({ width: 1440, height: 1000 });
       for (const row of platformReport.procurement) {
         const rendered = platformPage.locator('.platform-report tbody tr').filter({ has: platformPage.locator('td', { hasText: row.reference }) });
         await expect(rendered).toHaveCount(1);

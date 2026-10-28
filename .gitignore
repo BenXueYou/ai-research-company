@@ -72,3 +72,26 @@ application/.scratch/issue56/
 
 !application/tests/issue53-search.spec.ts
 application/.scratch/issue53/
+
+!application/tests/issue48-organizations.spec.ts
+application/.scratch/issue48/
+
+!application/tests/issue50-distribution-orders.spec.ts
+application/.scratch/issue50/
+
+!application/tests/issue51-profit.spec.ts
+application/.scratch/issue51/
+
+!application/tests/issue55-contacts.spec.ts
+!application/tests/company-contacts.test.ts
+!application/tests/email-preview.test.ts
+application/.scratch/issue55/
+
+!application/tests/issue49-accounts.spec.ts
+application/.scratch/issue49/
+
+!application/tests/issue57-settings.spec.ts
+application/.scratch/issue57/
+
+!application/tests/console-compat-exit.spec.ts
+application/.scratch/compat-exit/

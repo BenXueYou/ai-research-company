@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import 'element-plus/es/components/tabs/style/css';
 import {
   onMounted,
   reactive,
@@ -10,9 +11,12 @@ import {
   ElButton,
   ElForm,
   ElFormItem,
-  ElInput
+  ElInput,
+  ElTabPane,
+  ElTabs
 } from 'element-plus';
 import { useFormLeave } from '../../router/formLeave';
+import ProcurementReference from './components/ProcurementReference.vue';
 import { HttpError } from '../../api/http';
 
 defineOptions({ name: 'PlatformProcurement' });
@@ -35,6 +39,7 @@ const procurementPaths = {
   expense: 'procurement/expenses'
 } as const;
 const snapshot = shallowRef<ProcurementSnapshot>();
+const activeRecordTab = ref('expenses');
 const busy = ref(false);
 const error = ref('');
 const notice = ref('');
@@ -80,6 +85,11 @@ const purposes: Record<string, string> = {
   coverage: '补足额度',
   failure: '失败费用',
   excess: '超额费用'
+};
+const ledgerEvents: Record<string, string> = {
+  purchase: '采购入账',
+  expense: '费用确认',
+  pricing: '计价配置'
 };
 async function refresh() {
   snapshot.value = await props.request('procurement') as ProcurementSnapshot;
@@ -165,11 +175,8 @@ onMounted(reload);
 <template>
   <section class="procurement-panel" aria-labelledby="procurement-title">
     <header class="procurement-heading">
-      <div>
-        <p class="eyebrow">点数与账务 / 平台运营</p>
-        <h2 id="procurement-title">平台采购与承担费用</h2>
-        <p class="procurement-intro">统一登记采购、费用来源与库存成本，保留每笔关联和账务流水。</p>
-      </div>
+      <h2 id="procurement-title" class="visually-hidden">平台采购与承担费用</h2>
+      <p class="procurement-intro">登记采购与平台承担费用，核对库存及每笔账务关联。</p>
       <ElButton class="refresh-button" :disabled="busy" @click="reload"><span aria-hidden="true">↻</span>刷新账务</ElButton>
     </header>
     <ElAlert
@@ -194,44 +201,50 @@ onMounted(reload);
       </div>
     </div>
     <template v-if="snapshot">
-      <p>币种 {{ snapshot.currency }} · 入账系数 X={{ snapshot.pricing.coefficient }} · 最低加价率 {{
-        snapshot.pricing.minimum_markup }}（0.01 = 1%）</p>
-      <p>系数变更须通过通知、生效与覆盖校验流程。</p>
-      <dl class="procurement-balances">
-        <div>
-          <dt>内部库存余额</dt>
-          <dd data-testid="inventory-balance">{{ snapshot.inventory.balance }}</dd>
+      <section class="account-summary" aria-label="账务摘要">
+        <dl class="procurement-balances">
+          <div>
+            <dt>内部库存余额（点）</dt>
+            <dd data-testid="inventory-balance">{{ snapshot.inventory.balance }}</dd>
+          </div>
+          <div>
+            <dt>可用内部点数（点）</dt>
+            <dd>{{ snapshot.inventory.available }}</dd>
+          </div>
+          <div>
+            <dt>采购资金支出（元）</dt>
+            <dd data-testid="cash-outflow">{{ snapshot.totals.cash_outflow }}</dd>
+          </div>
+          <div>
+            <dt>平台承担费用（元）</dt>
+            <dd data-testid="borne-expenses">{{ snapshot.totals.expenses }}</dd>
+            <span class="metric-note">已关联充值不重复确认费用</span>
+          </div>
+        </dl>
+        <dl class="secondary-balances">
+          <div><dt>冻结 / 预留（点）</dt><dd>{{ snapshot.inventory.frozen }} / {{ snapshot.inventory.reserved }}</dd></div>
+          <div><dt>移动加权成本（元/点）</dt><dd data-testid="inventory-cost">{{ snapshot.inventory.average_cost }}</dd></div>
+          <div><dt>最低售价（元/点）</dt><dd data-testid="minimum-price">{{ snapshot.inventory.minimum_sale_price }}</dd></div>
+          <div><dt>累计采购上游点数</dt><dd>{{ snapshot.totals.recorded_upstream_credits }}</dd></div>
+        </dl>
+        <div class="summary-context">
+          <span>币种 {{ snapshot.currency }} · 入账系数 X={{ snapshot.pricing.coefficient }} · 最低加价率 {{ snapshot.pricing.minimum_markup }}（0.01 = 1%）</span>
+          <span>系数变更须通过通知、生效与覆盖校验流程。</span>
+          <span>上游点数为已登记采购累计值，供应商实际余额须结合查询扣费账单核对。</span>
         </div>
-        <div>
-          <dt>可用 / 冻结 / 预留</dt>
-          <dd>{{ snapshot.inventory.available }} / {{ snapshot.inventory.frozen }} / {{ snapshot.inventory.reserved }}
-          </dd>
-        </div>
-        <div>
-          <dt>移动加权成本（元/点）</dt>
-          <dd data-testid="inventory-cost">{{ snapshot.inventory.average_cost }}</dd>
-        </div>
-        <div>
-          <dt>最低售价（元/点）</dt>
-          <dd data-testid="minimum-price">{{ snapshot.inventory.minimum_sale_price }}</dd>
-        </div>
-        <div>
-          <dt>累计采购上游点数</dt>
-          <dd>{{ snapshot.totals.recorded_upstream_credits }}</dd>
-        </div>
-        <div>
-          <dt>采购资金支出（元）</dt>
-          <dd data-testid="cash-outflow">{{ snapshot.totals.cash_outflow }}</dd>
-        </div>
-        <div>
-          <dt>去重后平台承担费用（元）</dt>
-          <dd data-testid="borne-expenses">{{ snapshot.totals.expenses }}</dd>
-        </div>
-      </dl>
-      <p>上游点数为本系统已登记采购累计值；实际供应商余额须结合查询扣费账单核对。</p>
+      </section>
       <fieldset class="procurement-forms" :disabled="busy">
-        <ElForm label-position="top" @submit.prevent="submit('purchase', purchaseValues())">
-          <h3>采购入账</h3>
+        <legend class="visually-hidden">采购入账与费用登记</legend>
+        <ElForm
+          class="entry-card"
+          label-position="top"
+          aria-labelledby="purchase-title"
+          @submit.prevent="submit('purchase', purchaseValues())"
+        >
+          <header class="entry-heading">
+            <h3 id="purchase-title">采购入账</h3>
+            <p>登记采购凭证与支付金额</p>
+          </header>
           <ElFormItem label="采购用途" for="purchase-purpose">
             <select
               id="purchase-purpose"
@@ -244,22 +257,26 @@ onMounted(reload);
               <option value="excess">超额费用</option>
             </select>
           </ElFormItem>
-          <ElFormItem label="采购上游点数" for="purchase-points">
-            <ElInput
-              id="purchase-points"
-              v-model="purchase.upstreamPoints"
-              required
-              :disabled="busy"
-            />
-          </ElFormItem>
-          <ElFormItem label="采购人民币金额" for="purchase-amount">
-            <ElInput
-              id="purchase-amount"
-              v-model="purchase.amount"
-              required
-              :disabled="busy"
-            />
-          </ElFormItem>
+          <div class="field-row">
+            <ElFormItem label="采购上游点数" for="purchase-points">
+              <ElInput
+                id="purchase-points"
+                v-model="purchase.upstreamPoints"
+                required
+                :disabled="busy"
+              />
+            </ElFormItem>
+            <ElFormItem label="采购人民币金额" for="purchase-amount">
+              <ElInput
+                id="purchase-amount"
+                v-model="purchase.amount"
+                required
+                :disabled="busy"
+              >
+                <template #suffix>元</template>
+              </ElInput>
+            </ElFormItem>
+          </div>
           <ElFormItem label="采购凭证编号" for="purchase-reference">
             <ElInput
               id="purchase-reference"
@@ -289,11 +306,29 @@ onMounted(reload);
               </template>
             </select>
           </ElFormItem>
-          <p>关联费用须与采购用途一致；已记费用可关联多笔充值，只增加资金支出与上游点数。充值合计与费用的差额单独展示供核对。</p>
-          <ElButton native-type="submit" :disabled="busy">确认采购入账</ElButton>
+          <div class="form-guidance">
+            <p v-if="purchase.purpose === 'sale'">按当前入账系数生成内部库存点数。</p>
+            <template v-else>
+              <p v-if="purchase.purpose === 'coverage'">可关联已记费用，或随本次充值确认新费用。</p>
+              <p v-else>请关联用途一致的已记费用，再确认采购入账。</p>
+              <p>关联已记费用的充值只增加资金支出与上游点数，不重复确认费用；一笔费用可关联多笔充值。</p>
+              <p>充值合计与费用差额单独展示供核对。</p>
+            </template>
+          </div>
+          <footer class="form-actions">
+            <ElButton type="primary" native-type="submit" :disabled="busy">确认采购入账</ElButton>
+          </footer>
         </ElForm>
-        <ElForm label-position="top" @submit.prevent="submit('expense', expenseValues())">
-          <h3>平台承担费用</h3>
+        <ElForm
+          class="entry-card"
+          label-position="top"
+          aria-labelledby="expense-title"
+          @submit.prevent="submit('expense', expenseValues())"
+        >
+          <header class="entry-heading">
+            <h3 id="expense-title">平台承担费用</h3>
+            <p>登记费用来源与核对依据</p>
+          </header>
           <ElFormItem label="费用用途" for="expense-purpose">
             <select
               id="expense-purpose"
@@ -305,22 +340,26 @@ onMounted(reload);
               <option value="coverage">补足额度</option>
             </select>
           </ElFormItem>
-          <ElFormItem label="费用人民币金额" for="expense-amount">
-            <ElInput
-              id="expense-amount"
-              v-model="expense.amount"
-              required
-              :disabled="busy"
-            />
-          </ElFormItem>
-          <ElFormItem label="费用来源编号" for="expense-reference">
-            <ElInput
-              id="expense-reference"
-              v-model="expense.sourceReference"
-              required
-              :disabled="busy"
-            />
-          </ElFormItem>
+          <div class="field-row">
+            <ElFormItem label="费用人民币金额" for="expense-amount">
+              <ElInput
+                id="expense-amount"
+                v-model="expense.amount"
+                required
+                :disabled="busy"
+              >
+                <template #suffix>元</template>
+              </ElInput>
+            </ElFormItem>
+            <ElFormItem label="费用来源编号" for="expense-reference">
+              <ElInput
+                id="expense-reference"
+                v-model="expense.sourceReference"
+                required
+                :disabled="busy"
+              />
+            </ElFormItem>
+          </div>
           <ElFormItem label="费用核对依据" for="expense-evidence">
             <ElInput
               id="expense-evidence"
@@ -329,112 +368,162 @@ onMounted(reload);
               :disabled="busy"
             />
           </ElFormItem>
-          <ElFormItem label="关联企业详情损耗查询标识" for="expense-detail-loss">
-            <ElInput
-              id="expense-detail-loss"
-              v-model="expense.detailLossQueryId"
-              :disabled="busy"
-            />
-          </ElFormItem>
-          <ElFormItem label="关联联系人页损耗查询标识" for="expense-contact-loss">
-            <ElInput
-              id="expense-contact-loss"
-              v-model="expense.contactLossQueryId"
-              :disabled="busy"
-            />
-          </ElFormItem>
-          <ElFormItem label="关联产品名单损耗页标识" for="expense-product-loss">
-            <ElInput
-              id="expense-product-loss"
-              v-model="expense.productLossPageId"
-              :disabled="busy"
-            />
-          </ElFormItem>
-          <ElButton native-type="submit" :disabled="busy">确认费用</ElButton>
+          <section class="loss-associations" aria-labelledby="loss-associations-title">
+            <h4 id="loss-associations-title">损耗关联信息</h4>
+            <p>如需关联损耗，请填写对应记录的标识。</p>
+            <ElFormItem label="关联企业详情损耗查询标识" for="expense-detail-loss">
+              <ElInput
+                id="expense-detail-loss"
+                v-model="expense.detailLossQueryId"
+                :disabled="busy"
+              />
+            </ElFormItem>
+            <ElFormItem label="关联联系人页损耗查询标识" for="expense-contact-loss">
+              <ElInput
+                id="expense-contact-loss"
+                v-model="expense.contactLossQueryId"
+                :disabled="busy"
+              />
+            </ElFormItem>
+            <ElFormItem label="关联产品名单损耗页标识" for="expense-product-loss">
+              <ElInput
+                id="expense-product-loss"
+                v-model="expense.productLossPageId"
+                :disabled="busy"
+              />
+            </ElFormItem>
+          </section>
+          <footer class="form-actions">
+            <ElButton type="primary" native-type="submit" :disabled="busy">确认费用</ElButton>
+          </footer>
         </ElForm>
       </fieldset>
-      <section class="data-card">
-        <div class="section-heading"><div><p class="eyebrow">费用管理</p><h3>费用来源与核对</h3></div><span class="section-count">{{ snapshot.expenses.length }} 条</span></div>
-      <div class="procurement-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>费用记录 / 来源</th>
-              <th>用途</th>
-              <th>人民币</th>
-              <th>核对依据</th>
-              <th>关联采购</th>
-              <th>充值合计 / 与费用差额</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in snapshot.expenses" :key="item.id">
-              <td>{{ item.id }} / {{ item.source_reference }}</td>
-              <td>{{ purposes[item.purpose] }}</td>
-              <td>{{ item.amount }}</td>
-              <td>{{ item.evidence }}</td>
-              <td>{{ item.purchase_ids.join('、') || '尚未关联充值' }}</td>
-              <td>{{ item.replenished_amount }} / {{ item.reconciliation_difference }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      </section>
-      <section class="data-card">
-        <div class="section-heading"><div><p class="eyebrow">采购记录</p><h3>采购及费用关联</h3></div><span class="section-count">{{ snapshot.purchases.length }} 条</span></div>
-      <div class="procurement-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>采购记录 / 凭证</th>
-              <th>用途</th>
-              <th>上游点数 / X</th>
-              <th>生成内部点数</th>
-              <th>人民币</th>
-              <th>关联费用</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in snapshot.purchases" :key="item.id">
-              <td>{{ item.id }} / {{ item.receipt_reference }}</td>
-              <td>{{ purposes[item.purpose] }}</td>
-              <td>{{ item.upstream_points }} / {{ item.coefficient_snapshot }}</td>
-              <td>{{ item.generated_internal_points }}</td>
-              <td>{{ item.amount }}</td>
-              <td>{{ item.expense_id }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      </section>
-      <section class="data-card">
-        <div class="section-heading"><div><p class="eyebrow">审计留痕</p><h3>只增账务流水</h3></div><span class="section-count">{{ snapshot.ledger.length }} 条</span></div>
-      <div class="procurement-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>流水 / 业务引用</th>
-              <th>事件</th>
-              <th>内部点数</th>
-              <th>上游点数</th>
-              <th>资金支出</th>
-              <th>费用确认</th>
-              <th>余额 / 成本</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in snapshot.ledger" :key="item.id">
-              <td>{{ item.id }} / {{ item.reference }}</td>
-              <td>{{ item.event }}</td>
-              <td>{{ item.internal_delta }}</td>
-              <td>{{ item.upstream_delta }}</td>
-              <td>{{ item.cash_outflow }}</td>
-              <td>{{ item.expense_delta }}</td>
-              <td>{{ item.balance_after }} / {{ item.average_cost_after }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <section class="data-card" aria-label="采购与费用明细">
+        <ElTabs v-model="activeRecordTab" class="record-tabs">
+          <ElTabPane name="expenses">
+            <template #label><span>费用来源与核对</span><span class="section-count">{{ snapshot.expenses.length }}</span></template>
+            <div
+              class="procurement-scroll"
+              role="region"
+              aria-label="费用来源与核对"
+              tabindex="0"
+            >
+              <table aria-label="费用来源与核对">
+                <thead>
+                  <tr>
+                    <th>费用记录 / 来源</th>
+                    <th>用途</th>
+                    <th class="numeric">人民币（元）</th>
+                    <th>核对依据</th>
+                    <th>关联采购</th>
+                    <th class="numeric">充值合计（元）</th>
+                    <th class="numeric">与费用差额（元）</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in snapshot.expenses" :key="item.id">
+                    <td><strong class="record-reference">{{ item.source_reference }}</strong><ProcurementReference :value="item.id" /></td>
+                    <td>{{ purposes[item.purpose] }}</td>
+                    <td class="numeric">{{ item.amount }}</td>
+                    <td>{{ item.evidence }}</td>
+                    <td>
+                      <ProcurementReference
+                        v-for="id in item.purchase_ids"
+                        :key="id"
+                        :value="id"
+                      />
+                      <span v-if="!item.purchase_ids.length" class="muted">尚未关联充值</span>
+                    </td>
+                    <td class="numeric">{{ item.replenished_amount }}</td>
+                    <td class="numeric">
+                      {{ item.reconciliation_difference }}
+                      <span v-if="/[1-9]/.test(item.reconciliation_difference)" class="reconcile-note">需核对</span>
+                    </td>
+                  </tr>
+                  <tr v-if="!snapshot.expenses.length">
+                    <td class="empty-state" colspan="7">暂无费用记录，请在上方登记平台承担费用。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ElTabPane>
+          <ElTabPane name="purchases">
+            <template #label><span>采购及费用关联</span><span class="section-count">{{ snapshot.purchases.length }}</span></template>
+            <div
+              class="procurement-scroll"
+              role="region"
+              aria-label="采购及费用关联"
+              tabindex="0"
+            >
+              <table aria-label="采购及费用关联">
+                <thead>
+                  <tr>
+                    <th>采购记录 / 凭证</th>
+                    <th>用途</th>
+                    <th class="numeric">上游点数</th>
+                    <th class="numeric">入账系数 X</th>
+                    <th class="numeric">生成内部点数（点）</th>
+                    <th class="numeric">人民币（元）</th>
+                    <th>关联费用</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in snapshot.purchases" :key="item.id">
+                    <td><strong class="record-reference">{{ item.receipt_reference }}</strong><ProcurementReference :value="item.id" /></td>
+                    <td>{{ purposes[item.purpose] }}</td>
+                    <td class="numeric">{{ item.upstream_points }}</td>
+                    <td class="numeric">{{ item.coefficient_snapshot }}</td>
+                    <td class="numeric">{{ item.generated_internal_points }}</td>
+                    <td class="numeric">{{ item.amount }}</td>
+                    <td><ProcurementReference v-if="item.expense_id" :value="item.expense_id" /><span v-else class="muted">未关联费用</span></td>
+                  </tr>
+                  <tr v-if="!snapshot.purchases.length">
+                    <td class="empty-state" colspan="7">暂无采购记录，请在上方完成采购入账。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ElTabPane>
+          <ElTabPane name="ledger">
+            <template #label><span>账务流水</span><span class="section-count">{{ snapshot.ledger.length }}</span></template>
+            <div
+              class="procurement-scroll"
+              role="region"
+              aria-label="账务流水"
+              tabindex="0"
+            >
+              <table aria-label="账务流水">
+                <thead>
+                  <tr>
+                    <th>流水 / 业务引用</th>
+                    <th>事件</th>
+                    <th class="numeric">内部点数（点）</th>
+                    <th class="numeric">上游点数（点）</th>
+                    <th class="numeric">资金支出（元）</th>
+                    <th class="numeric">费用确认（元）</th>
+                    <th class="numeric">库存余额（点）</th>
+                    <th class="numeric">成本（元/点）</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in snapshot.ledger" :key="item.id">
+                    <td><ProcurementReference :value="item.id" /><ProcurementReference :value="item.reference" /></td>
+                    <td>{{ ledgerEvents[item.event] ?? item.event }}</td>
+                    <td class="numeric">{{ item.internal_delta }}</td>
+                    <td class="numeric">{{ item.upstream_delta }}</td>
+                    <td class="numeric">{{ item.cash_outflow }}</td>
+                    <td class="numeric">{{ item.expense_delta }}</td>
+                    <td class="numeric">{{ item.balance_after }}</td>
+                    <td class="numeric">{{ item.average_cost_after }}</td>
+                  </tr>
+                  <tr v-if="!snapshot.ledger.length">
+                    <td class="empty-state" colspan="8">暂无账务流水，采购入账或确认费用后可在此查看。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ElTabPane>
+        </ElTabs>
       </section>
     </template>
   </section>
@@ -443,237 +532,372 @@ onMounted(reload);
 <style scoped>
 .procurement-panel {
   width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  color: #1c2333;
+  max-width: 1440px; margin: 0 auto;
+  color: var(--console-text);
+  font-size: 14px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
 }
 
 .procurement-heading {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-  margin: 2px 0 24px;
-}
-
-.eyebrow {
-  margin: 0 0 6px;
-  color: #7b879b;
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.procurement-heading h2 {
-  margin: 0;
-  color: #1c2333;
-  font-size: 24px;
-  line-height: 1.35;
-  letter-spacing: -.4px;
+  align-items: center; justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .procurement-intro {
-  margin: 7px 0 0;
-  color: #738095;
-  font-size: 13px;
+  margin: 0;
   line-height: 1.7;
 }
-
 .refresh-button {
   flex: none;
-  min-height: 36px;
-  color: #4356e0;
-  border-color: #dce2ff;
-  background: #f4f6ff;
+  min-height: 40px;
+  color: var(--el-color-primary);
+  border-color: var(--console-line);
 }
-
 .refresh-button span {
   margin-right: 6px;
   font-size: 17px;
 }
-
-.procurement-panel > .el-alert,
-.procurement-panel > [role='alert'] {
+.procurement-panel > .el-alert, .procurement-panel > [role='alert'] {
   margin-bottom: 16px;
 }
 
-.procurement-balances,
-.data-card,
-.procurement-forms {
-  border: 1px solid #e6e9f0;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 2px 5px #19234603;
+.account-summary, .entry-card, .data-card {
+  min-width: 0;
+  border: 1px solid var(--console-line);
+  border-radius: 10px;
+  background: var(--console-surface);
 }
 
-.procurement-balances,
-.procurement-forms {
+.account-summary {
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.procurement-balances, .secondary-balances {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-  margin: 0 0 20px;
-  padding: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0;
 }
 
 .procurement-balances > div {
   min-width: 0;
-  padding: 18px 20px;
-  border-right: 1px solid #edf0f5;
+  padding: 22px 24px 18px;
+  border-right: 1px solid var(--console-line);
 }
-
-.procurement-balances > div:nth-child(4n) {
+.procurement-balances > div:last-child {
   border-right: 0;
 }
-
-.procurement-balances dt {
-  color: #7b879b;
+.procurement-balances dt, .secondary-balances dt {
+  color: var(--console-muted);
   font-size: 12px;
+  line-height: 1.6;
 }
-
 .procurement-balances dd {
-  margin: 8px 0;
-  color: #26334d;
-  font: 600 22px/1.3 'Segoe UI', Consolas, monospace;
+  margin: 8px 0 4px;
+  font: 600 clamp(19px, 1.8vw, 28px)/1.4 'Segoe UI', 'Microsoft YaHei', sans-serif;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 
-.procurement-forms {
-  min-width: 0;
-  margin: 0;
-  padding: 20px;
-  gap: 28px;
-  border: 1px solid #e6e9f0;
-  background: #fff;
-  box-shadow: 0 2px 5px #19234603;
-}
-
-.procurement-forms h3,
-.data-card h3 {
-  margin: 0;
-  color: #26334d;
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-.data-card {
-  margin-top: 20px;
-  padding: 20px;
-}
-
-.section-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.section-count {
-  padding: 4px 9px;
-  border-radius: 6px;
-  color: #6372a4;
-  background: #f3f5ff;
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-.procurement-scroll {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  color: #465064;
+.metric-note {
+  color: var(--console-muted);
   font-size: 12px;
 }
-
-th,
-td {
-  padding: 12px 10px;
-  border-bottom: 1px solid #edf0f5;
-  text-align: left;
+.secondary-balances {
+  gap: 16px 24px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--console-line);
+  background: #fafbfe;
+}
+.secondary-balances > div {
+  min-width: 0;
+}
+.secondary-balances dd {
+  margin: 4px 0 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
+.summary-context {
+  display: flex;
+  flex-wrap: wrap; gap: 6px 16px; padding: 12px 24px;
+  border-top: 1px solid var(--console-line);
+  color: var(--console-muted); font-size: 12px; line-height: 1.7;
+}
 
-th {
-  color: #7b879b;
-  background: #f8f9fc;
-  font-size: 11px;
+.procurement-forms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;
+  min-width: 0;
+  margin: 0; padding: 0; border: 0;
+}
+
+.entry-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+}
+.entry-heading {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--console-line);
+}
+.entry-heading h3 {
+  margin: 0;
+  font-size: 16px;
   font-weight: 650;
-  white-space: nowrap;
+  line-height: 1.5;
 }
-
-tbody tr:hover {
-  background: #f8f9ff;
-}
-
-select {
-  width: 100%;
-  min-height: 36px;
-  border: 1px solid #dfe4ec;
-  border-radius: 7px;
-  color: #35415b;
-  background: #fff;
-}
-
-.procurement-panel :deep(.el-form-item__label) {
-  color: #647087;
+.entry-heading p {
+  margin: 6px 0 0;
   font-size: 12px;
+  line-height: 1.6;
+}
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.entry-card :deep(.el-form-item) {
+  min-width: 0;
+  margin-bottom: 20px;
+}
+.entry-card :deep(.el-form-item__label) {
+  height: auto;
+  margin-bottom: 8px;
+  padding: 0;
+  color: #52617a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.entry-card :deep(.el-form-item__content) {
+  min-width: 0;
+  line-height: 1.5;
+}
+.entry-card :deep(.el-input__wrapper) {
+  min-height: 40px;
+  padding: 1px 12px; border-radius: 7px;
+  box-shadow: 0 0 0 1px var(--console-line-strong) inset;
+}
+
+.entry-card :deep(.el-input__inner) {
+  height: 38px;
+  font-size: 14px;
+}
+.entry-card :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px var(--el-color-primary) inset, 0 0 0 3px var(--el-color-primary-light-9);
+}
+.entry-card select {
+  width: 100%;
+  min-width: 0; height: 40px; padding: 0 12px;
+  border: 1px solid var(--console-line-strong);
+  border-radius: 7px;
+  color: var(--console-text);
+  background: var(--console-surface); font: inherit;
+}
+
+.entry-card select:focus-visible {
+  outline: 3px solid var(--el-color-primary-light-7);
+  outline-offset: 2px;
+}
+.entry-card select:disabled {
+  cursor: not-allowed;
+  background: var(--el-disabled-bg-color);
+}
+.form-guidance {
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  border-left: 3px solid #c3c9f7;
+  border-radius: 0 6px 6px 0;
+  background: #f5f7ff;
+}
+.form-guidance p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.loss-associations {
+  margin: 0 0 20px;
+  padding: 16px;
+  border: 1px solid var(--console-line);
+  border-radius: 7px;
+  background: #fafbfe;
+}
+.loss-associations h4 {
+  margin: 0;
+  color: #52617a;
+  font-size: 13px;
   font-weight: 600;
 }
-
-.procurement-panel :deep(.el-input__wrapper) {
+.loss-associations p {
+  margin: 6px 0 16px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.loss-associations :deep(.el-form-item__label) {
+  font-size: 12px;
+}
+.loss-associations :deep(.el-form-item:last-child) {
+  margin-bottom: 0;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--console-line);
+}
+.form-actions .el-button {
+  min-height: 40px;
+  padding: 0 22px;
+  font-weight: 600;
+}
+.data-card {
+  margin-top: 24px;
+  padding: 8px 24px 24px;
+}
+.record-tabs :deep(.el-tabs__header) {
+  margin-bottom: 20px;
+}
+.record-tabs :deep(.el-tabs__item) {
+  height: 52px;
+  font-size: 14px;
+}
+.record-tabs :deep(.el-tabs__nav-wrap::after) {
+  height: 1px;
+  background-color: var(--console-line);
+}
+.section-count {
+  margin-left: 8px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--console-muted);
+  background: var(--console-canvas);
+  font-size: 12px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.procurement-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--console-line);
   border-radius: 7px;
-  box-shadow: 0 0 0 1px #dfe4ec inset;
+}
+table {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: collapse;
+  color: #465064;
+  font-size: 13px;
+}
+th, td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--console-line);
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+th {
+  color: #52617a;
+  background: #f7f9fc;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+td:first-child {
+  min-width: 220px;
+}
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+tbody tr:hover {
+  background: #fafbff;
+}
+.numeric {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.record-reference {
+  color: var(--console-text);
+  font-weight: 500;
+}
+.muted {
+  color: var(--console-muted);
+  font-size: 12px;
+}
+.reconcile-note {
+  display: block;
+  color: #97611d;
+  font-size: 12px;
+}
+.empty-state {
+  height: 132px;
+  color: var(--console-muted);
+  text-align: center;
+  vertical-align: middle;
 }
 
-.procurement-panel :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #7d8cf0 inset, 0 0 0 3px #eef1ff;
+@media (max-width: 1100px) {
+  .procurement-forms {
+  gap: 20px;
+}
+  .entry-card {
+  padding: 20px;
+}
+  .procurement-balances, .secondary-balances {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+  .procurement-balances > div:nth-child(2n) {
+  border-right: 0;
+}
+  .procurement-balances > div:nth-child(-n + 2) {
+  border-bottom: 1px solid var(--console-line);
+}
 }
 
 @media (max-width: 980px) {
-  .procurement-balances {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .procurement-balances > div:nth-child(2n) {
-    border-right: 0;
-  }
-
-  .procurement-balances > div:nth-child(-n + 2) {
-    border-bottom: 1px solid #edf0f5;
-  }
+  .procurement-forms {
+  grid-template-columns: minmax(0, 1fr);
+}
 }
 
-@media (max-width: 720px) {
+@media (max-width: 560px) {
   .procurement-heading {
-    align-items: flex-start;
-    flex-direction: column;
-    margin-bottom: 20px;
-  }
-
-  .procurement-heading h2 {
-    font-size: 22px;
-  }
-
+  align-items: flex-start;
+}
+  .procurement-intro {
+  font-size: 12px;
+}
   .procurement-balances > div {
-    padding: 15px 14px;
-  }
-
-  .procurement-balances dd {
-    font-size: 18px;
-  }
-
-  .procurement-forms,
+  padding: 16px 14px;
+}
+  .secondary-balances {
+  gap: 14px;
+  padding: 14px;
+}
+  .summary-context {
+  padding: 12px 14px;
+}
+  .entry-card {
+  padding: 20px 16px;
+}
+  .field-row {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
   .data-card {
-    padding: 16px;
-  }
-
-  .data-card {
-    margin-top: 16px;
-  }
+  padding: 8px 16px 16px;
+}
+  .loss-associations {
+  padding: 12px;
+}
 }
 </style>

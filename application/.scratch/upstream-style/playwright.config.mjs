@@ -1,0 +1,1 @@
+export default { testDir:'.',testMatch:'*.spec.mjs',workers:1,timeout:120000,outputDir:'results', use:{browserName:'chromium',trace:'off',screenshot:'off'},reporter:[['list']] };

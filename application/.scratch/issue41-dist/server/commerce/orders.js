@@ -46,7 +46,7 @@ export class PointOrderService {
                     ?? { balance: '0', frozen: '0', reserved: '0', average_cost: '0' };
             const pricing = (await client.query('SELECT minimum_markup FROM platform_pricing')).rows[0];
             const orders = (await client.query(`SELECT p.id,p.buyer_id AS "buyerId",o.name AS "buyerName",o.active AS "buyerActive",p.quantity,
-        p.unit_price AS "unitPrice",p.amount,p.status,p.receipt_reference AS "receiptReference",
+        p.unit_price AS "unitPrice",p.amount,p.status,p.shortage_receipt AS "shortageReceipt",p.receipt_reference AS "receiptReference",
         p.created_at AS "createdAt",p.confirmed_at AS "confirmedAt",
         t.gross_profit AS "grossProfit",t.sales_cost AS "salesCost",
         r.amount AS "refundAmount",r.evidence AS "refundEvidence",r.created_at AS "refundedAt"
@@ -133,15 +133,38 @@ export class PointOrderService {
                     if (!priceOk)
                         throw new ConflictException('当前成本或最低加价率已变化，原售价过低；请由卖方重定价');
                     const available = (await client.query('SELECT $1::numeric-$2::numeric-$3::numeric >= $4::numeric AS ok', [stock.balance, stock.frozen, stock.reserved, order.quantity])).rows[0].ok;
-                    if (!available)
-                        throw new ConflictException('可用库存不足，系统未确认收款或预留；线下款可能已到账，请人工核对后处理');
+                    const status = available ? 'reserved' : 'awaiting_stock';
                     const table = seller.kind === 'platform' ? 'platform_inventory' : 'distributor_inventory';
                     const where = seller.kind === 'platform' ? 'singleton=true' : 'organization_id=$2';
                     const params = seller.kind === 'platform' ? [order.quantity] : [order.quantity, seller.id];
-                    await client.query(`UPDATE ${table} SET reserved=reserved+$1::numeric WHERE ${where}`, params);
-                    await client.query(`UPDATE point_orders SET status='reserved',receipt_reference=$2,confirmed_by=$3,
-            confirmed_at=clock_timestamp() WHERE id=$1`, [orderId, receipt, identity.id]);
+                    if (available)
+                        await client.query(`UPDATE ${table} SET reserved=reserved+$1::numeric WHERE ${where}`, params);
+                    await client.query(`UPDATE point_orders SET status=$4,receipt_reference=$2,confirmed_by=$3,
+            confirmed_at=clock_timestamp(),shortage_receipt=$5 WHERE id=$1`, [orderId, receipt, identity.id, status, !available]);
                     const after = await this.stock(client, seller);
+                    if (available)
+                        await client.query(`INSERT INTO point_order_ledger(order_id,seller_id,quantity,balance_after,reserved_after)
+            VALUES($1,$2,$3,$4,$5)`, [orderId, seller.id, order.quantity, after.balance, after.reserved]);
+                    result = { orderId, status, reserved: available ? order.quantity : '0.0000' };
+                }
+                else if (operation === 'reserve') {
+                    const orderId = validUuid(input.orderId, '订单标识');
+                    const order = (await client.query('SELECT * FROM point_orders WHERE id=$1 AND seller_id=$2 FOR UPDATE', [orderId, seller.id])).rows[0];
+                    if (!order)
+                        throw new ForbiddenException('订单不在直属卖方范围');
+                    if (order.status !== 'awaiting_stock')
+                        throw new ConflictException('仅已收款待补库存订单可补库预留');
+                    const buyer = (await client.query('SELECT id FROM organizations WHERE id=$1 AND parent_id=$2 AND active FOR SHARE', [order.buyer_id, seller.id])).rows[0];
+                    if (!buyer)
+                        throw new ConflictException('买方已停用或不再是直属下级');
+                    const table = seller.kind === 'platform' ? 'platform_inventory' : 'distributor_inventory';
+                    const where = seller.kind === 'platform' ? 'singleton=true' : 'organization_id=$2';
+                    const params = seller.kind === 'platform' ? [order.quantity] : [order.quantity, seller.id];
+                    const after = (await client.query(`UPDATE ${table} SET reserved=reserved+$1::numeric
+            WHERE ${where} AND balance-frozen-reserved >= $1::numeric RETURNING balance,reserved`, params)).rows[0];
+                    if (!after)
+                        throw new ConflictException('可用库存仍不足，订单继续等待补库');
+                    await client.query("UPDATE point_orders SET status='reserved' WHERE id=$1", [orderId]);
                     await client.query(`INSERT INTO point_order_ledger(order_id,seller_id,quantity,balance_after,reserved_after)
             VALUES($1,$2,$3,$4,$5)`, [orderId, seller.id, order.quantity, after.balance, after.reserved]);
                     result = { orderId, status: 'reserved', reserved: order.quantity };
@@ -154,6 +177,8 @@ export class PointOrderService {
                     const order = (await client.query('SELECT * FROM point_orders WHERE id=$1 AND seller_id=$2 FOR UPDATE', [orderId, seller.id])).rows[0];
                     if (!order)
                         throw new ForbiddenException('订单不在直属卖方范围');
+                    if (order.shortage_receipt)
+                        throw new ConflictException('缺库存收款订单须补库后按原订单履约，不支持退款');
                     if (order.status !== 'reserved')
                         throw new ConflictException('仅已收款待划拨且已预留的订单可确认整单退款');
                     const table = seller.kind === 'platform' ? 'platform_inventory' : 'distributor_inventory';

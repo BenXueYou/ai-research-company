@@ -314,7 +314,12 @@ function sendBatch() {
       recipients: Array<{ status: string }>;
     };
     quota.value = await props.request('email-quota') as Quota;
-    status.value = `本次已执行，${execution.recipients.length} 个收件人结果已记录；受理不代表送达`;
+    const unresolved = execution.recipients.filter(recipient =>
+      ['uncertain', 'submitting'].includes(recipient.status)
+    ).length;
+    status.value = unresolved
+      ? `本次已执行，${unresolved} 个收件人结果待确认，预占保留；请在邮件发送记录核实，请勿重复发送`
+      : `本次已执行，${execution.recipients.length} 个收件人结果已记录；受理不代表送达`;
   });
 }
 onMounted(() => {
@@ -325,3 +330,71 @@ onMounted(() => {
   });
 });
 </script>
+
+<style scoped>
+.email-composer {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--console-line);
+  border-radius: 12px;
+  margin-top: 22px;
+  color: var(--console-text);
+  background: #fff;
+  box-shadow: 0 2px 5px #19234605;
+}
+.email-composer h3 { margin: 0 0 6px; font-size: 17px; }
+.email-composer > .hint { margin: 0 0 21px; color: var(--console-muted); font-size: 13px; line-height: 1.7; }
+.email-composer > [role='status'] { padding: 11px 13px; border-radius: 8px; color: #237453; background: #edf8f2; }
+.email-contact {
+  display: grid;
+  grid-template-columns: minmax(170px, 1fr) minmax(160px, .9fr) auto;
+  align-items: center;
+  gap: 10px 16px;
+  min-width: 0;
+  padding: 16px 0;
+  border-top: 1px solid #edf0f6;
+}
+.email-contact > div { min-width: 0; }
+.email-contact strong { display: block; margin-bottom: 4px; color: #34415b; font-size: 13px; }
+.email-contact small { display: block; color: var(--console-muted); font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.email-contact :deep(.el-select), .email-contact :deep(.el-input) { width: 100%; min-width: 0; }
+.email-contact :deep(.el-checkbox) { grid-column: 2 / -1; margin-right: 0; white-space: normal; }
+.email-contact > .el-button { grid-column: 3; justify-self: end; margin: 0; }
+.search-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #e9d9b9;
+  border-radius: 8px;
+  margin: 14px 0;
+  color: #805b22;
+  background: #fff9ee;
+}
+.search-summary :deep(.el-select) { width: min(320px, 100%); }
+.email-composer > .el-form { padding-top: 20px; border-top: 1px solid #edf0f6; margin-top: 18px; }
+.email-composer :deep(.el-form-item__label) { color: #647087; font-size: 12px; }
+.email-composer :deep(.el-input__wrapper), .email-composer :deep(.el-select__wrapper),
+.email-composer :deep(.el-textarea__inner) { border-radius: 8px; }
+.email-composer > .el-form > .el-button { margin: 2px 8px 0 0; }
+.email-preview { padding: 20px; border: 1px solid #dfe5f5; border-radius: 10px; margin-top: 22px; background: #f8faff; }
+.email-preview h4 { margin: 0 0 8px; color: #344ab5; font-size: 15px; }
+.email-preview > p { color: var(--console-muted); font-size: 12px; overflow-wrap: anywhere; }
+.email-preview > div:not(.email-send-confirmation) { padding: 15px; border: 1px solid #e7ebf5; border-radius: 8px; margin: 12px 0; background: #fff; }
+.email-preview strong { overflow-wrap: anywhere; }
+.email-preview pre { max-width: 100%; padding: 12px; border-radius: 8px; background: #f5f7fc; white-space: pre-wrap; overflow-wrap: anywhere; }
+.email-send-confirmation { padding: 18px; border: 1px solid #d8e0f6; border-radius: 9px; margin-top: 18px; background: #fff; }
+.email-send-confirmation :deep(.el-select) { width: min(420px, 100%); }
+.email-send-confirmation > p { color: #56637b; font-size: 13px; line-height: 1.7; }
+.email-send-confirmation :deep(.el-checkbox) { display: flex; margin: 8px 0; white-space: normal; }
+.email-send-confirmation > .el-button { display: block; margin: 17px 0 0; }
+@media (max-width: 760px) {
+  .email-composer { padding: 18px 15px; }
+  .email-contact { grid-template-columns: minmax(0, 1fr); }
+  .email-contact :deep(.el-checkbox) { grid-column: 1; }
+  .email-contact > .el-button { grid-column: 1; justify-self: start; }
+  .email-preview { padding: 16px; }
+  .email-send-confirmation { padding: 15px; }
+}
+</style>

@@ -47,6 +47,9 @@ export function createCompaniesController(services) {
         executeCompanyDetail(request) {
             return companyDetail.execute(request.identity, request.body ?? {});
         }
+        companyDetailStatus(request) {
+            return companyDetail.status(request.identity, request.body ?? {});
+        }
         companyProfiles(request) {
             return companyDetail.profiles(request.identity);
         }
@@ -194,6 +197,11 @@ export function createCompaniesController(services) {
         HttpCode(200),
         __param(0, Req())
     ], CompaniesController.prototype, "executeCompanyDetail", null);
+    __decorate([
+        Post('company-details/status'),
+        HttpCode(200),
+        __param(0, Req())
+    ], CompaniesController.prototype, "companyDetailStatus", null);
     __decorate([
         Get('company-profiles'),
         __param(0, Req())

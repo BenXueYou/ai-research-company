@@ -1,0 +1,770 @@
+{
+  "date": "2026-10-28",
+  "environment": {
+    "database": "issue55_417fb2ffece340048b98479b5cf63c90_test",
+    "httpPort": 3255,
+    "provider": "controlled"
+  },
+  "identifiers": {
+    "saved": {
+      "id": "e9c06979-abd7-4368-857a-698c40c720d9",
+      "query": "0e2a294f-6f30-4148-9e7b-28706af95ec5",
+      "candidate": "3652c421-d60f-482e-97cc-e2fbdb308b29",
+      "org": "b972e40d-84b5-4e44-acc1-b26f949acd7f",
+      "actor": "f0f03d9f-5279-4043-b20b-944b2facbf89",
+      "detailId": "upstream-detail-e9c06979-abd7-4368-857a-698c40c720d9"
+    },
+    "second": {
+      "id": "6681ecb3-e5f4-4b71-97f7-a7b15582ca72",
+      "query": "33de8f62-2064-4cc5-834d-c9dc38fed5b8",
+      "candidate": "3c520581-3451-4ca7-8cf9-f9d1f844a0c7",
+      "org": "b972e40d-84b5-4e44-acc1-b26f949acd7f",
+      "actor": "f0f03d9f-5279-4043-b20b-944b2facbf89",
+      "detailId": "upstream-detail-6681ecb3-e5f4-4b71-97f7-a7b15582ca72"
+    },
+    "foreign": {
+      "id": "e2688444-83bb-410a-8eff-e6edbeb37a93",
+      "query": "32a39d87-467c-45bd-8740-570696eb7ce1",
+      "candidate": "e65513e3-9688-4040-b31d-d6d7f25f4a16",
+      "org": "85e75f07-184a-40bf-8d7e-f6669cbd6056",
+      "actor": "a3061114-59ee-4bab-9561-7c578ad844e2",
+      "detailId": "upstream-detail-e2688444-83bb-410a-8eff-e6edbeb37a93"
+    },
+    "contacts": [
+      {
+        "id": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+        "mailsou_id": "mailsou-55-a",
+        "source_payload": {
+          "id": "source-id-a",
+          "email": "Dup@issue55.test",
+          "fileId": "source-file-a",
+          "mailsouId": "mailsou-55-a",
+          "companyName": "Other Returned Company",
+          "positionTag": "TECHNOLGY",
+          "personalEmail": "personal@issue55.test"
+        }
+      },
+      {
+        "id": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+        "mailsou_id": "mailsou-55-b",
+        "source_payload": {
+          "id": "source-id-b",
+          "email": "dup@issue55.test",
+          "fileId": "source-file-b",
+          "mailsouId": "mailsou-55-b",
+          "companyName": "Chosen Company",
+          "positionTag": "TECHNOLGY",
+          "personalEmail": "second@issue55.test"
+        }
+      }
+    ],
+    "templateId": "d165b843-9c28-4085-a10a-062e915c2c0f",
+    "channelId": "6afc2419-e648-487a-a7c2-a33fbbc38060",
+    "batchId": "31e39d0f-690e-4166-b060-93791a73ba8f"
+  },
+  "requests": [
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-contacts/quote",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "positionTags": [],
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-contacts/quote",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "positionTags": [],
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-contacts/execute",
+      "body": {
+        "queryId": "69495cf4-c2ac-4e0a-b1b1-0c286c38c65a"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/execute",
+      "body": {
+        "queryId": "69495cf4-c2ac-4e0a-b1b1-0c286c38c65a"
+      }
+    },
+    {
+      "path": "/api/company-contacts/quote",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "positionTags": [],
+        "pageNo": 2,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/email-drafts",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "templateId": "d165b843-9c28-4085-a10a-062e915c2c0f",
+        "templateVersion": 1,
+        "subject": "Hello {{contactName}}",
+        "content": "{{companyName}}: {{contactName}}",
+        "selections": [
+          {
+            "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Ava"
+            },
+            "confirmUnsubscribed": false
+          }
+        ]
+      }
+    },
+    {
+      "path": "/api/email-drafts/preview",
+      "body": {
+        "draftId": "8bd2b263-7dda-4d74-b632-690ed64d2992"
+      }
+    },
+    {
+      "path": "/api/company-contacts/confirm-ownership",
+      "body": {
+        "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+        "reason": "已逐条核实该联系人归属"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/email-drafts",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "templateId": "d165b843-9c28-4085-a10a-062e915c2c0f",
+        "templateVersion": 1,
+        "subject": "Hello {{contactName}}",
+        "content": "{{companyName}}: {{contactName}}",
+        "selections": [
+          {
+            "contactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Bea"
+            },
+            "confirmUnsubscribed": false
+          },
+          {
+            "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Ava"
+            },
+            "confirmUnsubscribed": false
+          }
+        ]
+      }
+    },
+    {
+      "path": "/api/email-drafts/preview",
+      "body": {
+        "draftId": "09766a70-6763-44a7-940a-254408caa88a"
+      }
+    },
+    {
+      "path": "/api/email-drafts",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "templateId": "d165b843-9c28-4085-a10a-062e915c2c0f",
+        "templateVersion": 1,
+        "subject": "Hello {{contactName}}",
+        "content": "{{companyName}}: {{contactName}}",
+        "selections": [
+          {
+            "contactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Bea"
+            },
+            "variableSourceContactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+            "confirmUnsubscribed": false
+          },
+          {
+            "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Ava"
+            },
+            "variableSourceContactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+            "confirmUnsubscribed": false
+          }
+        ],
+        "draftId": "09766a70-6763-44a7-940a-254408caa88a"
+      }
+    },
+    {
+      "path": "/api/email-drafts/preview",
+      "body": {
+        "draftId": "09766a70-6763-44a7-940a-254408caa88a"
+      }
+    },
+    {
+      "path": "/api/email-drafts",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "templateId": "d165b843-9c28-4085-a10a-062e915c2c0f",
+        "templateVersion": 1,
+        "subject": "{{invalidVariable}}",
+        "content": "{{companyName}}: {{contactName}}",
+        "selections": [
+          {
+            "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Ava"
+            },
+            "confirmUnsubscribed": false
+          }
+        ]
+      }
+    },
+    {
+      "path": "/api/email-drafts/preview",
+      "body": {
+        "draftId": "732ec44b-4d56-4c74-b6d8-f722a5aa56c0"
+      }
+    },
+    {
+      "path": "/api/email-drafts",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "templateId": "d165b843-9c28-4085-a10a-062e915c2c0f",
+        "templateVersion": 1,
+        "subject": "Hello {{contactName}}",
+        "content": "{{companyName}}: {{contactName}}",
+        "selections": [
+          {
+            "contactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Bea"
+            },
+            "confirmUnsubscribed": false
+          },
+          {
+            "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+            "emailKind": "personal",
+            "variables": {
+              "contactName": "Ava"
+            },
+            "confirmUnsubscribed": false
+          }
+        ],
+        "draftId": "09766a70-6763-44a7-940a-254408caa88a"
+      }
+    },
+    {
+      "path": "/api/email-drafts/preview",
+      "body": {
+        "draftId": "09766a70-6763-44a7-940a-254408caa88a"
+      }
+    },
+    {
+      "path": "/api/company-contacts/unsubscribed",
+      "body": {
+        "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+        "unsubscribed": true
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/email-drafts",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "templateId": "d165b843-9c28-4085-a10a-062e915c2c0f",
+        "templateVersion": 1,
+        "subject": "Hello {{contactName}}",
+        "content": "{{companyName}}: {{contactName}}",
+        "selections": [
+          {
+            "contactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Bea"
+            },
+            "confirmUnsubscribed": false
+          },
+          {
+            "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+            "emailKind": "personal",
+            "variables": {
+              "contactName": "Ava"
+            },
+            "confirmUnsubscribed": false
+          }
+        ],
+        "draftId": "09766a70-6763-44a7-940a-254408caa88a"
+      }
+    },
+    {
+      "path": "/api/email-drafts/preview",
+      "body": {
+        "draftId": "09766a70-6763-44a7-940a-254408caa88a"
+      }
+    },
+    {
+      "path": "/api/email-drafts",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "templateId": "d165b843-9c28-4085-a10a-062e915c2c0f",
+        "templateVersion": 1,
+        "subject": "Hello {{contactName}}",
+        "content": "{{companyName}}: {{contactName}}",
+        "selections": [
+          {
+            "contactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+            "emailKind": "company",
+            "variables": {
+              "contactName": "Bea"
+            },
+            "confirmUnsubscribed": false
+          },
+          {
+            "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+            "emailKind": "personal",
+            "variables": {
+              "contactName": "Ava"
+            },
+            "confirmUnsubscribed": true
+          }
+        ],
+        "draftId": "09766a70-6763-44a7-940a-254408caa88a"
+      }
+    },
+    {
+      "path": "/api/email-drafts/preview",
+      "body": {
+        "draftId": "09766a70-6763-44a7-940a-254408caa88a"
+      }
+    },
+    {
+      "path": "/api/email-previews/confirm",
+      "body": {
+        "previewId": "190a5a73-df0b-4b49-a02e-7379cf367921"
+      }
+    },
+    {
+      "path": "/api/email-batches/confirm",
+      "body": {
+        "previewId": "190a5a73-df0b-4b49-a02e-7379cf367921",
+        "channelId": "6afc2419-e648-487a-a7c2-a33fbbc38060",
+        "confirmUnsubscribeNotice": false,
+        "confirmQuota": true
+      }
+    },
+    {
+      "path": "/api/email-batches/confirm",
+      "body": {
+        "previewId": "190a5a73-df0b-4b49-a02e-7379cf367921",
+        "channelId": "6afc2419-e648-487a-a7c2-a33fbbc38060",
+        "confirmUnsubscribeNotice": true,
+        "confirmQuota": true
+      }
+    },
+    {
+      "path": "/api/email-batches/confirm",
+      "body": {
+        "previewId": "190a5a73-df0b-4b49-a02e-7379cf367921",
+        "channelId": "6afc2419-e648-487a-a7c2-a33fbbc38060",
+        "confirmUnsubscribeNotice": true,
+        "confirmQuota": true
+      }
+    },
+    {
+      "path": "/api/email-batches/execute",
+      "body": {
+        "batchId": "31e39d0f-690e-4166-b060-93791a73ba8f"
+      }
+    },
+    {
+      "path": "/api/email-batches/execute",
+      "body": {
+        "batchId": "31e39d0f-690e-4166-b060-93791a73ba8f"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "6681ecb3-e5f4-4b71-97f7-a7b15582ca72"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "6681ecb3-e5f4-4b71-97f7-a7b15582ca72"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "6681ecb3-e5f4-4b71-97f7-a7b15582ca72"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/email-batches/execute",
+      "body": {
+        "batchId": "31e39d0f-690e-4166-b060-93791a73ba8f"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e2688444-83bb-410a-8eff-e6edbeb37a93"
+      }
+    },
+    {
+      "path": "/api/company-attachments/list",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "organizationId": "85e75f07-184a-40bf-8d7e-f6669cbd6056"
+      }
+    },
+    {
+      "path": "/api/company-contacts/refresh-quote",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "positionTags": [],
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-contacts/refresh-quote",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "positionTags": [],
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-contacts/execute",
+      "body": {
+        "queryId": "a2a45e5f-f934-421b-9a16-ac3431a9a8db"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/refresh-quote",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9",
+        "positionTags": [],
+        "pageNo": 1,
+        "pageSize": 20
+      }
+    },
+    {
+      "path": "/api/company-contacts/execute",
+      "body": {
+        "queryId": "7d1dba38-4923-4997-a734-02c76f8f0c46"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-contacts/execute",
+      "body": {
+        "queryId": "7d1dba38-4923-4997-a734-02c76f8f0c46"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-timeline/list",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/email-batches/execute",
+      "body": {
+        "batchId": "31e39d0f-690e-4166-b060-93791a73ba8f"
+      }
+    },
+    {
+      "path": "/api/company-profiles/list",
+      "body": {
+        "deleted": false
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/email-batches/execute",
+      "body": {
+        "batchId": "31e39d0f-690e-4166-b060-93791a73ba8f"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/email-batches/execute",
+      "body": {
+        "batchId": "31e39d0f-690e-4166-b060-93791a73ba8f"
+      }
+    },
+    {
+      "path": "/api/company-contacts/profile",
+      "body": {
+        "profileId": "e9c06979-abd7-4368-857a-698c40c720d9"
+      }
+    },
+    {
+      "path": "/api/email-batches/execute",
+      "body": {
+        "batchId": "31e39d0f-690e-4166-b060-93791a73ba8f"
+      }
+    }
+  ],
+  "preview": {
+    "recipients": [
+      {
+        "contactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+        "emailKind": "company",
+        "variables": {
+          "contactName": "Bea"
+        },
+        "confirmUnsubscribed": false
+      },
+      {
+        "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+        "emailKind": "personal",
+        "variables": {
+          "contactName": "Ava"
+        },
+        "confirmUnsubscribed": true
+      }
+    ],
+    "rendered": [
+      {
+        "email": "dup@issue55.test",
+        "content": "Chosen Company: Bea",
+        "subject": "Hello Bea",
+        "emailKey": "dup@issue55.test",
+        "contactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+        "mailsouId": "mailsou-55-b",
+        "sourceContactIds": [
+          "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69"
+        ],
+        "unsubscribedContactIds": [],
+        "variableSourceContactId": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69"
+      },
+      {
+        "email": "personal@issue55.test",
+        "content": "Chosen Company: Ava",
+        "subject": "Hello Ava",
+        "emailKey": "personal@issue55.test",
+        "contactId": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+        "mailsouId": "mailsou-55-a",
+        "sourceContactIds": [
+          "994c865e-7b0f-4233-b4c3-3d1854d44350"
+        ],
+        "unsubscribedContactIds": [
+          "994c865e-7b0f-4233-b4c3-3d1854d44350"
+        ],
+        "variableSourceContactId": "994c865e-7b0f-4233-b4c3-3d1854d44350"
+      }
+    ]
+  },
+  "recipients": [
+    {
+      "id": "568b29cb-39da-4e86-af4a-1fdc26fc4d8b",
+      "email": "dup@issue55.test",
+      "contact_id": "96a45e28-bfa7-41ac-a9b5-5ad9c3f9be69",
+      "mailsou_id": "mailsou-55-b",
+      "subject": "Hello Bea",
+      "content": "Chosen Company: Bea",
+      "status": "uncertain"
+    },
+    {
+      "id": "2b6e59ab-46d8-42d8-a402-71de1136c83e",
+      "email": "personal@issue55.test",
+      "contact_id": "994c865e-7b0f-4233-b4c3-3d1854d44350",
+      "mailsou_id": "mailsou-55-a",
+      "subject": "Hello Ava",
+      "content": "Chosen Company: Ava",
+      "status": "uncertain"
+    }
+  ],
+  "sendCalls": [
+    {
+      "organizationId": "b972e40d-84b5-4e44-acc1-b26f949acd7f",
+      "resourceId": "issue55-resource",
+      "recipientId": "2b6e59ab-46d8-42d8-a402-71de1136c83e",
+      "senderAddress": "sender@send.issue55.test",
+      "relpy_to": "reply@issue55.test",
+      "to": "personal@issue55.test",
+      "subject": "Hello Ava",
+      "content": "Chosen Company: Ava",
+      "attachmentNames": [
+        "preset.txt"
+      ]
+    },
+    {
+      "organizationId": "b972e40d-84b5-4e44-acc1-b26f949acd7f",
+      "resourceId": "issue55-resource",
+      "recipientId": "568b29cb-39da-4e86-af4a-1fdc26fc4d8b",
+      "senderAddress": "sender@send.issue55.test",
+      "relpy_to": "reply@issue55.test",
+      "to": "dup@issue55.test",
+      "subject": "Hello Bea",
+      "content": "Chosen Company: Bea",
+      "attachmentNames": [
+        "preset.txt"
+      ]
+    }
+  ],
+  "vendorCalls": [
+    {
+      "companyName": "Chosen Company",
+      "positionTags": [],
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "companyName": "Chosen Company",
+      "positionTags": [],
+      "pageNo": 1,
+      "pageSize": 20
+    },
+    {
+      "companyName": "Chosen Company",
+      "positionTags": [],
+      "pageNo": 1,
+      "pageSize": 20
+    }
+  ],
+  "balance": {
+    "balance": "9.5000",
+    "query_frozen": "0.5000"
+  },
+  "usage": {
+    "reserved": 2,
+    "used": 0
+  },
+  "verdict": "browser scenarios passed"
+}

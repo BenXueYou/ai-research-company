@@ -76,14 +76,15 @@ test('T23 从档案预览明确选择 U-Mail 域名渠道并共享额度', async
     await page.getByLabel('登录账号', { exact: true }).fill('preview-browser@example.com');
     await page.getByLabel('密码', { exact: true }).fill(password);
     await page.getByRole('button', { name: '登录', exact: true }).click();
+    await page.getByRole('link', { name: '企业档案库', exact: true }).click();
     await page.getByText('Browser Company · TUR').click();
     await expect(page.getByText('来源 mailsou-browser')).toBeVisible();
     await page.getByPlaceholder('逐条填写归属确认说明').fill('已向客户核实归属');
     await page.getByRole('button', { name: '确认该联系人归属' }).click();
     await expect(page.getByText('归属已说明：已向客户核实归属')).toBeVisible();
-    await page.getByRole('combobox', { name: '公共模板' }).click();
+    await page.locator('.email-composer .el-form-item .el-select').first().click();
     await page.getByText(`${templateName} · v1`).click();
-    await page.locator('.email-contact').getByRole('combobox').click();
+    await page.locator('.email-contact .el-select').click();
     await page.getByText('个人邮箱 personal@browser.example').last().click();
     await page.getByPlaceholder('本次联系人称呼（模板变量 contactName）').fill('Ava');
     await page.getByRole('button', { name: '保存并预览本次邮件' }).click();
@@ -100,6 +101,8 @@ test('T23 从档案预览明确选择 U-Mail 域名渠道并共享额度', async
     await page.getByText('确认使用本企业今日额度').click();
     await page.getByRole('button', { name: '确认并执行本次单轮发送' }).click();
     await expect(page.getByText('本次已执行，1 个收件人结果已记录；受理不代表送达')).toBeVisible();
+    page.once('dialog', dialog => dialog.accept());
+    await page.getByRole('link', { name: '邮件发送记录', exact: true }).click();
     await page.getByRole('button', { name: '刷新记录' }).click();
     await expect(page.getByText('UMAIL · 1 封')).toBeVisible();
     const sent = (await pool.query('SELECT email,mailsou_id,contact_id,status FROM email_recipients')).rows[0];
@@ -114,6 +117,12 @@ test('T23 从档案预览明确选择 U-Mail 域名渠道并共享额度', async
     expect(saved.recipient_snapshot[0].contactId).toBe(contact);
     expect(saved.preview_snapshot[0].mailsouId).toBe('mailsou-browser');
     expect(saved.preview_snapshot[0].email).toBe('personal@browser.example');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`${origin}/terminal/sending-settings`);
+    await expect(page.getByRole('heading', { name: '团队发信设置' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '国内邮箱渠道' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '域名渠道' })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   } finally {
     await app.close();
     await pool.end();

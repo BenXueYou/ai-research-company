@@ -28,11 +28,17 @@ defineProps<{ request: (path: string, body?: Record<string, unknown>) => Promise
   --reconciliation-ink: #1c2333;
   --reconciliation-muted: #738095;
   --reconciliation-line: #e3e7f0;
+  min-width: 0;
   display: grid;
   max-width: 1160px;
   gap: 22px;
   margin: 0 auto;
   color: var(--reconciliation-ink);
+}
+
+.reconciliation-primary,
+.reconciliation-overview {
+  min-width: 0;
 }
 
 .reconciliation-heading {
@@ -50,7 +56,7 @@ defineProps<{ request: (path: string, body?: Record<string, unknown>) => Promise
 .reconciliation-heading h1 {
   margin: 0 0 8px;
   color: var(--reconciliation-ink);
-  font-size: 26px;
+  font-size: 24px;
   line-height: 1.35;
 }
 
@@ -65,7 +71,7 @@ defineProps<{ request: (path: string, body?: Record<string, unknown>) => Promise
   margin: 0;
   border: 1px solid var(--reconciliation-line);
   border-radius: 12px;
-  box-shadow: 0 8px 24px #27345c0a;
+  box-shadow: 0 2px 5px #19234605;
 }
 
 .reconciliation-primary :deep(.workspace-card) {

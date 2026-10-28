@@ -1,0 +1,284 @@
+{
+  "database": "issue56_58b130ed0015455786707ade4dfc663a_test",
+  "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20",
+  "crossDayBatch": "7a55898b-7d68-4dab-9507-245c53f0af04",
+  "profileId": "eecba0eb-dfa4-4db0-9b02-b6bcbc18bcaa",
+  "organizationId": "547eb1c9-dd63-4bfa-bc84-3b73092f747d",
+  "recipientIds": {
+    "accepted": "791429ea-3daf-4314-b712-e5efc5c7fccc",
+    "failed": "9fe96e6c-667a-4bc8-8495-d1c91f3622de",
+    "uncertain": "a740766e-b832-4e39-9093-eda84cc6d6d2",
+    "paused": "589069fd-cb88-4a56-aac7-b2b47d2fec13",
+    "retry": "23241291-a598-4061-90b2-c9ec7929fa4b"
+  },
+  "observed": [
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconcile",
+      "body": {
+        "recipientId": "a740766e-b832-4e39-9093-eda84cc6d6d2"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconcile",
+      "body": {
+        "recipientId": "a740766e-b832-4e39-9093-eda84cc6d6d2"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-recipients/retry",
+      "body": {
+        "recipientId": "a740766e-b832-4e39-9093-eda84cc6d6d2",
+        "confirmPossibleDuplicate": true
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconcile",
+      "body": {
+        "recipientId": "791429ea-3daf-4314-b712-e5efc5c7fccc"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "7a55898b-7d68-4dab-9507-245c53f0af04"
+      }
+    },
+    {
+      "path": "/api/email-recipients/reconfirm",
+      "body": {
+        "recipientId": "589069fd-cb88-4a56-aac7-b2b47d2fec13",
+        "confirmUnsubscribeNotice": true,
+        "confirmQuota": true
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "7a55898b-7d68-4dab-9507-245c53f0af04"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "7a55898b-7d68-4dab-9507-245c53f0af04"
+      }
+    },
+    {
+      "path": "/api/email-recipients/execute",
+      "body": {
+        "recipientId": "589069fd-cb88-4a56-aac7-b2b47d2fec13"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "7a55898b-7d68-4dab-9507-245c53f0af04"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    },
+    {
+      "path": "/api/email-batches/detail",
+      "body": {
+        "batchId": "c990ba90-83d1-48ca-8ca4-d8de328d9a20"
+      }
+    }
+  ],
+  "senderCalls": [
+    {
+      "recipientId": "791429ea-3daf-4314-b712-e5efc5c7fccc",
+      "to": "unique-3@example.com",
+      "subject": "Subject 3",
+      "replyTo": "reply@example.net"
+    },
+    {
+      "recipientId": "9fe96e6c-667a-4bc8-8495-d1c91f3622de",
+      "to": "dup@example.com",
+      "subject": "Chosen source",
+      "replyTo": "reply@example.net"
+    },
+    {
+      "recipientId": "a740766e-b832-4e39-9093-eda84cc6d6d2",
+      "to": "unique-2@example.com",
+      "subject": "Subject 2",
+      "replyTo": "reply@example.net"
+    },
+    {
+      "recipientId": "23241291-a598-4061-90b2-c9ec7929fa4b",
+      "to": "unique-2@example.com",
+      "subject": "Subject 2",
+      "replyTo": "reply@example.net"
+    },
+    {
+      "recipientId": "589069fd-cb88-4a56-aac7-b2b47d2fec13",
+      "to": "dup@example.com",
+      "subject": "Chosen source",
+      "replyTo": "reply@example.net"
+    }
+  ],
+  "evidenceCalls": [
+    "a740766e-b832-4e39-9093-eda84cc6d6d2",
+    "a740766e-b832-4e39-9093-eda84cc6d6d2",
+    "791429ea-3daf-4314-b712-e5efc5c7fccc",
+    "791429ea-3daf-4314-b712-e5efc5c7fccc",
+    "791429ea-3daf-4314-b712-e5efc5c7fccc"
+  ],
+  "quota": {
+    "dailyLimit": 2000,
+    "reserved": 1,
+    "used": 3,
+    "day": "2026-10-27T16:00:00.000Z",
+    "remaining": 1996
+  },
+  "state": [
+    {
+      "id": "23241291-a598-4061-90b2-c9ec7929fa4b",
+      "batch_id": "c990ba90-83d1-48ca-8ca4-d8de328d9a20",
+      "organization_id": "547eb1c9-dd63-4bfa-bc84-3b73092f747d",
+      "profile_id": "eecba0eb-dfa4-4db0-9b02-b6bcbc18bcaa",
+      "contact_id": "005f1697-18b9-4700-b312-f5e7b4732f15",
+      "mailsou_id": "mailsou-2",
+      "status": "accepted",
+      "parent_recipient_id": "a740766e-b832-4e39-9093-eda84cc6d6d2"
+    },
+    {
+      "id": "589069fd-cb88-4a56-aac7-b2b47d2fec13",
+      "batch_id": "7a55898b-7d68-4dab-9507-245c53f0af04",
+      "organization_id": "547eb1c9-dd63-4bfa-bc84-3b73092f747d",
+      "profile_id": "eecba0eb-dfa4-4db0-9b02-b6bcbc18bcaa",
+      "contact_id": "650fab3b-0a80-420c-a0da-3e4ae1cf3690",
+      "mailsou_id": "mailsou-1",
+      "status": "accepted",
+      "parent_recipient_id": null
+    },
+    {
+      "id": "791429ea-3daf-4314-b712-e5efc5c7fccc",
+      "batch_id": "c990ba90-83d1-48ca-8ca4-d8de328d9a20",
+      "organization_id": "547eb1c9-dd63-4bfa-bc84-3b73092f747d",
+      "profile_id": "eecba0eb-dfa4-4db0-9b02-b6bcbc18bcaa",
+      "contact_id": "ba232bc4-5b95-4cb8-b7ba-7185c8fd250c",
+      "mailsou_id": "mailsou-3",
+      "status": "delivered",
+      "parent_recipient_id": null
+    },
+    {
+      "id": "9fe96e6c-667a-4bc8-8495-d1c91f3622de",
+      "batch_id": "c990ba90-83d1-48ca-8ca4-d8de328d9a20",
+      "organization_id": "547eb1c9-dd63-4bfa-bc84-3b73092f747d",
+      "profile_id": "eecba0eb-dfa4-4db0-9b02-b6bcbc18bcaa",
+      "contact_id": "650fab3b-0a80-420c-a0da-3e4ae1cf3690",
+      "mailsou_id": "mailsou-1",
+      "status": "not_submitted",
+      "parent_recipient_id": null
+    },
+    {
+      "id": "a740766e-b832-4e39-9093-eda84cc6d6d2",
+      "batch_id": "c990ba90-83d1-48ca-8ca4-d8de328d9a20",
+      "organization_id": "547eb1c9-dd63-4bfa-bc84-3b73092f747d",
+      "profile_id": "eecba0eb-dfa4-4db0-9b02-b6bcbc18bcaa",
+      "contact_id": "005f1697-18b9-4700-b312-f5e7b4732f15",
+      "mailsou_id": "mailsou-2",
+      "status": "uncertain",
+      "parent_recipient_id": null
+    }
+  ],
+  "unchangedPointTables": [
+    "internal_point_accounts",
+    "platform_inventory",
+    "query_point_ledger",
+    "company_contact_point_ledger",
+    "product_search_ledger"
+  ],
+  "browser": {
+    "history": true,
+    "nestAndVite": true,
+    "unknownResponse": true,
+    "fourRoles": true,
+    "forcedChange": true,
+    "crossTenantDenied": true,
+    "lateSessionResponse": true,
+    "readFailureClearsStaleDetail": true
+  }
+}

@@ -1,0 +1,313 @@
+{
+  "database": "issue44_517db51385024e86aaf573cadf6fa74d_test",
+  "origin": "http://127.0.0.1:3344",
+  "platform": "a2126a56-4f72-4019-9ba1-643b845dd39c",
+  "distributor": "58b84fb9-e8af-40eb-afc6-a4f946320836",
+  "terminal": "8d5135d0-1f84-4e79-953e-14469696b5a5",
+  "platformAccount": "76850f0b-c523-4019-9f3b-a4359f080eb1",
+  "orderId": "faa2a971-30ea-44c6-844c-cd798e128e6d",
+  "platformOrderId": "3fb42b56-6f4e-4384-b872-6ba3cee83710",
+  "expenseId": "e3b3a824-ca41-4e43-8ac2-a10a01fcfd43",
+  "secondExpenseId": "e43e2400-ffca-4001-92b5-09a4b7186c02",
+  "purchaseIds": [
+    "5323ab06-fd08-4890-968e-97c28810aec0",
+    "f7d663a2-3dd4-4f9e-abda-a9e8b4b2a7aa"
+  ],
+  "salePurchaseId": "19a46b8d-0543-4302-8670-b85666ecc8aa",
+  "totals": {
+    "salesGrossProfit": "1.5000",
+    "platformExpenses": "0.7500",
+    "afterPlatformExpenses": "0.7500"
+  },
+  "inventory": {
+    "balance": "10.0000",
+    "frozen": "0.0000",
+    "reserved": "0.0000",
+    "averageCost": "1.2500"
+  },
+  "procurement": [
+    {
+      "id": "1",
+      "event": "purchase",
+      "reference": "5323ab06-fd08-4890-968e-97c28810aec0",
+      "internalDelta": "0.0000",
+      "upstreamDelta": "1.0000",
+      "cashOutflow": "0.5000",
+      "expenseDelta": "0.0000",
+      "balanceAfter": "0.0000",
+      "createdAt": "2026-10-28T14:18:59.379Z"
+    },
+    {
+      "id": "2",
+      "event": "purchase",
+      "reference": "f7d663a2-3dd4-4f9e-abda-a9e8b4b2a7aa",
+      "internalDelta": "0.0000",
+      "upstreamDelta": "1.0000",
+      "cashOutflow": "0.5000",
+      "expenseDelta": "0.0000",
+      "balanceAfter": "0.0000",
+      "createdAt": "2026-10-28T14:18:59.474Z"
+    },
+    {
+      "id": "3",
+      "event": "purchase",
+      "reference": "19a46b8d-0543-4302-8670-b85666ecc8aa",
+      "internalDelta": "10.0000",
+      "upstreamDelta": "10.0000",
+      "cashOutflow": "12.5000",
+      "expenseDelta": "0.0000",
+      "balanceAfter": "10.0000",
+      "createdAt": "2026-10-28T14:18:59.543Z"
+    },
+    {
+      "id": "4",
+      "event": "expense",
+      "reference": "e3b3a824-ca41-4e43-8ac2-a10a01fcfd43",
+      "internalDelta": "0.0000",
+      "upstreamDelta": "0.0000",
+      "cashOutflow": "0.0000",
+      "expenseDelta": "0.5000",
+      "balanceAfter": "10.0000",
+      "createdAt": "2026-10-28T14:18:59.55Z"
+    },
+    {
+      "id": "5",
+      "event": "expense",
+      "reference": "e43e2400-ffca-4001-92b5-09a4b7186c02",
+      "internalDelta": "0.0000",
+      "upstreamDelta": "0.0000",
+      "cashOutflow": "0.0000",
+      "expenseDelta": "0.2500",
+      "balanceAfter": "10.0000",
+      "createdAt": "2026-10-28T14:18:59.55Z"
+    }
+  ],
+  "ledger": [
+    {
+      "source": "product",
+      "id": "1",
+      "organizationId": "8d5135d0-1f84-4e79-953e-14469696b5a5",
+      "referenceId": "a2961e88-9119-4bd2-b0c1-9b88066af2e8",
+      "event": "settle",
+      "amount": "1.0000",
+      "balanceAfter": "9.0000",
+      "frozenAfter": "0.0000",
+      "createdAt": "2026-10-28T14:18:59.076Z"
+    },
+    {
+      "source": "product",
+      "id": "2",
+      "organizationId": "6950d01b-13e1-465b-830b-d7d85382cac0",
+      "referenceId": "9d2c91eb-c1a0-4694-a299-8f202c6510cb",
+      "event": "settle",
+      "amount": "2.0000",
+      "balanceAfter": "9.0000",
+      "frozenAfter": "0.0000",
+      "createdAt": "2026-10-28T14:18:59.088Z"
+    }
+  ],
+  "csvRows": [
+    [
+      "type",
+      "reference",
+      "event",
+      "amount",
+      "balance_or_cost",
+      "frozen_or_gross",
+      "created_at"
+    ],
+    [
+      "procurement",
+      "5323ab06-fd08-4890-968e-97c28810aec0",
+      "purchase",
+      "0.5000",
+      "0.0000",
+      "0.0000",
+      "Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "procurement",
+      "f7d663a2-3dd4-4f9e-abda-a9e8b4b2a7aa",
+      "purchase",
+      "0.5000",
+      "0.0000",
+      "0.0000",
+      "Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "procurement",
+      "19a46b8d-0543-4302-8670-b85666ecc8aa",
+      "purchase",
+      "12.5000",
+      "10.0000",
+      "0.0000",
+      "Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "procurement",
+      "e3b3a824-ca41-4e43-8ac2-a10a01fcfd43",
+      "expense",
+      "0.0000",
+      "10.0000",
+      "0.5000",
+      "Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "procurement",
+      "e43e2400-ffca-4001-92b5-09a4b7186c02",
+      "expense",
+      "0.0000",
+      "10.0000",
+      "0.2500",
+      "Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "sale",
+      "3fb42b56-6f4e-4384-b872-6ba3cee83710",
+      "transferred",
+      "3.0000",
+      "1.5000",
+      "1.5000",
+      "Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
+    ]
+  ],
+  "reportRequests": [
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/point-orders",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/upstream-monitor",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/company-details/reconciliations",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/company-contacts/reconciliations",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/product-searches/reconciliations",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/auth/session",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "path": "/api/reports",
+      "method": "GET",
+      "query": ""
+    }
+  ],
+  "devChecks": [
+    {
+      "path": "/platform/ledger/profit",
+      "status": 200
+    },
+    {
+      "path": "/platform/ledger/flows",
+      "status": 200
+    },
+    {
+      "path": "/api/unknown-issue44",
+      "status": 404
+    },
+    {
+      "path": "/assets/missing-issue44.js",
+      "status": 404
+    },
+    {
+      "path": "/unknown-issue44",
+      "status": 404
+    }
+  ],
+  "completed": [
+    "CSV download from both pages: seven columns match DB",
+    "profit and flows: direct access, refresh, back/forward",
+    "distributor/admin/sales page denial and scoped HTTP",
+    "platform/distributor/admin/sales/platform login/logout",
+    "must-change gate, password change and old-session revocation"
+  ],
+  "accountingAfter": {
+    "salesGrossProfit": "1.5000",
+    "platformExpenses": "0.7500",
+    "afterPlatformExpenses": "0.7500"
+  },
+  "validatedAt": "2026-10-28T22:19:36+08:00",
+  "styleSourceHashes": [
+    {
+      "path": "application/web/pages/reports/PlatformReportPage.vue",
+      "sha256": "5F55442A0EA3D83D3F15213B35F174F643BAB75391ABDFCE572E1E28716FBEB9"
+    },
+    {
+      "path": "application/server/reporting.test.ts",
+      "sha256": "00A65D99B3925A045944F0C6B6C8C597B879F1CD7C3F5161703EA306C4874EA1"
+    }
+  ],
+  "visualChecks": [
+    "1440x1000 desktop: profit and flows",
+    "375x900 mobile: profit and flows",
+    "document width does not exceed viewport",
+    "table scroll remains inside each card",
+    "screenshots inspected"
+  ]
+}

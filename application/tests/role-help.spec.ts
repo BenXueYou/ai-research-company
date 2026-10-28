@@ -130,9 +130,8 @@ test('四角色帮助与身份限制', async ({ page, request }) => {
       }
       await login(name, password);
       const helpLink = page.getByRole('link', { name: '帮助中心' });
-      if (name === 'super_admin') await expect(helpLink).not.toHaveClass(/sidebar-help/);
-      else await expect(helpLink).toHaveClass(/sidebar-help/);
-      await expect(page.locator('nav[aria-label="主菜单"] a').last()).toHaveText('帮助中心');
+      await expect(page.locator('.top-bar').getByRole('link', { name: '帮助中心' })).toBeVisible();
+      await expect(page.locator('.workspace-sidebar').getByRole('link', { name: '帮助中心' })).toHaveCount(0);
       await helpLink.click();
       await expect(page).toHaveURL(`${origin}/help`);
       await expect(helpLink).toHaveAttribute('aria-current', 'page');

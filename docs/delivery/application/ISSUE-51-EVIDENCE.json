@@ -1,0 +1,578 @@
+{
+  "database": "issue51_e9eecedc9e3a42f2ba85cf0733b78ed2_test",
+  "origin": "http://127.0.0.1:3351",
+  "identifiers": {
+    "d1": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+    "d2": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+    "a": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+    "b": "4013f110-3bb1-4b93-8c63-d844c8c9ff56",
+    "sibling": "7cd2cb3e-841b-44b7-a286-03cfaeb16150",
+    "outside": "9fab98f5-3523-4aea-9909-c8d4cbf5e889",
+    "orders": [
+      {
+        "id": "673eb3a8-2298-488d-b995-300877b0fdc8",
+        "seller": "508c069b-1cd7-4b3e-ac2e-9f453e25afd9",
+        "buyer": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "amount": 11,
+        "cost": 8
+      },
+      {
+        "id": "aee6aa0b-52a8-4ae3-b9b9-7b50c367cef6",
+        "seller": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "buyer": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "amount": 17,
+        "cost": 12
+      },
+      {
+        "id": "bbb314e5-2a61-4074-b5b2-2312278f7b60",
+        "seller": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "buyer": "4013f110-3bb1-4b93-8c63-d844c8c9ff56",
+        "amount": 19,
+        "cost": 13
+      },
+      {
+        "id": "9b118058-7416-4d9a-9b08-0171dc03d5ce",
+        "seller": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "buyer": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "amount": 23,
+        "cost": 15
+      },
+      {
+        "id": "9e4907c5-ecfa-4559-965d-6bec6afb1f69",
+        "seller": "7cd2cb3e-841b-44b7-a286-03cfaeb16150",
+        "buyer": "9fab98f5-3523-4aea-9909-c8d4cbf5e889",
+        "amount": 29,
+        "cost": 16
+      }
+    ],
+    "references": [
+      "71dca365-9b30-4bd2-b2dc-77e245235872",
+      "89d17d9b-e28f-4847-934b-f854ffe6a60b",
+      "eccde315-1135-45e6-ae1f-8cfee8920734",
+      "d63e2f41-17a8-475d-9e01-2d39be36e44a"
+    ],
+    "ownReferences": {
+      "5dddcd5c-e457-439e-abb7-63fc23983b06": [
+        "079f6ac5-e061-4a92-9841-1eb3971d1ffe",
+        "b06a0ae9-d80d-4997-bbe1-21a4a023b6e1",
+        "ab2ebbe3-37dd-4431-95aa-899934ecd020",
+        "9c159f8e-788b-458b-966d-6d7ec490f7f9",
+        "4fd3af0c-5937-44fd-98c7-f668efbb441e"
+      ],
+      "4df30548-0bea-4c9d-b82b-cb499b7dd9c5": [
+        "c2b9e1f9-ed55-4bd9-9639-189da6be574d",
+        "e3e55497-e59b-42e9-b06c-6c131d7a548e",
+        "04f38bd8-731c-461b-8340-c87f0bcc88ca",
+        "c15b17cb-a8e3-40c3-a570-57190aa61b24",
+        "88d7ffd8-9537-4612-bbe5-d7d51b3ac8b2"
+      ]
+    },
+    "search": "f8a9de5e-97f5-4aa2-8d91-4497f25e740c",
+    "candidate": "0a3dd62f-bfc1-486c-832d-f8b5c99920bf",
+    "query": "e515d0a7-f0a6-4ec8-85d0-90412447cf33",
+    "profile": "e06010ac-1d95-4df2-bb89-f9fb57592006"
+  },
+  "report1": {
+    "role": "distributor",
+    "organizations": [
+      {
+        "id": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "name": "一级分销51",
+        "kind": "distributor",
+        "parentId": "508c069b-1cd7-4b3e-ac2e-9f453e25afd9",
+        "active": true,
+        "depth": 0
+      },
+      {
+        "id": "4013f110-3bb1-4b93-8c63-d844c8c9ff56",
+        "name": "一级直属企业51",
+        "kind": "terminal",
+        "parentId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "active": false,
+        "depth": 1
+      },
+      {
+        "id": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "name": "二级分销51",
+        "kind": "distributor",
+        "parentId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "active": true,
+        "depth": 1
+      },
+      {
+        "id": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "name": "二级直属企业51",
+        "kind": "terminal",
+        "parentId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "active": true,
+        "depth": 2
+      }
+    ],
+    "accounts": [
+      {
+        "organizationId": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "balance": "102.0000",
+        "queryFrozen": "2.0000",
+        "salesReserved": "3.0000",
+        "available": "97.0000"
+      },
+      {
+        "organizationId": "4013f110-3bb1-4b93-8c63-d844c8c9ff56",
+        "balance": "103.0000",
+        "queryFrozen": "2.0000",
+        "salesReserved": "3.0000",
+        "available": "98.0000"
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "balance": "101.0000",
+        "queryFrozen": "2.0000",
+        "salesReserved": "3.0000",
+        "available": "96.0000"
+      },
+      {
+        "organizationId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "balance": "100.0000",
+        "queryFrozen": "2.0000",
+        "salesReserved": "3.0000",
+        "available": "95.0000"
+      }
+    ],
+    "ledger": [
+      {
+        "source": "product",
+        "id": "1",
+        "organizationId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "referenceId": "71dca365-9b30-4bd2-b2dc-77e245235872",
+        "event": "settle",
+        "amount": "4.0000",
+        "balanceAfter": "96.0000",
+        "frozenAfter": "0.0000",
+        "createdAt": "2026-10-28T14:20:10.498Z"
+      },
+      {
+        "source": "detail",
+        "id": "1",
+        "organizationId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "referenceId": "ab2ebbe3-37dd-4431-95aa-899934ecd020",
+        "event": "settle",
+        "amount": "2.0000",
+        "balanceAfter": "98.0000",
+        "frozenAfter": "0.0000",
+        "createdAt": "2026-10-28T14:20:10.59Z"
+      },
+      {
+        "source": "contact",
+        "id": "1",
+        "organizationId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "referenceId": "4fd3af0c-5937-44fd-98c7-f668efbb441e",
+        "event": "settle",
+        "amount": "3.0000",
+        "balanceAfter": "95.0000",
+        "frozenAfter": "0.0000",
+        "createdAt": "2026-10-28T14:20:10.595Z"
+      }
+    ],
+    "sales": [
+      {
+        "orderId": "aee6aa0b-52a8-4ae3-b9b9-7b50c367cef6",
+        "sellerId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "buyerId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "quantity": "1.0000",
+        "salesAmount": "17.0000",
+        "salesCost": "12.0000",
+        "grossProfit": "5.0000",
+        "createdAt": "2026-10-28T14:20:10.46Z"
+      },
+      {
+        "orderId": "bbb314e5-2a61-4074-b5b2-2312278f7b60",
+        "sellerId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "buyerId": "4013f110-3bb1-4b93-8c63-d844c8c9ff56",
+        "quantity": "1.0000",
+        "salesAmount": "19.0000",
+        "salesCost": "13.0000",
+        "grossProfit": "6.0000",
+        "createdAt": "2026-10-28T14:20:10.47Z"
+      }
+    ],
+    "transactions": [
+      {
+        "id": "aee6aa0b-52a8-4ae3-b9b9-7b50c367cef6",
+        "sellerId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "buyerId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "quantity": "1.0000",
+        "amount": "17.0000",
+        "status": "transferred",
+        "createdAt": "2026-10-28T14:20:10.456Z",
+        "refundAmount": null
+      },
+      {
+        "id": "bbb314e5-2a61-4074-b5b2-2312278f7b60",
+        "sellerId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "buyerId": "4013f110-3bb1-4b93-8c63-d844c8c9ff56",
+        "quantity": "1.0000",
+        "amount": "19.0000",
+        "status": "transferred",
+        "createdAt": "2026-10-28T14:20:10.465Z",
+        "refundAmount": null
+      }
+    ],
+    "usage": [
+      {
+        "organizationId": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "source": "product",
+        "chargedPoints": "4.0000"
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "source": "contact",
+        "chargedPoints": "3.0000"
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "source": "detail",
+        "chargedPoints": "2.0000"
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "source": "product",
+        "chargedPoints": "4.0000"
+      },
+      {
+        "organizationId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "source": "contact",
+        "chargedPoints": "3.0000"
+      },
+      {
+        "organizationId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "source": "detail",
+        "chargedPoints": "2.0000"
+      },
+      {
+        "organizationId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "source": "product",
+        "chargedPoints": "4.0000"
+      }
+    ],
+    "emailUsage": [
+      {
+        "organizationId": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "usageDay": "2026-10-27T16:00:00Z",
+        "reserved": 2,
+        "used": 7
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "usageDay": "2026-10-27T16:00:00Z",
+        "reserved": 2,
+        "used": 7
+      },
+      {
+        "organizationId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "usageDay": "2026-10-27T16:00:00Z",
+        "reserved": 2,
+        "used": 7
+      }
+    ],
+    "grossProfit": "11.0000"
+  },
+  "report2": {
+    "role": "distributor",
+    "organizations": [
+      {
+        "id": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "name": "二级分销51",
+        "kind": "distributor",
+        "parentId": "5dddcd5c-e457-439e-abb7-63fc23983b06",
+        "active": true,
+        "depth": 0
+      },
+      {
+        "id": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "name": "二级直属企业51",
+        "kind": "terminal",
+        "parentId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "active": true,
+        "depth": 1
+      }
+    ],
+    "accounts": [
+      {
+        "organizationId": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "balance": "102.0000",
+        "queryFrozen": "2.0000",
+        "salesReserved": "3.0000",
+        "available": "97.0000"
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "balance": "101.0000",
+        "queryFrozen": "2.0000",
+        "salesReserved": "3.0000",
+        "available": "96.0000"
+      }
+    ],
+    "ledger": [
+      {
+        "source": "product",
+        "id": "2",
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "referenceId": "89d17d9b-e28f-4847-934b-f854ffe6a60b",
+        "event": "settle",
+        "amount": "4.0000",
+        "balanceAfter": "96.0000",
+        "frozenAfter": "0.0000",
+        "createdAt": "2026-10-28T14:20:10.515Z"
+      },
+      {
+        "source": "detail",
+        "id": "2",
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "referenceId": "04f38bd8-731c-461b-8340-c87f0bcc88ca",
+        "event": "settle",
+        "amount": "2.0000",
+        "balanceAfter": "98.0000",
+        "frozenAfter": "0.0000",
+        "createdAt": "2026-10-28T14:20:10.621Z"
+      },
+      {
+        "source": "contact",
+        "id": "2",
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "referenceId": "88d7ffd8-9537-4612-bbe5-d7d51b3ac8b2",
+        "event": "settle",
+        "amount": "3.0000",
+        "balanceAfter": "95.0000",
+        "frozenAfter": "0.0000",
+        "createdAt": "2026-10-28T14:20:10.626Z"
+      }
+    ],
+    "sales": [
+      {
+        "orderId": "9b118058-7416-4d9a-9b08-0171dc03d5ce",
+        "sellerId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "buyerId": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "quantity": "1.0000",
+        "salesAmount": "23.0000",
+        "salesCost": "15.0000",
+        "grossProfit": "8.0000",
+        "createdAt": "2026-10-28T14:20:10.479Z"
+      }
+    ],
+    "transactions": [
+      {
+        "id": "9b118058-7416-4d9a-9b08-0171dc03d5ce",
+        "sellerId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "buyerId": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "quantity": "1.0000",
+        "amount": "23.0000",
+        "status": "transferred",
+        "createdAt": "2026-10-28T14:20:10.475Z",
+        "refundAmount": null
+      }
+    ],
+    "usage": [
+      {
+        "organizationId": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "source": "product",
+        "chargedPoints": "4.0000"
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "source": "contact",
+        "chargedPoints": "3.0000"
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "source": "detail",
+        "chargedPoints": "2.0000"
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "source": "product",
+        "chargedPoints": "4.0000"
+      }
+    ],
+    "emailUsage": [
+      {
+        "organizationId": "014e7da0-74b4-4eb4-a444-fb94736c5ce2",
+        "usageDay": "2026-10-27T16:00:00Z",
+        "reserved": 2,
+        "used": 7
+      },
+      {
+        "organizationId": "4df30548-0bea-4c9d-b82b-cb499b7dd9c5",
+        "usageDay": "2026-10-27T16:00:00Z",
+        "reserved": 2,
+        "used": 7
+      }
+    ],
+    "grossProfit": "8.0000"
+  },
+  "csv1": [
+    [
+      "type",
+      "reference",
+      "event",
+      "amount",
+      "balance_or_cost",
+      "frozen_or_gross",
+      "created_at"
+    ],
+    [
+      "product",
+      "71dca365-9b30-4bd2-b2dc-77e245235872",
+      "settle",
+      "4.0000",
+      "96.0000",
+      "0.0000",
+      "Wed Oct 28 2026 22:20:10 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "detail",
+      "ab2ebbe3-37dd-4431-95aa-899934ecd020",
+      "settle",
+      "2.0000",
+      "98.0000",
+      "0.0000",
+      "Wed Oct 28 2026 22:20:10 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "contact",
+      "4fd3af0c-5937-44fd-98c7-f668efbb441e",
+      "settle",
+      "3.0000",
+      "95.0000",
+      "0.0000",
+      "Wed Oct 28 2026 22:20:10 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "sale",
+      "aee6aa0b-52a8-4ae3-b9b9-7b50c367cef6",
+      "transferred",
+      "17.0000",
+      "12.0000",
+      "5.0000",
+      "Wed Oct 28 2026 22:20:10 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "sale",
+      "bbb314e5-2a61-4074-b5b2-2312278f7b60",
+      "transferred",
+      "19.0000",
+      "13.0000",
+      "6.0000",
+      "Wed Oct 28 2026 22:20:10 GMT+0800 (中国标准时间)"
+    ]
+  ],
+  "csv2": [
+    [
+      "type",
+      "reference",
+      "event",
+      "amount",
+      "balance_or_cost",
+      "frozen_or_gross",
+      "created_at"
+    ],
+    [
+      "product",
+      "89d17d9b-e28f-4847-934b-f854ffe6a60b",
+      "settle",
+      "4.0000",
+      "96.0000",
+      "0.0000",
+      "Wed Oct 28 2026 22:20:10 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "detail",
+      "04f38bd8-731c-461b-8340-c87f0bcc88ca",
+      "settle",
+      "2.0000",
+      "98.0000",
+      "0.0000",
+      "Wed Oct 28 2026 22:20:10 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "contact",
+      "88d7ffd8-9537-4612-bbe5-d7d51b3ac8b2",
+      "settle",
+      "3.0000",
+      "95.0000",
+      "0.0000",
+      "Wed Oct 28 2026 22:20:10 GMT+0800 (中国标准时间)"
+    ],
+    [
+      "sale",
+      "9b118058-7416-4d9a-9b08-0171dc03d5ce",
+      "transferred",
+      "23.0000",
+      "15.0000",
+      "8.0000",
+      "Wed Oct 28 2026 22:20:10 GMT+0800 (中国标准时间)"
+    ]
+  ],
+  "readRequests": [
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET ",
+    "GET "
+  ],
+  "pageBusinessWrites": [],
+  "deliberateDeniedTransfers": [
+    "aee6aa0b-52a8-4ae3-b9b9-7b50c367cef6",
+    "9e4907c5-ecfa-4559-965d-6bec6afb1f69"
+  ],
+  "supplierCalls": [],
+  "unchangedBusinessTables": [
+    "internal_point_accounts",
+    "platform_inventory",
+    "distributor_inventory",
+    "point_orders",
+    "point_transfers",
+    "point_order_requests",
+    "point_order_ledger",
+    "point_order_refunds",
+    "product_search_pages",
+    "product_search_ledger",
+    "query_point_ledger",
+    "company_contact_point_ledger",
+    "procurement_ledger",
+    "platform_expenses",
+    "email_daily_usage",
+    "email_batches",
+    "email_recipients"
+  ],
+  "databaseFailureClearsData": true,
+  "missingAccountNotZero": true,
+  "lateResponseAcrossSession": true,
+  "nestAndViteHistory": true,
+  "forcedPasswordAndOldCookieInvalid": true,
+  "sourceHashes": {
+    "application/tests/issue51-profit.spec.ts": "9D8D951EEBD05ED88D559C2F81DA6E8C5D818BF94DAA1F846D6013D2C3478FDC",
+    "application/web/pages/reports/DistributionProfitPage.vue": "949493153C5440DDBE26042262446ADD722233AA1163C591879447CB853D74EF",
+    "application/.scratch/issue51/web/index.html": "CFF8C9919C79C05004BA70CEB3586AF8AF5B92EECE1CB930D968EF62EE816656",
+    "application/web/pages/reports/components/DistributionReportTable.vue": "0C7A5D51EEC89584493C76D83EA516CFF8782833728906F3CED62658E3095B42",
+    "application/web/api/distributionProfit.ts": "467C25C58D828D8ACEEDAF0FEFB0C6290A456635752080B53272C6DE0EF1ED65"
+  },
+  "verification": {
+    "isolatedViteBuild": "passed",
+    "date": "2026-10-28",
+    "isolatedServerCompile": "passed",
+    "timezone": "Asia/Shanghai",
+    "test": "1 passed (23.5s)",
+    "typecheck": "passed"
+  }
+}

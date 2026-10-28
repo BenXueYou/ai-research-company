@@ -1,0 +1,200 @@
+{
+  "date": "2026-10-28",
+  "environment": {
+    "database": "issue49_f7406f6bf6_test",
+    "backend": 61923,
+    "viteBackend": 61924,
+    "vite": 61925
+  },
+  "accounts": {
+    "values": [
+      [
+        "07ec7626-31c0-41df-944b-d435e5da78eb",
+        "222.2345",
+        "22.0002",
+        "4.0003"
+      ],
+      [
+        "9c9546b3-5f9c-414f-9aaa-48605d77f98b",
+        "333.3456",
+        "33.0003",
+        "5.0004"
+      ],
+      [
+        "dcd82b4e-f2ba-4e63-83c0-4d76ab5b3600",
+        "987.6543",
+        "0.1234",
+        "0.0001"
+      ]
+    ],
+    "identities": [
+      {
+        "organizationId": "e2fc96d6-3852-4856-9fa3-0d769089efdc",
+        "accountId": "09863e71-2a86-4d66-8916-84ed13e23753"
+      },
+      {
+        "organizationId": "07ec7626-31c0-41df-944b-d435e5da78eb",
+        "accountId": "3b7781ad-8273-40ae-8a06-c035bfc0b551"
+      },
+      {
+        "organizationId": "9c9546b3-5f9c-414f-9aaa-48605d77f98b",
+        "accountId": "1e7431ba-f3d1-4125-a3b4-f32411b54139"
+      },
+      {
+        "organizationId": "ba39a61b-5095-4e12-9d59-61f54167d21a",
+        "accountId": "a1800fd7-9038-4d82-9d50-956674b0fb6d"
+      },
+      {
+        "organizationId": "dcd82b4e-f2ba-4e63-83c0-4d76ab5b3600",
+        "accountId": "85098af0-c8d8-46a2-a751-e7ebcd6dc99d"
+      },
+      {
+        "organizationId": "94276b07-cd31-4256-8d83-7350a0f28831",
+        "accountId": "6e291196-3567-4ddd-9c94-150204825471"
+      }
+    ],
+    "reads": [
+      "/api/organizations",
+      "/api/reports",
+      "/api/reports",
+      "/api/organizations",
+      "/api/reports",
+      "/api/reports",
+      "/api/reports",
+      "/api/reports",
+      "/api/organizations",
+      "/api/reports",
+      "/api/reports",
+      "/api/organizations"
+    ],
+    "browserBusinessWrites": [],
+    "externalCalls": 0,
+    "unchangedPointAccounts": true,
+    "checked": [
+      "three actor scope",
+      "cross-level branch denied",
+      "precision disabled missing",
+      "loading fields 503 recovery",
+      "history refresh",
+      "logout late response account switch",
+      "mobile overflow"
+    ]
+  },
+  "issue48Regression": {
+    "selected": {
+      "id": "b2099294-5f4e-4cfb-addc-3c2b254984af",
+      "parent_id": "128de082-9c69-4b05-b999-1767eed0529a",
+      "account_id": "76f5067c-72f3-410d-9192-44e96277c9b4",
+      "email": "browser48@example.com"
+    },
+    "contact": [
+      "+852",
+      "13948001234"
+    ],
+    "requests": [
+      {
+        "path": "/api/organizations",
+        "body": {
+          "name": "Issue48 Browser Terminal",
+          "kind": "terminal",
+          "countryCode": "+852",
+          "phone": "13948001234",
+          "email": "browser48@example.com",
+          "requestId": "cdcab6e7-ffa4-4515-b428-0101b18ef6b4"
+        }
+      },
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "b2099294-5f4e-4cfb-addc-3c2b254984af",
+          "active": false
+        }
+      },
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "b2099294-5f4e-4cfb-addc-3c2b254984af",
+          "active": true
+        }
+      },
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "b2099294-5f4e-4cfb-addc-3c2b254984af",
+          "active": false
+        }
+      },
+      {
+        "path": "/api/organizations/state",
+        "body": {
+          "organizationId": "b2099294-5f4e-4cfb-addc-3c2b254984af",
+          "active": true
+        }
+      },
+      {
+        "path": "/api/password-resets",
+        "body": {
+          "accountId": "76f5067c-72f3-410d-9192-44e96277c9b4",
+          "requestId": "bff7e9d6-cd5c-4701-afaa-afd9cf728c9f"
+        }
+      },
+      {
+        "path": "/api/password-resets",
+        "body": {
+          "accountId": "76f5067c-72f3-410d-9192-44e96277c9b4",
+          "requestId": "7137770f-584f-4f46-916f-017969401f6a"
+        }
+      },
+      {
+        "path": "/api/organizations",
+        "body": {
+          "name": "Issue48 Lost Response",
+          "kind": "terminal",
+          "countryCode": "+86",
+          "phone": "13948005678",
+          "email": "lost48@example.com",
+          "requestId": "3dcdfc56-73d0-4c46-a339-be2003e0e258"
+        }
+      },
+      {
+        "path": "/api/organizations",
+        "body": {
+          "name": "Issue48 Lost Response",
+          "kind": "terminal",
+          "countryCode": "+86",
+          "phone": "13948005678",
+          "email": "lost48@example.com",
+          "requestId": "3dcdfc56-73d0-4c46-a339-be2003e0e258"
+        }
+      },
+      {
+        "path": "/api/organizations",
+        "body": {
+          "name": "Issue48 Level Two Terminal",
+          "kind": "terminal",
+          "countryCode": "+86",
+          "phone": "13948009998",
+          "email": "level2-browser48@example.com",
+          "requestId": "14b9b561-5b79-4c0a-b5cc-2e2c8800f31c"
+        }
+      }
+    ],
+    "resetRecords": "2",
+    "openingRows": 1,
+    "openingRetryStatus": 409,
+    "externalCalls": 0,
+    "queryLedgerRows": 0,
+    "transfers": 0,
+    "navigationReads": 1,
+    "viteHistory": true,
+    "crossLevelReprice": {
+      "orderId": "e639c02e-1cc3-42d9-8552-dc8f5dad180e",
+      "status": 403,
+      "quantity": "1.0000",
+      "unitPrice": "1.1000"
+    },
+    "forgedParentStatus": 400
+  },
+  "result": "2 browser tests passed; npm run typecheck passed",
+  "viteAccountDeepLinkReload": true
+}\n

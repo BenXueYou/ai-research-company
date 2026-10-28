@@ -1,6 +1,8 @@
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
+import { createRouter, createMemoryHistory } from 'vue-router';
 import ElementPlus from 'element-plus';
 import TeamSendingSettingsPage from '../../web/pages/email/TeamSendingSettingsPage.vue';
+import { provideFormLeave } from '../../web/router/formLeave';
 
 const calls = [];
 Object.assign(window, { issue57Calls: calls });
@@ -32,9 +34,15 @@ const request = async (path, body) => {
     } : null
   };
 };
-createApp(TeamSendingSettingsPage, {
-  role: new URLSearchParams(location.search).get('role') ?? 'admin',
-  request
-}).use(ElementPlus).mount('#app');
+const router = createRouter({ history: createMemoryHistory(), routes: [] });
+createApp({
+  setup() {
+    provideFormLeave(router, () => true);
+    return () => h(TeamSendingSettingsPage, {
+      role: new URLSearchParams(location.search).get('role') ?? 'admin',
+      request
+    });
+  }
+}).use(ElementPlus).use(router).mount('#app');
 
 

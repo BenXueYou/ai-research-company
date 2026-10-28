@@ -13,8 +13,9 @@ const crumbs = computed(() => {
   const items = (route.meta.breadcrumbs ?? [{ label: route.meta.title ?? '工作台' }]).map(item =>
     ({ ...item })
   );
-  if (route.path === '/platform/organizations' && (route.query.id || ['new', 'accounts'].includes(String(route.query.view)))) {
-    items[items.length - 1].path = '/platform/organizations';
+  if (['/platform/organizations', '/distribution/organizations'].includes(route.path) &&
+    (route.query.id || route.query.view === 'new' || route.query.view === 'accounts')) {
+    items[items.length - 1].path = route.path;
     items.push({ label: route.query.view === 'new' ? '开户' : route.query.view === 'accounts' ? '下级账户' : objectTitle() || '下级详情' });
   }
   return items.map((item, index) =>

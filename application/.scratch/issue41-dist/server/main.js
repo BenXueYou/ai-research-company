@@ -25,8 +25,13 @@ try {
         void redis.close(); });
     console.log('身份应用已启动');
 }
-catch {
-    console.error('启动失败：检查数据库迁移、连接及 APP_ORIGIN 配置');
+catch (error) {
+    if (error.code === 'EADDRINUSE') {
+        console.error(`启动失败：端口 ${process.env.PORT ?? 3000} 已被占用，请先停止已运行的后端，再重新启动。`);
+    }
+    else {
+        console.error('启动失败：检查数据库迁移、连接及 APP_ORIGIN 配置');
+    }
     if (redis?.isOpen)
         await redis.close();
     await pool.end();

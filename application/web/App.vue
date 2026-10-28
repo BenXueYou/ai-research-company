@@ -95,8 +95,13 @@
             <el-button v-if="!session.mustChange" native-type="button" :disabled="busy" @click="closeSettings">返回工作台</el-button>
           </el-form>
         </section>
-        <RouterView v-if="session && !session.mustChange" v-slot="{ Component }">
-          <KeepAlive :key="generation" include="EmailRecordsPage,TerminalSearchPage,CompanyProfilesPage,MemberManagement,ReconciliationPage,PlatformPointOrdersPage,PlatformProcurement,PlatformSettingsPage,PlatformOrganizationsPage,UMailResourceSettings,PlatformEmailQuota">
+        <ConsoleNotices
+          v-if="session && !session.mustChange"
+          :key="generation"
+          :request="request"
+        >
+        <RouterView v-slot="{ Component }">
+          <KeepAlive :key="generation" include="TeamSendingSettingsPage,DistributionOrganizationsPage,DistributionPointOrdersPage,EmailRecordsPage,TerminalSearchPage,CompanyProfilesPage,MemberManagement,ReconciliationPage,PlatformPointOrdersPage,PlatformProcurement,PlatformSettingsPage,PlatformOrganizationsPage,UMailResourceSettings,PlatformEmailQuota">
             <component
               :is="Component"
               :request="request"
@@ -105,13 +110,7 @@
             />
           </KeepAlive>
         </RouterView>
-        <CompatWorkspace
-          v-if="session && !session.mustChange && workspaceVisited"
-          v-show="isCompatPath"
-          :session="session"
-          :request="request"
-          :title="currentTitle"
-        />
+        </ConsoleNotices>
         </template>
       </template>
     <footer>安全会话 · 最长8小时 / 空闲30分钟自动失效</footer>
@@ -122,7 +121,7 @@
 import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
-import { defaultPath, isBusinessPath, navigation } from './router';
+import { defaultPath, isBusinessPath } from './router';
 import { useSessionStore } from './stores/session';
 import { provideFormLeave } from './router/formLeave';
 import ConsoleHeader from './layout/ConsoleHeader.vue';
@@ -130,7 +129,7 @@ import ConsoleFrame from './layout/ConsoleFrame.vue';
 import ConsoleBreadcrumb from './layout/ConsoleBreadcrumb.vue';
 import { provideBreadcrumbTitle } from './layout/breadcrumb';
 import ConsoleSidebar from './layout/ConsoleSidebar.vue';
-import CompatWorkspace from './layout/CompatWorkspace.vue';
+import ConsoleNotices from './layout/ConsoleNotices.vue';
 import LoginPage from './pages/login/LoginPage.vue';
 import { useLogin } from './pages/login/useLogin';
 import {
@@ -150,7 +149,6 @@ const busy = ref(false);
 const navigatingAfterLogin = ref(false);
 const path = computed(() => route.path);
 const previousPath = ref('/');
-const workspaceVisited = ref(false);
 const passwordResultUnknown = ref(false);
 const error = ref('');
 const notice = ref('');
@@ -158,13 +156,6 @@ const { email, loginPassword, login } = useLogin(run, navigatingAfterLogin);
 const currentPassword = ref('');
 const newPassword = ref('');
 const confirmPassword = ref('');
-const menu = computed(() =>
-  navigation.filter(item => item.roles.includes(session.value?.role as 'platform' | 'distributor' | 'admin' | 'sales'))
-);
-const currentTitle = computed(() => route.meta.title ?? '工作台');
-const isCompatPath = computed(() => menu.value.some(item =>
-  item.path === path.value && !['/terminal/emails', '/terminal/search', '/terminal/profiles', '/terminal/members', '/platform/overview', '/platform/reconciliation', '/platform/organizations', '/platform/ledger', '/platform/settings', '/terminal/usage'].includes(item.path)
-));
 const formLeave = provideFormLeave(router, () =>
   !!session.value && !session.value.mustChange && !navigatingAfterLogin.value
 );
@@ -259,7 +250,6 @@ function closeSettings() {
   navigate(isBusinessPath(previousPath.value, session.value.role) ? previousPath.value : defaultPath(session.value.role));
 }
 watch(generation, () => {
-  workspaceVisited.value = false;
   previousPath.value = '/';
   passwordResultUnknown.value = false;
   clearPasswords();
@@ -269,12 +259,5 @@ watch(path, (next, previous) => {
     clearPasswords();
     error.value = '';
   }
-  if (session.value && isCompatPath.value) {
-    workspaceVisited.value = true;
-
-  }
 }, { immediate: true });
-watch(session, value => {
-  if (value && isCompatPath.value) workspaceVisited.value = true;
-});
 </script>

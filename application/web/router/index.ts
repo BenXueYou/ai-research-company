@@ -13,21 +13,24 @@ import ReconciliationPage from '../pages/upstream/ReconciliationPage.vue';
 import PlatformReportPage from '../pages/reports/PlatformReportPage.vue';
 import PlatformBusinessData from '../pages/reports/PlatformBusinessData.vue';
 import PlatformPointOrdersPage from '../pages/commerce/PlatformPointOrdersPage.vue';
+import DistributionPointOrdersPage from '../pages/commerce/DistributionPointOrdersPage.vue';
 import PlatformProcurement from '../pages/commerce/PlatformProcurement.vue';
 import PlatformOrganizationsPage from '../pages/organizations/PlatformOrganizationsPage.vue';
+import DistributionOrganizationsPage from '../pages/organizations/DistributionOrganizationsPage.vue';
 import PlatformSettingsPage from '../pages/commerce/PlatformSettingsPage.vue';
 import UMailResourceSettings from '../pages/email/UMailResourceSettings.vue';
 import PlatformEmailQuota from '../pages/email/PlatformEmailQuota.vue';
 import PlatformOverviewPage from '../pages/overview/PlatformOverviewPage.vue';
 import TerminalUsagePage from '../pages/reports/TerminalUsagePage.vue';
+import DistributionProfitPage from '../pages/reports/DistributionProfitPage.vue';
 import EmailRecordsPage from '../pages/email/EmailRecordsPage.vue';
+import TeamSendingSettingsPage from '../pages/email/TeamSendingSettingsPage.vue';
 
 type Role = 'platform' | 'distributor' | 'admin' | 'sales';
 declare module 'vue-router' {
   interface RouteMeta {
     title?: string;
     roles?: Role[];
-    target?: string;
     business?: boolean;
     navigation?: { label: string; group?: string; order: number };
     breadcrumbs?: { label: string; path?: string }[];
@@ -37,7 +40,6 @@ interface NavigationItem {
   path: string;
   label: string;
   roles: Role[];
-  target?: string;
 }
 
 export const navigation: NavigationItem[] = [
@@ -46,32 +48,43 @@ export const navigation: NavigationItem[] = [
   { path: '/platform/ledger', label: '点数与账务', roles: ['platform'] },
   { path: '/platform/reconciliation', label: '上游与对账', roles: ['platform'] },
   { path: '/platform/settings', label: '平台设置', roles: ['platform'] },
-  { path: '/distribution/organizations', label: '下级管理', roles: ['distributor'], target: 'compat-organizations' },
-  { path: '/distribution/orders', label: '点数订单', roles: ['distributor'], target: 'compat-orders' },
-  { path: '/distribution/profit', label: '交易与利润', roles: ['distributor'], target: 'compat-usage' },
+  { path: '/distribution/organizations', label: '下级管理', roles: ['distributor'] },
+  { path: '/distribution/orders', label: '点数订单', roles: ['distributor'] },
+  { path: '/distribution/profit', label: '交易与利润', roles: ['distributor'] },
   { path: '/terminal/search', label: '找企业', roles: ['admin', 'sales'] },
   { path: '/terminal/profiles', label: '企业档案库', roles: ['admin', 'sales'] },
   { path: '/terminal/emails', label: '邮件发送记录', roles: ['admin', 'sales'] },
-  { path: '/terminal/sending-settings', label: '团队发信设置', roles: ['admin', 'sales'], target: 'compat-sending' },
+  { path: '/terminal/sending-settings', label: '团队发信设置', roles: ['admin', 'sales'] },
   { path: '/terminal/members', label: '成员管理', roles: ['admin', 'sales'] },
   { path: '/terminal/usage', label: '点数用量', roles: ['admin', 'sales'] }
 ];
 
-const businessRoutes: RouteRecordRaw[] = navigation.map(item => ({
-  path: item.path,
-  name: item.path.slice(1).replaceAll('/', '-'),
-  component: item.path === '/terminal/search' ? TerminalSearchPage :
-    item.path === '/terminal/profiles' ? CompanyProfilesPage :
-    item.path === '/terminal/members' ? MemberManagement :
-    item.path === '/platform/overview' ? PlatformOverviewPage :
-    item.path === '/platform/reconciliation' ? ReconciliationPage :
-    item.path === '/platform/organizations' ? PlatformOrganizationsPage :
-    item.path === '/platform/ledger' ? PlatformPointOrdersPage :
-    item.path === '/platform/settings' ? PlatformSettingsPage :
-    item.path === '/terminal/usage' ? TerminalUsagePage :
-    item.path === '/terminal/emails' ? EmailRecordsPage : EmptyRoute,
-  meta: { title: item.label, roles: item.roles, target: item.target, business: true }
-}));
+const businessPages: Record<string, NonNullable<RouteRecordRaw['component']>> = {
+  '/terminal/search': TerminalSearchPage,
+  '/terminal/profiles': CompanyProfilesPage,
+  '/terminal/members': MemberManagement,
+  '/platform/overview': PlatformOverviewPage,
+  '/platform/reconciliation': ReconciliationPage,
+  '/platform/organizations': PlatformOrganizationsPage,
+  '/distribution/organizations': DistributionOrganizationsPage,
+  '/platform/ledger': PlatformPointOrdersPage,
+  '/distribution/orders': DistributionPointOrdersPage,
+  '/platform/settings': PlatformSettingsPage,
+  '/terminal/usage': TerminalUsagePage,
+  '/distribution/profit': DistributionProfitPage,
+  '/terminal/sending-settings': TeamSendingSettingsPage,
+  '/terminal/emails': EmailRecordsPage
+};
+const businessRoutes: RouteRecordRaw[] = navigation.map(item => {
+  const component = businessPages[item.path];
+  if (!component) throw new Error('Business route requires a real page: ' + item.path);
+  return {
+    path: item.path,
+    name: item.path.slice(1).replaceAll('/', '-'),
+    component,
+    meta: { title: item.label, roles: item.roles, business: true }
+  };
+});
 
 const routes: RouteRecordRaw[] = [
   ...businessRoutes,
@@ -192,18 +205,14 @@ export function createConsoleRouter(pinia: Pinia) {
   const router = createRouter({
     history: createWebHistory(),
     routes,
-    async scrollBehavior(to, _from, savedPosition) {
+    async scrollBehavior(_to, _from, savedPosition) {
       await nextTick();
       const main = document.getElementById('console-main');
       const position = window.history.state?.position as number | undefined;
       const restored = savedPosition && position !== undefined ? positions.get(position) : undefined;
       if (main) {
         if (restored !== undefined) main.scrollTop = restored;
-        else {
-          main.scrollTop = 0;
-          const target = typeof to.meta.target === 'string' ? document.getElementById(to.meta.target) : null;
-          if (target) main.scrollTop = target.getBoundingClientRect().top - main.getBoundingClientRect().top;
-        }
+        else main.scrollTop = 0;
       }
       return false as const;
     }

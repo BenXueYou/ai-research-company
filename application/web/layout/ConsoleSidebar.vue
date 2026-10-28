@@ -71,12 +71,6 @@ watch(() => route.fullPath, () => {
           </div>
         </template>
       </template>
-      <RouterLink
-        class="sidebar-link"
-        :class="{ active: route.path === '/help', 'sidebar-help': session.role !== 'platform' }"
-        to="/help"
-        :aria-current="route.path === '/help' ? 'page' : undefined"
-      >帮助中心</RouterLink>
     </nav>
   </div>
 </template>

@@ -3,6 +3,7 @@ import 'element-plus/es/components/button/style/css';
 import 'element-plus/es/components/dropdown/style/css';
 import 'element-plus/es/components/form/style/css';
 import 'element-plus/es/components/input/style/css';
+import 'element-plus/es/components/select/style/css';
 import './theme.css';
 import './global.css';
 import 'element-plus/es/components/container/style/css';

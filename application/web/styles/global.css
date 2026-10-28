@@ -1,8 +1,9 @@
 :root {
   font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
-  color: #263052;
-  background: #f4f6fc;
+  color: var(--console-text);
+  background: var(--console-canvas);
   font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
 .company-search { margin-top: 1.25rem; }
@@ -14,10 +15,24 @@
 }
 body {
   margin: 0;
+  min-width: 320px;
+  background: var(--console-canvas);
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+::selection {
+  color: #fff;
+  background: var(--console-brand);
 }
 button:focus-visible,
-a:focus-visible {
-  outline: 3px solid #9a8bf7;
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #aeb7f4;
   outline-offset: 3px;
 }
 .top-bar {
@@ -74,7 +89,7 @@ a:focus-visible {
   display: flex;
   gap: 12px;
   align-items: center;
-  color: #6553ce;
+  color: var(--console-brand);
   text-decoration: none;
   font-size: 26px;
   font-weight: 700;
@@ -106,6 +121,14 @@ main {
   padding: 50px 28px;
   margin: auto;
   min-height: calc(100vh - 145px);
+}
+.workspace-mode h1,
+.workspace-mode h2,
+.workspace-mode h3 {
+  color: var(--console-text);
+}
+.workspace-mode p {
+  color: var(--console-muted);
 }
 .identity-layout {
   display: grid;
@@ -194,6 +217,25 @@ p {
   border: 1px solid #e5e7f1;
   border-radius: 16px;
   background: white;
+}
+.workspace-mode .el-button {
+  border-radius: 8px;
+  font-weight: 500;
+}
+.workspace-mode .el-input__wrapper,
+.workspace-mode .el-textarea__inner,
+.workspace-mode .el-select__wrapper {
+  box-shadow: 0 0 0 1px var(--console-line-strong) inset;
+}
+.workspace-mode .el-input__wrapper:hover,
+.workspace-mode .el-textarea__inner:hover,
+.workspace-mode .el-select__wrapper:hover {
+  box-shadow: 0 0 0 1px #aeb9d0 inset;
+}
+.workspace-mode .el-input.is-focus .el-input__wrapper,
+.workspace-mode .el-textarea__inner:focus,
+.workspace-mode .el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1px var(--console-brand) inset;
 }
 .workspace-mode .page-heading { max-width: 1160px; }
 .workspace-mode .company-search {

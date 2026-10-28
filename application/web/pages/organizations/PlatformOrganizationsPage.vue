@@ -6,11 +6,6 @@
         <h1>下级管理</h1>
         <p>管理直属合作组织、管理员凭据和组织状态。</p>
       </div>
-      <div class="parent-context">
-        <span>当前上级</span>
-        <strong>{{ parentName || '读取中…' }}</strong>
-        <small>最多两级分销</small>
-      </div>
     </div>
     <el-alert
       v-if="error"
@@ -19,9 +14,9 @@
       :closable="false"
     />
     <nav class="organization-tabs" aria-label="下级管理页面">
-      <RouterLink to="/platform/organizations">直属下级</RouterLink>
-      <RouterLink :to="{ path: '/platform/organizations', query: { view: 'new' } }">开户</RouterLink>
-      <RouterLink :to="{ path: '/platform/organizations', query: { view: 'accounts' } }">下级账户</RouterLink>
+      <RouterLink to="/platform/organizations" :class="{ 'tab-active': view === 'list' || view === 'detail' }">直属下级</RouterLink>
+      <RouterLink :to="{ path: '/platform/organizations', query: { view: 'new' } }" :class="{ 'tab-active': view === 'new' }">开户</RouterLink>
+      <RouterLink :to="{ path: '/platform/organizations', query: { view: 'accounts' } }" :class="{ 'tab-active': view === 'accounts' }">下级账户</RouterLink>
       <RouterLink to="/platform/organizations/business-data">业务数据查看</RouterLink>
     </nav>
     <p v-if="openingUnknown" role="status">开户结果尚未确认。请刷新直属列表核实；重试将沿用本次请求标识，不会自动重新开户。</p>
@@ -127,17 +122,26 @@
       </article>
     </div>
     <section v-if="view === 'accounts'" class="workspace-card children-list style-b-card" aria-label="下级账户">
-      <h3>下级账户</h3>
-      <p>查看授权范围内各层下级的内部点数。此页仅供查看；直属下级的管理请返回直属列表。</p>
-      <el-button :disabled="pointsState === 'loading'" @click="refreshPoints">刷新账户</el-button>
+      <div class="section-heading account-heading">
+        <div><span class="module-kicker">POINT ACCOUNTS</span><h2>下级账户</h2></div>
+        <el-button :disabled="pointsState === 'loading'" @click="refreshPoints">刷新账户</el-button>
+      </div>
+      <p class="account-description">查看授权范围内各层下级的内部点数。此页仅供查看；直属下级的管理请返回直属列表。</p>
       <p v-if="pointsState === 'loading'" role="status">账户读取中…</p>
       <p v-else-if="pointsState === 'error'" role="alert">下级账户读取失败，请刷新重试。</p>
       <template v-else>
         <p v-if="!visibleOrganizations.length">暂无授权下级</p>
-        <article v-for="organization in visibleOrganizations" :key="organization.id" class="child-row">
-          <h4>{{ organization.name }}</h4>
-          <p>{{ organization.kind === 'terminal' ? '终端企业' : '分销组织' }} · {{ organization.active ? '启用' : '停用' }} · 第{{ organization.depth }}层下级</p>
-          <p>直属上级：{{ organizationName(organization.parentId) }}</p>
+        <article v-for="organization in visibleOrganizations" :key="organization.id" class="child-row account-row">
+          <div class="account-identity">
+            <div class="organization-main">
+              <span class="status-dot" :class="{ inactive: !organization.active }" aria-hidden="true"></span>
+              <div>
+                <h3>{{ organization.name }}</h3>
+                <p>{{ organization.kind === 'terminal' ? '终端企业' : '分销组织' }} · {{ organization.active ? '启用' : '停用' }} · 第{{ organization.depth }}层下级</p>
+              </div>
+            </div>
+            <p class="account-parent">直属上级：{{ organizationName(organization.parentId) }}</p>
+          </div>
           <PointAccountSummary :account="pointAccounts.get(organization.id)" :state="pointsState" />
         </article>
       </template>
@@ -201,7 +205,6 @@ const view = computed(() => route.query.view === 'new' ? 'new' : route.query.vie
 const selectedChild = computed(() => children.value.find(child =>
   child.id === route.query.id
 ));
-const parentName = ref('');
 const allowedKinds = shallowRef<string[]>([]);
 const children = shallowRef<Child[]>([]);
 useBreadcrumbTitle(() => view.value === 'accounts' ? '下级账户' : selectedChild.value?.name ?? '下级详情');
@@ -267,7 +270,6 @@ async function refresh() {
   void refreshPoints();
   try {
     const result = await props.request('organizations') as { parentName: string; allowedKinds: string[]; children: Child[] };
-    parentName.value = result.parentName;
     allowedKinds.value = result.allowedKinds;
     children.value = result.children;
   } catch (failure) {
@@ -395,19 +397,20 @@ onMounted(refresh);
 </script>
 
 <style scoped>
-.style-b-page { --style-b-accent: #4356e0; --style-b-ink: #1c2333; --style-b-muted: #7d899d; --style-b-line: #e6e9f0; margin-top: 6px; }
+.style-b-page { --style-b-accent: #4356e0; --style-b-ink: #1c2333; --style-b-muted: #7d899d; --style-b-line: #e6e9f0; width: 100%; min-width: 0; margin: 0; padding: 0; color: var(--style-b-ink); }
 .organization-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
 .organization-heading h1 { margin: 0 0 5px; color: var(--style-b-ink); font-size: 26px; letter-spacing: -.5px; }
 .organization-heading p { margin: 0; color: var(--style-b-muted); font-size: 13px; }
 .module-kicker { display: block; margin-bottom: 7px; color: #9ba6bd; font-size: 10px; letter-spacing: 1.5px; }
-.parent-context { min-width: 190px; padding: 12px 16px; border: 1px solid var(--style-b-line); border-radius: 10px; background: #fff; }
-.parent-context span, .parent-context small { display: block; color: var(--style-b-muted); font-size: 11px; }
-.parent-context strong { display: block; margin: 2px 0; color: var(--style-b-ink); font-size: 14px; }
-.organization-tabs { display: flex; gap: 22px; margin-bottom: 22px; border-bottom: 1px solid var(--style-b-line); overflow-x: auto; }
+.organization-tabs { display: flex; gap: 26px; margin: 24px 0 20px; border-bottom: 1px solid var(--style-b-line); overflow-x: auto; }
 .organization-tabs a { flex-shrink: 0; padding: 10px 2px; color: var(--style-b-muted); font-size: 13px; text-decoration: none; }
-.organization-tabs a.router-link-exact-active { border-bottom: 2px solid var(--style-b-accent); color: var(--style-b-accent); font-weight: 600; }
+.organization-tabs a.tab-active { border-bottom: 2px solid var(--style-b-accent); color: var(--style-b-accent); font-weight: 600; }
 .style-b-card { margin-top: 18px; padding: 23px; border: 1px solid var(--style-b-line); border-radius: 12px; background: #fff; box-shadow: 0 2px 5px #19234603; }
-.opening-form { max-width: none; }
+.opening-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; max-width: 960px; }
+.opening-form > h3, .opening-form > .primary-button, .opening-form > .hint { grid-column: 1 / -1; }
+.opening-form > h3 { margin-bottom: 22px; }
+.opening-form > .primary-button { justify-self: end; min-width: 140px; height: 40px; }
+.opening-form > .hint { margin: 12px 0 0; text-align: right; }
 .opening-form h3, .section-heading h2 { margin: 0; color: var(--style-b-ink); font-size: 16px; }
 .opening-form h3 { padding-bottom: 15px; border-bottom: 1px solid var(--style-b-line); }
 .opening-form :deep(.el-form-item) { max-width: 720px; }
@@ -417,11 +420,19 @@ select:focus { border-color: var(--style-b-accent); outline: none; }
 .children-list { margin-top: 18px; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 4px; }
 .section-heading .module-kicker { margin-bottom: 3px; }
-.organization-row { display: grid; grid-template-columns: minmax(190px, 1.3fr) minmax(190px, 1fr) minmax(210px, 1fr) auto; align-items: center; gap: 20px; min-height: 82px; padding: 16px 0; border-top: 1px solid var(--style-b-line); overflow-wrap: anywhere; }
+.organization-row { display: grid; grid-template-columns: minmax(160px, 1fr) minmax(190px, 1fr) minmax(250px, 1.25fr) auto; align-items: center; gap: 24px; min-height: 106px; padding: 20px 8px; border-top: 1px solid var(--style-b-line); overflow-wrap: anywhere; }
+.organization-row:hover { background: #fafbff; }
+.organization-row > * { min-width: 0; }
+.style-b-page :deep(.el-input__wrapper) { min-height: 40px; border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
+.style-b-page :deep(.el-input__wrapper.is-focus) { box-shadow: 0 0 0 1px var(--style-b-accent) inset; }
+.style-b-page :deep(.el-button) { border-radius: 8px; font-size: 12px; }
+.style-b-page :deep(.primary-button) { border-color: var(--style-b-accent); color: #fff; background: var(--style-b-accent); }
+.style-b-page :deep(.primary-button:not(.is-disabled):hover) { border-color: #3343c9; background: #3343c9; }
+.style-b-page > p[role="status"] { padding: 12px 16px; border: 1px solid #e2e7fd; border-radius: 8px; color: #6372a4; background: #f3f5ff; font-size: 12px; line-height: 1.8; }
 .organization-main { display: flex; align-items: center; gap: 11px; }
 .organization-main h3 { margin: 0 0 3px; color: var(--style-b-ink); font-size: 14px; }
 .organization-main p, .organization-contact small { margin: 0; color: var(--style-b-muted); font-size: 12px; }
-.status-dot { width: 8px; height: 8px; border-radius: 50%; background: #16885e; box-shadow: 0 0 0 4px #eaf7f0; }
+.status-dot { flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: #16885e; box-shadow: 0 0 0 4px #eaf7f0; }
 .status-dot.inactive { background: #b97912; box-shadow: 0 0 0 4px #fff5e4; }
 .organization-contact span { display: block; color: #9ba6bd; font-size: 10px; }
 .organization-contact strong { display: block; margin: 2px 0; color: #465064; font-size: 12px; font-weight: 500; }
@@ -431,7 +442,15 @@ select:focus { border-color: var(--style-b-accent); outline: none; }
 .detail-card .section-heading { margin-bottom: 18px; }
 .detail-card h4 { margin: 0 0 8px; color: var(--style-b-ink); font-size: 20px; }
 .handoff-values { overflow-wrap: anywhere; }
+.account-heading { margin-bottom: 12px; }
+.account-description { margin: 0 0 20px; color: #647087; font-size: 12px; line-height: 1.8; }
+.account-row { display: grid; grid-template-columns: minmax(210px, 1fr) minmax(0, 1.6fr); align-items: center; gap: 28px; padding: 22px 0; border-top: 1px solid var(--style-b-line); overflow-wrap: anywhere; }
+.account-parent { margin: 10px 0 0 19px; color: #647087; font-size: 12px; }
+.organization-tabs a:hover { color: var(--style-b-accent); }
+.organization-tabs a:focus-visible, .row-action:focus-visible { outline: 2px solid var(--style-b-accent); outline-offset: -2px; border-radius: 3px; }
+@media (max-width: 1100px) { .account-row { grid-template-columns: 1fr; gap: 16px; } }
 .handoff-values dd { margin: 8px 0 20px; color: var(--style-b-ink); font-family: Consolas, monospace; }
-@media (max-width: 900px) { .organization-row { grid-template-columns: 1fr 1fr; } .row-action { justify-self: end; } }
-@media (max-width: 600px) { .organization-heading { display: block; } .parent-context { margin-top: 16px; } .organization-tabs { gap: 16px; } .style-b-card { padding: 18px 16px; } .organization-row { grid-template-columns: 1fr; gap: 10px; } .row-action { justify-self: start; } }
+@media (max-width: 1100px) { .organization-row { grid-template-columns: 1fr 1fr; } .row-action { justify-self: end; } }
+@media (max-width: 600px) { .opening-form { grid-template-columns: 1fr; } .opening-form > .primary-button { justify-self: stretch; } .organization-heading h1 { font-size: 23px; } }
+@media (max-width: 600px) { .organization-heading { display: block; } .organization-tabs { gap: 16px; } .style-b-card { padding: 18px 16px; } .organization-row { grid-template-columns: 1fr; gap: 10px; } .row-action { justify-self: start; } }
 </style>

@@ -4,7 +4,7 @@
     <p v-else-if="state === 'error'" role="alert">点数读取失败，请刷新重试。</p>
     <p v-else-if="!account">暂无点数账户数据</p>
     <dl v-else>
-      <div v-for="field in fields" :key="field.key">
+      <div v-for="field in fields" :key="field.key" :class="{ 'available-value': field.key === 'available' }">
         <dt>{{ field.label }}（内部点数）</dt>
         <dd>{{ account[field.key] ?? '数据缺失' }}</dd>
       </div>
@@ -33,7 +33,12 @@ const fields = [
 </script>
 
 <style scoped>
-.point-summary dl { display: flex; flex-wrap: wrap; gap: 16px 32px; margin: 16px 0; }
-.point-summary dt { color: #606266; font-size: 13px; }
-.point-summary dd { margin: 6px 0 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.point-summary { min-width: 0; }
+.point-summary > p { margin: 8px 0; padding: 12px; border-radius: 8px; background: #f7f8fc; color: #647087; font-size: 12px; line-height: 1.7; }
+.point-summary > p[role="alert"] { color: #b45335; background: #fff4ef; }
+.point-summary dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px; margin: 0; }
+.point-summary dt { color: #647087; font-size: 11px; line-height: 1.6; }
+.point-summary dd { margin: 4px 0 0; color: #26344e; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.5; overflow-wrap: anywhere; }
+.available-value dd { color: #4356e0; }
+@media (max-width: 600px) { .point-summary dl { gap: 12px 16px; padding: 14px; border-radius: 8px; background: #f8f9fc; } }
 </style>
