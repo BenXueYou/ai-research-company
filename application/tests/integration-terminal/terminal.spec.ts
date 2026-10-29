@@ -151,7 +151,7 @@ test('terminal cross-page acquisition, snapshot, settings, records, quota and se
       await expect(page.getByText('当前筛选下没有档案')).toBeVisible();
       await page.getByRole('link', { name: '找企业', exact: true }).click();
       const search = page.locator('.company-search');
-      await page.locator('select[aria-label="搜索方式"]:visible').selectOption('company');
+      await page.getByRole('tab', { name: '按公司名', exact: true }).click();
       await search.getByLabel('公司名称', { exact: true }).fill('Terminal');
       await selectCountries(page, search, 'TUR');
       await search.getByRole('button', { name: '免费查询', exact: true }).click();
@@ -330,7 +330,7 @@ test('terminal cross-page acquisition, snapshot, settings, records, quota and se
     await test.step('controlled product list reaches independently confirmed detail, duplicate upstream identity is observed', async () => {
       await page.getByRole('link', { name: '找企业', exact: true }).click();
       const product = page.locator('.product-search');
-      await page.locator('select[aria-label="搜索方式"]:visible').selectOption('product');
+      await page.getByRole('tab', { name: '按产品词', exact: true }).click();
       await product.getByLabel('产品词', { exact: true }).fill('ceramic pump');
       await selectCountry(page, product, 'TUR');
       await product.getByLabel('贸易开始日期').fill('2026-01-01');

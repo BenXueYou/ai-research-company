@@ -1,128 +1,127 @@
 <template>
-  <section class="workspace-card product-search">
-    <header class="product-search-heading">
-      <div>
-        <h2>按产品词发现</h2>
-      </div>
-      <span class="product-fee-badge">逐页确认费用</span>
-    </header>
-    <el-form class="business-form search-form product-search-form" label-position="top" @submit.prevent="prepare(1)">
-      <slot name="search-mode" />
-      <el-form-item label="采购企业所在国（三位代码）" for="buyer-country">
-        <CountrySelect
-          id="buyer-country"
-          v-model="buyerCountryCode3"
-          :disabled="locked"
-          :multiple="false"
-        />
-      </el-form-item>
-      <el-form-item label="产品词" for="product-desc">
-        <el-input
-          id="product-desc"
-          v-model="productDesc"
-          :disabled="locked"
-          placeholder="至少两个字符"
-        />
-      </el-form-item>
-      <el-form-item label="贸易开始日期" for="trade-start">
-        <el-date-picker
-          id="trade-start"
-          v-model="startDate"
-          type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false"
-          :disabled="locked"
-        />
-      </el-form-item>
-      <el-form-item label="贸易结束日期" for="trade-end">
-        <el-date-picker
-          id="trade-end"
-          v-model="endDate"
-          type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false"
-          :disabled="locked"
-        />
-      </el-form-item>
-      <p class="hint product-intro">输入产品词，选择采购企业所在国与贸易时间，查看本页报价后确认查询。名单仅含企业名称，身份须另行核实。</p>
-      <div class="form-actions">
-        <el-button
-          type="primary" native-type="submit"
-          :loading="busy"
-          :disabled="unresolved"
-        >查看第 1 页报价</el-button>
-      </div>
-    </el-form>
-    <el-alert
-      v-if="error"
-      type="error"
-      :title="error"
-      :closable="false"
-    />
-    <div v-if="page" class="search-summary product-page-quote">
-      <strong>{{ page.productDesc }} · 采购企业所在国 {{ page.buyerCountryCode3 }}</strong>
-      <span>贸易时间 {{ page.startDate }} 至 {{ page.endDate }} · 第 {{ page.pageNo }} 页</span>
-      <span>最高扣点 {{ page.maximumPoints }} · 锁定系数 {{ page.coefficient }}</span>
-      <template v-if="page.state === 'quoted' && !pageUnknown">
-        <el-button :disabled="locked" @click="execute">确认本页费用并查询</el-button>
-        <el-button :disabled="locked" @click="page = null">取消</el-button>
-      </template>
-      <template v-else-if="page.state === 'pending' || pageUnknown">
-        <p role="status">本页结果确认中，冻结保留；请主动核实，勿重复提交。</p>
-        <el-button :disabled="busy" @click="refreshPage">核实本页结果</el-button>
-      </template>
-      <p v-else-if="page.state === 'failed'" role="status">本页查询已确认失败，不展示候选；可重新报价。</p>
-      <p v-else-if="page.state === 'expired'" role="status">本页报价已失效，请重新报价并确认。</p>
-      <p v-else role="status">本页已结算 {{ page.chargedPoints }} 点；下一页须重新确认。</p>
+  <section class="product-search search-module">
+    <div class="search-filter-panel">
+      <el-form class="business-form search-form product-search-form" label-position="top" @submit.prevent="prepare(1)">
+        <el-form-item label="采购企业所在国（三位代码）" for="buyer-country">
+          <CountrySelect
+            id="buyer-country"
+            v-model="buyerCountryCode3"
+            :disabled="locked"
+            :multiple="false"
+          />
+        </el-form-item>
+        <el-form-item label="产品词" for="product-desc">
+          <el-input
+            id="product-desc"
+            v-model="productDesc"
+            :disabled="locked"
+            placeholder="至少两个字符"
+          />
+        </el-form-item>
+        <el-form-item label="贸易开始日期" for="trade-start">
+          <el-date-picker
+            id="trade-start"
+            v-model="startDate"
+            type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false"
+            :disabled="locked"
+          />
+        </el-form-item>
+        <el-form-item label="贸易结束日期" for="trade-end">
+          <el-date-picker
+            id="trade-end"
+            v-model="endDate"
+            type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false"
+            :disabled="locked"
+          />
+        </el-form-item>
+        <div class="form-actions search-form-actions">
+          <p class="hint product-intro">输入产品词，选择采购企业所在国与贸易时间，查看本页报价后确认查询。名单仅含企业名称，身份须另行核实。</p>
+          <el-button
+            type="primary" native-type="submit"
+            :loading="busy"
+            :disabled="unresolved"
+          >查看第 1 页报价</el-button>
+        </div>
+      </el-form>
     </div>
-    <template v-if="page && ['settled', 'zero'].includes(page.state)">
-      <p class="product-results-caption">共 {{ page.total }} 个候选；当前页只显示名称，不自动建档。</p>
-      <el-empty v-if="!page.content.length" description="本页没有采购企业候选" />
-      <div v-for="candidate in page.content" :key="candidate.candidateId" class="candidate-row">
-        <strong>{{ candidate.name }}</strong>
-        <el-button :disabled="locked" @click="checkCandidate(candidate)">免费核实企业身份</el-button>
+    <section class="search-results-panel" aria-label="搜索结果" aria-live="polite">
+      <h2 class="search-results-heading">搜索结果</h2>
+      <p v-if="!page && !verification && !detailQuote && !detailStatus" class="hint search-results-placeholder">设置上方搜索条件，开始查找企业候选。</p>
+      <el-alert
+        v-if="error"
+        type="error"
+        :title="error"
+        :closable="false"
+      />
+      <div v-if="page" class="search-summary product-page-quote">
+        <strong>{{ page.productDesc }} · 采购企业所在国 {{ page.buyerCountryCode3 }}</strong>
+        <span>贸易时间 {{ page.startDate }} 至 {{ page.endDate }} · 第 {{ page.pageNo }} 页</span>
+        <span>最高扣点 {{ page.maximumPoints }} · 锁定系数 {{ page.coefficient }}</span>
+        <template v-if="page.state === 'quoted' && !pageUnknown">
+          <el-button :disabled="locked" @click="execute">确认本页费用并查询</el-button>
+          <el-button :disabled="locked" @click="page = null">取消</el-button>
+        </template>
+        <template v-else-if="page.state === 'pending' || pageUnknown">
+          <p role="status">本页结果确认中，冻结保留；请主动核实，勿重复提交。</p>
+          <el-button :disabled="busy" @click="refreshPage">核实本页结果</el-button>
+        </template>
+        <p v-else-if="page.state === 'failed'" role="status">本页查询已确认失败，不展示候选；可重新报价。</p>
+        <p v-else-if="page.state === 'expired'" role="status">本页报价已失效，请重新报价并确认。</p>
+        <p v-else role="status">本页已结算 {{ page.chargedPoints }} 点；下一页须重新确认。</p>
       </div>
-      <div class="pager">
-        <el-button :disabled="locked || page.pageNo <= 1" @click="prepare(page.pageNo - 1, page)">上一页报价</el-button>
-        <el-button :disabled="locked || page.pageNo * page.pageSize >= (page.total ?? 0)" @click="prepare(page.pageNo + 1, page)">下一页报价</el-button>
-      </div>
-    </template>
-    <template v-if="verification">
-      <h3 class="verification-heading">免费身份核实 · {{ verification.query.name }}</h3>
-      <p class="hint">请核对返回企业的名称和国家。产品名单名称并不证明企业位于所选国家。</p>
-      <el-empty v-if="!verification.content.length" description="该国家没有匹配的企业，不能继续建档" />
-      <div v-for="candidate in verification.content" :key="candidate.candidateId" class="candidate-row">
-        <CompanyIdentity
-          :name="candidate.name"
-          :country="candidate.country"
-          :source-id="candidate.sourceId"
-        />
-        <span v-if="candidate.verificationStatus === 'verified'" class="status-pill">已核实</span>
-        <el-button v-else :disabled="locked" @click="verify(candidate)">确认是该企业</el-button>
-        <el-button
-          v-if="candidate.verificationStatus === 'verified'"
-          :disabled="locked"
-          @click="quoteDetail(candidate)"
-        >查看详情报价</el-button>
-        <el-alert
-          v-if="candidateError?.candidateId === candidate.candidateId"
-          class="candidate-error"
-          type="error"
-          :title="candidateError.message"
-          :closable="false"
-        />
-      </div>
-    </template>
-    <div v-if="detailQuote" ref="quotePanel" class="search-summary product-detail-quote">
-      <span>企业详情 {{ detailQuote.name }} · {{ detailQuote.countryCode3 }}</span>
-      <span>最高扣点 {{ detailQuote.maximumPoints }} · 锁定系数 {{ detailQuote.coefficient }}</span>
-      <template v-if="detailUnknown || detailQuote.state === 'pending'">
-        <p role="status">详情结果确认中，已保留详情冻结，请主动核实。</p>
-        <el-button :disabled="busy" @click="refreshDetail">核实详情结果</el-button>
+      <template v-if="page && ['settled', 'zero'].includes(page.state)">
+        <p class="product-results-caption">共 {{ page.total }} 个候选；当前页只显示名称，不自动建档。</p>
+        <el-empty v-if="!page.content.length" description="本页没有采购企业候选" />
+        <div v-for="candidate in page.content" :key="candidate.candidateId" class="candidate-row">
+          <strong>{{ candidate.name }}</strong>
+          <el-button :disabled="locked" @click="checkCandidate(candidate)">免费核实企业身份</el-button>
+        </div>
+        <div class="pager">
+          <el-button :disabled="locked || page.pageNo <= 1" @click="prepare(page.pageNo - 1, page)">上一页报价</el-button>
+          <el-button :disabled="locked || page.pageNo * page.pageSize >= (page.total ?? 0)" @click="prepare(page.pageNo + 1, page)">下一页报价</el-button>
+        </div>
       </template>
-      <template v-else>
-        <el-button :disabled="locked" @click="executeDetail">另行确认详情费用并建档</el-button>
-        <el-button :disabled="locked" @click="detailQuote = null">取消</el-button>
+      <template v-if="verification">
+        <h3 class="verification-heading">免费身份核实 · {{ verification.query.name }}</h3>
+        <p class="hint">请核对返回企业的名称和国家。产品名单名称并不证明企业位于所选国家。</p>
+        <el-empty v-if="!verification.content.length" description="该国家没有匹配的企业，不能继续建档" />
+        <div v-for="candidate in verification.content" :key="candidate.candidateId" class="candidate-row">
+          <CompanyIdentity
+            :name="candidate.name"
+            :country="candidate.country"
+            :source-id="candidate.sourceId"
+          />
+          <span v-if="candidate.verificationStatus === 'verified'" class="status-pill">已核实</span>
+          <el-button v-else :disabled="locked" @click="verify(candidate)">确认是该企业</el-button>
+          <el-button
+            v-if="candidate.verificationStatus === 'verified'"
+            :disabled="locked"
+            @click="quoteDetail(candidate)"
+          >查看详情报价</el-button>
+          <el-alert
+            v-if="candidateError?.candidateId === candidate.candidateId"
+            class="candidate-error"
+            type="error"
+            :title="candidateError.message"
+            :closable="false"
+          />
+        </div>
       </template>
-    </div>
-    <p v-if="detailStatus" class="product-detail-outcome" role="status">{{ detailStatus }}</p>
-    <RouterLink v-if="localProfile" class="product-profile-link" :to="{ path: '/terminal/profiles', query: { id: localProfile.id } }">进入企业档案 · {{ localProfile.name }}</RouterLink>
+      <div v-if="detailQuote" ref="quotePanel" class="search-summary product-detail-quote">
+        <span>企业详情 {{ detailQuote.name }} · {{ detailQuote.countryCode3 }}</span>
+        <span>最高扣点 {{ detailQuote.maximumPoints }} · 锁定系数 {{ detailQuote.coefficient }}</span>
+        <template v-if="detailUnknown || detailQuote.state === 'pending'">
+          <p role="status">详情结果确认中，已保留详情冻结，请主动核实。</p>
+          <el-button :disabled="busy" @click="refreshDetail">核实详情结果</el-button>
+        </template>
+        <template v-else>
+          <el-button :disabled="locked" @click="executeDetail">另行确认详情费用并建档</el-button>
+          <el-button :disabled="locked" @click="detailQuote = null">取消</el-button>
+        </template>
+      </div>
+      <p v-if="detailStatus" class="product-detail-outcome" role="status">{{ detailStatus }}</p>
+      <RouterLink v-if="localProfile" class="product-profile-link" :to="{ path: '/terminal/profiles', query: { id: localProfile.id } }">进入企业档案 · {{ localProfile.name }}</RouterLink>
+    </section>
   </section>
 </template>
 
@@ -333,11 +332,6 @@ async function applyDetailResult(result: DetailResult) {
 
 <style scoped>
 .product-search { min-width: 0; color: #1c2333; font-size: 13px; line-height: 1.65; }
-.product-search-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--search-line, #e6e9f0); }
-.product-search-heading h2 { margin: 0; color: #1c2333; font-size: 18px; font-weight: 650; }
-.product-fee-badge { flex-shrink: 0; padding: 5px 10px; border: 1px solid #dce2ff; border-radius: 6px; color: #4356e0; background: #f4f6ff; font-size: 11px; }
-.product-search .hint { color: #8490a5; font-size: 12px; }
-.product-search .product-intro { margin: 18px 0; color: #738095; font-size: 13px; }
 .product-search .search-summary { display: flex; flex-wrap: wrap; gap: 12px 16px; margin: 22px 0; padding: 18px 20px; border: 1px solid #dce2ff; border-radius: 10px; color: #58688f; background: #f5f7ff; font-variant-numeric: tabular-nums; }
 .product-page-quote > strong, .product-detail-quote > span:first-child { flex-basis: 100%; color: #28334b; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
 .product-page-quote > span { flex-basis: 100%; }
@@ -354,9 +348,6 @@ async function applyDetailResult(result: DetailResult) {
 .product-profile-link:hover { text-decoration: underline; }
 .product-profile-link:focus-visible { outline: 2px solid #4356e0; outline-offset: 4px; border-radius: 2px; }
 @media (max-width: 600px) {
-  .product-search-heading { align-items: flex-start; gap: 10px; }
-  .product-search-heading h2 { font-size: 17px; }
-  .product-fee-badge { padding: 4px 7px; font-size: 10px; }
   .product-search .search-summary { gap: 12px; padding: 14px; }
   .product-search .candidate-row { padding: 16px 0; }
   .product-search .candidate-row > strong, .product-search .candidate-row > div { flex-basis: 100%; min-width: 0; }

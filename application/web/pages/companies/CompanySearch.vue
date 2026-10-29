@@ -1,119 +1,118 @@
 <template>
-  <section class="workspace-card company-search">
-    <header class="company-search-heading">
-      <div>
-        <h2>按公司名查找</h2>
-      </div>
-      <span class="search-free-badge">免费查找候选</span>
-    </header>
-    <el-form class="business-form search-form company-search-form" label-position="top" @submit.prevent="startSearch">
-      <slot name="search-mode" />
-      <el-form-item label="公司名称" for="company-name">
-        <el-input
-          id="company-name"
-          v-model="name"
-          :disabled="locked"
-          placeholder="输入完整或部分公司名"
-        />
-      </el-form-item>
-      <el-form-item label="企业所在国家/地区（三位代码）" for="country-codes">
-        <CountrySelect
-          id="country-codes"
-          v-model="countryCodes"
-          :disabled="locked"
-        />
-      </el-form-item>
-      <p class="hint search-intro">输入公司名和国家，逐页查找并核实企业，再单独确认详情费用。免费查询不扣查询点数。</p>
-      <div class="form-actions">
-        <el-button
-          type="primary" native-type="submit"
-          :loading="busy"
-          :disabled="locked"
-        >免费查询</el-button>
-      </div>
-    </el-form>
-    <el-alert
-      v-if="error"
-      type="error"
-      :title="error"
-      :closable="false"
-    />
-    <template v-if="result">
-      <div class="search-summary results-summary">
-        <strong>第 {{ result.page }} 页</strong>
-        <span>共 {{ result.total }} 条</span>
-        <span>本页扣点 {{ result.chargedInternalPoints }}</span>
-      </div>
+  <section class="company-search search-module">
+    <div class="search-filter-panel">
+      <el-form class="business-form search-form company-search-form" label-position="top" @submit.prevent="startSearch">
+        <el-form-item label="公司名称" for="company-name">
+          <el-input
+            id="company-name"
+            v-model="name"
+            :disabled="locked"
+            placeholder="输入完整或部分公司名"
+          />
+        </el-form-item>
+        <el-form-item label="企业所在国家/地区（三位代码）" for="country-codes">
+          <CountrySelect
+            id="country-codes"
+            v-model="countryCodes"
+            :disabled="locked"
+          />
+        </el-form-item>
+        <div class="form-actions search-form-actions">
+          <p class="hint search-intro">输入公司名和国家，逐页查找并核实企业，再单独确认详情费用。免费查询不扣查询点数。</p>
+          <el-button
+            type="primary" native-type="submit"
+            :loading="busy"
+            :disabled="locked"
+          >免费查询</el-button>
+        </div>
+      </el-form>
+    </div>
+    <section class="search-results-panel" aria-label="搜索结果" aria-live="polite">
+      <h2 class="search-results-heading">搜索结果</h2>
+      <p v-if="!result && !pendingQuery && !detailStatus" class="hint search-results-placeholder">设置上方搜索条件，开始查找企业候选。</p>
       <el-alert
-        v-if="result.content.length > 1"
-        type="warning"
-        title="找到多个候选，系统不会自动选择。请核对名称与国家后明确确认。"
+        v-if="error"
+        type="error"
+        :title="error"
         :closable="false"
       />
-      <el-empty v-if="result.content.length === 0" description="本页没有匹配企业" />
-      <div
-        class="candidate-results"
-        role="region"
-        aria-label="企业查询结果"
-        tabindex="0"
-      >
+      <template v-if="result">
+        <div class="search-summary results-summary">
+          <strong>第 {{ result.page }} 页</strong>
+          <span>共 {{ result.total }} 条</span>
+          <span>本页扣点 {{ result.chargedInternalPoints }}</span>
+        </div>
+        <el-alert
+          v-if="result.content.length > 1"
+          type="warning"
+          title="找到多个候选，系统不会自动选择。请核对名称与国家后明确确认。"
+          :closable="false"
+        />
+        <el-empty v-if="result.content.length === 0" description="本页没有匹配企业" />
         <div
-          v-for="candidate in result.content"
-          :key="candidate.candidateId"
-          class="candidate-row"
+          class="candidate-results"
+          role="region"
+          aria-label="企业查询结果"
+          tabindex="0"
         >
-          <CompanyIdentity
-            :name="candidate.name"
-            :country="candidate.country"
-            :source-id="candidate.sourceId"
-          />
-          <span v-if="candidate.verificationStatus === 'verified'" class="status-pill">已核实</span>
-          <el-button v-else :disabled="locked" @click="verify(candidate)">确认是该企业</el-button>
-          <el-button
-            v-if="candidate.verificationStatus === 'verified'"
-            :disabled="locked"
-            @click="quoteDetail(candidate)"
-          >查看详情报价</el-button>
-          <el-alert
-            v-if="candidateError?.candidateId === candidate.candidateId"
-            class="candidate-error"
-            type="error"
-            :title="candidateError.message"
-            :closable="false"
-          />
+          <div
+            v-for="candidate in result.content"
+            :key="candidate.candidateId"
+            class="candidate-row"
+          >
+            <CompanyIdentity
+              :name="candidate.name"
+              :country="candidate.country"
+              :source-id="candidate.sourceId"
+            />
+            <span v-if="candidate.verificationStatus === 'verified'" class="status-pill">已核实</span>
+            <el-button v-else :disabled="locked" @click="verify(candidate)">确认是该企业</el-button>
+            <el-button
+              v-if="candidate.verificationStatus === 'verified'"
+              :disabled="locked"
+              @click="quoteDetail(candidate)"
+            >查看详情报价</el-button>
+            <el-alert
+              v-if="candidateError?.candidateId === candidate.candidateId"
+              class="candidate-error"
+              type="error"
+              :title="candidateError.message"
+              :closable="false"
+            />
+          </div>
         </div>
-      </div>
-      <div class="pager">
-        <el-button :disabled="locked || result.page <= 1" @click="changePage(result.page - 1)">上一页</el-button>
-        <el-button :disabled="locked || result.page * result.size >= result.total" @click="changePage(result.page + 1)">下一页</el-button>
-      </div>
-      <div v-if="quote && 'queryId' in quote" ref="quotePanel" class="search-summary detail-quote">
-        <span>详情：{{ quote.name }} · {{ quote.countryCode3 }}</span>
-        <span>锁定系数 {{ quote.coefficient }} · 最高扣点 {{ quote.maximumPoints }}</span>
-        <el-button :disabled="locked" @click="executeDetail">确认费用并查询详情</el-button>
-        <el-button :disabled="locked" @click="quote = null">取消</el-button>
-      </div>
-      <p class="hint">待核实候选不能继续查询联系人或发信；详情需单独确认费用。</p>
-    </template>
-    <p v-if="detailStatus" class="detail-outcome" role="status">{{ detailStatus }}</p>
-    <div v-if="pendingQuery" class="pending-query">
-      <p>查询结果尚未确认，请主动核实。离开或返回不会重新收费查询。</p>
-      <el-button :disabled="busy" @click="checkDetail">核实原查询结果</el-button>
-    </div>
-    <nav class="profile-links" aria-label="档案入口">
-      <RouterLink v-if="profileId" :to="{ path: '/terminal/profiles', query: { id: profileId } }">打开已建档企业 <span aria-hidden="true">→</span></RouterLink>
-      <RouterLink to="/terminal/profiles">查看本企业档案库 <span aria-hidden="true">→</span></RouterLink>
-    </nav>
-    <div v-if="pointAccount" class="search-summary points-summary">
-      <strong>点数用量</strong>
-      <span>余额 {{ pointAccount.balance }} · 查询冻结 {{ pointAccount.queryFrozen }} · 可用 {{ pointAccount.available }}</span>
-      <details v-if="pointLedger.length">
-        <summary>查询流水</summary>
-        <div v-for="entry in pointLedger" :key="`${entry.queryId}-${entry.event}`">
-          {{ entry.name }} · {{ entry.event }} {{ entry.amount }} · 最高 {{ entry.maximumPoints }}
+        <div class="pager">
+          <el-button :disabled="locked || result.page <= 1" @click="changePage(result.page - 1)">上一页</el-button>
+          <el-button :disabled="locked || result.page * result.size >= result.total" @click="changePage(result.page + 1)">下一页</el-button>
         </div>
-      </details>
-    </div>
+        <div v-if="quote && 'queryId' in quote" ref="quotePanel" class="search-summary detail-quote">
+          <span>详情：{{ quote.name }} · {{ quote.countryCode3 }}</span>
+          <span>锁定系数 {{ quote.coefficient }} · 最高扣点 {{ quote.maximumPoints }}</span>
+          <el-button :disabled="locked" @click="executeDetail">确认费用并查询详情</el-button>
+          <el-button :disabled="locked" @click="quote = null">取消</el-button>
+        </div>
+        <p class="hint">待核实候选不能继续查询联系人或发信；详情需单独确认费用。</p>
+      </template>
+      <p v-if="detailStatus" class="detail-outcome" role="status">{{ detailStatus }}</p>
+      <div v-if="pendingQuery" class="pending-query">
+        <p>查询结果尚未确认，请主动核实。离开或返回不会重新收费查询。</p>
+        <el-button :disabled="busy" @click="checkDetail">核实原查询结果</el-button>
+      </div>
+      <nav class="profile-links" aria-label="档案入口">
+        <RouterLink v-if="profileId" :to="{ path: '/terminal/profiles', query: { id: profileId } }">打开已建档企业 <span aria-hidden="true">→</span></RouterLink>
+        <RouterLink to="/terminal/profiles">查看本企业档案库 <span aria-hidden="true">→</span></RouterLink>
+      </nav>
+      <div v-if="pointAccount" class="search-summary points-summary">
+        <strong>点数用量</strong>
+        <span>余额 {{ pointAccount.balance }} · 查询冻结 {{ pointAccount.queryFrozen }} · 可用 {{ pointAccount.available }}</span>
+        <details v-if="pointLedger.length">
+          <summary>查询流水</summary>
+          <div v-for="entry in pointLedger" :key="`${entry.queryId}-${entry.event}`">
+            {{ entry.name }} · {{ entry.event }} {{ entry.amount }} · 最高 {{ entry.maximumPoints }}
+          </div>
+        </details>
+      </div>
+    </section>
   </section>
 </template>
 
@@ -313,29 +312,6 @@ onMounted(() => {
 
 <style scoped>
 .company-search { font-size: 13px; line-height: 1.65; }
-.company-search-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--search-line, #e6e9f0);
-}
-.company-search-heading h2 { margin: 0; color: #1c2333; font-size: 18px; font-weight: 650; }
-.search-free-badge {
-  flex-shrink: 0;
-  padding: 5px 10px;
-  border: 1px solid #dce2ff;
-  border-radius: 6px;
-  color: #4356e0;
-  background: #f4f6ff;
-  font-size: 11px;
-}
-.company-search .search-intro { margin: 18px 0; color: #738095; font-size: 13px; }
-.company-search .company-search-form {
-  margin-bottom: 22px;
-  padding: 0;
-}
 .company-search .results-summary { flex-wrap: wrap; gap: 16px; padding-top: 20px; border-top: 1px solid #edf0f6; color: #738095; }
 .results-summary strong { margin-right: auto; color: #1c2333; font-weight: 600; }
 .company-search .candidate-row {
@@ -388,7 +364,6 @@ onMounted(() => {
 .points-summary summary { width: fit-content; color: #4356e0; cursor: pointer; }
 .points-summary details div { margin-top: 8px; overflow-wrap: anywhere; }
 @media (max-width: 760px) {
-  .company-search-heading { align-items: flex-start; }
   .company-search .candidate-row { padding: 16px 0; }
   .company-search .candidate-row :deep(.company-identity) { flex-basis: 100%; }
   .company-search .detail-quote { grid-template-columns: 1fr 1fr; padding: 14px; }

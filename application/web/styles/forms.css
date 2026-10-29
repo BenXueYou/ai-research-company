@@ -44,7 +44,7 @@
   flex: 1 1 100%;
 }
 
-/* 搜索方式单独成行，条件按两列编排；窄容器内整张表单改为单列。 */
+/* 搜索模块以容器可用宽度编排字段，控件保持 Element Plus 默认外观。 */
 .company-search,
 .product-search {
   container: search-area / inline-size;
@@ -62,4 +62,26 @@
   .business-form.search-form {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.search-module { display: grid; gap: 20px; min-width: 0; margin: 0; }
+.search-filter-panel { padding: 0 26px 24px; border: 1px solid var(--console-line); border-top: 0; border-radius: 0 0 12px 12px; background: var(--console-surface); }
+.search-results-panel { min-width: 0; padding: 22px 26px; border: 1px solid var(--console-line); border-radius: 12px; background: var(--console-surface); }
+.search-results-heading { margin: 0; padding-bottom: 14px; border-bottom: 1px solid var(--console-line); font-size: 17px; font-weight: 600; }
+.search-results-placeholder { margin: 24px 0; text-align: center; }
+.search-form-actions { justify-content: space-between; }
+.search-form-actions > .hint { flex: 1 1 320px; margin: 0; color: var(--console-muted); font-size: 13px; }
+
+@container search-area (min-width: 1080px) {
+  .business-form.product-search-form { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 220px 220px; }
+}
+
+/* 日期组件默认宽度为 220px，窄容器提前改为单列。 */
+@container search-area (max-width: 600px) {
+  .search-form-actions { align-items: flex-start; flex-direction: column; }
+  .search-form-actions > .hint { flex: auto; }
+}
+@media (max-width: 760px) {
+  .search-filter-panel { padding: 0 18px 20px; }
+  .search-results-panel { padding: 20px 18px; }
 }
