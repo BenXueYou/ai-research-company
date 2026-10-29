@@ -1,5 +1,11 @@
 .DS_Store
 Thumbs.db
+
+# Local tool caches and isolated compiled verification output.
+/.vite/
+__pycache__/
+*.pyc
+/.scratch/*-dist/
 node_modules/
 nodes_modules/
 test-results*/

@@ -18,3 +18,12 @@ test-results-t06/
 .scratch/issue37-*
 
 .scratch/issue38-*/
+
+# Reproducible build outputs; keep scratch sources, fixtures and evidence visible.
+/issue*-test-web/
+/.scratch/*-dist/
+/.scratch/*-web/
+/.scratch/t15-style-compiled/
+/.scratch/**/compiled/
+/.scratch/platform-integration-vite-cache/
+/.vite/
