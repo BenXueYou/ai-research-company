@@ -45,8 +45,7 @@ defineProps<{ request: SettingsRequest }>();
 .settings-navigation [aria-current] { border-bottom-color: var(--settings-accent); color: var(--settings-accent); font-weight: 600; }
 .settings-navigation a:hover { color: var(--settings-accent); }
 .settings-navigation a:focus-visible { outline: 2px solid var(--settings-accent); outline-offset: -2px; }
-.platform-settings-page :deep(.pricing-settings),
-.platform-settings-page :deep(.coefficient-settings) {
+.platform-settings-page :deep(.pricing-settings), .platform-settings-page :deep(.coefficient-settings) {
   box-sizing: border-box;
   min-width: 0;
   margin: 0 0 22px;
@@ -62,24 +61,11 @@ defineProps<{ request: SettingsRequest }>();
 .platform-settings-page :deep(p) { font-size: 13px; line-height: 1.8; }
 .platform-settings-page :deep(.settings-summary) { margin: 0 0 14px; padding: 12px 16px; border: 1px solid #e2e7fd; border-radius: 8px; color: #5365a2; background: #f3f5ff; font-variant-numeric: tabular-nums; }
 .platform-settings-page :deep(.settings-hint) { margin-bottom: 20px; color: var(--settings-muted); }
-.platform-settings-page :deep(.el-alert) { margin-bottom: 14px; }
-.platform-settings-page :deep(.settings-form) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; margin-top: 20px; }
-.platform-settings-page :deep(.el-form-item) { min-width: 0; margin-bottom: 22px; }
-.platform-settings-page :deep(.el-form-item__label) { height: auto; margin-bottom: 8px; color: #647087; font-size: 12px; line-height: 1.6; }
-.platform-settings-page :deep(.el-input__wrapper) { min-height: 40px; border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
-.platform-settings-page :deep(.el-input__wrapper.is-focus) { box-shadow: 0 0 0 1px var(--settings-accent) inset; }
-.platform-settings-page :deep(select) { box-sizing: border-box; width: 100%; min-width: 0; min-height: 42px; padding: 8px 12px; border: 1px solid #dfe4ee; border-radius: 8px; color: #1c2333; background: #fff; font: inherit; font-size: 13px; }
-.platform-settings-page :deep(select:focus-visible) { outline: 2px solid #4356e040; outline-offset: 2px; border-color: var(--settings-accent); }
-.platform-settings-page :deep(select:disabled) { color: #a8abb2; background: #f5f7fa; cursor: not-allowed; }
-.platform-settings-page :deep(.settings-form > .el-button) { grid-column: 1 / -1; justify-self: start; margin: 0 0 8px; }
-.platform-settings-page :deep(.el-button) { min-height: 38px; padding: 9px 16px; border-radius: 8px; font-size: 13px; }
-.platform-settings-page :deep(.settings-primary:not(:disabled)) { border-color: var(--settings-accent); color: #fff; background: var(--settings-accent); }
-.platform-settings-page :deep(.settings-primary:not(:disabled):hover) { background: #3343c9; }
+.platform-settings-page :deep(.settings-form) { margin-top: 20px; }
 .platform-settings-page :deep(.settings-table-scroll) { max-width: 100%; margin-bottom: 20px; overflow-x: auto; border: 1px solid var(--settings-line); border-radius: 8px; }
 .platform-settings-page :deep(table) { width: 100%; border-collapse: collapse; font-size: 12px; }
 .platform-settings-page :deep(th) { color: #738095; background: #f8f9fc; font-weight: 500; white-space: nowrap; }
-.platform-settings-page :deep(th),
-.platform-settings-page :deep(td) { padding: 13px 16px; border-bottom: 1px solid #edf0f6; text-align: left; vertical-align: top; line-height: 1.7; }
+.platform-settings-page :deep(th), .platform-settings-page :deep(td) { padding: 13px 16px; border-bottom: 1px solid #edf0f6; text-align: left; vertical-align: top; line-height: 1.7; }
 .platform-settings-page :deep(tbody tr:last-child td) { border-bottom: 0; }
 .platform-settings-page :deep(.price-version) { display: block; margin-top: 4px; color: #738095; font-size: 11px; overflow-wrap: anywhere; }
 .platform-settings-page :deep(.price-path) { font-family: Consolas, monospace; color: #4356e0; }
@@ -89,9 +75,7 @@ defineProps<{ request: SettingsRequest }>();
 @media (max-width: 760px) {
   .settings-heading h1 { font-size: 21px; }
   .settings-navigation { gap: 20px; }
-  .platform-settings-page :deep(.pricing-settings),
-  .platform-settings-page :deep(.coefficient-settings) { padding: 18px 16px; }
-  .platform-settings-page :deep(.settings-form) { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .platform-settings-page :deep(.pricing-settings), .platform-settings-page :deep(.coefficient-settings) { padding: 18px 16px; }
   .platform-settings-page :deep(.coefficient-history) { padding: 16px; }
 }
 </style>

@@ -7,7 +7,7 @@
       <div class="security-note">◇ 账号由授权管理员交付，不开放自助注册。</div>
     </div>
     <el-form
-      class="identity-card"
+      class="business-form identity-card"
       label-position="top"
       @submit.prevent="emit('submit')"
     >
@@ -34,12 +34,13 @@
           :disabled="busy"
         />
       </el-form-item>
-      <el-button
-        class="primary-button"
-        native-type="submit"
-        :disabled="busy"
-      >{{ busy ? '正在登录…' : '登录' }}</el-button>
       <p class="hint">忘记密码？请联系授权管理员。临时密码有效期为72小时。</p>
+      <div class="form-actions login-actions">
+        <el-button
+          type="primary" native-type="submit"
+          :disabled="busy"
+        >{{ busy ? '正在登录…' : '登录' }}</el-button>
+      </div>
     </el-form>
   </section>
 </template>

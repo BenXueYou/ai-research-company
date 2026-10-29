@@ -36,8 +36,7 @@ defineProps<{ request: (path: string, body?: Record<string, unknown>) => Promise
   color: var(--reconciliation-ink);
 }
 
-.reconciliation-primary,
-.reconciliation-overview {
+.reconciliation-primary, .reconciliation-overview {
   min-width: 0;
 }
 
@@ -66,8 +65,7 @@ defineProps<{ request: (path: string, body?: Record<string, unknown>) => Promise
   font-size: 13px;
 }
 
-.reconciliation-primary :deep(.workspace-card),
-.reconciliation-overview :deep(.workspace-card) {
+.reconciliation-primary :deep(.workspace-card), .reconciliation-overview :deep(.workspace-card) {
   margin: 0;
   border: 1px solid var(--reconciliation-line);
   border-radius: 12px;
@@ -78,8 +76,7 @@ defineProps<{ request: (path: string, body?: Record<string, unknown>) => Promise
   padding: 28px;
 }
 
-.reconciliation-primary :deep(h2),
-.reconciliation-overview :deep(h2) {
+.reconciliation-primary :deep(h2), .reconciliation-overview :deep(h2) {
   margin-top: 0;
   color: var(--reconciliation-ink);
 }
@@ -113,12 +110,6 @@ defineProps<{ request: (path: string, body?: Record<string, unknown>) => Promise
   background: #fafbff;
 }
 
-.reconciliation-primary :deep(.el-button--primary),
-.reconciliation-primary :deep(button[type='submit']) {
-  border-color: var(--reconciliation-accent);
-  background: var(--reconciliation-accent);
-}
-
 .reconciliation-overview :deep(.workspace-card) {
   padding: 22px 26px;
 }
@@ -132,8 +123,7 @@ defineProps<{ request: (path: string, body?: Record<string, unknown>) => Promise
     font-size: 22px;
   }
 
-  .reconciliation-primary :deep(.workspace-card),
-  .reconciliation-overview :deep(.workspace-card) {
+  .reconciliation-primary :deep(.workspace-card), .reconciliation-overview :deep(.workspace-card) {
     padding: 20px 16px;
   }
 }

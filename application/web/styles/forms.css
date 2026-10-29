@@ -1,0 +1,65 @@
+/* 表单只负责字段编排；控件尺寸与内部外观使用 Element Plus 默认值。 */
+.business-form,
+.business-form.identity-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  column-gap: 24px;
+  row-gap: 0;
+  align-items: start;
+}
+
+.business-form > :not(.el-form-item) {
+  grid-column: 1 / -1;
+}
+
+.business-form > button {
+  justify-self: start;
+}
+
+/* 成组字段也按自身可用宽度换行，不依赖浏览器视口断点。 */
+.member-fields,
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  column-gap: 24px;
+  row-gap: 0;
+  align-items: start;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  grid-column: 1 / -1;
+}
+
+.form-actions > .el-button + .el-button {
+  margin-left: 0;
+}
+
+/* 登录操作区独占一行，主操作按钮填满整行，强化提交入口。 */
+.business-form .login-actions > .el-button {
+  flex: 1 1 100%;
+}
+
+/* 搜索方式单独成行，条件按两列编排；窄容器内整张表单改为单列。 */
+.company-search,
+.product-search {
+  container: search-area / inline-size;
+}
+
+.business-form.search-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.business-form > .form-wide {
+  grid-column: 1 / -1;
+}
+
+@container search-area (max-width: 600px) {
+  .business-form.search-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

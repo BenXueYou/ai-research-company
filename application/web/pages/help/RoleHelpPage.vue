@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElButton } from 'element-plus';
 import { computed } from 'vue';
 import HelpWalkthrough from './components/HelpWalkthrough.vue';
 import { walkthroughs } from './walkthroughs';
@@ -64,12 +65,12 @@ const roleName = computed(() => roleNames[props.role] ?? '当前账号');
         <h2>{{ guide.title }}</h2>
         <p>{{ guide.text }}</p>
         <HelpWalkthrough :walkthrough="walkthroughs[guide.path ?? 'permissions']" />
-        <button
+        <el-button
           v-if="guide.path"
-          type="button"
+          native-type="button"
           class="help-link"
           @click="emit('navigate', guide.path)"
-        >{{ guide.link }}<span aria-hidden="true"> →</span></button>
+        >{{ guide.link }}<span aria-hidden="true"> →</span></el-button>
       </section>
     </div>
     <section class="help-section help-faq">
@@ -81,11 +82,11 @@ const roleName = computed(() => roleNames[props.role] ?? '当前账号');
       <p>临时密码到期后请联系有权管理账号的人员重新生成。首次使用临时密码时只能改密或退出；会话最长 8 小时，连续空闲 30 分钟后失效。</p>
       <h3>操作结果确认</h3>
       <p>费用、风险、错误及必需操作说明请以业务页面的实时提示为准；结果未确认时先核对状态，避免重复操作。</p>
-      <button
-        type="button"
+      <el-button
+        native-type="button"
         class="help-link"
         @click="emit('navigate', '/account/settings')"
-      >进入账号设置<span aria-hidden="true"> →</span></button>
+      >进入账号设置<span aria-hidden="true"> →</span></el-button>
     </section>
   </section>
 </template>
@@ -105,12 +106,8 @@ const roleName = computed(() => roleNames[props.role] ?? '当前账号');
 .help-section h2 { margin: 0 0 12px; color: var(--console-text); font-size: 18px; font-weight: 600; line-height: 1.5; }
 .help-section p { max-width: 68em; margin: 0 0 20px; color: #4f5d73; font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
 .help-guide { display: flex; flex-direction: column; align-items: flex-start; }
-.help-guide .help-link { margin-top: auto; }
 .help-faq { margin-top: 24px; }
 .help-faq h3 { margin: 20px 0 8px; color: var(--console-text); font-size: 15px; font-weight: 600; line-height: 1.5; }
-.help-link { padding: 4px 0; border: 0; color: var(--console-brand-deep); background: transparent; font-size: 14px; font-weight: 500; line-height: 1.5; text-align: left; cursor: pointer; }
-.help-link:hover { text-decoration: underline; text-underline-offset: 4px; }
-.help-link:focus-visible { outline: 3px solid var(--el-color-primary-light-5); outline-offset: 4px; border-radius: 2px; }
 @container (min-width: 960px) {
   .help-guides { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .help-guide:last-child:nth-child(odd) { grid-column: 1 / -1; }

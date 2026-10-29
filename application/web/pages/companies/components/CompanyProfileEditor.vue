@@ -2,7 +2,7 @@
   <section class="profile-editor">
     <h4>本企业档案补充</h4>
     <p class="hint">以下为团队人工维护信息；源数据与操作记录独立保存。</p>
-    <el-form v-if="!profile.deletedAt" label-position="top" @submit.prevent="save">
+    <el-form class="business-form" v-if="!profile.deletedAt" label-position="top" @submit.prevent="save">
       <el-form-item label="主营产品"><el-input v-model="mainProducts" :disabled="busy" maxlength="2000" /></el-form-item>
       <el-form-item label="采购需求"><el-input v-model="purchasingNeeds" :disabled="busy" maxlength="2000" /></el-form-item>
       <el-form-item label="合作意向"><el-input v-model="cooperationIntent" :disabled="busy" maxlength="2000" /></el-form-item>
@@ -17,7 +17,9 @@
         <el-option value="" label="未设置" /><el-option v-for="star in 5" :key="star" :value="String(star)" :label="(star) + ' 星'" />
       </el-select></el-form-item>
       <el-form-item label="标签（英文逗号分隔）"><el-input v-model="tags" :disabled="busy" /></el-form-item>
-      <el-button native-type="submit" :loading="busy">保存补充</el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :loading="busy">保存补充</el-button>
+      </div>
     </el-form>
     <el-button v-if="canDelete && !profile.deletedAt" :disabled="busy" @click="setDeleted(true)">软删除档案</el-button>
     <el-button v-if="canDelete && profile.deletedAt" :disabled="busy" @click="setDeleted(false)">恢复档案</el-button>
@@ -123,7 +125,3 @@ function loadHistory() {
   });
 }
 </script>
-
-<style scoped>
-.el-date-editor.el-input { width: 100%; min-width: 0; }
-</style>

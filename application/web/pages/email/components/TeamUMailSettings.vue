@@ -49,7 +49,7 @@
     </div>
     <el-form
       v-if="canMaintain && resource"
-      class="identity-card umail-form"
+      class="business-form identity-card umail-form"
       label-position="top"
       @submit.prevent="save"
     >
@@ -80,15 +80,16 @@
           :disabled="locked"
         />
       </el-form-item>
-      <label class="default-choice">
-        <input v-model="defaultChannel" type="checkbox" :disabled="locked">
-        设为团队默认渠道
-      </label>
-      <el-button class="primary-button"
-        native-type="submit"
-        :disabled="locked">
-        {{ busy ? '正在核验并保存…' : '核验域名渠道并保存' }}
-      </el-button>
+      <el-form-item>
+        <el-checkbox v-model="defaultChannel" :disabled="locked">设为团队默认渠道</el-checkbox>
+      </el-form-item>
+      <div class="form-actions">
+        <el-button
+          type="primary" native-type="submit"
+          :disabled="locked">
+          {{ busy ? '正在核验并保存…' : '核验域名渠道并保存' }}
+        </el-button>
+      </div>
     </el-form>
     <div v-else-if="!canMaintain" class="workspace-card">
       <p>业务员可查看本企业渠道状态，但不能维护设置。</p>
@@ -101,6 +102,7 @@ import { onMounted, ref, shallowRef } from 'vue';
 import {
   ElAlert,
   ElButton,
+  ElCheckbox,
   ElForm,
   ElFormItem,
   ElInput
@@ -217,5 +219,4 @@ onMounted(async () => {
 .umail-status dl { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; }
 .umail-status dt { color: #717a96; }
 .umail-status dd { margin: 0; overflow-wrap: anywhere; }
-.default-choice { display: flex; gap: 8px; align-items: center; }
 </style>

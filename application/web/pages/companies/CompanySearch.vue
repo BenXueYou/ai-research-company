@@ -6,7 +6,7 @@
       </div>
       <span class="search-free-badge">免费查找候选</span>
     </header>
-    <el-form class="company-search-form" label-position="top" @submit.prevent="startSearch">
+    <el-form class="business-form search-form company-search-form" label-position="top" @submit.prevent="startSearch">
       <slot name="search-mode" />
       <el-form-item label="公司名称" for="company-name">
         <el-input
@@ -24,12 +24,13 @@
         />
       </el-form-item>
       <p class="hint search-intro">输入公司名和国家，逐页查找并核实企业，再单独确认详情费用。免费查询不扣查询点数。</p>
-      <el-button
-        class="primary-button"
-        native-type="submit"
-        :loading="busy"
-        :disabled="locked"
-      >免费查询</el-button>
+      <div class="form-actions">
+        <el-button
+          type="primary" native-type="submit"
+          :loading="busy"
+          :disabled="locked"
+        >免费查询</el-button>
+      </div>
     </el-form>
     <el-alert
       v-if="error"
@@ -311,7 +312,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.candidate-error { flex-basis: 100%; }
 .company-search { font-size: 13px; line-height: 1.65; }
 .company-search-heading {
   display: flex;
@@ -333,32 +333,9 @@ onMounted(() => {
 }
 .company-search .search-intro { margin: 18px 0; color: #738095; font-size: 13px; }
 .company-search .company-search-form {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 155px;
-  align-items: end;
-  gap: 16px;
   margin-bottom: 22px;
   padding: 0;
 }
-.company-search-form :deep(.el-form-item) { min-width: 0; margin-bottom: 0; }
-.company-search-form :deep(.el-form-item__label) { height: auto; margin-bottom: 8px; color: #647087; font-size: 12px; line-height: 1.5; }
-.company-search-form :deep(.el-input__wrapper) { min-height: 42px; padding: 0 12px; border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
-.company-search-form :deep(.el-input__wrapper.is-focus) { box-shadow: 0 0 0 1px #4356e0 inset, 0 0 0 3px #4356e014; }
-.company-search-form :deep(.el-input__inner) { color: #1c2333; font-size: 13px; }
-.company-search :deep(.el-button) { height: 36px; border-radius: 8px; font-size: 12px; }
-.company-search-form .primary-button {
-  height: 42px;
-  margin: 0;
-  border-color: #4356e0;
-  background: #4356e0;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  box-shadow: 0 3px 7px #4356e017;
-}
-.company-search-form .primary-button:not(:disabled):hover { border-color: #3343c9; background: #3343c9; }
-.company-search :deep(.el-alert) { margin: 16px 0; padding: 12px 14px; border: 1px solid #e8e4d8; border-radius: 8px; }
-.company-search :deep(.el-alert__title) { font-size: 12px; line-height: 1.7; }
 .company-search .results-summary { flex-wrap: wrap; gap: 16px; padding-top: 20px; border-top: 1px solid #edf0f6; color: #738095; }
 .results-summary strong { margin-right: auto; color: #1c2333; font-weight: 600; }
 .company-search .candidate-row {
@@ -373,7 +350,6 @@ onMounted(() => {
 .company-search .candidate-row small { color: #8490a5; font-size: 11px; }
 .company-search .status-pill { margin: 0; padding: 4px 10px; font-size: 11px; }
 .company-search .pager { justify-content: flex-end; gap: 10px; margin: 20px 0; }
-.company-search .pager .el-button + .el-button { margin: 0; }
 .company-search .detail-quote {
   display: grid;
   grid-template-columns: 1fr auto auto;
@@ -385,7 +361,6 @@ onMounted(() => {
 }
 .detail-quote > span:first-child { grid-column: 1 / -1; color: #28334b; font-weight: 600; overflow-wrap: anywhere; }
 .detail-quote > span:nth-child(2) { color: #58688f; font-size: 12px; }
-.detail-quote .el-button + .el-button { margin: 0; }
 .company-search .hint { color: #8490a5; font-size: 12px; }
 .detail-outcome { padding: 12px 14px; border-radius: 8px; color: #4356e0; background: #f3f5ff; overflow-wrap: anywhere; }
 .pending-query { margin: 16px 0; padding: 16px; border: 1px solid #f1dfb7; border-radius: 8px; color: #976a16; background: #fffbf1; }
@@ -413,8 +388,6 @@ onMounted(() => {
 .points-summary summary { width: fit-content; color: #4356e0; cursor: pointer; }
 .points-summary details div { margin-top: 8px; overflow-wrap: anywhere; }
 @media (max-width: 760px) {
-  .company-search .company-search-form { grid-template-columns: 1fr; gap: 16px; }
-  .company-search-form .primary-button { width: 100%; }
   .company-search-heading { align-items: flex-start; }
   .company-search .candidate-row { padding: 16px 0; }
   .company-search .candidate-row :deep(.company-identity) { flex-basis: 100%; }

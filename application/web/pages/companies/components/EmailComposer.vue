@@ -49,7 +49,7 @@
         />
       </el-select>
     </div>
-    <el-form label-position="top" @submit.prevent="save">
+    <el-form class="business-form" label-position="top" @submit.prevent="save">
       <el-form-item label="公共模板">
         <el-select v-model="templateId" placeholder="选择公共模板" @change="copyTemplate">
           <el-option
@@ -70,8 +70,10 @@
       <el-form-item label="本次正文">
         <el-input v-model="content" type="textarea" :rows="7" :disabled="busy" @input="preview = null" />
       </el-form-item>
-      <el-button native-type="submit" :disabled="busy || !chosenTemplate">保存本次草稿</el-button>
-      <el-button :disabled="busy || !chosenTemplate" @click="makePreview">保存并预览本次邮件</el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :disabled="busy || !chosenTemplate">保存本次草稿</el-button>
+        <el-button :disabled="busy || !chosenTemplate" @click="makePreview">保存并预览本次邮件</el-button>
+      </div>
     </el-form>
     <div v-if="preview" class="email-preview">
       <h4>本次预览 · {{ preview.recipients.length }} 个去重邮箱</h4>
@@ -357,9 +359,6 @@ onMounted(() => {
 .email-contact > div { min-width: 0; }
 .email-contact strong { display: block; margin-bottom: 4px; color: #34415b; font-size: 13px; }
 .email-contact small { display: block; color: var(--console-muted); font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
-.email-contact :deep(.el-select), .email-contact :deep(.el-input) { width: 100%; min-width: 0; }
-.email-contact :deep(.el-checkbox) { grid-column: 2 / -1; margin-right: 0; white-space: normal; }
-.email-contact > .el-button { grid-column: 3; justify-self: end; margin: 0; }
 .search-summary {
   display: flex;
   align-items: center;
@@ -372,12 +371,7 @@ onMounted(() => {
   color: #805b22;
   background: #fff9ee;
 }
-.search-summary :deep(.el-select) { width: min(320px, 100%); }
 .email-composer > .el-form { padding-top: 20px; border-top: 1px solid #edf0f6; margin-top: 18px; }
-.email-composer :deep(.el-form-item__label) { color: #647087; font-size: 12px; }
-.email-composer :deep(.el-input__wrapper), .email-composer :deep(.el-select__wrapper),
-.email-composer :deep(.el-textarea__inner) { border-radius: 8px; }
-.email-composer > .el-form > .el-button { margin: 2px 8px 0 0; }
 .email-preview { padding: 20px; border: 1px solid #dfe5f5; border-radius: 10px; margin-top: 22px; background: #f8faff; }
 .email-preview h4 { margin: 0 0 8px; color: #344ab5; font-size: 15px; }
 .email-preview > p { color: var(--console-muted); font-size: 12px; overflow-wrap: anywhere; }
@@ -385,15 +379,10 @@ onMounted(() => {
 .email-preview strong { overflow-wrap: anywhere; }
 .email-preview pre { max-width: 100%; padding: 12px; border-radius: 8px; background: #f5f7fc; white-space: pre-wrap; overflow-wrap: anywhere; }
 .email-send-confirmation { padding: 18px; border: 1px solid #d8e0f6; border-radius: 9px; margin-top: 18px; background: #fff; }
-.email-send-confirmation :deep(.el-select) { width: min(420px, 100%); }
 .email-send-confirmation > p { color: #56637b; font-size: 13px; line-height: 1.7; }
-.email-send-confirmation :deep(.el-checkbox) { display: flex; margin: 8px 0; white-space: normal; }
-.email-send-confirmation > .el-button { display: block; margin: 17px 0 0; }
 @media (max-width: 760px) {
   .email-composer { padding: 18px 15px; }
   .email-contact { grid-template-columns: minmax(0, 1fr); }
-  .email-contact :deep(.el-checkbox) { grid-column: 1; }
-  .email-contact > .el-button { grid-column: 1; justify-self: start; }
   .email-preview { padding: 16px; }
   .email-send-confirmation { padding: 15px; }
 }

@@ -43,11 +43,6 @@ defineProps<{
 .sending-channel-grid :deep(.workspace-card h3), .sending-channel-grid :deep(.identity-card h3) { margin: 0 0 14px; color: #263052; font-size: 14px; }
 .sending-channel-grid :deep(dl) { grid-template-columns: 96px minmax(0, 1fr); gap: 10px; margin: 0; font-size: 12px; line-height: 1.7; }
 .sending-channel-grid :deep(dd) { min-width: 0; overflow-wrap: anywhere; }
-.sending-channel-grid :deep(.identity-card) { gap: 8px; }
-.sending-channel-grid :deep(.el-form-item) { margin-bottom: 12px; }
-.sending-channel-grid :deep(.el-form-item__label) { color: #647087; font-size: 12px; }
-.sending-channel-grid :deep(.el-input__wrapper), .sending-channel-grid :deep(select) { border-radius: 8px; }
-.sending-channel-grid :deep(.primary-button:not(:disabled)) { margin-top: 8px; border-color: #4356e0; color: #fff; background: #4356e0; }
 @media (max-width: 1050px) {
   .sending-channel-grid { grid-template-columns: minmax(0, 1fr); }
   .sending-channel-grid :deep(.page-heading) { min-height: 0; }

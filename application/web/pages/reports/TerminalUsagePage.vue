@@ -77,8 +77,6 @@ onUnmounted(() => { active = false; });
 .terminal-usage { min-width: 0; color: #263052; }
 .usage-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
 .usage-toolbar p { margin: 0; color: #727d96; font-size: 13px; line-height: 1.7; }
-.usage-toolbar :deep(.el-button) { flex: none; min-height: 36px; padding: 9px 14px; border-color: #dce1ef; border-radius: 8px; color: #4657da; background: #fff; }
-.usage-toolbar :deep(.el-button:hover:not(:disabled)) { border-color: #a6afd6; background: #f0f2ff; }
 .refresh-icon { width: 15px; height: 15px; margin-right: 7px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .section-title { margin: 0; color: #263052; font-size: 15px; font-weight: 600; line-height: 1.6; }
 .usage-account > .section-title { margin-bottom: 14px; }

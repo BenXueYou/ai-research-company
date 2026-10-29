@@ -9,7 +9,7 @@
       <el-button class="contacts-refresh" :disabled="busy" @click="quoteRefresh">主动更新当前职位第 1 页</el-button>
     </div>
     <p class="hint contacts-hint">每页须单独确认费用；单企业最多返回 200 条，达到上限不代表企业实际联系人总数。无邮箱的联系人仍可能计费。</p>
-    <el-form class="contacts-filter" label-position="top" @submit.prevent="quotePage(1)">
+    <el-form class="business-form contacts-filter" label-position="top" @submit.prevent="quotePage(1)">
       <el-form-item label="职位标签">
         <el-select v-model="positionTags" multiple placeholder="不筛选职位">
           <el-option
@@ -20,7 +20,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-button class="contacts-quote-button" native-type="submit" :disabled="busy">查看第 1 页报价</el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :disabled="busy">查看第 1 页报价</el-button>
+      </div>
     </el-form>
     <el-alert
       v-if="error"
@@ -178,17 +180,12 @@ onMounted(() => {
 .contacts-heading h3 { margin: 0 0 5px; font-size: 16px; }
 .contacts-fetched { margin: 0; color: #7a879c; font-size: 12px; }
 .contacts-fetched strong { margin-left: 5px; color: #42506c; font-weight: 500; font-variant-numeric: tabular-nums; }
-.contacts-refresh { flex-shrink: 0; }
 .contacts-hint { margin: 18px 0; padding: 11px 14px; border: 1px solid #e2e7fd; border-radius: 8px; background: #f6f8ff; color: #6372a4; }
-.contacts-filter { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px; padding: 16px; border: 1px solid #e6e9f0; border-radius: 10px; background: #fafbfe; }
-.contacts-filter :deep(.el-form-item) { flex: 1 1 220px; margin-bottom: 0; }
-.contacts-filter :deep(.el-select) { width: 100%; }
-.contacts-filter .contacts-quote-button { margin: 0; }
+.contacts-filter { flex-wrap: wrap; padding: 16px; border: 1px solid #e6e9f0; border-radius: 10px; background: #fafbfe; }
 .contacts-quote { justify-content: space-between; margin: 16px 0; padding: 16px 18px; }
 .contacts-quote-copy { display: grid; gap: 3px; min-width: 0; }
 .contacts-quote-copy strong { color: #263052; font-size: 13px; }
 .contacts-quote-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
-.contacts-quote-actions :deep(.el-button + .el-button) { margin-left: 0; }
 .contacts-list { margin-top: 20px; border-top: 1px solid #e6e9f0; }
 .contact-row { align-items: flex-start; gap: 12px; }
 .contact-main { min-width: 0; }
@@ -199,7 +196,6 @@ onMounted(() => {
 .contact-ownership.is-pending { background: #fff5e4; color: #a8731e; }
 @media (max-width: 600px) {
   .contacts-heading, .contacts-quote-actions { align-items: stretch; flex-direction: column; }
-  .contacts-refresh, .contacts-quote-actions :deep(.el-button), .contacts-filter .contacts-quote-button { width: 100%; }
   .contacts-quote { align-items: stretch; }
   .contacts-filter { padding: 12px; }
   .contact-row { flex-direction: column; }

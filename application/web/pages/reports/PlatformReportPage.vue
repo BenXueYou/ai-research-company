@@ -105,7 +105,6 @@ onMounted(load);
 <style scoped>
 .platform-report { margin: 20px 0 32px; min-width: 0; color: #1c2333; }
 .report-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-.report-refresh { height: 34px; border-color: #e6e9f0; border-radius: 8px; }
 .back-link { order: -1; margin-right: auto; color: #738095; font-size: 13px; text-decoration: none; }
 .back-link:hover { color: #4356e0; }
 .export-link { display: inline-flex; align-items: center; min-height: 32px; padding: 0 15px; border: 1px solid #4356e0; border-radius: 8px; background: #4356e0; color: #fff; font-size: 13px; font-weight: 600; text-decoration: none; }

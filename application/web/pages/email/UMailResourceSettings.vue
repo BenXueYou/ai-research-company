@@ -35,24 +35,21 @@
       :title="notice"
       :closable="false"
     />
-    <el-form
-      class="identity-card umail-form"
+    <el-form ref="selectionForm" :model="{ organizationId }"
+      class="business-form identity-card umail-form"
       label-position="top"
       :disabled="busy || resultUnknown"
       @submit.prevent="save"
     >
-      <el-form-item label="终端企业" for="umail-organization">
-        <select
+      <el-form-item label="终端企业" for="umail-organization" prop="organizationId" :rules="[{ required: true, message: '请选择终端企业', trigger: 'change' }]">
+        <el-select :empty-values="[null, undefined]"
           id="umail-organization"
           v-model="organizationId"
-          required
           :disabled="busy || resultUnknown"
         >
-          <option value="" disabled>请选择企业</option>
-          <option v-for="item in organizations" :key="item.organizationId" :value="item.organizationId">
-            {{ item.name }} · {{ statusLabel(item.resourceStatus) }}
-          </option>
-        </select>
+          <el-option value="" disabled label="请选择企业" />
+          <el-option v-for="item in organizations" :key="item.organizationId" :value="item.organizationId" :label="`${item.name} · ${statusLabel(item.resourceStatus)}`" />
+        </el-select>
       </el-form-item>
       <el-form-item label="U-Mail 隔离资源标识" for="umail-resource-id">
         <el-input
@@ -62,9 +59,11 @@
           :disabled="busy || resultUnknown"
         />
       </el-form-item>
-      <el-button class="primary-button" native-type="submit" :disabled="busy || resultUnknown">
-        {{ busy ? '正在核验并保存…' : '核验资源并保存' }}
-      </el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :disabled="busy || resultUnknown">
+          {{ busy ? '正在核验并保存…' : '核验资源并保存' }}
+        </el-button>
+      </div>
     </el-form>
     </section>
   </section>
@@ -73,6 +72,9 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef } from 'vue';
 import {
+  ElSelect,
+  ElOption,
+  type FormInstance,
   ElAlert,
   ElButton,
   ElForm,
@@ -87,6 +89,7 @@ interface OrganizationResource {
   name: string;
   resourceStatus: string | null;
 }
+const selectionForm = ref<FormInstance>();
 const props = defineProps<{
   request: (path: string, body?: Record<string, unknown>) => Promise<unknown>;
 }>();
@@ -122,6 +125,8 @@ async function refresh() {
   organizations.value = result.organizations;
 }
 async function save() {
+  if (busy.value || resultUnknown.value) return;
+  if (!await selectionForm.value?.validate().catch(() => false)) return;
   if (busy.value || resultUnknown.value) return;
   busy.value = true;
   error.value = '';
@@ -179,24 +184,12 @@ onMounted(async () => {
 .card-heading h2 { margin: 0; font-size: 17px; font-weight: 650; }
 .status-pill { padding: 4px 9px; border-radius: 5px; color: #5365c5; background: #eef1ff; font-size: 11px; white-space: nowrap; }
 .card-hint { margin: 16px 0 20px; }
-.settings-card :deep(.el-alert) { margin-bottom: 16px; }
-.umail-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; gap: 0 18px; max-width: none; padding: 0; border: 0; box-shadow: none; }
-.umail-form :deep(.el-form-item) { min-width: 0; margin-bottom: 0; }
-.umail-form :deep(.el-form-item__label) { height: auto; margin-bottom: 8px; color: #647087; font-size: 12px; line-height: 1.6; }
-.umail-form :deep(.el-input__wrapper) { min-height: 42px; border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
-.umail-form :deep(.el-input__wrapper.is-focus) { box-shadow: 0 0 0 1px var(--email-accent) inset; }
-select { box-sizing: border-box; width: 100%; min-height: 42px; padding: 9px 12px; border: 1px solid #dfe4ee; border-radius: 8px; color: #1c2333; background: #fff; font: inherit; font-size: 13px; }
-select:focus-visible { outline: 2px solid #4356e040; outline-offset: 2px; border-color: var(--email-accent); }
-.umail-form :deep(.el-button) { min-height: 42px; margin: 0; padding: 10px 18px; border-color: var(--email-accent); border-radius: 8px; color: #fff; background: var(--email-accent); font-size: 13px; font-weight: 600; box-shadow: 0 3px 7px #4356e017; }
-.umail-form :deep(.el-button:not(:disabled):hover) { border-color: #3343c9; background: #3343c9; }
+.umail-form { max-width: none; padding: 0; border: 0; box-shadow: none; }
 @media (max-width: 760px) {
   .settings-heading { display: block; }
   .back-link { display: inline-block; margin-top: 14px; }
   .settings-heading h1 { font-size: 21px; }
   .settings-navigation { gap: 20px; }
   .settings-card { padding: 18px 16px; }
-  .umail-form { grid-template-columns: minmax(0, 1fr); gap: 18px; }
-  .umail-form :deep(.el-form-item) { margin-bottom: 0; }
-  .umail-form :deep(.el-button) { width: 100%; }
 }
 </style>

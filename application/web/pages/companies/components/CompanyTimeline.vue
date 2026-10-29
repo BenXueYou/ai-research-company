@@ -2,7 +2,7 @@
   <section class="timeline-panel">
     <h3>跟进时间线</h3>
     <p class="hint">回复摘要、备注和 WhatsApp 沟通由成员手动登记。</p>
-    <el-form label-position="top" @submit.prevent="save">
+    <el-form class="business-form" label-position="top" @submit.prevent="save">
       <el-form-item label="记录类型">
         <el-select v-model="form.type" :disabled="busy">
           <el-option label="回复摘要" value="reply" />
@@ -26,17 +26,26 @@
         />
       </el-form-item>
       <el-form-item v-if="form.type === 'whatsapp' && !editingId" label="附件（可选）">
-        <input type="file" :disabled="busy" @change="selectRecordFile" />
+        <span class="file-picker">
+          <input type="file" hidden :disabled="busy" @change="selectRecordFile" />
+          <el-button :disabled="busy" @click="openFilePicker">选择附件</el-button>
+          <span>{{ selectedRecordFile?.name ?? '未选择文件' }}</span>
+        </span>
       </el-form-item>
-      <el-button class="primary-button" native-type="submit" :loading="busy">{{ editingId ? '保存修改' : '登记记录' }}</el-button>
-      <el-button v-if="editingId" :disabled="busy" @click="reset">取消编辑</el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :loading="busy">{{ editingId ? '保存修改' : '登记记录' }}</el-button>
+        <el-button v-if="editingId" :disabled="busy" @click="reset">取消编辑</el-button>
+      </div>
     </el-form>
     <el-alert v-if="error" type="error" :title="error" :closable="false" />
     <el-alert v-if="notice" type="success" :title="notice" :closable="false" />
     <section class="attachment-panel">
       <h4>档案附件</h4>
       <p class="hint">支持图片、PDF、Office 文档和压缩包，单文件最多 20MB；本企业最多 50 个。</p>
-      <input type="file" :disabled="busy" @change="uploadProfileFile" />
+      <span class="file-picker">
+        <input type="file" hidden :disabled="busy" @change="uploadProfileFile" />
+        <el-button :disabled="busy" @click="openFilePicker">上传档案附件</el-button>
+      </span>
       <div v-for="attachment in profileAttachments" :key="attachment.id" class="attachment-row">
         <span>{{ attachment.fileName }} · {{ formatSize(attachment.sizeBytes) }}<span v-if="attachment.expired"> · 已到期</span></span>
         <el-button :disabled="busy" @click="download(attachment)">下载</el-button>
@@ -51,8 +60,8 @@
         <el-button :disabled="busy" @click="cleanExpired(attachment)">清理到期文件</el-button>
       </div>
     </section>
-    <div class="timeline-filter">
-      <label :for="`timeline-type-${profileId}`">筛选类型</label>
+    <el-form class="business-form timeline-filter" label-position="top">
+      <el-form-item label="筛选类型" :for="`timeline-type-${profileId}`">
       <el-select
         :id="`timeline-type-${profileId}`"
         v-model="filter"
@@ -65,7 +74,8 @@
         <el-option label="备注" value="note" />
         <el-option label="WhatsApp" value="whatsapp" />
       </el-select>
-    </div>
+      </el-form-item>
+    </el-form>
     <el-empty v-if="!records.length" description="暂无该类型记录" />
     <article v-for="record in records" :key="record.id" class="timeline-entry">
       <strong>{{ labels[record.type] }} · {{ formatTime(record.eventTime) }}</strong>
@@ -75,7 +85,10 @@
       <div v-if="record.type !== 'email'">
         <el-button v-if="record.createdBy === currentAccountId" :disabled="busy" @click="edit(record)">编辑</el-button>
         <el-button v-if="canDelete" :disabled="busy" @click="remove(record)">删除</el-button>
-        <label class="record-upload">添加附件 <input type="file" :disabled="busy" @change="event => uploadRecordFile(event, record.id)" /></label>
+        <span class="file-picker">
+          <input type="file" hidden :disabled="busy" @change="event => uploadRecordFile(event, record.id)" />
+          <el-button :disabled="busy" @click="openFilePicker">添加附件</el-button>
+        </span>
         <div v-for="attachment in recordAttachments(record.id)" :key="attachment.id" class="attachment-row">
           <span>{{ attachment.fileName }} · {{ formatSize(attachment.sizeBytes) }}<span v-if="attachment.expired"> · 已到期</span></span>
           <el-button :disabled="busy" @click="download(attachment)">下载</el-button>
@@ -152,6 +165,10 @@ function reset() {
 }
 function formatSize(bytes: number) { return `${(bytes / 1024).toFixed(1)} KB`; }
 function recordAttachments(recordId: string) { return attachments.value.filter(item => item.communicationId === recordId && !item.deleted); }
+function openFilePicker(event: MouseEvent) {
+  const input = (event.currentTarget as HTMLElement).previousElementSibling as HTMLInputElement | null;
+  input?.click();
+}
 function selectRecordFile(event: Event) {
   selectedRecordFile.value = (event.target as HTMLInputElement).files?.[0] ?? null;
 }
@@ -319,5 +336,5 @@ onMounted(() => { void load(); });
 .attachment-panel { border-top: 1px solid #ddd; margin-top: 1rem; padding-top: 1rem; }
 .attachment-row { display: flex; align-items: center; gap: .5rem; margin: .25rem 0; }
 .record-upload { display: inline-block; margin: .5rem; }
-.el-date-editor.el-input { width: 100%; min-width: 0; }
+.file-picker { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 </style>

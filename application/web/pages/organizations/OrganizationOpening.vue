@@ -24,9 +24,9 @@
       <el-button @click="closeCredentials">已保存，关闭凭据</el-button>
       <p class="hint">关闭后无法查询本次密码；需要补发时请再次重置。</p>
     </section>
-    <el-form
+    <el-form ref="selectionForm" :model="{ kind }"
       v-else
-      class="identity-card opening-form"
+      class="business-form identity-card opening-form"
       label-position="top"
       @submit.prevent="openOrganization"
     >
@@ -39,16 +39,15 @@
           :disabled="busy"
         />
       </el-form-item>
-      <el-form-item label="组织类型" for="organization-kind">
-        <select
+      <el-form-item label="组织类型" for="organization-kind" prop="kind" :rules="[{ required: true, message: '请选择组织类型', trigger: 'change' }]">
+        <el-select :empty-values="[null, undefined]"
           id="organization-kind"
           v-model="kind"
-          required
           :disabled="busy"
         >
-          <option value="terminal">终端企业</option>
-          <option v-if="allowedKinds.includes('distributor')" value="distributor">分销组织</option>
-        </select>
+          <el-option value="terminal" label="终端企业" />
+          <el-option v-if="allowedKinds.includes('distributor')" value="distributor" label="分销组织" />
+        </el-select>
       </el-form-item>
       <el-form-item label="国家区号" for="country-code">
         <el-input
@@ -89,12 +88,13 @@
           :disabled="busy"
         />
       </el-form-item>
-      <el-button
-        class="primary-button"
-        native-type="submit"
-        :disabled="busy || !allowedKinds.length"
-      >{{ busy ? '正在开户…' : '确认开户' }}</el-button>
       <p class="hint">组织与首位管理员同时启用；系统生成临时密码。</p>
+      <div class="form-actions">
+        <el-button
+          type="primary" native-type="submit"
+          :disabled="busy || !allowedKinds.length"
+        >{{ busy ? '正在开户…' : '确认开户' }}</el-button>
+      </div>
     </el-form>
     <div class="workspace-card children-list">
       <h3>直属下级</h3>
@@ -119,6 +119,9 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef } from 'vue';
 import {
+  ElSelect,
+  ElOption,
+  type FormInstance,
   ElAlert,
   ElButton,
   ElForm,
@@ -140,6 +143,7 @@ interface Child {
   phoneMasked: string;
   email: string;
 }
+const selectionForm = ref<FormInstance>();
 const props = defineProps<{
   request: (path: string, body?: Record<string, unknown>) => Promise<unknown>;
 }>();
@@ -169,6 +173,8 @@ async function refresh() {
   }
 }
 async function openOrganization() {
+  if (busy.value || credentials.value) return;
+  if (!await selectionForm.value?.validate().catch(() => false)) return;
   if (busy.value || credentials.value) return;
   error.value = '';
   if (!name.value.trim() || !phone.value || /\s/u.test(phone.value)) {
@@ -250,7 +256,7 @@ onMounted(refresh);
 <style scoped>
 .organization-section { margin-top: 32px; }
 .opening-form { max-width: 640px; }
-select { width: 100%; padding: 12px; border: 1px solid #dcdfe6; border-radius: 8px; color: #263052; background: white; }
+
 .children-list { margin-top: 24px; }
 .child-row { border-top: 1px solid #e5e7f1; margin-top: 16px; overflow-wrap: anywhere; }
 .handoff-values { overflow-wrap: anywhere; }

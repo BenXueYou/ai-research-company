@@ -57,7 +57,7 @@
             <h1 v-if="session.mustChange">先保护好您的账号</h1>
             <p>{{ session.mustChange ? '当前使用临时凭据，完成改密前无法访问工作台。' : '更新密码后，所有设备将退出登录。' }}</p>
           </div>
-          <el-form class="identity-card" label-position="top" @submit.prevent="changePassword">
+          <el-form class="business-form identity-card" label-position="top" @submit.prevent="changePassword">
             <h2>{{ session.mustChange ? '设置新密码' : '更新登录密码' }}</h2>
             <p v-if="passwordResultUnknown" class="error-message">改密结果尚未确认，请重新登录核实，勿重复提交。</p>
             <p class="hint">12～128位英文、数字或常见符号，不允许空格；不得与当前密码相同。</p>
@@ -91,8 +91,10 @@
                 :disabled="busy"
               />
             </el-form-item>
-            <el-button class="primary-button" native-type="submit" :disabled="busy || passwordResultUnknown">{{ busy ? '正在更新…' : '确认修改并重新登录' }}</el-button>
-            <el-button v-if="!session.mustChange" native-type="button" :disabled="busy" @click="closeSettings">返回工作台</el-button>
+            <div class="form-actions">
+              <el-button type="primary" native-type="submit" :disabled="busy || passwordResultUnknown">{{ busy ? '正在更新…' : '确认修改并重新登录' }}</el-button>
+              <el-button v-if="!session.mustChange" native-type="button" :disabled="busy" @click="closeSettings">返回工作台</el-button>
+            </div>
           </el-form>
         </section>
         <ConsoleNotices

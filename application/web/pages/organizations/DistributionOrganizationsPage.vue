@@ -36,9 +36,9 @@
       <el-button @click="closeCredentials">已保存，关闭凭据</el-button>
       <p class="hint">关闭后无法查询本次密码；需要补发时请再次重置。</p>
     </section>
-    <el-form
+    <el-form ref="selectionForm" :model="{ kind }"
       v-else-if="view === 'new'"
-      class="identity-card opening-form style-b-card"
+      class="business-form identity-card opening-form style-b-card"
       label-position="top"
       @submit.prevent="openOrganization"
     >
@@ -51,16 +51,15 @@
           :disabled="busy || openingUnknown"
         />
       </el-form-item>
-      <el-form-item label="组织类型" for="organization-kind">
-        <select
+      <el-form-item label="组织类型" for="organization-kind" prop="kind" :rules="[{ required: true, message: '请选择组织类型', trigger: 'change' }]">
+        <el-select :empty-values="[null, undefined]"
           id="organization-kind"
           v-model="kind"
-          required
           :disabled="busy || openingUnknown"
         >
-          <option value="terminal">终端企业</option>
-          <option v-if="allowedKinds.includes('distributor')" value="distributor">分销组织</option>
-        </select>
+          <el-option value="terminal" label="终端企业" />
+          <el-option v-if="allowedKinds.includes('distributor')" value="distributor" label="分销组织" />
+        </el-select>
       </el-form-item>
       <el-form-item label="国家区号" for="country-code">
         <el-input
@@ -101,11 +100,10 @@
           :disabled="busy || openingUnknown"
         />
       </el-form-item>
-      <div class="opening-actions">
-        <p class="hint">组织与首位管理员同时启用；系统生成临时密码。</p>
+      <p class="hint">组织与首位管理员同时启用；系统生成临时密码。</p>
+      <div class="form-actions">
         <el-button
-          class="primary-button"
-          native-type="submit"
+          type="primary" native-type="submit"
           :disabled="busy || !allowedKinds.length"
         >{{ busy ? '正在开户…' : '确认开户' }}</el-button>
       </div>
@@ -200,6 +198,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { useFormLeave } from '../../router/formLeave';
 import { useBreadcrumbTitle } from '../../layout/breadcrumb';
 import {
+  ElSelect,
+  ElOption,
+  type FormInstance,
   ElAlert,
   ElButton,
   ElForm,
@@ -222,6 +223,7 @@ interface Child {
   phoneMasked: string;
   email: string;
 }
+const selectionForm = ref<FormInstance>();
 const props = defineProps<{
   request: (path: string, body?: Record<string, unknown>) => Promise<unknown>;
 }>();
@@ -312,6 +314,8 @@ async function refresh() {
   }
 }
 async function openOrganization() {
+  if (busy.value || credentials.value) return;
+  if (!await selectionForm.value?.validate().catch(() => false)) return;
   if (busy.value || credentials.value) return;
   error.value = '';
   if (!name.value.trim() || !phone.value || /\s/u.test(phone.value)) {
@@ -448,26 +452,12 @@ onMounted(refresh);
 .organization-tabs a { flex-shrink: 0; padding: 10px 2px; color: var(--style-b-muted); font-size: 13px; text-decoration: none; }
 .organization-tabs a.tab-active { border-bottom: 2px solid var(--style-b-accent); color: var(--style-b-accent); font-weight: 600; }
 .style-b-card { margin-top: 18px; padding: 23px; border: 1px solid var(--style-b-line); border-radius: 12px; background: #fff; box-shadow: 0 2px 5px #19234603; }
-.opening-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: none; }
+.opening-form { width: 100%; max-width: 720px; grid-template-columns: minmax(0, 1fr); }
 .opening-form h3, .section-heading h2 { margin: 0; color: var(--style-b-ink); font-size: 16px; }
 .opening-form h3 { grid-column: 1 / -1; padding-bottom: 18px; border-bottom: 1px solid var(--style-b-line); }
-.opening-form :deep(.el-form-item) { min-width: 0; max-width: none; margin: 0; }
-.opening-form :deep(.el-form-item__label) { height: auto; margin: 0 0 7px; color: #647087; font-size: 12px; font-weight: 400; line-height: 1.65; }
-.opening-form :deep(.el-input) { --el-input-height: 42px; }
-.opening-form :deep(.el-input__wrapper) { padding: 1px 12px; }
-.opening-form :deep(.el-form-item__content) { align-content: start; }
 .opening-form .opening-email { grid-column: 1 / -1; }
 .opening-form .hint { width: 100%; margin: 7px 0 0; color: #8a95a6; line-height: 1.8; }
-.opening-actions { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 4px; padding-top: 18px; border-top: 1px solid var(--style-b-line); }
-.opening-actions .hint { width: auto; margin: 0; }
-.opening-actions .primary-button, .credential-panel .primary-button { flex-shrink: 0; min-height: 42px; margin: 0; padding: 8px 20px; border: 1px solid #4356e0; color: #fff; background: #4356e0; font-weight: 600; }
-.opening-actions .primary-button:hover:not(:disabled), .credential-panel .primary-button:hover:not(:disabled) { border-color: #3343c9; background: #3343c9; }
-.opening-actions .primary-button:disabled, .credential-panel .primary-button:disabled { opacity: .45; }
-.opening-form :deep(.el-button:focus-visible), .credential-panel :deep(.el-button:focus-visible) { outline: 2px solid #8997ff; outline-offset: 3px; }
-.opening-form select { min-height: 42px; padding: 8px 12px; font-size: 14px; }
-.opening-form select:focus-visible { outline: 2px solid #8997ff; outline-offset: 3px; }
-select { width: 100%; padding: 10px 12px; border: 1px solid #dfe4ee; border-radius: 8px; color: var(--style-b-ink); background: #fff; }
-select:focus { border-color: var(--style-b-accent); outline: none; }
+
 .children-list { margin-top: 18px; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 4px; }
 .section-heading .module-kicker { margin-bottom: 3px; }
@@ -492,10 +482,7 @@ select:focus { border-color: var(--style-b-accent); outline: none; }
 @media (max-width: 1100px) { .account-row { grid-template-columns: 1fr; gap: 16px; } }
 @media (max-width: 1100px) { .organization-row { grid-template-columns: 1fr 1fr; } .row-action { justify-self: end; } }
 @media (max-width: 600px) { .organization-heading { display: block; } .organization-tabs { gap: 16px; } .style-b-card { padding: 18px 16px; } .organization-row { grid-template-columns: 1fr; gap: 10px; } .row-action { justify-self: start; } }
-@media (max-width: 600px) {
-  .opening-form { grid-template-columns: minmax(0, 1fr); }
-  .opening-actions { align-items: stretch; flex-direction: column; gap: 12px; }
-}
 </style>
 
-<style scoped src="./components/organization-profile.css"></style>
+<style scoped src="./components/organization-profile.css">
+</style>

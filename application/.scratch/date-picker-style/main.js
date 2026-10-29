@@ -1,4 +1,0 @@
-import { createApp, ref } from 'vue/dist/vue.esm-bundler.js';
-import { ElDatePicker, ElInput } from 'element-plus';
-import '/web/styles/index.ts';
-createApp({components:{ElDatePicker,ElInput},setup:()=>({date:ref('2026-10-29'),time:ref('2026-10-29T14:30')}),template:`<main style="padding:20px;max-width:900px"><h2>日期与时间控件样式核对</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px"><label>贸易日期<el-date-picker v-model="date" type="date" value-format="YYYY-MM-DD" :clearable="false" style="width:100%" /></label><label>跟进时间<el-date-picker v-model="time" type="datetime" format="YYYY-MM-DD HH:mm" value-format="YYYY-MM-DDTHH:mm" :clearable="false" style="width:100%" /></label><label>禁用时间<el-date-picker v-model="time" type="datetime" disabled style="width:100%" /></label><label>秒级告知时间<el-input type="datetime-local" step="1" required /></label></div></main>`}).mount('#app');

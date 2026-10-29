@@ -92,7 +92,6 @@ onUnmounted(() => { active = false; });
 .report-actions { flex: none; }
 .export-button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 8px 15px; border: 1px solid #4356e0; border-radius: 8px; color: #fff; background: #4356e0; font-size: 14px; font-weight: 600; text-decoration: none; }
 .export-button:hover { border-color: #3343c9; background: #3343c9; }
-.export-button:focus-visible { outline: 2px solid #8997ff; outline-offset: 3px; }
 .metric-card, .scope-card { padding: 23px; border: 1px solid #e6e9f0; border-radius: 12px; background: #fff; box-shadow: 0 2px 5px #19234603; }
 .metric-label { display: block; margin-bottom: 7px; color: #738095; font-size: 12px; }
 .metric-card strong { color: #4356e0; font: 600 28px/1.4 'Segoe UI', Consolas, monospace; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }

@@ -6,7 +6,7 @@
       </div>
       <span class="product-fee-badge">逐页确认费用</span>
     </header>
-    <el-form class="product-search-form" label-position="top" @submit.prevent="prepare(1)">
+    <el-form class="business-form search-form product-search-form" label-position="top" @submit.prevent="prepare(1)">
       <slot name="search-mode" />
       <el-form-item label="采购企业所在国（三位代码）" for="buyer-country">
         <CountrySelect
@@ -41,12 +41,13 @@
         />
       </el-form-item>
       <p class="hint product-intro">输入产品词，选择采购企业所在国与贸易时间，查看本页报价后确认查询。名单仅含企业名称，身份须另行核实。</p>
-      <el-button
-        class="primary-button"
-        native-type="submit"
-        :loading="busy"
-        :disabled="unresolved"
-      >查看第 1 页报价</el-button>
+      <div class="form-actions">
+        <el-button
+          type="primary" native-type="submit"
+          :loading="busy"
+          :disabled="unresolved"
+        >查看第 1 页报价</el-button>
+      </div>
     </el-form>
     <el-alert
       v-if="error"
@@ -331,26 +332,12 @@ async function applyDetailResult(result: DetailResult) {
 </script>
 
 <style scoped>
-.product-search .candidate-row > .candidate-error { flex: 0 0 100%; min-width: 0; }
 .product-search { min-width: 0; color: #1c2333; font-size: 13px; line-height: 1.65; }
 .product-search-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--search-line, #e6e9f0); }
 .product-search-heading h2 { margin: 0; color: #1c2333; font-size: 18px; font-weight: 650; }
 .product-fee-badge { flex-shrink: 0; padding: 5px 10px; border: 1px solid #dce2ff; border-radius: 6px; color: #4356e0; background: #f4f6ff; font-size: 11px; }
 .product-search .hint { color: #8490a5; font-size: 12px; }
 .product-search .product-intro { margin: 18px 0; color: #738095; font-size: 13px; }
-.product-search-form { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) repeat(2, minmax(0, .9fr)); align-items: end; gap: 16px; }
-.product-search-form :deep(.el-form-item) { min-width: 0; margin-bottom: 0; }
-.product-search-form :deep(.el-form-item__label) { height: auto; margin-bottom: 8px; color: #647087; font-size: 12px; line-height: 1.5; }
-.product-search-form :deep(.el-input__wrapper) { min-height: 42px; padding: 0 12px; border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
-.product-search-form :deep(.el-input__wrapper.is-focus) { box-shadow: 0 0 0 1px #4356e0 inset, 0 0 0 3px #4356e014; }
-.product-search-form :deep(.el-input__inner) { min-width: 0; color: #1c2333; font-size: 13px; }
-.product-search :deep(.el-button) { min-height: 36px; height: auto; padding: 9px 14px; border-radius: 8px; font-size: 12px; }
-.product-search :deep(.el-button + .el-button) { margin-left: 0; }
-.product-search-form .primary-button { grid-column: 1 / -1; justify-self: end; min-width: 172px; height: 42px; margin: 2px 0 0; border-color: #4356e0; color: #fff; background: #4356e0; font-size: 13px; font-weight: 600; box-shadow: 0 3px 7px #4356e017; }
-.product-search-form .primary-button:not(:disabled):hover { border-color: #3343c9; background: #3343c9; }
-.product-search-form .primary-button.is-disabled { opacity: .55; }
-.product-search :deep(.el-alert) { margin: 18px 0; padding: 12px 14px; border-radius: 8px; }
-.product-search :deep(.el-alert__title) { font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
 .product-search .search-summary { display: flex; flex-wrap: wrap; gap: 12px 16px; margin: 22px 0; padding: 18px 20px; border: 1px solid #dce2ff; border-radius: 10px; color: #58688f; background: #f5f7ff; font-variant-numeric: tabular-nums; }
 .product-page-quote > strong, .product-detail-quote > span:first-child { flex-basis: 100%; color: #28334b; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
 .product-page-quote > span { flex-basis: 100%; }
@@ -366,19 +353,12 @@ async function applyDetailResult(result: DetailResult) {
 .product-profile-link { display: inline-block; margin-top: 8px; color: #4356e0; font-size: 12px; text-decoration: none; overflow-wrap: anywhere; }
 .product-profile-link:hover { text-decoration: underline; }
 .product-profile-link:focus-visible { outline: 2px solid #4356e0; outline-offset: 4px; border-radius: 2px; }
-@media (max-width: 1000px) {
-  .product-search-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 @media (max-width: 600px) {
   .product-search-heading { align-items: flex-start; gap: 10px; }
   .product-search-heading h2 { font-size: 17px; }
   .product-fee-badge { padding: 4px 7px; font-size: 10px; }
-  .product-search-form { grid-template-columns: minmax(0, 1fr); }
-  .product-search-form .primary-button { width: 100%; }
   .product-search .search-summary { gap: 12px; padding: 14px; }
-  .product-search .search-summary > .el-button { flex: 1 1 auto; }
   .product-search .candidate-row { padding: 16px 0; }
   .product-search .candidate-row > strong, .product-search .candidate-row > div { flex-basis: 100%; min-width: 0; }
 }
-.el-date-editor.el-input { width: 100%; min-width: 0; }
 </style>

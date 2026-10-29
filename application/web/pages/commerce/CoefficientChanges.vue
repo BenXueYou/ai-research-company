@@ -140,7 +140,7 @@ onUnmounted(stopClock);
     <p v-if="snapshot" class="settings-summary">当前 X={{ snapshot.current }}。已有余额不重算；已确认查询按原锁定 X 结算。</p>
     <p v-if="unknown" role="alert">系数操作结果尚未确认。可刷新查看通知，或重试原请求核实；离开不会自动重试。</p>
     <ElForm
-      class="settings-form"
+      class="business-form settings-form"
       :disabled="busy || !!unknown"
       label-position="top"
       @submit.prevent="announce"
@@ -161,7 +161,9 @@ onUnmounted(stopClock);
       <ElFormItem label="调整通知" for="coefficient-notice">
         <ElInput id="coefficient-notice" v-model="form.notice" required />
       </ElFormItem>
-      <ElButton class="settings-primary" native-type="submit" :disabled="busy">发布通知</ElButton>
+      <div class="form-actions">
+        <ElButton type="primary" native-type="submit" :disabled="busy">发布通知</ElButton>
+      </div>
     </ElForm>
     <ElButton v-if="unknown" :disabled="busy" @click="unknown === 'announce' ? announce() : activate(activationId)">重试原系数请求</ElButton>
     <h3>系数调整记录</h3>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElButton } from 'element-plus';
 import { ref } from 'vue';
 
 const props = defineProps<{ value: string }>();
@@ -16,12 +17,12 @@ async function copy() {
 <template>
   <div class="reference-value">
     <span>{{ value }}</span>
-    <button
-      type="button"
+    <el-button
+      native-type="button"
       class="copy-reference"
       :aria-label="`复制编号 ${value}`"
       @click="copy"
-    >复制</button>
+    >复制</el-button>
     <span class="copy-feedback" role="status">{{ feedback }}</span>
   </div>
 </template>
@@ -36,21 +37,6 @@ async function copy() {
   color: var(--console-muted);
   font-size: 12px;
   overflow-wrap: anywhere;
-}
-
-.copy-reference {
-  flex: none;
-  padding: 2px 4px;
-  border: 0;
-  border-radius: 4px;
-  color: var(--el-color-primary);
-  background: transparent;
-  font: inherit;
-  cursor: pointer;
-}
-
-.copy-reference:hover {
-  background: var(--el-color-primary-light-9);
 }
 
 .copy-feedback:empty {

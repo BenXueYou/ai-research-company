@@ -129,7 +129,7 @@ onMounted(reload);
       <p class="settings-summary">币种 {{ snapshot.currency }} · 当前最低加价率 {{ snapshot.pricing.minimum_markup }}。</p>
       <p class="settings-hint">未配置接口单价时，对应计费查询不可执行；留空接口路径不会新增或修改接口单价。</p>
       <ElForm
-        class="settings-form"
+        class="business-form settings-form"
         :disabled="busy || unknown"
         label-position="top"
         @submit.prevent="submit"
@@ -159,7 +159,9 @@ onMounted(reload);
             <el-option value="controlled_test" label="受控测试价格（生产环境禁止）" />
           </el-select>
         </ElFormItem>
-        <ElButton class="settings-primary" native-type="submit" :disabled="busy">保存计价设置</ElButton>
+        <div class="form-actions">
+          <ElButton type="primary" native-type="submit" :disabled="busy">保存计价设置</ElButton>
+        </div>
       </ElForm>
       <ElButton v-if="unknown" :disabled="busy" @click="submit">重试原计价请求</ElButton>
       <h3>已配置接口单价</h3>
@@ -196,8 +198,4 @@ onMounted(reload);
   border-radius: 12px;
   background: #fff;
 }
-
-/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
-:deep(.el-select) { min-width: 0; }
-:deep(.el-select__wrapper) { min-height: 36px; border-radius: 4px; }
 </style>

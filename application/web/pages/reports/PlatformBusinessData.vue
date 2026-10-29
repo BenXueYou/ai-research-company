@@ -21,14 +21,15 @@
     <p v-if="error" class="load-error" role="alert">{{ error }}</p>
     <template v-if="report">
       <div class="organization-filter">
-        <div class="filter-field">
-          <label for="business-organization">查看组织</label>
+        <el-form class="business-form" label-position="top">
+        <el-form-item label="查看组织" for="business-organization">
           <el-select id="business-organization" v-model="organizationId" filterable placeholder="全部授权组织" aria-label="查看组织" popper-class="business-organization-options">
             <el-option label="全部授权组织" value="" />
             <el-option v-for="organization in report.organizations" :key="organization.id" :value="organization.id"
               :label="`${organization.name}${organization.active ? '' : '（已停用）'}`" />
           </el-select>
-        </div>
+        </el-form-item>
+        </el-form>
         <p class="filter-summary">当前显示 <strong>{{ customers.length }}</strong> 份客户档案、<strong>{{ emails.length }}</strong> 条邮件记录</p>
       </div>
       <section class="data-panel" aria-labelledby="business-customers-title">
@@ -84,7 +85,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, shallowRef } from 'vue';
-import { ElButton, ElOption, ElSelect } from 'element-plus';
+import { ElForm, ElFormItem, ElButton, ElOption, ElSelect } from 'element-plus';
 
 type Organization = { id: string; name: string; active: boolean };
 type Customer = {
@@ -135,7 +136,6 @@ onMounted(load);
 .business-heading h1 { margin: 0 0 7px; font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: -.4px; }
 .business-heading p { margin: 0; color: var(--console-muted); font-size: 13px; line-height: 1.8; }
 .heading-actions { flex-shrink: 0; padding-top: 3px; gap: 18px; }
-.heading-actions :deep(.el-button) { border-radius: 8px; }
 .readonly-notice { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1px solid #e2e7fd; border-radius: 8px; margin-bottom: 20px; color: #6372a4; background: #f3f5ff; }
 .return-link { flex-shrink: 0; color: var(--console-brand); font-size: 13px; text-decoration: none; }
 .return-link:hover { text-decoration: underline; }
@@ -146,11 +146,6 @@ onMounted(load);
 .readonly-notice p { margin: 0; font-size: 12px; line-height: 1.8; }
 .organization-filter, .data-panel { min-width: 0; border: 1px solid var(--console-line); border-radius: 12px; background: var(--console-surface); box-shadow: 0 2px 5px #19234605; }
 .organization-filter { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; padding: 16px 20px; margin-bottom: 20px; }
-.filter-field { width: min(360px, 100%); min-width: 0; }
-.filter-field label { display: block; margin-bottom: 8px; color: var(--console-muted); font-size: 12px; }
-.filter-field :deep(.el-select) { width: 100%; --el-color-primary: var(--console-brand); --el-border-color: var(--console-line-strong); }
-.filter-field :deep(.el-select__wrapper) { min-height: 40px; border-radius: 8px; font-size: 13px; }
-.filter-field :deep(.el-select__input:focus-visible) { outline: none; }
 .filter-summary { margin: 0 0 10px; color: var(--console-muted); font-size: 12px; line-height: 1.8; }
 .filter-summary strong { color: var(--console-brand); font-weight: 600; font-variant-numeric: tabular-nums; }
 .data-panel { margin-bottom: 20px; overflow: hidden; }
@@ -190,7 +185,6 @@ onMounted(load);
   .readonly-content { flex-basis: 100%; align-items: flex-start; }
   .organization-filter, .panel-heading, .data-record { padding: 17px; }
   .organization-filter { align-items: stretch; gap: 12px; }
-  .filter-field { width: 100%; }
   .filter-summary { margin: 0; }
   .customer-fields { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 14px; }
   .record-heading { flex-wrap: wrap; gap: 8px; }
@@ -199,6 +193,4 @@ onMounted(load);
 </style>
 
 <style>
-.business-organization-options { --el-color-primary: #4356e0; }
-.business-organization-options .el-select-dropdown__item { font-size: 13px; }
 </style>

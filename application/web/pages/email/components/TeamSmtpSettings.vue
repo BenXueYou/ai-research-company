@@ -33,9 +33,9 @@
       <p>保存结果尚未确认。当前配置已保留；切页返回不会重新提交。可使用原请求核实，尚未保存时将继续保存该配置。</p>
       <el-button :disabled="busy" @click="save">使用原请求核实</el-button>
     </div>
-    <el-form
+    <el-form ref="selectionForm" :model="{ security }"
       v-if="canMaintain"
-      class="identity-card smtp-form"
+      class="business-form identity-card smtp-form"
       label-position="top"
       @submit.prevent="save"
     >
@@ -57,16 +57,15 @@
           :disabled="locked"
         />
       </el-form-item>
-      <el-form-item label="加密方式" for="smtp-security">
-        <select
+      <el-form-item label="加密方式" for="smtp-security" prop="security" :rules="[{ required: true, message: '请选择加密方式', trigger: 'change' }]">
+        <el-select :empty-values="[null, undefined]"
           id="smtp-security"
           v-model="security"
-          required
           :disabled="locked"
         >
-          <option value="tls">TLS</option>
-          <option value="starttls">STARTTLS</option>
-        </select>
+          <el-option value="tls" label="TLS" />
+          <el-option value="starttls" label="STARTTLS" />
+        </el-select>
       </el-form-item>
       <el-form-item label="SMTP 账号" for="smtp-username">
         <el-input
@@ -98,15 +97,16 @@
           :disabled="locked"
         />
       </el-form-item>
-      <label class="default-choice">
-        <input v-model="defaultChannel" type="checkbox" :disabled="locked">
-        设为团队默认渠道
-      </label>
-      <el-button class="primary-button"
-        native-type="submit"
-        :disabled="locked">
-        {{ busy ? '正在验证并保存…' : '验证设置并保存' }}
-      </el-button>
+      <el-form-item>
+        <el-checkbox v-model="defaultChannel" :disabled="locked">设为团队默认渠道</el-checkbox>
+      </el-form-item>
+      <div class="form-actions">
+        <el-button
+          type="primary" native-type="submit"
+          :disabled="locked">
+          {{ busy ? '正在验证并保存…' : '验证设置并保存' }}
+        </el-button>
+      </div>
     </el-form>
     <div v-else class="workspace-card read-only-note">
       <p>业务员可查看团队渠道状态，但不能维护设置。</p>
@@ -121,8 +121,12 @@ import {
   shallowRef
 } from 'vue';
 import {
+  ElSelect,
+  ElOption,
+  type FormInstance,
   ElAlert,
   ElButton,
+  ElCheckbox,
   ElForm,
   ElFormItem,
   ElInput
@@ -140,6 +144,7 @@ interface SmtpChannel {
   verificationDetail: string;
   defaultChannel: boolean;
 }
+const selectionForm = ref<FormInstance>();
 const props = defineProps<{
   canMaintain: boolean;
   request: (path: string, body?: Record<string, unknown>) => Promise<unknown>;
@@ -224,6 +229,9 @@ async function refresh() {
 async function save() {
   if (busy.value)
     return;
+  if (!await selectionForm.value?.validate().catch(() => false)) return;
+  if (busy.value)
+    return;
   error.value = '';
   notice.value = '';
   if (!/^\d+$/u.test(port.value) || !credential.value) {
@@ -253,15 +261,12 @@ onMounted(refresh);
 
 <style scoped>
 .smtp-section { margin-top: 32px; }
-.smtp-status,
-.read-only-note { margin-bottom: 24px; }
+.smtp-status, .read-only-note { margin-bottom: 24px; }
 .smtp-form { max-width: 680px; }
 .smtp-status dl { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; }
 .smtp-status dt { color: #717a96; }
 .smtp-status dd { margin: 0; overflow-wrap: anywhere; }
-.default-choice { display: flex; gap: 8px; align-items: center; }
 .verification-available { color: #397565; }
 .verification-unavailable { color: #a13d49; }
 .verification-not-live-verified { color: #8a641d; }
-select { width: 100%; padding: 12px; border: 1px solid #dcdfe6; border-radius: 8px; background: white; }
 </style>

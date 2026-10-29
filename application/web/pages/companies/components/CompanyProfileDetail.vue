@@ -27,7 +27,7 @@
             <h3>企业详情</h3>
             <p class="source-fetched">最近获取 <strong>{{ formatFetchedAt(profile.fetchedAt, '历史获取时间未知') }}</strong></p>
           </div>
-          <button class="source-refresh" :disabled="!!inFlight || unknown" @click="quoteRefresh">主动更新企业详情</button>
+          <el-button class="source-refresh" :disabled="!!inFlight || unknown" @click="quoteRefresh">主动更新企业详情</el-button>
         </div>
         <div v-if="refreshQuote" class="search-summary source-quote">
           <div class="source-quote-copy">
@@ -36,8 +36,8 @@
             <span>最高扣点 {{ refreshQuote.maximumPoints }} · 系数 {{ refreshQuote.coefficient }}</span>
           </div>
           <div class="source-quote-actions">
-            <button :disabled="!!inFlight || unknown" @click="refreshQuote = null">取消</button>
-            <button class="source-confirm" :disabled="!!inFlight || unknown" @click="executeRefresh">再次确认费用并更新</button>
+            <el-button :disabled="!!inFlight || unknown" @click="refreshQuote = null">取消</el-button>
+            <el-button class="source-confirm" :disabled="!!inFlight || unknown" @click="executeRefresh">再次确认费用并更新</el-button>
           </div>
         </div>
         <p v-if="status" role="status">{{ status }}</p>
@@ -63,6 +63,7 @@
 </template>
 
 <script setup lang="ts">
+import { ElButton } from 'element-plus';
 import { onActivated, ref, watch } from 'vue';
 import { HttpError } from '../../../api/http';
 import type { CompanyProfile, CompanyRequest } from '../../../api/companyProfiles';
@@ -183,29 +184,17 @@ async function executeRefresh() {
 .profile-detail :deep(.profile-editor), .profile-source, .profile-detail :deep(.contact-panel), .profile-detail :deep(.timeline-panel) { min-width: 0; margin-bottom: 16px; padding: 22px 24px; border: 1px solid #e6e9f0; border-radius: 12px; background: #fff; }
 .profile-detail :deep(h3), .profile-detail :deep(h4) { margin: 0 0 14px; color: #263052; font-size: 14px; font-weight: 600; }
 .profile-detail :deep(p), .profile-detail :deep(.hint) { font-size: 12px; line-height: 1.8; }
-.profile-detail :deep(.el-form-item__label) { color: #647087; font-size: 12px; }
-.profile-detail :deep(.profile-editor > .el-form) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; margin-top: 18px; }
-.profile-detail :deep(.profile-editor .el-form > .el-button) { justify-self: start; margin: 0 0 16px; }
-.profile-detail :deep(.el-form-item) { min-width: 0; margin-bottom: 16px; }
-.profile-detail :deep(.el-form-item__content), .profile-detail :deep(.el-select) { min-width: 0; }
-.profile-detail :deep(.el-input__wrapper), .profile-detail :deep(.el-textarea__inner), .profile-detail :deep(.el-select__wrapper) { border-radius: 8px; }
-.profile-detail :deep(select) { width: 100%; min-width: 0; min-height: 34px; padding: 6px 10px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #465064; font: inherit; font-size: 12px; }
-.profile-detail :deep(button) { max-width: 100%; font-size: 12px; white-space: normal; }
+.profile-detail :deep(.profile-editor > .el-form) { margin-top: 18px; }
 .source-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
 .source-heading > div { min-width: 0; }
 .profile-source .source-kicker { margin: 0 0 3px; color: #8190aa; font-size: 10px; letter-spacing: .1em; }
 .profile-source .source-heading h3 { margin: 0 0 5px; font-size: 16px; }
 .profile-source .source-fetched { margin: 0; color: #7a879c; font-size: 12px; }
 .source-fetched strong { margin-left: 5px; color: #42506c; font-weight: 500; font-variant-numeric: tabular-nums; }
-.profile-source .source-refresh, .source-quote-actions button { min-height: 36px; padding: 7px 13px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #4356e0; font: inherit; font-size: 12px; cursor: pointer; }
-.profile-source .source-refresh:hover, .source-quote-actions button:hover { border-color: #b5bff6; background: #f4f6ff; }
 .profile-detail :deep(.search-summary.source-quote) { display: flex; align-items: center; justify-content: space-between; margin: 18px 0 0; padding: 16px 18px; }
 .source-quote-copy { display: grid; gap: 3px; min-width: 0; }
 .source-quote-copy strong { color: #263052; font-size: 13px; }
 .source-quote-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
-.source-quote-actions .source-confirm { border-color: #4356e0; background: #4356e0; color: #fff; font-weight: 600; }
-.source-quote-actions .source-confirm:hover { border-color: #3343c9; background: #3343c9; color: #fff; }
-.profile-source button:disabled { opacity: .5; cursor: not-allowed; }
 .profile-detail :deep(.search-summary) { flex-wrap: wrap; gap: 10px; padding: 12px; border: 1px solid #e1e6fc; border-radius: 8px; background: #f6f8ff; color: #53617e; font-size: 12px; }
 .profile-source-data { margin-top: 16px; border-top: 1px solid #eef0f6; padding-top: 14px; color: #647087; font-size: 12px; }
 .profile-detail :deep(summary) { cursor: pointer; }
@@ -213,8 +202,6 @@ async function executeRefresh() {
 .profile-detail :deep(.email-composer) { padding-top: 22px; margin-top: 22px; border-top: 1px solid #e6e9f0; }
 .profile-detail :deep(.email-contact), .profile-detail :deep(.candidate-row) { flex-wrap: wrap; padding: 14px 0; border-bottom: 1px solid #edf0f6; font-size: 12px; }
 .profile-detail :deep(.attachment-panel) { border-top-color: #e6e9f0; padding-top: 18px; margin-top: 20px; }
-.profile-detail :deep(input[type="file"]) { max-width: 100%; padding: 10px; border: 1px dashed #dce1ee; border-radius: 8px; background: #f8f9fc; color: #738095; font-size: 12px; }
-.profile-detail :deep(input[type="file"]::file-selector-button) { margin-right: 10px; padding: 5px 10px; border: 0; border-radius: 5px; background: #e9edff; color: #4356e0; cursor: pointer; }
 .profile-detail :deep(.attachment-row) { flex-wrap: wrap; gap: 8px; padding: 10px 0; border-bottom: 1px solid #eef0f6; font-size: 12px; }
 .profile-detail :deep(.timeline-filter) { flex-wrap: wrap; }
 .profile-detail :deep(.timeline-entry) { padding: 18px 0; border-top-color: #e6e9f0; font-size: 12px; }
@@ -222,15 +209,11 @@ async function executeRefresh() {
 .profile-detail :deep(.timeline-entry small) { color: #98a1b0; font-size: 11px; }
 .profile-detail > p[role="alert"] { padding: 12px 16px; border: 1px solid #f2d6da; border-radius: 8px; background: #fff0f0; color: #a13d49; }
 .profile-detail > p[role="status"] { padding: 12px 16px; border: 1px solid #f0dfbb; border-radius: 8px; background: #fff8e9; color: #946b26; }
-@media (max-width: 1100px) and (min-width: 801px), (max-width: 480px) {
-  .profile-detail :deep(.profile-editor > .el-form) { grid-template-columns: minmax(0, 1fr); }
-}
 @media (max-width: 600px) {
   .profile-detail-heading, .profile-detail :deep(.profile-editor), .profile-source, .profile-detail :deep(.contact-panel), .profile-detail :deep(.timeline-panel) { padding: 18px 16px; }
   .profile-detail-heading h2 { font-size: 16px; }
   .profile-avatar { width: 40px; height: 40px; font-size: 18px; }
   .source-heading, .source-quote-actions { align-items: stretch; flex-direction: column; }
-  .profile-source .source-refresh, .source-quote-actions button { width: 100%; }
   .profile-detail :deep(.search-summary.source-quote) { align-items: stretch; }
 }
 </style>

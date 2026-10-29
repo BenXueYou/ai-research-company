@@ -23,19 +23,17 @@
       <div><span>当前平均成本</span><strong>{{ snapshot.inventory.average_cost }}</strong><small>元/点</small></div>
       <div><span>最低加价率</span><strong>{{ snapshot.pricing.minimum_markup }}</strong></div>
     </div>
-    <el-form class="order-create-form" label-position="top" @submit.prevent="createOrder">
+    <el-form ref="selectionForm" :model="{ buyerId }" class="business-form order-create-form" label-position="top" @submit.prevent="createOrder">
       <h3>创建订单</h3>
-      <el-form-item label="直属买方" for="order-buyer">
-        <select
+      <el-form-item label="直属买方" for="order-buyer" prop="buyerId" :rules="[{ required: true, message: '请选择直属买方', trigger: 'change' }]">
+        <el-select :empty-values="[null, undefined]"
           id="order-buyer"
           v-model="buyerId"
-          required
           :disabled="busy || !!unknown"
         >
-          <option value="">请选择</option>
-          <option v-for="child in snapshot?.children ?? []" :key="child.id" :value="child.id">{{ child.name }}（{{
-            child.kind }}）</option>
-        </select>
+          <el-option value="" label="请选择" />
+          <el-option v-for="child in snapshot?.children ?? []" :key="child.id" :value="child.id" :label="`${child.name}（${child.kind}）`" />
+        </el-select>
       </el-form-item>
       <el-form-item label="点数数量" for="order-quantity">
         <el-input
@@ -53,7 +51,9 @@
           :disabled="busy || !!unknown"
         />
       </el-form-item>
-      <el-button class="primary-button" native-type="submit" :disabled="busy || !!unknown || !buyerId">建单</el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :disabled="busy || !!unknown || !buyerId">建单</el-button>
+      </div>
     </el-form>
     <div v-for="order in snapshot?.orders ?? []" :key="order.id" class="workspace-card order-card">
       <div class="order-card-heading">
@@ -87,7 +87,7 @@
       <p v-if="order.status === 'refunded'">退款 {{ order.refundAmount }} 元；依据：{{ order.refundEvidence }}</p>
     </div>
     <p v-if="lifecycle && selected" class="order-reference">当前操作订单：{{ selected.id }}</p>
-    <el-form v-if="selected && mode === 'reprice'" label-position="top" @submit.prevent="reprice">
+    <el-form class="business-form" v-if="selected && mode === 'reprice'" label-position="top" @submit.prevent="reprice">
       <h3>调整订单 · {{ selected.buyerName }}</h3>
       <el-form-item label="点数数量" for="reprice-quantity">
         <el-input
@@ -105,10 +105,12 @@
           required
         />
       </el-form-item>
-      <el-button native-type="submit" :disabled="busy || !!unknown">保存调整</el-button>
-      <el-button :disabled="lifecycle && (busy || !!unknown)" @click="selected = null">取消</el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :disabled="busy || !!unknown">保存调整</el-button>
+        <el-button :disabled="lifecycle && (busy || !!unknown)" @click="selected = null">取消</el-button>
+      </div>
     </el-form>
-    <el-form v-if="selected && mode === 'confirm'" label-position="top" @submit.prevent="confirm">
+    <el-form class="business-form" v-if="selected && mode === 'confirm'" label-position="top" @submit.prevent="confirm">
       <h3>确认足额收款 · {{ selected.buyerName }} · {{ selected.amount }} 元</h3>
       <el-form-item label="唯一线下收款凭证" for="receipt-reference">
         <el-input
@@ -119,10 +121,12 @@
         />
       </el-form-item>
       <p>仅在核实足额款已到账后确认。库存充足则整单预留；不足则登记待补库存，锁定数量售价，不退款。</p>
-      <el-button native-type="submit" :disabled="busy || !!unknown">登记足额收款</el-button>
-      <el-button :disabled="lifecycle && (busy || !!unknown)" @click="selected = null">取消</el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :disabled="busy || !!unknown">登记足额收款</el-button>
+        <el-button :disabled="lifecycle && (busy || !!unknown)" @click="selected = null">取消</el-button>
+      </div>
     </el-form>
-    <el-form v-if="selected && mode === 'refund'" label-position="top" @submit.prevent="refund">
+    <el-form class="business-form" v-if="selected && mode === 'refund'" label-position="top" @submit.prevent="refund">
       <h3>确认线下整单退款 · {{ selected.buyerName }} · {{ selected.amount }} 元</h3>
       <p>请先核实整单款项已在线下退回。提交后订单关闭并释放 {{ selected.quantity }} 点预留。</p>
       <el-form-item label="线下退款完成依据" for="refund-evidence">
@@ -133,8 +137,10 @@
           :disabled="busy || !!unknown"
         />
       </el-form-item>
-      <el-button native-type="submit" :disabled="busy || !!unknown || !refundEvidence.trim()">确认已退款并释放预留</el-button>
-      <el-button :disabled="busy || !!unknown" @click="selected = null">取消</el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :disabled="busy || !!unknown || !refundEvidence.trim()">确认已退款并释放预留</el-button>
+        <el-button :disabled="busy || !!unknown" @click="selected = null">取消</el-button>
+      </div>
     </el-form>
   </section>
 </template>
@@ -148,6 +154,9 @@ import {
 } from 'vue';
 import type { FormLeaveState } from '../../router/formLeave';
 import {
+  ElSelect,
+  ElOption,
+  type FormInstance,
   ElAlert,
   ElButton,
   ElForm,
@@ -157,6 +166,7 @@ import {
 
 type Order = { id: string; buyerId: string; buyerName: string; buyerActive: boolean; quantity: string; unitPrice: string; amount: string; status: string; shortageReceipt: boolean; receiptReference: string | null; salesCost: string | null; grossProfit: string | null; refundAmount: string | null; refundEvidence: string | null };
 type Snapshot = { children: { id: string; name: string; kind: string }[]; inventory: { balance: string; reserved: string; average_cost: string }; pricing: { minimum_markup: string }; orders: Order[] };
+const selectionForm = ref<FormInstance>();
 const props = defineProps<{
   request: (path: string, body?: Record<string, unknown>) => Promise<unknown>;
   platformLifecycle?: boolean;
@@ -268,7 +278,10 @@ async function run(path: string, body: Record<string, unknown>, retry = false) {
       : failure instanceof Error ? failure.message : '请求失败';
   } finally { busy.value = false; }
 }
-async function createOrder() { await run('point-orders', { buyerId: buyerId.value, quantity: quantity.value, unitPrice: unitPrice.value }); }
+async function createOrder() {
+  if (!await selectionForm.value?.validate().catch(() => false)) return;
+  await run('point-orders', { buyerId: buyerId.value, quantity: quantity.value, unitPrice: unitPrice.value });
+}
 function selectReprice(order: Order) { selected.value = order; mode.value = 'reprice'; editQuantity.value = order.quantity; editPrice.value = order.unitPrice; }
 function selectConfirm(order: Order) { selected.value = order; mode.value = 'confirm'; receiptReference.value = ''; }
 function selectRefund(order: Order) { selected.value = order; mode.value = 'refund'; refundEvidence.value = ''; }
@@ -289,9 +302,8 @@ onMounted(() => { load().catch(failure => { error.value = failure instanceof Err
 .order-page h1 { margin: 0; color: #1c2333; font-size: 25px; line-height: 1.35; letter-spacing: -.4px; }
 .order-page > p:not(.eyebrow) { color: #738095; }
 .order-header-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; color: #4356e0; background: #eef1ff; font-size: 24px; }
-.order-create-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: end; gap: 16px; margin-top: 22px; padding: 22px; border: 1px solid #e6e9f0; border-radius: 12px; background: #fbfcff; }
+.order-create-form { margin-top: 22px; padding: 22px; border: 1px solid #e6e9f0; border-radius: 12px; background: #fbfcff; }
 .order-create-form h3 { color: #27324a; font-size: 16px; }
-.order-create-form :deep(.el-input__wrapper), .order-page select { border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
 .order-card { margin-top: 16px; padding: 20px; border: 1px solid #e6e9f0; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px #19234605; }
 .order-card-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .order-card h3 { margin: 0; color: #26324a; font-size: 16px; }
@@ -306,14 +318,8 @@ onMounted(() => { load().catch(failure => { error.value = failure instanceof Err
 .inventory-strip strong { color: #4356e0; font: 600 23px/1.4 'Segoe UI', Consolas, monospace; overflow-wrap: anywhere; }
 .inventory-strip small { margin-left: 6px; color: #8994a8; font-size: 11px; }
 .order-create-form h3 { grid-column: 1 / -1; margin: 0; }
-.order-create-form :deep(.el-form-item) { min-width: 0; margin: 0; }
-.order-create-form > .el-button { min-height: 40px; }
-.order-create-form select { width: 100%; min-height: 40px; padding: 8px 12px; border: 0; color: #26324a; background: #fff; font: inherit; }
-.order-create-form select:focus-visible { outline: 2px solid #4356e0; outline-offset: 2px; }
-.order-create-form :deep(.el-input__wrapper) { min-height: 40px; }
 .order-page > .el-form:not(.order-create-form) { margin-top: 20px; padding: 22px; border: 1px solid #dfe4fd; border-radius: 12px; background: #f7f8ff; }
 .order-reference { overflow-wrap: anywhere; color: #8994a8; font: 11px/1.5 Consolas, monospace; }
-@media (max-width: 900px) { .order-create-form { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 680px) {
   .order-page { padding: 18px 14px; }
   .order-card-heading { align-items: flex-start; }
@@ -322,8 +328,7 @@ onMounted(() => { load().catch(failure => { error.value = failure instanceof Err
   .inventory-strip > div:nth-child(3) { border-left: 0; }
   .inventory-strip > div:nth-child(n+3) { border-top: 1px solid #edf0f6; }
   .inventory-strip strong { font-size: 19px; }
-  .order-create-form { grid-template-columns: minmax(0, 1fr); padding: 16px; }
+  .order-create-form { padding: 16px; }
   .order-card { padding: 16px; }
-  .order-card :deep(.el-button) { margin: 6px 6px 0 0; max-width: 100%; height: auto; min-height: 34px; white-space: normal; }
 }
 </style>

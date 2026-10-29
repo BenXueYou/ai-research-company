@@ -65,8 +65,6 @@ function resetFilter(visible: boolean) {
 </script>
 
 <style scoped>
-.country-select { width: 100%; min-width: 0; }
-.country-select :deep(.el-select__wrapper) { min-height: 42px; border-radius: 8px; }
 .country-option { display: flex; align-items: center; gap: 9px; }
 .country-selection { min-width: 0; }
 .country-selection > span { overflow: hidden; text-overflow: ellipsis; }

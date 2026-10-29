@@ -22,7 +22,7 @@
         <span class="status-pill">北京时间</span>
       </div>
       <p class="card-hint">默认额度为每企业每日 2000 封。修改只影响后续发送的额度核算。</p>
-    <el-form class="quota-form" label-position="top" :disabled="busy || resultUnknown" @submit.prevent="save">
+    <el-form class="business-form quota-form" label-position="top" :disabled="busy || resultUnknown" @submit.prevent="save">
       <el-form-item label="终端企业">
         <el-select v-model="organizationId" placeholder="选择终端企业">
           <el-option
@@ -41,7 +41,9 @@
           max="1000000"
         />
       </el-form-item>
-      <el-button native-type="submit" :disabled="busy || resultUnknown">保存日额度</el-button>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :disabled="busy || resultUnknown">保存日额度</el-button>
+      </div>
     </el-form>
     <el-alert
       v-if="error"
@@ -150,14 +152,6 @@ onMounted(() => {
 .card-heading h2 { margin: 0; font-size: 17px; font-weight: 650; }
 .status-pill { padding: 4px 9px; border-radius: 5px; color: #5365c5; background: #eef1ff; font-size: 11px; white-space: nowrap; }
 .card-hint { margin: 16px 0 20px; }
-.settings-card :deep(.el-alert) { margin-top: 16px; }
-.quota-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, .45fr) auto; align-items: end; gap: 0 18px; }
-.quota-form :deep(.el-form-item) { min-width: 0; margin-bottom: 0; }
-.quota-form :deep(.el-form-item__label) { height: auto; margin-bottom: 8px; color: #647087; font-size: 12px; line-height: 1.6; }
-.quota-form :deep(.el-input__wrapper), .quota-form :deep(.el-select__wrapper) { min-height: 42px; border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
-.quota-form :deep(.el-input__wrapper.is-focus), .quota-form :deep(.el-select__wrapper.is-focused) { box-shadow: 0 0 0 1px var(--email-accent) inset; }
-.quota-form :deep(.el-button) { min-height: 42px; margin: 0; padding: 10px 18px; border-color: var(--email-accent); border-radius: 8px; color: #fff; background: var(--email-accent); font-size: 13px; font-weight: 600; box-shadow: 0 3px 7px #4356e017; }
-.quota-form :deep(.el-button:not(:disabled):hover) { border-color: #3343c9; background: #3343c9; }
 [role='status'] { margin: 16px 0 0; color: #16885e; font-size: 13px; }
 @media (max-width: 760px) {
   .settings-heading { display: block; }
@@ -165,8 +159,5 @@ onMounted(() => {
   .settings-heading h1 { font-size: 21px; }
   .settings-navigation { gap: 20px; }
   .settings-card { padding: 18px 16px; }
-  .quota-form { grid-template-columns: minmax(0, 1fr); gap: 18px; }
-  .quota-form :deep(.el-form-item) { margin-bottom: 0; }
-  .quota-form :deep(.el-button) { width: 100%; }
 }
 </style>

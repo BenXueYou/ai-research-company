@@ -8,21 +8,22 @@
       </div>
       <span class="profiles-count">当前列表 <strong>{{ profiles.length }}</strong> 家企业</span>
     </header>
-    <form class="profiles-filters" @submit.prevent="load">
-      <label>客户状态 <el-select :empty-values="[null, undefined]" v-model="statusFilter">
+    <el-form class="business-form profiles-filters" label-position="top" @submit.prevent="load">
+      <el-form-item label="客户状态"><el-select :empty-values="[null, undefined]" v-model="statusFilter">
         <el-option value="" label="全部" /><el-option value="lead" label="线索" /><el-option value="following" label="跟进中" />
         <el-option value="replied" label="已回复" /><el-option value="invalid" label="无效" />
-      </el-select></label>
-      <label>跟进开始 <el-date-picker v-model="followUpFrom" type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false" /></label>
-      <label>跟进结束 <el-date-picker v-model="followUpTo" type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false" /></label>
-      <label v-if="auth.session?.role === 'admin'" class="deleted-filter"><input v-model="showDeleted" type="checkbox" />查看已删除</label>
-      <button class="filter-primary" type="submit" :disabled="loading">筛选档案</button>
-      <button type="button" :disabled="loading" @click="load">刷新列表</button>
-    </form>
+      </el-select></el-form-item>
+      <el-form-item label="跟进开始"><el-date-picker v-model="followUpFrom" type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false" /></el-form-item>
+      <el-form-item label="跟进结束"><el-date-picker v-model="followUpTo" type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false" /></el-form-item>
+      <el-form-item v-if="auth.session?.role === 'admin'"><el-checkbox v-model="showDeleted">查看已删除</el-checkbox></el-form-item>
+      <div class="form-actions">
+        <el-button type="primary" native-type="submit" :disabled="loading">筛选档案</el-button>
+      </div>
+    </el-form>
     <p v-if="loading" role="status">正在读取档案…</p>
     <p v-else-if="error" role="alert">{{ error }}</p>
     <div v-else-if="!profiles.length" class="profiles-empty" role="status">
-      <el-empty :image-size="112" description="当前筛选下没有档案">
+      <el-empty description="当前筛选下没有档案">
         <template #description>
           <h2>{{ hasAppliedFilters ? '未找到匹配档案' : '暂无企业档案' }}</h2>
           <p>当前筛选下没有档案</p>
@@ -63,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ElDatePicker, ElOption, ElSelect } from 'element-plus';
+import { ElCheckbox, ElForm, ElFormItem, ElButton, ElDatePicker, ElOption, ElSelect } from 'element-plus';
 import { computed, ref, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { useSessionStore } from '../../stores/session';
@@ -135,17 +136,8 @@ void load();
 .profiles-eyebrow { margin: 0 0 8px; color: #4356e0; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
 .profiles-count { flex-shrink: 0; color: var(--profile-muted); font-size: 12px; }
 .profiles-count strong { margin: 0 5px; color: #4356e0; font-size: 22px; font-variant-numeric: tabular-nums; }
-.profiles-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; padding: 20px; margin-bottom: 24px; border: 1px solid var(--profile-line); border-radius: 12px; background: #fff; }
-.profiles-filters label { display: grid; gap: 7px; color: #647087; font-size: 12px; }
-.profiles-filters input[type="checkbox"] { min-width: 0; min-height: 38px; padding: 8px 11px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #263052; font: inherit; }
-.profiles-filters .deleted-filter { display: flex; align-items: center; align-self: center; gap: 7px; padding-top: 20px; }
-.deleted-filter input { min-height: auto; margin: 0; accent-color: #4356e0; }
-.profiles-filters button { min-height: 38px; padding: 8px 15px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #465064; font: inherit; font-size: 12px; cursor: pointer; }
-.profiles-filters .filter-primary { border-color: #4356e0; background: #4356e0; color: #fff; }
-.profiles-filters button:hover { border-color: #b5bff6; background: #f4f6ff; color: #4356e0; }
-.profiles-filters .filter-primary:hover { background: #3343c9; color: #fff; }
-.profiles-filters button:disabled { opacity: .5; cursor: not-allowed; }
-.profiles-filters input:focus-visible { outline: 2px solid #b5bff6; outline-offset: 2px; }
+.profiles-filters { flex-wrap: wrap; padding: 20px; margin-bottom: 24px; border: 1px solid var(--profile-line); border-radius: 12px; background: #fff; }
+.profiles-filters .form-actions { justify-content: flex-end; }
 .profiles-content { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: start; }
 .profiles-empty { padding: 32px 20px; border: 1px solid var(--profile-line); border-radius: 12px; background: #fff; text-align: center; }
 .profiles-empty h2 { margin: 0 0 12px; color: #263052; font-size: 18px; font-weight: 600; }
@@ -181,20 +173,10 @@ void load();
 @media (max-width: 800px) {
   .profiles-heading { align-items: flex-start; flex-direction: column; gap: 8px; }
   .profiles-count strong { font-size: 18px; }
-  .profiles-filters { gap: 12px; padding: 16px; }
-  .profiles-filters label { flex: 1 1 140px; }
-  .profiles-filters .deleted-filter { flex-basis: 100%; padding-top: 0; }
+  .profiles-filters { padding: 16px; }
   .profiles-content { display: flex; flex-direction: column; }
   .profiles-list, .profile-placeholder, .profiles-content > :deep(.profile-detail) { width: 100%; }
   .profiles-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
   .profiles-list li + li { margin-top: 0; }
 }
-
-/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
-:deep(.el-select) { min-width: 0; }
-.profiles-filters :deep(.el-select) { width: 128px; }
-.profiles-filters :deep(.el-select__wrapper) { min-height: 38px; border-radius: 8px; }
-.el-date-editor.el-input { width: 100%; min-width: 0; }
-.profiles-filters :deep(.el-date-editor) { width: 160px; }
-.profiles-filters :deep(.el-date-editor .el-input__wrapper) { min-height: 38px; border-radius: 8px; }
 </style>

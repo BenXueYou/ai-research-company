@@ -22,7 +22,6 @@
     <el-empty
       v-else-if="!batches.length && !error"
       class="records-empty"
-      :image-size="72"
     >
       <template #image>
         <svg
@@ -321,8 +320,6 @@ onScopeDispose(() => {
 .records-heading { margin-bottom: 22px; }
 .records-heading h1 { margin: 0 0 7px; font-size: 24px; line-height: 1.4; letter-spacing: -.4px; }
 .records-heading p { max-width: 730px; margin: 0; color: var(--console-muted); font-size: 13px; line-height: 1.8; }
-.records-heading :deep(.el-button) { flex: none; margin-top: 3px; border-radius: 8px; }
-.email-records > :deep(.el-alert) { margin-bottom: 16px; }
 .pending-card {
   padding: 16px 18px;
   margin-bottom: 18px;
@@ -333,23 +330,15 @@ onScopeDispose(() => {
 }
 .pending-card p { margin: 0 0 8px; color: inherit; font-size: 13px; overflow-wrap: anywhere; }
 .records-loading { padding: 14px 0; color: var(--console-muted); }
-.records-empty, .records-panel, .email-detail {
+.records-panel, .email-detail {
   min-width: 0;
   border: 1px solid var(--console-line);
   border-radius: 12px;
   background: var(--console-surface);
   box-shadow: 0 2px 5px #19234605;
 }
-.records-empty {
-  min-height: 360px;
-  padding: 48px 24px;
-  --el-empty-description-margin-top: 20px;
-  --el-empty-bottom-margin-top: 24px;
-}
-.records-empty :deep(.el-empty__image svg) { width: 72px; height: 72px; color: var(--console-brand); fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .empty-mail-tile { fill: #eef1ff; stroke: none; }
 .empty-description h2 { margin: 0 0 10px; color: var(--console-text); font-size: 16px; font-weight: 600; line-height: 1.5; }
-.records-empty .empty-description p { margin: 0; color: var(--console-muted); font-size: 13px; line-height: 1.9; }
 .empty-action { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 40px; padding: 9px 18px; border: 1px solid var(--console-brand); border-radius: 8px; color: #fff; background: var(--console-brand); font-size: 13px; text-decoration: none; }
 .empty-action:hover { border-color: var(--console-brand-deep); background: var(--console-brand-deep); }
 .empty-action:focus-visible { outline: 3px solid #aeb7f4; outline-offset: 3px; }
@@ -400,7 +389,6 @@ onScopeDispose(() => {
 .recipient-evidence { margin: 0 0 12px; color: var(--console-muted); font-size: 12px; }
 .email-content { padding: 16px; border: 1px solid #e9edf5; border-radius: 8px; margin: 0 0 12px; color: #46536a; background: #fff; font-size: 13px; line-height: 1.9; white-space: pre-wrap; }
 .email-recipient > p:not([class]) { color: var(--console-muted); font-size: 12px; }
-.email-recipient > .el-button { max-width: 100%; margin: 5px 8px 0 0; white-space: normal; height: auto; }
 .record-link:focus-visible, .detail-links a:focus-visible { outline: 2px solid var(--console-brand); outline-offset: 3px; }
 @media (max-width: 1100px) {
   .list-columns { display: none; }

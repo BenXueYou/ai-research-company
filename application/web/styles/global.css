@@ -18,20 +18,11 @@ body {
   min-width: 320px;
   background: var(--console-canvas);
 }
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
 ::selection {
   color: #fff;
   background: var(--console-brand);
 }
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
+a:focus-visible {
   outline: 3px solid #aeb7f4;
   outline-offset: 3px;
 }
@@ -122,9 +113,7 @@ main {
   margin: auto;
   min-height: calc(100vh - 145px);
 }
-.workspace-mode h1,
-.workspace-mode h2,
-.workspace-mode h3 {
+.workspace-mode h1, .workspace-mode h2, .workspace-mode h3 {
   color: var(--console-text);
 }
 .workspace-mode p {
@@ -168,35 +157,15 @@ p {
   color: #737c97;
 }
 .identity-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   padding: 35px;
   background: #fff;
   border: 1px solid #e7e9f2;
   box-shadow: 0 16px 55px #49437709;
   border-radius: 18px;
-  display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-.identity-card label {
-  font-size: 14px;
-  margin-top: 8px;
-  font-weight: 600;
-}
-.identity-card .el-input {
-  --el-input-height: 46px;
-}
-.identity-card .el-button + .el-button {
-  margin-left: 0;
-}
-.el-button {
-  min-height: 42px;
-}
-.primary-button {
-  color: white;
-  border: none;
-  background: #6e5bc8;
-  padding: 13px 20px;
-  margin-top: 15px;
 }
 .hint {
   font-size: 12px;
@@ -218,25 +187,6 @@ p {
   border-radius: 16px;
   background: white;
 }
-.workspace-mode .el-button {
-  border-radius: 8px;
-  font-weight: 500;
-}
-.workspace-mode .el-input__wrapper,
-.workspace-mode .el-textarea__inner,
-.workspace-mode .el-select__wrapper {
-  box-shadow: 0 0 0 1px var(--console-line-strong) inset;
-}
-.workspace-mode .el-input__wrapper:hover,
-.workspace-mode .el-textarea__inner:hover,
-.workspace-mode .el-select__wrapper:hover {
-  box-shadow: 0 0 0 1px #aeb9d0 inset;
-}
-.workspace-mode .el-input.is-focus .el-input__wrapper,
-.workspace-mode .el-textarea__inner:focus,
-.workspace-mode .el-select__wrapper.is-focused {
-  box-shadow: 0 0 0 1px var(--console-brand) inset;
-}
 .workspace-mode .page-heading { max-width: 1160px; }
 .workspace-mode .company-search {
   max-width: 1160px;
@@ -250,7 +200,6 @@ p {
   gap: 16px;
   padding-top: 8px;
 }
-.workspace-mode .company-search > form .primary-button { margin-top: 0; }
 .status-pill {
   display: inline-block;
   font-size: 12px;
@@ -259,22 +208,6 @@ p {
   padding: 6px 12px;
   border-radius: 20px;
   margin-bottom: 18px;
-}
-.error-message,
-.notice {
-  padding: 12px 18px;
-  border-radius: 8px;
-  margin: 0 0 22px;
-}
-.error-message {
-  background: #fff0f0;
-  color: #a13d49;
-  border: 1px solid #f2d6da;
-}
-.notice {
-  background: #edf7f2;
-  color: #397565;
-  border: 1px solid #cbe5da;
 }
 footer {
   text-align: center;
@@ -328,8 +261,7 @@ footer {
   main {
     padding: 28px 18px;
   }
-  .identity-card,
-  .workspace-card {
+  .identity-card, .workspace-card {
     padding: 24px;
   }
 }

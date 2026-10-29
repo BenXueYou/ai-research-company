@@ -160,8 +160,6 @@ onUnmounted(() => { alive = false; });
 .overview-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 2px 0 26px; }
 .overview-heading h1 { margin: 0 0 8px; font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: -.4px; }
 .overview-heading p { margin: 0; color: #738095; font-size: 13px; line-height: 1.7; }
-.overview-refresh { flex-shrink: 0; min-height: 36px; color: #465064; font-weight: 500; }
-.overview-refresh span { margin-right: 7px; font-size: 18px; }
 .overview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .overview-page .workspace-card { min-width: 0; padding: 24px; border: 1px solid #e6e9f0; border-radius: 12px; background: #fff; box-shadow: 0 2px 5px #19234603; }
 .overview-grid .workspace-card { display: flex; flex-direction: column; margin: 0; }

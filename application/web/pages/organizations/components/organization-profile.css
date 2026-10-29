@@ -16,7 +16,6 @@
 .profile-fields dd { margin: 8px 0 0; color: #26344e; font-size: 14px; line-height: 1.7; overflow-wrap: anywhere; }
 .profile-description { margin: -4px 0 16px; color: #647087; font-size: 12px; line-height: 1.8; }
 .profile-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.profile-actions :deep(.el-button) { min-height: 36px; margin: 0; padding: 9px 16px; }
 .profile-order-link { display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; padding: 8px 16px; border: 1px solid #dfe4ff; border-radius: 8px; background: #eef1ff; color: var(--style-b-accent); font-size: 12px; text-decoration: none; }
 .profile-order-link:hover { border-color: var(--style-b-accent); background: #e5e9ff; }
 .profile-order-link:focus-visible { outline: 2px solid var(--style-b-accent); outline-offset: 3px; }
@@ -29,5 +28,5 @@
   .profile-status { margin-left: 60px; }
   .profile-fields { grid-template-columns: minmax(0, 1fr); padding: 16px; }
   .profile-actions { align-items: stretch; }
-  .profile-actions :deep(.el-button), .profile-order-link { flex: 1 1 100%; justify-content: center; }
+  .profile-order-link { flex: 1 1 100%; justify-content: center; }
 }

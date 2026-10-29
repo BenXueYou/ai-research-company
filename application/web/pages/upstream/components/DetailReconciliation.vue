@@ -55,7 +55,7 @@
     <p v-if="!queries.length" class="reconciliation-empty">暂无可核对的查询记录，可点击「刷新查询」获取最新记录。</p>
     <el-form
       v-if="selected"
-      class="reconciliation-form"
+      class="business-form reconciliation-form"
       label-position="top"
       @submit.prevent="submit"
     >
@@ -117,11 +117,13 @@
           :disabled="busy || unknown"
         />
       </el-form-item>
-      <el-button
-        type="primary"
-        native-type="submit"
-        :disabled="busy || unknown"
-      >确认并留痕</el-button>
+      <div class="form-actions">
+        <el-button
+          type="primary"
+          native-type="submit"
+          :disabled="busy || unknown"
+        >确认并留痕</el-button>
+      </div>
     </el-form>
   </section>
 </template>
@@ -319,21 +321,17 @@ pre { max-height: 180px; overflow: auto; padding: 12px; border-radius: 6px; back
 summary { cursor: pointer; color: var(--console-brand); }
 .query-state { display: inline-block; padding: 2px 7px; border-radius: 5px; color: #63718a; background: #f0f2f7; }
 .query-pending { color: #a8731e; background: #fff5e4; }
-.reconciliation-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; margin-top: 24px; padding: 24px; border: 1px solid #e1e5fb; border-radius: 10px; background: #f8f9ff; }
+.reconciliation-form { margin-top: 24px; padding: 24px; border: 1px solid #e1e5fb; border-radius: 10px; background: #f8f9ff; }
 .reconciliation-form h3, .reconciliation-form > p, .form-wide { grid-column: 1 / -1; }
 .reconciliation-form h3 { margin: 0 0 8px; font-size: 15px; overflow-wrap: anywhere; }
 .reconciliation-form > p { margin: 0 0 22px; font-size: 12px; overflow-wrap: anywhere; }
-.reconciliation-form :deep(.el-form-item) { min-width: 0; }
-.reconciliation-form :deep(.el-form-item__label) { font-size: 12px; }
-.reconciliation-form > .el-button { grid-column: 1 / -1; justify-self: end; margin-top: 4px; }
 .reconciliation-error, .reconciliation-notice, .reconciliation-warning { margin: 16px 0 0; padding: 12px 15px; border: 1px solid #f0d2d6; border-radius: 8px; font-size: 12px; }
 .reconciliation-card .reconciliation-error { color: var(--console-danger); background: #fff4f4; }
 .reconciliation-card .reconciliation-notice { color: #168764; border-color: #cbe8dc; background: #eefaf4; }
 .reconciliation-card .reconciliation-warning { color: #a8731e; border-color: #f0dfbd; background: #fff9ed; }
 .reconciliation-empty { margin: 0; padding: 32px 16px; text-align: center; font-size: 12px; }
 @media (max-width: 640px) {
-  .reconciliation-form { grid-template-columns: 1fr; padding: 18px 14px; }
-  .reconciliation-form > .el-button { width: 100%; }
+  .reconciliation-form { padding: 18px 14px; }
 }
 
 .reconciliation-card-heading {
@@ -364,22 +362,9 @@ summary { cursor: pointer; color: var(--console-brand); }
   line-height: 1.7;
 }
 
-.refresh-button {
-  flex: 0 0 auto;
-}
-
 @media (max-width: 640px) {
   .reconciliation-card-heading {
     display: block;
   }
-
-  .refresh-button {
-    width: 100%;
-    margin-top: 16px;
-  }
 }
-
-/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
-:deep(.el-select) { min-width: 0; }
-.reconciliation-form :deep(.el-select__wrapper) { min-height: 34px; border-radius: 8px; }
 </style>

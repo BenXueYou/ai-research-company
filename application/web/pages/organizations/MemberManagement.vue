@@ -30,9 +30,9 @@
       :closable="false"
     />
     <el-button v-if="pending" :disabled="busy" @click="verifyPending">核实原请求</el-button>
-    <el-form
+    <el-form ref="selectionForm" :model="{ role }"
       v-else-if="!credentials"
-      class="identity-card member-form"
+      class="business-form identity-card member-form"
       label-position="top"
       @submit.prevent="createMember"
     >
@@ -55,23 +55,23 @@
           :disabled="busy || !!pending"
         />
       </el-form-item>
-      <el-form-item label="成员角色" for="member-role">
-        <select
+      <el-form-item label="成员角色" for="member-role" prop="role" :rules="[{ required: true, message: '请选择成员角色', trigger: 'change' }]">
+        <el-select :empty-values="[null, undefined]"
           id="member-role"
           v-model="role"
-          required
           :disabled="busy || !!pending"
         >
-          <option value="sales">业务员</option>
-          <option value="admin">终端企业管理员</option>
-        </select>
+          <el-option value="sales" label="业务员" />
+          <el-option value="admin" label="终端企业管理员" />
+        </el-select>
       </el-form-item>
       </div>
-      <el-button
-        class="member-primary"
-        native-type="submit"
-        :disabled="busy || !!pending"
-      >{{ busy ? '正在创建…' : '确认创建成员' }}</el-button>
+      <div class="form-actions">
+        <el-button
+          type="primary" native-type="submit"
+          :disabled="busy || !!pending"
+        >{{ busy ? '正在创建…' : '确认创建成员' }}</el-button>
+      </div>
     </el-form>
     <div class="workspace-card member-list">
       <div class="list-heading">
@@ -122,6 +122,9 @@ import { useFormLeave } from '../../router/formLeave';
 import { HttpError } from '../../api/http';
 import { membersApi, type Credentials, type Member } from '../../api/members';
 import {
+  ElSelect,
+  ElOption,
+  type FormInstance,
   ElAlert,
   ElButton,
   ElForm,
@@ -129,6 +132,7 @@ import {
   ElInput
 } from 'element-plus';
 defineOptions({ name: 'MemberManagement' });
+const selectionForm = ref<FormInstance>();
 const props = defineProps<{ request: (path: string, body?: Record<string, string>) => Promise<unknown> }>();
 const auth = useSessionStore();
 const api = membersApi(props.request);
@@ -154,6 +158,8 @@ async function refresh() {
   }
 }
 async function createMember() {
+  if (busy.value || credentials.value || pending.value) return;
+  if (!await selectionForm.value?.validate().catch(() => false)) return;
   if (busy.value || credentials.value || pending.value) return;
   error.value = '';
   if (!name.value.trim()) {
@@ -295,17 +301,6 @@ onMounted(() => { if (auth.session?.role === 'admin') void refresh(); });
 }
 .card-heading { margin-bottom: 22px; }
 .card-heading h3, .list-heading h3, .credential-card h3 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
-.member-fields { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 20px; }
-.member-fields :deep(.el-form-item) { min-width: 0; margin-bottom: 22px; }
-.member-fields :deep(.el-form-item__label) { color: #46516a; font-size: 13px; }
-.member-fields :deep(.el-input__wrapper) { min-height: 40px; border-radius: 7px; box-shadow: 0 0 0 1px var(--member-line) inset; }
-.member-fields :deep(.el-input__wrapper.is-focus) { box-shadow: 0 0 0 1px var(--member-accent) inset; }
-select { width: 100%; min-height: 40px; padding: 0 12px; border: 1px solid var(--member-line); border-radius: 7px; background: #fff; color: #1c2333; font: inherit; }
-select:focus-visible { outline: 2px solid #4356e040; outline-offset: 2px; border-color: var(--member-accent); }
-.member-section :deep(.el-button) { min-height: 36px; padding: 8px 14px; border-radius: 7px; font-weight: 500; }
-.member-section :deep(.member-primary) { width: fit-content; min-height: 40px; padding-inline: 20px; border-color: var(--member-accent); background: var(--member-accent); color: #fff; }
-.member-section :deep(.member-primary:hover:not(:disabled)) { background: #3547cc; }
-.member-section :deep(.member-primary:disabled) { opacity: .5; }
 .list-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
 .member-count { display: inline-block; min-width: 24px; margin-left: 6px; padding: 1px 7px; border-radius: 5px; background: #eff1ff; color: var(--member-accent); font-size: 12px; text-align: center; vertical-align: middle; }
 .member-table-heading, .member-row { display: grid; grid-template-columns: minmax(130px, 1fr) minmax(180px, 1.5fr) minmax(125px, .9fr) 64px 170px; align-items: center; gap: 16px; }
@@ -321,16 +316,12 @@ select:focus-visible { outline: 2px solid #4356e040; outline-offset: 2px; border
 .member-status { justify-self: start; padding: 3px 9px; border-radius: 5px; background: #eaf7f0; color: #16885e; font-size: 12px; white-space: nowrap; }
 .member-status.is-inactive { background: #f0f1f4; color: #8891a2; }
 .member-actions { display: flex; align-items: center; gap: 8px; }
-.member-actions :deep(.el-button) { margin: 0; min-height: 30px; padding: 5px 10px; font-size: 12px; }
-.member-actions :deep(.member-disable:not(:disabled)) { border-color: #f1d7d7; color: #d14646; }
 .member-protected { color: #97a0b0; font-size: 12px; }
 .handoff-values { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; padding: 20px; border: 1px solid #e1e5fd; border-radius: 8px; background: #f7f8ff; overflow-wrap: anywhere; }
 .handoff-values dt { color: var(--member-muted); font-size: 13px; }
 .handoff-values dd { margin: 0; font-family: Consolas, monospace; }
 .credential-card > p { color: var(--member-muted); font-size: 13px; line-height: 1.7; }
-.member-section > :deep(.el-alert) { margin-bottom: 16px; }
 @media (max-width: 1100px) {
-  .member-fields { grid-template-columns: 1fr 1fr; }
   .member-table-heading { display: none; }
   .member-row { grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; }
   .member-email { grid-column: 1; }
@@ -340,15 +331,11 @@ select:focus-visible { outline: 2px solid #4356e040; outline-offset: 2px; border
 }
 @media (max-width: 600px) {
   .member-section .identity-card, .member-section .workspace-card { padding: 18px 16px; }
-  .member-fields { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .member-form :deep(.member-primary) { width: 100%; }
   .list-heading { align-items: flex-start; }
   .list-heading p { max-width: 190px; }
-  .list-heading :deep(.el-button) { flex-shrink: 0; padding-inline: 10px; }
   .member-row { padding: 16px 0; }
   .member-actions { grid-column: 1 / -1; grid-row: auto; justify-content: flex-start; }
   .handoff-values { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 16px; }
   .handoff-values dd { margin-bottom: 8px; }
-  .credential-card :deep(.el-button) { margin: 6px 8px 0 0; }
 }
 </style>

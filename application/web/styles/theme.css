@@ -1,10 +1,13 @@
 :root {
+  /* 统一品牌主色；由 Element Plus 默认规则承接选中、悬停和禁用状态。 */
   --el-color-primary: #4356e0;
-  --el-color-primary-light-3: #7180e9;
-  --el-color-primary-light-5: #9aa5f0;
-  --el-color-primary-light-7: #c3c9f7;
-  --el-color-primary-light-9: #eef0ff;
-  --el-border-radius-base: 8px;
+  --el-color-primary-rgb: 67, 86, 224;
+  --el-color-primary-light-3: #7b89e9;
+  --el-color-primary-light-5: #a1aaf0;
+  --el-color-primary-light-7: #c7ccf6;
+  --el-color-primary-light-8: #d9ddf9;
+  --el-color-primary-light-9: #eceefc;
+  --el-color-primary-dark-2: #3645b3;
   --console-brand: #4658dc;
   --console-brand-deep: #3f50d4;
   --console-surface: #fff;

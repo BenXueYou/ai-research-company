@@ -36,9 +36,9 @@
       <el-button @click="closeCredentials">已保存，关闭凭据</el-button>
       <p class="hint">关闭后无法查询本次密码；需要补发时请再次重置。</p>
     </section>
-    <el-form
+    <el-form ref="selectionForm" :model="{ kind }"
       v-else-if="view === 'new'"
-      class="identity-card opening-form style-b-card"
+      class="business-form identity-card opening-form style-b-card"
       label-position="top"
       @submit.prevent="openOrganization"
     >
@@ -51,16 +51,15 @@
           :disabled="busy || openingUnknown"
         />
       </el-form-item>
-      <el-form-item label="组织类型" for="organization-kind">
-        <select
+      <el-form-item label="组织类型" for="organization-kind" prop="kind" :rules="[{ required: true, message: '请选择组织类型', trigger: 'change' }]">
+        <el-select :empty-values="[null, undefined]"
           id="organization-kind"
           v-model="kind"
-          required
           :disabled="busy || openingUnknown"
         >
-          <option value="terminal">终端企业</option>
-          <option v-if="allowedKinds.includes('distributor')" value="distributor">分销组织</option>
-        </select>
+          <el-option value="terminal" label="终端企业" />
+          <el-option v-if="allowedKinds.includes('distributor')" value="distributor" label="分销组织" />
+        </el-select>
       </el-form-item>
       <el-form-item label="国家区号" for="country-code">
         <el-input
@@ -101,12 +100,13 @@
           :disabled="busy || openingUnknown"
         />
       </el-form-item>
-      <el-button
-        class="primary-button"
-        native-type="submit"
-        :disabled="busy || !allowedKinds.length"
-      >{{ busy ? '正在开户…' : '确认开户' }}</el-button>
       <p class="hint">组织与首位管理员同时启用；系统生成临时密码。</p>
+      <div class="form-actions">
+        <el-button
+          type="primary" native-type="submit"
+          :disabled="busy || !allowedKinds.length"
+        >{{ busy ? '正在开户…' : '确认开户' }}</el-button>
+      </div>
     </el-form>
     <div v-if="view === 'list'" class="workspace-card children-list style-b-card">
       <div class="section-heading">
@@ -194,6 +194,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { useFormLeave } from '../../router/formLeave';
 import { useBreadcrumbTitle } from '../../layout/breadcrumb';
 import {
+  ElSelect,
+  ElOption,
+  type FormInstance,
   ElAlert,
   ElButton,
   ElForm,
@@ -216,6 +219,7 @@ interface Child {
   phoneMasked: string;
   email: string;
 }
+const selectionForm = ref<FormInstance>();
 const props = defineProps<{
   request: (path: string, body?: Record<string, unknown>) => Promise<unknown>;
 }>();
@@ -297,6 +301,8 @@ async function refresh() {
   }
 }
 async function openOrganization() {
+  if (busy.value || credentials.value) return;
+  if (!await selectionForm.value?.validate().catch(() => false)) return;
   if (busy.value || credentials.value) return;
   error.value = '';
   if (!name.value.trim() || !phone.value || /\s/u.test(phone.value)) {
@@ -426,28 +432,19 @@ onMounted(refresh);
 .organization-tabs a { flex-shrink: 0; padding: 10px 2px; color: var(--style-b-muted); font-size: 13px; text-decoration: none; }
 .organization-tabs a.tab-active { border-bottom: 2px solid var(--style-b-accent); color: var(--style-b-accent); font-weight: 600; }
 .style-b-card { margin-top: 18px; padding: 23px; border: 1px solid var(--style-b-line); border-radius: 12px; background: #fff; box-shadow: 0 2px 5px #19234603; }
-.opening-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; max-width: 960px; }
-.opening-form > h3, .opening-form > .primary-button, .opening-form > .hint { grid-column: 1 / -1; }
+.opening-form { width: 100%; max-width: 720px; grid-template-columns: minmax(0, 1fr); }
+.opening-form > h3, .opening-form > .hint { grid-column: 1 / -1; }
 .opening-form > h3 { margin-bottom: 22px; }
-.opening-form > .primary-button { justify-self: end; min-width: 140px; height: 40px; }
 .opening-form > .hint { margin: 12px 0 0; text-align: right; }
 .opening-form h3, .section-heading h2 { margin: 0; color: var(--style-b-ink); font-size: 16px; }
 .opening-form h3 { padding-bottom: 15px; border-bottom: 1px solid var(--style-b-line); }
-.opening-form :deep(.el-form-item) { max-width: 720px; }
-.opening-form :deep(.el-form-item__label) { color: #647087; font-size: 12px; }
-select { width: 100%; padding: 10px 12px; border: 1px solid #dfe4ee; border-radius: 8px; color: var(--style-b-ink); background: #fff; }
-select:focus { border-color: var(--style-b-accent); outline: none; }
+
 .children-list { margin-top: 18px; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 4px; }
 .section-heading .module-kicker { margin-bottom: 3px; }
 .organization-row { display: grid; grid-template-columns: minmax(160px, 1fr) minmax(190px, 1fr) minmax(250px, 1.25fr) auto; align-items: center; gap: 24px; min-height: 106px; padding: 20px 8px; border-top: 1px solid var(--style-b-line); overflow-wrap: anywhere; }
 .organization-row:hover { background: #fafbff; }
 .organization-row > * { min-width: 0; }
-.style-b-page :deep(.el-input__wrapper) { min-height: 40px; border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
-.style-b-page :deep(.el-input__wrapper.is-focus) { box-shadow: 0 0 0 1px var(--style-b-accent) inset; }
-.style-b-page :deep(.el-button) { border-radius: 8px; font-size: 12px; }
-.style-b-page :deep(.primary-button) { border-color: var(--style-b-accent); color: #fff; background: var(--style-b-accent); }
-.style-b-page :deep(.primary-button:not(.is-disabled):hover) { border-color: #3343c9; background: #3343c9; }
 .style-b-page > p[role="status"] { padding: 12px 16px; border: 1px solid #e2e7fd; border-radius: 8px; color: #6372a4; background: #f3f5ff; font-size: 12px; line-height: 1.8; }
 .organization-main { display: flex; align-items: center; gap: 11px; }
 .organization-main h3 { margin: 0 0 3px; color: var(--style-b-ink); font-size: 14px; }
@@ -470,8 +467,9 @@ select:focus { border-color: var(--style-b-accent); outline: none; }
 @media (max-width: 1100px) { .account-row { grid-template-columns: 1fr; gap: 16px; } }
 .handoff-values dd { margin: 8px 0 20px; color: var(--style-b-ink); font-family: Consolas, monospace; }
 @media (max-width: 1100px) { .organization-row { grid-template-columns: 1fr 1fr; } .row-action { justify-self: end; } }
-@media (max-width: 600px) { .opening-form { grid-template-columns: 1fr; } .opening-form > .primary-button { justify-self: stretch; } .organization-heading h1 { font-size: 23px; } }
+@media (max-width: 600px) { .organization-heading h1 { font-size: 23px; } }
 @media (max-width: 600px) { .organization-heading { display: block; } .organization-tabs { gap: 16px; } .style-b-card { padding: 18px 16px; } .organization-row { grid-template-columns: 1fr; gap: 10px; } .row-action { justify-self: start; } }
 </style>
 
-<style scoped src="./components/organization-profile.css"></style>
+<style scoped src="./components/organization-profile.css">
+</style>

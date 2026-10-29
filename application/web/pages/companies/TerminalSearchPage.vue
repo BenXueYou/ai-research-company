@@ -18,24 +18,22 @@
       </header>
       <CompanySearch v-show="searchMode === 'company'" id="company-search" :request="request">
         <template #search-mode>
-          <label class="search-mode-field">
-            <span>搜索方式</span>
+          <el-form-item class="form-wide" label="搜索方式">
             <el-select :empty-values="[null, undefined]" v-model="searchMode" aria-label="搜索方式">
               <el-option value="product" label="按产品词" />
               <el-option value="company" label="按公司名" />
             </el-select>
-          </label>
+          </el-form-item>
         </template>
       </CompanySearch>
       <ProductSearch v-show="searchMode === 'product'" id="product-search" :request="request">
         <template #search-mode>
-          <label class="search-mode-field">
-            <span>搜索方式</span>
+          <el-form-item class="form-wide" label="搜索方式">
             <el-select :empty-values="[null, undefined]" v-model="searchMode" aria-label="搜索方式">
               <el-option value="product" label="按产品词" />
               <el-option value="company" label="按公司名" />
             </el-select>
-          </label>
+          </el-form-item>
         </template>
       </ProductSearch>
       <section class="market-exploration" aria-labelledby="market-exploration-title">
@@ -66,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ElOption, ElSelect } from 'element-plus';
+import { ElFormItem, ElOption, ElSelect } from 'element-plus';
 import { ref } from 'vue';
 import type { CompanyRequest } from '../../api/companyProfiles';
 import CompanySearch from './CompanySearch.vue';
@@ -94,11 +92,6 @@ const searchMode = ref<'product' | 'company'>('product');
 .workbench-heading > span { color: #8490a5; font-size: 11px; }
 .search-workbench :deep(.workspace-card) { min-width: 0; margin: 0; padding: 20px 26px 24px; border: 0; border-radius: 0; box-shadow: none; }
 .search-workbench :deep(.company-search-heading), .search-workbench :deep(.product-search-heading) { display: none; }
-.search-mode-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; color: #647087; font-size: 12px; line-height: 1.5; }
-.search-workbench :deep(.product-search-form) { grid-template-columns: minmax(130px, .9fr) minmax(160px, 1.15fr) minmax(180px, 1.3fr) repeat(2, minmax(145px, .9fr)); gap: 16px; }
-.search-workbench :deep(.company-search-form) { grid-template-columns: minmax(140px, .8fr) minmax(0, 1.6fr) minmax(0, 1.4fr); gap: 16px; }
-.search-workbench :deep(.search-intro), .search-workbench :deep(.product-intro) { grid-column: 1 / -2; align-self: stretch; display: flex; align-items: center; margin: 4px 0 0; padding: 10px 12px; border: 1px solid #dfe4ff; border-radius: 7px; color: #6275a5; background: #f5f6ff; font-size: 11px; line-height: 1.7; }
-.search-workbench :deep(.primary-button) { grid-column: -2 / -1; justify-self: end; width: 100%; min-width: 0; margin: 4px 0 0; }
 .market-exploration { position: relative; min-height: 240px; overflow: hidden; padding: 26px 32px; box-sizing: border-box; border-top: 1px solid var(--search-line); background: radial-gradient(ellipse at 48% 55%, #fff 10%, #f4f7fc 65%, #ecf0fa 100%); }
 .market-label { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 20px; color: #8394b4; font-size: 11px; }
 .market-label > span { padding: 6px 10px; border: 1px solid #e2e7f2; border-radius: 6px; background: #fff; }
@@ -110,12 +103,6 @@ const searchMode = ref<'product' | 'company'>('product');
 .globe-art svg { display: block; width: 100%; height: auto; }
 .market-note { position: absolute; top: 46%; right: 6%; display: flex; align-items: center; gap: 8px; padding: 12px 15px; border: 1px solid #fff; border-radius: 10px; color: #596a87; background: #ffffffed; box-shadow: 0 7px 24px #344e8c0a; font-size: 12px; }
 .market-note i { width: 7px; height: 7px; border-radius: 50%; background: var(--search-accent); }
-@media (max-width: 1100px) {
-  .search-workbench :deep(.product-search-form) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .search-workbench :deep(.product-search-form .search-mode-field) { grid-column: 1 / -1; }
-  .search-workbench :deep(.product-search-form .product-intro) { grid-column: 1 / -1; }
-  .search-workbench :deep(.product-search-form .primary-button) { grid-column: 2; }
-}
 @media (max-width: 760px) {
   .terminal-search-page { gap: 20px; }
   .search-page-heading h1 { font-size: 22px; }
@@ -124,8 +111,6 @@ const searchMode = ref<'product' | 'company'>('product');
   .search-journey li + li::before { display: none; }
   .workbench-heading { margin: 0 18px; padding: 18px 0 16px; }
   .search-workbench :deep(.workspace-card) { padding: 18px; }
-  .search-workbench :deep(.company-search-form) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .search-workbench :deep(.company-search-form .search-mode-field), .search-workbench :deep(.search-intro) { grid-column: 1 / -1; }
   .market-exploration { min-height: 260px; padding: 22px 18px; }
   .market-label { gap: 10px; }
   .market-label > b { font-size: 9px; }
@@ -135,13 +120,7 @@ const searchMode = ref<'product' | 'company'>('product');
   .market-note { display: none; }
 }
 @media (max-width: 480px) {
-  .search-workbench :deep(.product-search-form), .search-workbench :deep(.company-search-form) { grid-template-columns: minmax(0, 1fr); }
-  .search-workbench :deep(.product-search-form .primary-button), .search-workbench :deep(.company-search-form .primary-button) { grid-column: 1; }
   .market-caption { width: 70%; }
   .globe-art { right: -100px; opacity: .4; }
 }
-
-/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
-:deep(.el-select) { min-width: 0; }
-.search-mode-field :deep(.el-select__wrapper) { min-height: 42px; border-radius: 8px; }
 </style>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import 'element-plus/es/components/tabs/style/css';
 import {
   onMounted,
   reactive,
@@ -238,7 +237,7 @@ onMounted(reload);
       <fieldset class="procurement-forms" :disabled="busy">
         <legend class="visually-hidden">采购入账与费用登记</legend>
         <ElForm
-          class="entry-card"
+          class="business-form entry-card"
           label-position="top"
           aria-labelledby="purchase-title"
           @submit.prevent="submit('purchase', purchaseValues())"
@@ -316,12 +315,12 @@ onMounted(reload);
               <p>充值合计与费用差额单独展示供核对。</p>
             </template>
           </div>
-          <footer class="form-actions">
+          <div class="form-actions">
             <ElButton type="primary" native-type="submit" :disabled="busy">确认采购入账</ElButton>
-          </footer>
+          </div>
         </ElForm>
         <ElForm
-          class="entry-card"
+          class="business-form entry-card"
           label-position="top"
           aria-labelledby="expense-title"
           @submit.prevent="submit('expense', expenseValues())"
@@ -394,9 +393,9 @@ onMounted(reload);
               />
             </ElFormItem>
           </section>
-          <footer class="form-actions">
+          <div class="form-actions">
             <ElButton type="primary" native-type="submit" :disabled="busy">确认费用</ElButton>
-          </footer>
+          </div>
         </ElForm>
       </fieldset>
       <section class="data-card" aria-label="采购与费用明细">
@@ -556,17 +555,7 @@ onMounted(reload);
   margin: 0;
   line-height: 1.7;
 }
-.refresh-button {
-  flex: none;
-  min-height: 40px;
-  color: var(--el-color-primary);
-  border-color: var(--console-line);
-}
-.refresh-button span {
-  margin-right: 6px;
-  font-size: 17px;
-}
-.procurement-panel > .el-alert, .procurement-panel > [role='alert'] {
+.procurement-panel > [role='alert'] {
   margin-bottom: 16px;
 }
 
@@ -640,7 +629,6 @@ onMounted(reload);
 }
 
 .entry-card {
-  display: flex;
   flex-direction: column;
   padding: 24px;
 }
@@ -659,40 +647,6 @@ onMounted(reload);
   margin: 6px 0 0;
   font-size: 12px;
   line-height: 1.6;
-}
-.field-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
-.entry-card :deep(.el-form-item) {
-  min-width: 0;
-  margin-bottom: 20px;
-}
-.entry-card :deep(.el-form-item__label) {
-  height: auto;
-  margin-bottom: 8px;
-  padding: 0;
-  color: #52617a;
-  font-size: 14px;
-  line-height: 1.5;
-}
-.entry-card :deep(.el-form-item__content) {
-  min-width: 0;
-  line-height: 1.5;
-}
-.entry-card :deep(.el-input__wrapper) {
-  min-height: 40px;
-  padding: 1px 12px; border-radius: 7px;
-  box-shadow: 0 0 0 1px var(--console-line-strong) inset;
-}
-
-.entry-card :deep(.el-input__inner) {
-  height: 38px;
-  font-size: 14px;
-}
-.entry-card :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px var(--el-color-primary) inset, 0 0 0 3px var(--el-color-primary-light-9);
 }
 .form-guidance {
   margin-bottom: 20px;
@@ -724,38 +678,9 @@ onMounted(reload);
   font-size: 12px;
   line-height: 1.6;
 }
-.loss-associations :deep(.el-form-item__label) {
-  font-size: 12px;
-}
-.loss-associations :deep(.el-form-item:last-child) {
-  margin-bottom: 0;
-}
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid var(--console-line);
-}
-.form-actions .el-button {
-  min-height: 40px;
-  padding: 0 22px;
-  font-weight: 600;
-}
 .data-card {
   margin-top: 24px;
   padding: 8px 24px 24px;
-}
-.record-tabs :deep(.el-tabs__header) {
-  margin-bottom: 20px;
-}
-.record-tabs :deep(.el-tabs__item) {
-  height: 52px;
-  font-size: 14px;
-}
-.record-tabs :deep(.el-tabs__nav-wrap::after) {
-  height: 1px;
-  background-color: var(--console-line);
 }
 .section-count {
   margin-left: 8px;
@@ -873,10 +798,6 @@ tbody tr:hover {
   .entry-card {
   padding: 20px 16px;
 }
-  .field-row {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
-}
   .data-card {
   padding: 8px 16px 16px;
 }
@@ -884,8 +805,4 @@ tbody tr:hover {
   padding: 12px;
 }
 }
-
-/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
-:deep(.el-select) { min-width: 0; }
-.entry-card :deep(.el-select__wrapper) { min-height: 40px; border-radius: 7px; }
 </style>
