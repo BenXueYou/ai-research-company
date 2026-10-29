@@ -41,7 +41,10 @@ test('Issue53 company search, confirmation, settlement, tenant gates and lifecyc
     return {
       content: input.name === 'empty' ? [] : [
         { id: `list-other-${input.name}-${input.pageNo}`, name: 'Other Candidate', country: 'USA' },
-        { id: `list-selected-${input.name}-${input.pageNo}`, name: `Selected ${input.name}`, country: 'TUR' }
+        { id: `list-selected-${input.name}-${input.pageNo}`, name: `Selected ${input.name}`, country: 'TUR' },
+        ...(input.name === 'success' && input.pageNo === 1 ? Array.from({ length: 18 }, (_, index) => ({
+          id: `list-extra-${index}`, name: `Additional Enterprise ${index}`, country: 'TUR'
+        })) : [])
       ],
       page: input.pageNo, size: input.pageSize, total: input.name === 'empty' ? 0 : 21
     };
@@ -142,6 +145,24 @@ test('Issue53 company search, confirmation, settlement, tenant gates and lifecyc
     expect((await post(page, 'company-details/quote', { candidateId: candidate.id })).status).toBe(404);
     const selectedRow = search.locator('.candidate-row').nth(1);
     await selectedRow.getByRole('button', { name: '确认是该企业' }).click();
+    await expect(selectedRow.locator('.company-identity')).toContainText('土耳其 TUR');
+    await expect(selectedRow.getByText(`来源标识 ${candidate.source_id}`, { exact: true })).not.toBeVisible();
+    await selectedRow.getByText('来源信息', { exact: true }).click();
+    await expect(selectedRow.getByText(`来源标识 ${candidate.source_id}`, { exact: true })).toBeVisible();
+    expect(candidate.id).not.toBe(candidate.source_id);
+    expect(await search.locator('.candidate-results').evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true);
+    expect((await search.boundingBox())!.width).toBeGreaterThan(800);
+    await page.getByRole('link', { name: '按产品词发现', exact: true }).click();
+    await expect(page.locator('.product-search').getByRole('heading', { name: '寻找采购企业候选' })).toBeInViewport();
+    await page.getByRole('link', { name: '按公司名查找', exact: true }).click();
+    await pool.query("DELETE FROM interface_prices WHERE interface_path='/v2/company'");
+    await selectedRow.getByRole('button', { name: '查看详情报价' }).click();
+    await expect(selectedRow.getByRole('alert')).toContainText('企业详情尚无已核实的单价及最高计费量');
+    expect(detailCalls).toHaveLength(0);
+    expect((await pool.query('SELECT count(*)::int n FROM company_detail_queries')).rows[0].n).toBe(0);
+    expect((await pool.query('SELECT query_frozen FROM internal_point_accounts WHERE organization_id=$1', [orgA])).rows[0].query_frozen).toBe('0.0000');
+    await pool.query(`INSERT INTO interface_prices(interface_path,upstream_unit_price,maximum_billable_units,evidence,evidence_type,version,actor_id)
+      VALUES('/v2/company',0.5,2,'Issue53 controlled fixture','controlled_test',$1,$2)`, [randomUUID(), platform.id]);
     await selectedRow.getByRole('button', { name: '查看详情报价' }).click();
     await expect(search.getByText('锁定系数 1.0000 · 最高扣点 1.0000')).toBeVisible();
     await page.screenshot({ path: resolve(root, 'search-desktop.png'), fullPage: true });

@@ -18,11 +18,11 @@
         />
       </el-form-item>
       <el-form-item label="采购企业所在国（三位代码）" for="buyer-country">
-        <el-input
+        <CountrySelect
           id="buyer-country"
           v-model="buyerCountryCode3"
           :disabled="locked"
-          placeholder="例如 TUR"
+          :multiple="false"
         />
       </el-form-item>
       <el-form-item label="贸易开始日期" for="trade-start">
@@ -140,12 +140,28 @@
       <p class="hint">请核对返回企业的名称和国家。产品名单名称并不证明企业位于所选国家。</p>
       <el-empty v-if="!verification.content.length" description="该国家没有匹配的企业，不能继续建档" />
       <div v-for="candidate in verification.content" :key="candidate.candidateId" class="candidate-row">
-        <div><strong>{{ candidate.name }}</strong><small>{{ candidate.country }} · 来源标识 {{ candidate.sourceId }}</small></div>
-        <el-button v-if="candidate.verificationStatus !== 'verified'" :disabled="locked" @click="verify(candidate)">确认是该企业</el-button>
-        <el-button v-else :disabled="locked" @click="quoteDetail(candidate)">查看详情报价</el-button>
+        <CompanyIdentity
+          :name="candidate.name"
+          :country="candidate.country"
+          :source-id="candidate.sourceId"
+        />
+        <span v-if="candidate.verificationStatus === 'verified'" class="status-pill">已核实</span>
+        <el-button v-else :disabled="locked" @click="verify(candidate)">确认是该企业</el-button>
+        <el-button
+          v-if="candidate.verificationStatus === 'verified'"
+          :disabled="locked"
+          @click="quoteDetail(candidate)"
+        >查看详情报价</el-button>
+        <el-alert
+          v-if="candidateError?.candidateId === candidate.candidateId"
+          class="candidate-error"
+          type="error"
+          :title="candidateError.message"
+          :closable="false"
+        />
       </div>
     </template>
-    <div v-if="detailQuote" class="search-summary product-detail-quote">
+    <div v-if="detailQuote" ref="quotePanel" class="search-summary product-detail-quote">
       <span>企业详情 {{ detailQuote.name }} · {{ detailQuote.countryCode3 }}</span>
       <span>最高扣点 {{ detailQuote.maximumPoints }} · 锁定系数 {{ detailQuote.coefficient }}</span>
       <template v-if="detailUnknown || detailQuote.state === 'pending'">
@@ -163,9 +179,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import {
+  computed,
+  nextTick,
+  ref,
+  watch
+} from 'vue';
 import { RouterLink } from 'vue-router';
 import { useFormLeave } from '../../router/formLeave';
+import CompanyIdentity from './components/CompanyIdentity.vue';
+import CountrySelect from './components/CountrySelect.vue';
 import {
   checkProductCandidate,
   executeProductDetail,
@@ -202,6 +225,7 @@ const endDate = ref('');
 const page = ref<ProductPage | null>(null);
 const verification = ref<Verification | null>(null);
 const detailQuote = ref<DetailQuote | null>(null);
+
 const detailCandidateId = ref('');
 const localProfile = ref<LocalProfile | null>(null);
 const pageUnknown = ref(false);
@@ -209,6 +233,14 @@ const detailUnknown = ref(false);
 const detailStatus = ref('');
 const busy = ref(false);
 const error = ref('');
+const candidateError = ref<{ candidateId: string; message: string } | null>(null);
+const quotePanel = ref<HTMLElement | null>(null);
+watch(detailQuote, async value => {
+  if (!value) return;
+  await nextTick();
+  quotePanel.value?.scrollIntoView({ block: 'nearest' });
+});
+
 const unresolved = computed(() => pageUnknown.value || detailUnknown.value || page.value?.state === 'pending' || detailQuote.value?.state === 'pending');
 const locked = computed(() => busy.value || unresolved.value);
 const inputSnapshot = computed(() => JSON.stringify([productDesc.value, buyerCountryCode3.value, startDate.value, endDate.value]));
@@ -233,14 +265,17 @@ useFormLeave({
     detailStatus.value = '';
   }
 });
-async function run(action: () => Promise<void>) {
+async function run(action: () => Promise<void>, candidateId = '') {
   if (busy.value) return;
   busy.value = true;
   error.value = '';
+  candidateError.value = null;
   try {
     await action();
   } catch (failure) {
-    error.value = failure instanceof Error ? failure.message : '查询失败';
+    const message = failure instanceof Error ? failure.message : '查询失败';
+    if (candidateId) candidateError.value = { candidateId, message };
+    else error.value = message;
   } finally {
     busy.value = false;
   }
@@ -296,7 +331,7 @@ function verify(candidate: CompanyCandidate) {
     if (verification.value) verification.value.content = verification.value.content.map(item =>
       item.candidateId === verified.candidateId ? verified : item
     );
-  });
+  }, candidate.candidateId);
 }
 function quoteDetail(candidate: CompanyCandidate) {
   if (locked.value) return;
@@ -310,7 +345,7 @@ function quoteDetail(candidate: CompanyCandidate) {
       detailQuote.value = null;
       detailStatus.value = '本企业已有本地档案，免费查看';
     } else detailQuote.value = quote;
-  });
+  }, candidate.candidateId);
 }
 function executeDetail() {
   if (!detailQuote.value || locked.value) return;
@@ -348,6 +383,7 @@ async function applyDetailResult(result: DetailResult) {
 </script>
 
 <style scoped>
+.product-search .candidate-row > .candidate-error { flex: 0 0 100%; min-width: 0; }
 .product-search { min-width: 0; color: #1c2333; font-size: 13px; line-height: 1.65; }
 .product-search-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--search-line, #e6e9f0); }
 .product-search-heading .eyebrow { margin: 0 0 5px; color: #738095; font-size: 11px; font-weight: 400; letter-spacing: 1px; }

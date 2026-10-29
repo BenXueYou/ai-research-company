@@ -1,3 +1,4 @@
+import { selectCountry } from '../helpers/countrySelect.js';
 import { test, expect } from '@playwright/test';
 import { selectCountries } from '../helpers/countrySelect.js';
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -329,7 +330,7 @@ test('terminal cross-page acquisition, snapshot, settings, records, quota and se
       await page.getByRole('link', { name: '找企业', exact: true }).click();
       const product = page.locator('.product-search');
       await product.getByLabel('产品词', { exact: true }).fill('ceramic pump');
-      await product.getByLabel('采购企业所在国（三位代码）').fill('TUR');
+      await selectCountry(page, product, 'TUR');
       await product.getByLabel('贸易开始日期').fill('2026-01-01');
       await product.getByLabel('贸易结束日期').fill('2026-06-30');
       await product.getByRole('button', { name: '查看第 1 页报价' }).click();

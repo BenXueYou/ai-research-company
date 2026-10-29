@@ -1,3 +1,4 @@
+import { selectCountry } from './helpers/countrySelect.js';
 import { test, expect } from '@playwright/test';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
@@ -119,7 +120,7 @@ test('Issue54 real product search, separate detail authorization, identity contr
     }
     const fill = async (word: string) => {
       await product.getByLabel('产品词', { exact: true }).fill(word);
-      await product.getByLabel('采购企业所在国（三位代码）').fill('TUR');
+      await selectCountry(page, product, 'TUR');
       await product.getByLabel('贸易开始日期').fill('2026-01-01');
       await product.getByLabel('贸易结束日期').fill('2026-06-30');
     };
@@ -275,7 +276,7 @@ test('Issue54 real product search, separate detail authorization, identity contr
         mode = 'zero';
         const salesProduct = tab.locator('.product-search');
         await salesProduct.getByLabel('产品词', { exact: true }).fill('sales zero');
-        await salesProduct.getByLabel('采购企业所在国（三位代码）').fill('TUR');
+        await selectCountry(tab, salesProduct, 'TUR');
         await salesProduct.getByLabel('贸易开始日期').fill('2026-01-01');
         await salesProduct.getByLabel('贸易结束日期').fill('2026-06-30');
         await salesProduct.getByRole('button', { name: '查看第 1 页报价' }).click();
@@ -308,7 +309,7 @@ test('Issue54 real product search, separate detail authorization, identity contr
     await expect(tab.locator('.product-search')).toHaveCount(1);
     const devProduct = tab.locator('.product-search');
     await devProduct.getByLabel('产品词', { exact: true }).fill('unconfigured supplier');
-    await devProduct.getByLabel('采购企业所在国（三位代码）').fill('TUR');
+    await selectCountry(tab, devProduct, 'TUR');
     await devProduct.getByLabel('贸易开始日期').fill('2026-01-01');
     await devProduct.getByLabel('贸易结束日期').fill('2026-06-30');
     await devProduct.getByRole('button', { name: '查看第 1 页报价' }).click();

@@ -3,14 +3,14 @@
     :id="id"
     v-model="selectedCodes"
     class="country-select"
-    multiple
+    :multiple="multiple"
     filterable
     :allow-create="canCreate"
     :reserve-keyword="false"
     default-first-option
     :disabled="disabled"
     :filter-method="filterCountries"
-    placeholder="搜索国家名称或三位编码，可多选"
+    :placeholder="multiple ? '搜索国家名称或三位编码，可多选' : '搜索并选择国家/地区'"
     no-match-text="没有匹配的国家/地区"
     @visible-change="resetFilter"
   >
@@ -40,15 +40,17 @@ import { computed, ref } from 'vue';
 import { ElOption, ElSelect } from 'element-plus';
 import { countries } from '../countries';
 
-defineProps<{ id: string; disabled: boolean }>();
+const props = withDefaults(defineProps<{ id: string; disabled: boolean; multiple?: boolean }>(), {
+  multiple: true
+});
 const model = defineModel<string>({ required: true });
 const query = ref('');
 const countryByCode = new Map(countries.map(country =>
   [country.code, country]
 ));
 const selectedCodes = computed({
-  get: () => model.value ? model.value.split(',') : [],
-  set: (codes: string[]) => { model.value = codes.join(','); }
+  get: () => props.multiple ? (model.value ? model.value.split(',') : []) : model.value,
+  set: (codes: string[] | string) => { model.value = Array.isArray(codes) ? codes.join(',') : codes; }
 });
 const filteredCountries = computed(() => countries.filter(country =>
   `${country.name} ${country.englishName} ${country.code}`.toLowerCase().includes(query.value)

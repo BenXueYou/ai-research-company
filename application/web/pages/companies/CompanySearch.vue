@@ -51,24 +51,42 @@
       />
       <el-empty v-if="result.content.length === 0" description="本页没有匹配企业" />
       <div
-        v-for="candidate in result.content"
-        :key="candidate.candidateId"
-        class="candidate-row"
+        class="candidate-results"
+        role="region"
+        aria-label="企业查询结果"
+        tabindex="0"
       >
-        <div class="candidate-identity"><strong>{{ candidate.name }}</strong><small>{{ candidate.country }} · 来源标识 {{ candidate.sourceId }}</small></div>
-        <span v-if="candidate.verificationStatus === 'verified'" class="status-pill">已核实</span>
-        <el-button v-else :disabled="locked" @click="verify(candidate)">确认是该企业</el-button>
-        <el-button
-          v-if="candidate.verificationStatus === 'verified'"
-          :disabled="locked"
-          @click="quoteDetail(candidate)"
-        >查看详情报价</el-button>
+        <div
+          v-for="candidate in result.content"
+          :key="candidate.candidateId"
+          class="candidate-row"
+        >
+          <CompanyIdentity
+            :name="candidate.name"
+            :country="candidate.country"
+            :source-id="candidate.sourceId"
+          />
+          <span v-if="candidate.verificationStatus === 'verified'" class="status-pill">已核实</span>
+          <el-button v-else :disabled="locked" @click="verify(candidate)">确认是该企业</el-button>
+          <el-button
+            v-if="candidate.verificationStatus === 'verified'"
+            :disabled="locked"
+            @click="quoteDetail(candidate)"
+          >查看详情报价</el-button>
+          <el-alert
+            v-if="candidateError?.candidateId === candidate.candidateId"
+            class="candidate-error"
+            type="error"
+            :title="candidateError.message"
+            :closable="false"
+          />
+        </div>
       </div>
       <div class="pager">
         <el-button :disabled="locked || result.page <= 1" @click="changePage(result.page - 1)">上一页</el-button>
         <el-button :disabled="locked || result.page * result.size >= result.total" @click="changePage(result.page + 1)">下一页</el-button>
       </div>
-      <div v-if="quote && 'queryId' in quote" class="search-summary detail-quote">
+      <div v-if="quote && 'queryId' in quote" ref="quotePanel" class="search-summary detail-quote">
         <span>详情：{{ quote.name }} · {{ quote.countryCode3 }}</span>
         <span>锁定系数 {{ quote.coefficient }} · 最高扣点 {{ quote.maximumPoints }}</span>
         <el-button :disabled="locked" @click="executeDetail">确认费用并查询详情</el-button>
@@ -99,7 +117,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import {
+  computed,
+  nextTick,
+  onMounted,
+  ref,
+  watch
+} from 'vue';
 import { RouterLink } from 'vue-router';
 import {
   ElAlert,
@@ -120,6 +144,7 @@ import {
 import type { CompanyRequest } from '../../api/companyProfiles';
 import { HttpError } from '../../api/http';
 import { useFormLeave } from '../../router/formLeave';
+import CompanyIdentity from './components/CompanyIdentity.vue';
 import CountrySelect from './components/CountrySelect.vue';
 
 defineOptions({ name: 'CompanySearch' });
@@ -129,8 +154,16 @@ const name = ref('');
 const countryCodes = ref('CHN');
 const busy = ref(false);
 const error = ref('');
+const candidateError = ref<{ candidateId: string; message: string } | null>(null);
+const quotePanel = ref<HTMLElement | null>(null);
+
 const result = ref<SearchResult | null>(null);
 const quote = ref<DetailQuote | null>(null);
+watch(quote, async value => {
+  if (!value) return;
+  await nextTick();
+  quotePanel.value?.scrollIntoView({ block: 'nearest' });
+});
 const pointAccount = ref<SearchSnapshot['account']>(null);
 const pointLedger = ref<SearchSnapshot['ledger']>([]);
 const detailStatus = ref('');
@@ -174,14 +207,17 @@ async function loadPage(pageNo: number) {
   profileId.value = '';
   detailStatus.value = '';
 }
-async function run(action: () => Promise<void>) {
+async function run(action: () => Promise<void>, candidateId = '') {
   if (busy.value) return;
   busy.value = true;
   error.value = '';
+  candidateError.value = null;
   try {
     await action();
   } catch (failure) {
-    error.value = failure instanceof Error ? failure.message : '查询失败';
+    const message = failure instanceof Error ? failure.message : '查询失败';
+    if (candidateId) candidateError.value = { candidateId, message };
+    else error.value = message;
   } finally {
     busy.value = false;
   }
@@ -202,7 +238,7 @@ function verify(candidate: Candidate) {
       result.value.content = result.value.content.map(item =>
         item.candidateId === verified.candidateId ? verified : item
       );
-  });
+  }, candidate.candidateId);
 }
 function quoteDetail(candidate: Candidate) {
   if (pendingQuery.value) return;
@@ -219,7 +255,7 @@ function quoteDetail(candidate: Candidate) {
       pendingQuery.value = response.queryId;
       detailStatus.value = '结果确认中，已保留冻结；请勿重复发起';
     } else quote.value = response;
-  });
+  }, candidate.candidateId);
 }
 async function showOutcome(response: DetailOutcome) {
   if (response.state === 'quoted') {
@@ -275,6 +311,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.candidate-error { flex-basis: 100%; }
 .company-search { font-size: 13px; line-height: 1.65; }
 .company-search-heading {
   display: flex;
@@ -338,8 +375,8 @@ onMounted(() => {
   padding: 18px 12px;
   border-bottom: 1px solid #edf0f6;
 }
-.candidate-identity { flex: 1; min-width: 180px; overflow-wrap: anywhere; }
-.candidate-identity strong { color: #28334b; font-size: 14px; font-weight: 600; }
+.candidate-results { max-height: 560px; overflow: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.candidate-results:focus-visible { outline: 2px solid #4356e0; outline-offset: 3px; }
 .company-search .candidate-row small { color: #8490a5; font-size: 11px; }
 .company-search .status-pill { margin: 0; padding: 4px 10px; font-size: 11px; }
 .company-search .pager { justify-content: flex-end; gap: 10px; margin: 20px 0; }
@@ -387,7 +424,7 @@ onMounted(() => {
   .company-search-form .primary-button { width: 100%; }
   .company-search-heading { align-items: flex-start; }
   .company-search .candidate-row { padding: 16px 0; }
-  .candidate-identity { flex-basis: 100%; }
+  .company-search .candidate-row :deep(.company-identity) { flex-basis: 100%; }
   .company-search .detail-quote { grid-template-columns: 1fr 1fr; padding: 14px; }
   .detail-quote > span:nth-child(2) { grid-column: 1 / -1; }
   .company-search .points-summary { padding: 14px; }

@@ -16,3 +16,10 @@ export async function selectCountries(page: Page, root: Locator | Page, codes: s
   await input.press('Escape');
   await root.getByLabel('公司名称', { exact: true }).click();
 }
+
+export async function selectCountry(page: Page, root: Locator, code: string) {
+  const input = root.locator('.country-select').getByRole('combobox');
+  await input.fill(code);
+  await page.getByRole('option', { name: new RegExp(`(?:^|\\s)${code}$`) }).click();
+  await input.press('Escape');
+}
