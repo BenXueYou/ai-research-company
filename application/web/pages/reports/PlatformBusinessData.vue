@@ -6,13 +6,16 @@
         <p>查看授权组织的客户档案与邮件内容。</p>
       </div>
       <div class="heading-actions">
-        <RouterLink to="/platform/organizations">返回下级管理</RouterLink>
         <el-button :disabled="loading" @click="load">刷新</el-button>
       </div>
     </header>
     <div class="readonly-notice">
+      <RouterLink class="return-link" to="/platform/organizations"><span aria-hidden="true">←</span> 返回下级管理</RouterLink>
+      <span class="notice-divider" aria-hidden="true"></span>
+      <div class="readonly-content">
       <span class="readonly-tag">只读查看</span>
       <p>查看不赋予跨企业修改、删除、发信或导出腾道数据权限。</p>
+      </div>
     </div>
     <p v-if="loading" class="loading-message" role="status">业务数据加载中…</p>
     <p v-if="error" class="load-error" role="alert">{{ error }}</p>
@@ -20,12 +23,11 @@
       <div class="organization-filter">
         <div class="filter-field">
           <label for="business-organization">查看组织</label>
-          <select id="business-organization" v-model="organizationId">
-            <option value="">全部授权组织</option>
-            <option v-for="organization in report.organizations" :key="organization.id" :value="organization.id">
-              {{ organization.name }}{{ organization.active ? '' : '（已停用）' }}
-            </option>
-          </select>
+          <el-select id="business-organization" v-model="organizationId" filterable placeholder="全部授权组织" aria-label="查看组织" popper-class="business-organization-options">
+            <el-option label="全部授权组织" value="" />
+            <el-option v-for="organization in report.organizations" :key="organization.id" :value="organization.id"
+              :label="`${organization.name}${organization.active ? '' : '（已停用）'}`" />
+          </el-select>
         </div>
         <p class="filter-summary">当前显示 <strong>{{ customers.length }}</strong> 份客户档案、<strong>{{ emails.length }}</strong> 条邮件记录</p>
       </div>
@@ -82,7 +84,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, shallowRef } from 'vue';
-import { ElButton } from 'element-plus';
+import { ElButton, ElOption, ElSelect } from 'element-plus';
 
 type Organization = { id: string; name: string; active: boolean };
 type Customer = {
@@ -133,19 +135,22 @@ onMounted(load);
 .business-heading h1 { margin: 0 0 7px; font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: -.4px; }
 .business-heading p { margin: 0; color: var(--console-muted); font-size: 13px; line-height: 1.8; }
 .heading-actions { flex-shrink: 0; padding-top: 3px; gap: 18px; }
-.heading-actions a { color: var(--console-brand); font-size: 13px; text-decoration: none; }
-.heading-actions a:hover { text-decoration: underline; }
 .heading-actions :deep(.el-button) { border-radius: 8px; }
 .readonly-notice { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1px solid #e2e7fd; border-radius: 8px; margin-bottom: 20px; color: #6372a4; background: #f3f5ff; }
+.return-link { flex-shrink: 0; color: var(--console-brand); font-size: 13px; text-decoration: none; }
+.return-link:hover { text-decoration: underline; }
+.return-link:focus-visible { outline: 2px solid var(--console-brand); outline-offset: 3px; border-radius: 3px; }
+.notice-divider { align-self: stretch; width: 1px; flex-shrink: 0; background: #dce2fa; }
+.readonly-content { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .readonly-tag { flex: none; padding: 3px 8px; border-radius: 5px; color: var(--console-brand); background: #e6eaff; font-size: 11px; font-weight: 600; }
 .readonly-notice p { margin: 0; font-size: 12px; line-height: 1.8; }
 .organization-filter, .data-panel { min-width: 0; border: 1px solid var(--console-line); border-radius: 12px; background: var(--console-surface); box-shadow: 0 2px 5px #19234605; }
-.organization-filter { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px 24px; padding: 20px 22px; margin-bottom: 20px; }
+.organization-filter { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; padding: 16px 20px; margin-bottom: 20px; }
 .filter-field { width: min(360px, 100%); min-width: 0; }
 .filter-field label { display: block; margin-bottom: 8px; color: var(--console-muted); font-size: 12px; }
-.filter-field select { width: 100%; min-width: 0; height: 40px; padding: 8px 12px; border: 1px solid var(--console-line-strong); border-radius: 8px; color: var(--console-text); background: #fff; font: inherit; font-size: 13px; cursor: pointer; }
-.filter-field select:hover { border-color: #aab5ed; }
-.filter-field select:focus-visible { outline: 3px solid #aeb7f4; outline-offset: 2px; border-color: var(--console-brand); }
+.filter-field :deep(.el-select) { width: 100%; --el-color-primary: var(--console-brand); --el-border-color: var(--console-line-strong); }
+.filter-field :deep(.el-select__wrapper) { min-height: 40px; border-radius: 8px; font-size: 13px; }
+.filter-field :deep(.el-select__input:focus-visible) { outline: none; }
 .filter-summary { margin: 0 0 10px; color: var(--console-muted); font-size: 12px; line-height: 1.8; }
 .filter-summary strong { color: var(--console-brand); font-weight: 600; font-variant-numeric: tabular-nums; }
 .data-panel { margin-bottom: 20px; overflow: hidden; }
@@ -180,7 +185,9 @@ onMounted(load);
 @media (max-width: 760px) {
   .business-heading { flex-direction: column; gap: 13px; }
   .heading-actions { flex-wrap: wrap; padding: 0; }
-  .readonly-notice { align-items: flex-start; gap: 10px; }
+  .readonly-notice { flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+  .notice-divider { display: none; }
+  .readonly-content { flex-basis: 100%; align-items: flex-start; }
   .organization-filter, .panel-heading, .data-record { padding: 17px; }
   .organization-filter { align-items: stretch; gap: 12px; }
   .filter-field { width: 100%; }
@@ -189,4 +196,9 @@ onMounted(load);
   .record-heading { flex-wrap: wrap; gap: 8px; }
   .record-tags { justify-content: flex-start; }
 }
+</style>
+
+<style>
+.business-organization-options { --el-color-primary: #4356e0; }
+.business-organization-options .el-select-dropdown__item { font-size: 13px; }
 </style>

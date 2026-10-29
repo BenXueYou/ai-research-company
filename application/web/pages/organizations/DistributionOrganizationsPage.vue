@@ -155,13 +155,33 @@
     <div v-if="view === 'detail'" class="workspace-card children-list style-b-card detail-card">
       <div class="section-heading"><div><span class="module-kicker">ORGANIZATION PROFILE</span><h2>下级详情</h2></div></div>
       <template v-if="selectedChild">
-        <h4>{{ selectedChild.name }}</h4>
-        <p>{{ selectedChild.kind === 'terminal' ? '终端企业' : `${selectedChild.distributorLevel}级分销` }} · {{ selectedChild.active ? '启用' : '停用' }}</p>
-        <p>联系号码：{{ selectedChild.phoneMasked }} · 管理员：{{ selectedChild.email }}</p>
-        <el-button :disabled="busy || !!credentials || resetUnknown" @click="resetAdministrator(selectedChild.accountId)">重置管理员密码</el-button>
-        <el-button :disabled="busy || stateUnknown" @click="setActive(selectedChild)">{{ selectedChild.active ? '停用组织' : '恢复组织' }}</el-button>
-        <RouterLink to="/distribution/orders">点数订单与售价</RouterLink>
-        <p class="hint">停用保留余额和历史；已收款未划拨订单暂停且保留预留。在途查询与邮件继续核对，未执行邮件暂停。</p>
+        <header class="profile-header">
+          <div class="profile-avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V5l8-2v18M12 9h8v12M2 21h20M7 7h2M7 11h2M7 15h2M15 12h2M15 16h2" /></svg>
+          </div>
+          <div class="profile-identity">
+            <h3>{{ selectedChild.name }}</h3>
+            <p>{{ selectedChild.kind === 'terminal' ? '终端企业' : `${selectedChild.distributorLevel}级分销` }} · 直属下级</p>
+          </div>
+          <span class="profile-status" :class="{ 'is-inactive': !selectedChild.active }"><span aria-hidden="true"></span>{{ selectedChild.active ? '启用' : '停用' }}</span>
+        </header>
+        <section class="profile-section" aria-label="联系信息">
+          <h3>联系信息</h3>
+          <dl class="profile-fields">
+            <div><dt>联系号码</dt><dd>{{ selectedChild.phoneMasked }}</dd></div>
+            <div><dt>管理员登录邮箱</dt><dd>{{ selectedChild.email }}</dd></div>
+          </dl>
+        </section>
+        <section class="profile-section" aria-label="管理操作">
+          <h3>管理操作</h3>
+          <p class="profile-description">密码不支持查看。重置后旧密码立即失效，管理员下次登录必须修改密码。</p>
+          <div class="profile-actions">
+            <el-button :disabled="busy || !!credentials || resetUnknown" @click="resetAdministrator(selectedChild.accountId)">重置管理员密码</el-button>
+            <el-button :disabled="busy || stateUnknown" @click="setActive(selectedChild)">{{ selectedChild.active ? '停用组织' : '恢复组织' }}</el-button>
+            <RouterLink class="profile-order-link" to="/distribution/orders">点数订单与售价</RouterLink>
+          </div>
+          <div class="profile-notice"><span class="profile-notice-label">组织状态说明</span><p>停用保留余额和历史；已收款未划拨订单暂停且保留预留。在途查询与邮件继续核对，未执行邮件暂停。</p></div>
+        </section>
       </template>
       <p v-else>未找到直属下级，请返回列表核对。</p>
     </div>
@@ -463,7 +483,6 @@ select:focus { border-color: var(--style-b-accent); outline: none; }
 .row-action:hover { text-decoration: underline; }
 .credential-panel { max-width: 720px; border: 1px solid #dfe4ff; background: #f8f9ff; }
 .detail-card .section-heading { margin-bottom: 18px; }
-.detail-card h4 { margin: 0 0 8px; color: var(--style-b-ink); font-size: 20px; }
 .handoff-values { overflow-wrap: anywhere; }
 .handoff-values dd { margin: 8px 0 20px; color: var(--style-b-ink); font-family: Consolas, monospace; }
 
@@ -478,3 +497,5 @@ select:focus { border-color: var(--style-b-accent); outline: none; }
   .opening-actions { align-items: stretch; flex-direction: column; gap: 12px; }
 }
 </style>
+
+<style scoped src="./components/organization-profile.css"></style>

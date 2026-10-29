@@ -194,23 +194,29 @@ test('Issue39 authorized read-only business data through PostgreSQL, HTTP and Ch
     await expect(page.locator('.business-data article')).toHaveCount(6);
     await expect(page.locator('.business-data')).toHaveCount(1);
     await expect(page.locator('.business-data button')).toHaveCount(1);
-    await expect(page.getByLabel('查看组织').locator('option')).toHaveCount(7);
+    await page.getByRole('combobox', { name: '查看组织', exact: true }).click();
+    await expect(page.getByRole('option')).toHaveCount(7);
+    await page.keyboard.press('Escape');
+    const selectOrganization = async (label: string) => {
+      await page.getByRole('combobox', { name: '查看组织', exact: true }).click();
+      await page.getByRole('option', { name: label, exact: true }).click();
+    };
     const reads = reportRequests.length;
-    await page.getByLabel('查看组织').selectOption(a);
+    await selectOrganization('企业甲39');
     await expect(page.locator('.business-data article')).toHaveCount(3);
     await expect(page.getByRole('heading', { name: '私有客户0-39', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: '私有客户1-39', exact: true })).toHaveCount(0);
     await page.getByText('档案详情', { exact: true }).click();
     await expect(page.locator('.business-data pre').first()).toContainText(fixtures[0].detailId);
-    await page.getByLabel('查看组织').selectOption(b);
+    await selectOrganization('企业乙39（已停用）');
     await expect(page.locator('.business-data article')).toHaveCount(3);
     await expect(page.getByText(/已删除/)).toBeVisible();
-    await expect(page.getByLabel('查看组织').locator(`option[value="${b}"]`)).toContainText('已停用');
-    await page.getByLabel('查看组织').selectOption(empty);
+    await expect(page.locator('.filter-field .el-select')).toContainText('企业乙39（已停用）');
+    await selectOrganization('无数据企业39');
     await expect(page.getByText('暂无客户档案', { exact: true })).toBeVisible();
     await expect(page.getByText('暂无邮件记录', { exact: true })).toBeVisible();
     assert.equal(reportRequests.length, reads, 'Organization filtering is local, without new requests');
-    await page.getByLabel('查看组织').selectOption('');
+    await selectOrganization('全部授权组织');
     await Promise.all([
       page.waitForResponse(response => new URL(response.url()).pathname === '/api/reports'),
       page.getByRole('link', { name: '返回下级管理', exact: true }).click()

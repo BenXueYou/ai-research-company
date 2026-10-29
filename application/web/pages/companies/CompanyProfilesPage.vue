@@ -21,7 +21,16 @@
     </form>
     <p v-if="loading" role="status">正在读取档案…</p>
     <p v-else-if="error" role="alert">{{ error }}</p>
-    <p v-else-if="!profiles.length">当前筛选下没有档案</p>
+    <div v-else-if="!profiles.length" class="profiles-empty" role="status">
+      <el-empty :image-size="112" description="当前筛选下没有档案">
+        <template #description>
+          <h2>{{ hasAppliedFilters ? '未找到匹配档案' : '暂无企业档案' }}</h2>
+          <p>当前筛选下没有档案</p>
+          <p class="profiles-empty-hint">{{ hasAppliedFilters ? '请调整上方客户状态、跟进日期或已删除选项后，重新筛选。' : '前往找企业，查询并保存企业信息后，即可在这里查看和跟进。' }}</p>
+        </template>
+        <RouterLink v-if="!hasAppliedFilters" class="profiles-empty-action" to="/terminal/search">去找企业 <span aria-hidden="true">→</span></RouterLink>
+      </el-empty>
+    </div>
     <div class="profiles-content">
     <ul v-if="!error && profiles.length" class="profiles-list" aria-label="企业档案列表">
       <li v-for="profile in profiles" :key="profile.id" :class="{ 'is-selected': selectedId === profile.id }">
@@ -72,6 +81,7 @@ const statusFilter = ref('');
 const followUpFrom = ref('');
 const followUpTo = ref('');
 const showDeleted = ref(false);
+const hasAppliedFilters = ref(false);
 const statusLabels: Record<string, string> = {
   lead: '线索',
   following: '跟进中',
@@ -100,6 +110,7 @@ async function load() {
   if (followUpTo.value) filters.followUpTo = followUpTo.value;
   try {
     profiles.value = await listCompanyProfiles(props.request, filters);
+    hasAppliedFilters.value = Boolean(filters.customerStatus || filters.followUpFrom || filters.followUpTo || filters.deleted);
   } catch (failure) {
     error.value = failure instanceof Error ? failure.message : '档案读取失败，请重试';
   } finally {
@@ -136,6 +147,13 @@ void load();
 .profiles-filters button:disabled { opacity: .5; cursor: not-allowed; }
 .profiles-filters input:focus-visible, .profiles-filters select:focus-visible { outline: 2px solid #b5bff6; outline-offset: 2px; }
 .profiles-content { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: start; }
+.profiles-empty { padding: 32px 20px; border: 1px solid var(--profile-line); border-radius: 12px; background: #fff; text-align: center; }
+.profiles-empty h2 { margin: 0 0 12px; color: #263052; font-size: 18px; font-weight: 600; }
+.profiles-empty p { margin: 0; color: var(--profile-muted); font-size: 13px; line-height: 1.8; }
+.profiles-empty .profiles-empty-hint { max-width: 460px; margin: 8px auto 0; }
+.profiles-empty-action { display: inline-flex; align-items: center; gap: 12px; padding: 10px 20px; border-radius: 8px; background: #4356e0; color: #fff; font-size: 13px; text-decoration: none; }
+.profiles-empty-action:hover { background: #3343c9; }
+.profiles-empty-action:focus-visible { outline: 2px solid #b5bff6; outline-offset: 3px; }
 .profiles-list { grid-column: 1; grid-row: 1 / span 2; margin: 0; padding: 8px; border: 1px solid var(--profile-line); border-radius: 12px; background: #fff; list-style: none; }
 .profiles-list li { position: relative; padding: 16px 12px; border: 1px solid transparent; border-radius: 8px; }
 .profiles-list li + li { margin-top: 4px; }

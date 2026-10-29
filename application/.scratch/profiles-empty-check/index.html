@@ -1,0 +1,15 @@
+<div id="app"></div><script type="module">
+import { createApp, h } from '/node_modules/.vite/deps/vue.js';
+import { createPinia } from '/node_modules/.vite/deps/pinia.js';
+import { createRouter, createMemoryHistory } from '/node_modules/.vite/deps/vue-router.js';
+import ElementPlus from '/node_modules/element-plus/es/index.mjs';
+import '/node_modules/element-plus/dist/index.css';
+import Page from '/web/pages/companies/CompanyProfilesPage.vue';
+import { useSessionStore } from '/web/stores/session.ts';
+window.requests=[];
+const app=createApp({render:()=>h(Page,{request:async(path,body)=>{window.requests.push({path,body});return [];}})});
+const pinia=createPinia();app.use(pinia);
+useSessionStore().session={id:'test',role:'admin'};
+const router=createRouter({history:createMemoryHistory(),routes:[{path:'/:pathMatch(.*)*',component:{render:()=>null}}]});
+app.use(router);app.use(ElementPlus);await router.push('/terminal/profiles');await router.isReady();app.mount('#app');
+</script>

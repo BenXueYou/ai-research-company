@@ -153,7 +153,7 @@ test('Issue53 company search, confirmation, settlement, tenant gates and lifecyc
     expect(await search.locator('.candidate-results').evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true);
     expect((await search.boundingBox())!.width).toBeGreaterThan(800);
     await page.getByRole('link', { name: '按产品词发现', exact: true }).click();
-    await expect(page.locator('.product-search').getByRole('heading', { name: '寻找采购企业候选' })).toBeInViewport();
+    await expect(page.locator('.product-search').getByRole('heading', { name: '按产品词发现' })).toBeInViewport();
     await page.getByRole('link', { name: '按公司名查找', exact: true }).click();
     await pool.query("DELETE FROM interface_prices WHERE interface_path='/v2/company'");
     await selectedRow.getByRole('button', { name: '查看详情报价' }).click();

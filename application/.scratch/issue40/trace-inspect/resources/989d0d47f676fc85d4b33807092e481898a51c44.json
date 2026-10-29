@@ -1,1 +1,0 @@
-{"allowedRoles":["sales","admin"],"members":[{"id":"f6c0d9e3-5084-455c-887e-3594b6bdff2a","name":null,"email":"admin@issue40.test","role":"admin","active":true,"firstAdministrator":false,"canDisable":false},{"id":"9846035c-11d9-40f3-ba02-a0a4fb8e750c","name":null,"email":"sales@issue40.test","role":"sales","active":true,"firstAdministrator":false,"canDisable":true}]}

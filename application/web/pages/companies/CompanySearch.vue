@@ -2,8 +2,7 @@
   <section class="workspace-card company-search">
     <header class="company-search-heading">
       <div>
-        <p class="eyebrow">公司名免费查询</p>
-        <h2>核实企业身份</h2>
+        <h2>按公司名查找</h2>
       </div>
       <span class="search-free-badge">免费查找候选</span>
     </header>
@@ -320,13 +319,6 @@ onMounted(() => {
   gap: 16px;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--search-line, #e6e9f0);
-}
-.company-search-heading .eyebrow {
-  margin: 0 0 5px;
-  color: #738095;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 1px;
 }
 .company-search-heading h2 { margin: 0; color: #1c2333; font-size: 18px; font-weight: 650; }
 .search-free-badge {

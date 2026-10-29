@@ -2,12 +2,11 @@
   <section class="workspace-card product-search">
     <header class="product-search-heading">
       <div>
-        <p class="eyebrow">产品词发现</p>
-        <h2>寻找采购企业候选</h2>
+        <h2>按产品词发现</h2>
       </div>
       <span class="product-fee-badge">逐页确认费用</span>
     </header>
-    <p class="hint product-intro">按采购企业所在国、贸易时间和产品词逐页确认费用。名单仅含企业名称，身份须另行核实。</p>
+    <p class="hint product-intro">输入产品词，选择采购企业所在国与贸易时间，查看本页报价后确认查询。名单仅含企业名称，身份须另行核实。</p>
     <el-form class="product-search-form" label-position="top" @submit.prevent="prepare(1)">
       <el-form-item label="产品词" for="product-desc">
         <el-input
@@ -54,59 +53,6 @@
       :title="error"
       :closable="false"
     />
-    <div v-if="!page && !verification" class="product-discovery">
-      <div>
-        <strong>从一个产品，发现采购企业</strong>
-        <p>选择市场与贸易时间，先查看本页报价，再确认查询。</p>
-      </div>
-      <svg
-        class="discovery-globe"
-        viewBox="0 0 160 120"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <ellipse
-          cx="80"
-          cy="62"
-          rx="75"
-          ry="26"
-          fill="none"
-          stroke="#b9c9e8"
-          stroke-dasharray="3 5"
-          transform="rotate(-20 80 62)"
-        />
-        <circle
-          cx="80"
-          cy="60"
-          r="48"
-          fill="#dcebf8"
-        />
-        <ellipse
-          cx="80"
-          cy="60"
-          rx="24"
-          ry="48"
-          fill="none"
-          stroke="#b3cfe9"
-        />
-        <path d="M34 47h92M34 75h92M80 12v96" fill="none" stroke="#b3cfe9" />
-        <path d="M51 29q16-10 30 4l-7 14-17 6-10-9zM90 56l19 2 6 13-15 17-12-8zM62 71l12 4 5 15-10 8-9-14z" fill="#6091d9" />
-        <circle
-          cx="116"
-          cy="31"
-          r="5"
-          fill="#4356e0"
-        />
-        <circle
-          cx="116"
-          cy="31"
-          r="10"
-          fill="none"
-          stroke="#4356e0"
-          opacity=".2"
-        />
-      </svg>
-    </div>
     <div v-if="page" class="search-summary product-page-quote">
       <strong>{{ page.productDesc }} · 采购企业所在国 {{ page.buyerCountryCode3 }}</strong>
       <span>贸易时间 {{ page.startDate }} 至 {{ page.endDate }} · 第 {{ page.pageNo }} 页</span>
@@ -386,7 +332,6 @@ async function applyDetailResult(result: DetailResult) {
 .product-search .candidate-row > .candidate-error { flex: 0 0 100%; min-width: 0; }
 .product-search { min-width: 0; color: #1c2333; font-size: 13px; line-height: 1.65; }
 .product-search-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--search-line, #e6e9f0); }
-.product-search-heading .eyebrow { margin: 0 0 5px; color: #738095; font-size: 11px; font-weight: 400; letter-spacing: 1px; }
 .product-search-heading h2 { margin: 0; color: #1c2333; font-size: 18px; font-weight: 650; }
 .product-fee-badge { flex-shrink: 0; padding: 5px 10px; border: 1px solid #dce2ff; border-radius: 6px; color: #4356e0; background: #f4f6ff; font-size: 11px; }
 .product-search .hint { color: #8490a5; font-size: 12px; }
@@ -404,10 +349,6 @@ async function applyDetailResult(result: DetailResult) {
 .product-search-form .primary-button.is-disabled { opacity: .55; }
 .product-search :deep(.el-alert) { margin: 18px 0; padding: 12px 14px; border-radius: 8px; }
 .product-search :deep(.el-alert__title) { font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
-.product-discovery { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 128px; margin: 24px 0 0; padding: 12px 24px; border: 1px solid #e6ebf7; border-radius: 10px; background: #f5f7fd; }
-.product-discovery strong { color: #3d4963; font-size: 15px; font-weight: 600; }
-.product-discovery p { margin: 7px 0 0; color: #8490a5; font-size: 12px; }
-.discovery-globe { flex: 0 0 160px; width: 160px; height: 120px; }
 .product-search .search-summary { display: flex; flex-wrap: wrap; gap: 12px 16px; margin: 22px 0; padding: 18px 20px; border: 1px solid #dce2ff; border-radius: 10px; color: #58688f; background: #f5f7ff; font-variant-numeric: tabular-nums; }
 .product-page-quote > strong, .product-detail-quote > span:first-child { flex-basis: 100%; color: #28334b; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
 .product-page-quote > span { flex-basis: 100%; }
@@ -432,9 +373,6 @@ async function applyDetailResult(result: DetailResult) {
   .product-fee-badge { padding: 4px 7px; font-size: 10px; }
   .product-search-form { grid-template-columns: minmax(0, 1fr); }
   .product-search-form .primary-button { width: 100%; }
-  .product-discovery { min-height: 120px; gap: 8px; padding: 16px; }
-  .product-discovery strong { font-size: 14px; }
-  .discovery-globe { flex-basis: 84px; width: 84px; height: 84px; }
   .product-search .search-summary { gap: 12px; padding: 14px; }
   .product-search .search-summary > .el-button { flex: 1 1 auto; }
   .product-search .candidate-row { padding: 16px 0; }

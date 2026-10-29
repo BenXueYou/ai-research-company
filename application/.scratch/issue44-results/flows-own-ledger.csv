@@ -1,7 +1,0 @@
-﻿"type","reference","event","amount","balance_or_cost","frozen_or_gross","created_at"
-"procurement","5323ab06-fd08-4890-968e-97c28810aec0","purchase","0.5000","0.0000","0.0000","Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
-"procurement","f7d663a2-3dd4-4f9e-abda-a9e8b4b2a7aa","purchase","0.5000","0.0000","0.0000","Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
-"procurement","19a46b8d-0543-4302-8670-b85666ecc8aa","purchase","12.5000","10.0000","0.0000","Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
-"procurement","e3b3a824-ca41-4e43-8ac2-a10a01fcfd43","expense","0.0000","10.0000","0.5000","Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
-"procurement","e43e2400-ffca-4001-92b5-09a4b7186c02","expense","0.0000","10.0000","0.2500","Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
-"sale","3fb42b56-6f4e-4384-b872-6ba3cee83710","transferred","3.0000","1.5000","1.5000","Wed Oct 28 2026 22:18:59 GMT+0800 (中国标准时间)"
