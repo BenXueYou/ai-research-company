@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { selectCountries } from './helpers/countrySelect.js';
 import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { createApplication } from '../server/app.js';
@@ -191,7 +192,7 @@ test('四角色帮助与身份限制', async ({ page, request }) => {
         expect(await post('company-searches', { name: ' Invalid', countryCodes: 'TUR' })).toBe(400);
         await page.getByRole('button', { name: '进入找企业', exact: true }).click();
         await page.getByLabel('公司名称', { exact: true }).fill(' Help Invalid');
-        await page.getByLabel('企业所在国家/地区（三位代码）', { exact: true }).fill('TUR');
+        await selectCountries(page, page, 'TUR');
         await page.getByRole('button', { name: '免费查询', exact: true }).click();
         await expect(page.getByText('公司名称必填，且不得包含首尾空格', { exact: true })).toBeVisible();
         await page.getByLabel('公司名称', { exact: true }).fill(`Help ${name}`);

@@ -1,0 +1,487 @@
+{
+  "scriptAndCopyUnchanged": true,
+  "navigationChecks": 17,
+  "results": [
+    {
+      "role": "platform",
+      "viewport": 1920,
+      "width": 1200,
+      "centered": true,
+      "columns": 2,
+      "cards": [
+        {
+          "x": 472,
+          "width": 588
+        },
+        {
+          "x": 1084,
+          "width": 588
+        },
+        {
+          "x": 472,
+          "width": 588
+        },
+        {
+          "x": 1084,
+          "width": 588
+        },
+        {
+          "x": 472,
+          "width": 1200
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "platform",
+      "viewport": 1440,
+      "width": 1156,
+      "centered": true,
+      "columns": 2,
+      "cards": [
+        {
+          "x": 254,
+          "width": 566
+        },
+        {
+          "x": 844,
+          "width": 566
+        },
+        {
+          "x": 254,
+          "width": 566
+        },
+        {
+          "x": 844,
+          "width": 566
+        },
+        {
+          "x": 254,
+          "width": 1156
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "platform",
+      "viewport": 1024,
+      "width": 740,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "platform",
+      "viewport": 390,
+      "width": 366,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "platform",
+      "viewport": 320,
+      "width": 296,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "viewport": 1920,
+      "width": 1200,
+      "centered": true,
+      "columns": 2,
+      "cards": [
+        {
+          "x": 472,
+          "width": 588
+        },
+        {
+          "x": 1084,
+          "width": 588
+        },
+        {
+          "x": 472,
+          "width": 1200
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "viewport": 1440,
+      "width": 1156,
+      "centered": true,
+      "columns": 2,
+      "cards": [
+        {
+          "x": 254,
+          "width": 566
+        },
+        {
+          "x": 844,
+          "width": 566
+        },
+        {
+          "x": 254,
+          "width": 1156
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "viewport": 1024,
+      "width": 740,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "viewport": 390,
+      "width": 366,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "viewport": 320,
+      "width": 296,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "viewport": 1920,
+      "width": 1200,
+      "centered": true,
+      "columns": 2,
+      "cards": [
+        {
+          "x": 472,
+          "width": 588
+        },
+        {
+          "x": 1084,
+          "width": 588
+        },
+        {
+          "x": 472,
+          "width": 1200
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "viewport": 1440,
+      "width": 1156,
+      "centered": true,
+      "columns": 2,
+      "cards": [
+        {
+          "x": 254,
+          "width": 566
+        },
+        {
+          "x": 844,
+          "width": 566
+        },
+        {
+          "x": 254,
+          "width": 1156
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "viewport": 1024,
+      "width": 740,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "viewport": 390,
+      "width": 366,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "viewport": 320,
+      "width": 296,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "viewport": 1920,
+      "width": 1200,
+      "centered": true,
+      "columns": 2,
+      "cards": [
+        {
+          "x": 472,
+          "width": 588
+        },
+        {
+          "x": 1084,
+          "width": 588
+        },
+        {
+          "x": 472,
+          "width": 1200
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "viewport": 1440,
+      "width": 1156,
+      "centered": true,
+      "columns": 2,
+      "cards": [
+        {
+          "x": 254,
+          "width": 566
+        },
+        {
+          "x": 844,
+          "width": 566
+        },
+        {
+          "x": 254,
+          "width": 1156
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "viewport": 1024,
+      "width": 740,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        },
+        {
+          "x": 254,
+          "width": 740
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "viewport": 390,
+      "width": 366,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        },
+        {
+          "x": 12,
+          "width": 366
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "viewport": 320,
+      "width": 296,
+      "centered": true,
+      "columns": 1,
+      "cards": [
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        },
+        {
+          "x": 12,
+          "width": 296
+        }
+      ],
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

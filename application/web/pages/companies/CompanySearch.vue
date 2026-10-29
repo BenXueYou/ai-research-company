@@ -18,11 +18,10 @@
         />
       </el-form-item>
       <el-form-item label="企业所在国家/地区（三位代码）" for="country-codes">
-        <el-input
+        <CountrySelect
           id="country-codes"
           v-model="countryCodes"
           :disabled="locked"
-          placeholder="例如 CHN；多个以英文逗号分隔"
         />
       </el-form-item>
       <el-button
@@ -121,6 +120,7 @@ import {
 import type { CompanyRequest } from '../../api/companyProfiles';
 import { HttpError } from '../../api/http';
 import { useFormLeave } from '../../router/formLeave';
+import CountrySelect from './components/CountrySelect.vue';
 
 defineOptions({ name: 'CompanySearch' });
 const props = defineProps<{ request: CompanyRequest }>();

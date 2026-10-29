@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import HelpWalkthrough from './components/HelpWalkthrough.vue';
+import { walkthroughs } from './walkthroughs';
 
 const props = defineProps<{ role: string }>();
 const emit = defineEmits<{ navigate: [path: string] }>();
@@ -52,28 +54,71 @@ const roleName = computed(() => roleNames[props.role] ?? '当前账号');
 
 <template>
   <section class="role-help" aria-label="帮助中心">
-    <header>
+    <header class="help-heading">
+      <h1>帮助中心</h1>
       <p>{{ roleName }}操作指南</p>
+      <p>对照页面截图了解操作步骤，点击图片可放大查看。截图使用示例数据，具体状态与可用操作以当前页面为准。</p>
     </header>
-    <section v-for="guide in currentGuides" :key="guide.title" class="help-section">
-      <h2>{{ guide.title }}</h2>
-      <p>{{ guide.text }}</p>
-      <button v-if="guide.path" type="button" class="help-link" @click="emit('navigate', guide.path)">{{ guide.link }}</button>
-    </section>
-    <section class="help-section">
+    <div class="help-guides">
+      <section v-for="guide in currentGuides" :key="guide.title" class="help-section help-guide">
+        <h2>{{ guide.title }}</h2>
+        <p>{{ guide.text }}</p>
+        <HelpWalkthrough :walkthrough="walkthroughs[guide.path ?? 'permissions']" />
+        <button
+          v-if="guide.path"
+          type="button"
+          class="help-link"
+          @click="emit('navigate', guide.path)"
+        >{{ guide.link }}<span aria-hidden="true"> →</span></button>
+      </section>
+    </div>
+    <section class="help-section help-faq">
       <h2>账号与常见问题</h2>
+      <HelpWalkthrough :walkthrough="walkthroughs.account" />
+      <h3>修改密码</h3>
       <p>在账号设置中输入当前密码和两次新密码。新密码须为 12–128 位可打印 ASCII 字符，不含空格，且不能与当前密码相同。修改成功后所有设备会话失效，需重新登录。</p>
+      <h3>临时密码与会话</h3>
       <p>临时密码到期后请联系有权管理账号的人员重新生成。首次使用临时密码时只能改密或退出；会话最长 8 小时，连续空闲 30 分钟后失效。</p>
+      <h3>操作结果确认</h3>
       <p>费用、风险、错误及必需操作说明请以业务页面的实时提示为准；结果未确认时先核对状态，避免重复操作。</p>
-      <button type="button" class="help-link" @click="emit('navigate', '/account/settings')">进入账号设置</button>
+      <button
+        type="button"
+        class="help-link"
+        @click="emit('navigate', '/account/settings')"
+      >进入账号设置<span aria-hidden="true"> →</span></button>
     </section>
   </section>
 </template>
 
 <style scoped>
-.role-help { max-width: 900px; }
-.help-section { margin-top: 24px; padding: 20px; border: 1px solid #dce4e9; border-radius: 8px; background: #fff; }
-.help-section h2 { margin-top: 0; font-size: 1.1rem; }
-.help-section p { line-height: 1.7; }
-.help-link { padding: 0; border: 0; color: #176b72; background: transparent; cursor: pointer; text-decoration: underline; }
+.role-help {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+.help-heading { margin-bottom: 24px; }
+.help-heading h1 { margin: 0; color: var(--console-text); font-size: 24px; font-weight: 600; line-height: 1.4; }
+.help-heading p { margin: 8px 0 0; color: #596780; font-size: 14px; line-height: 1.7; }
+.help-guides { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.help-section { min-width: 0; padding: 24px; border: 1px solid var(--console-line); border-radius: 8px; background: var(--console-surface); }
+.help-section h2 { margin: 0 0 12px; color: var(--console-text); font-size: 18px; font-weight: 600; line-height: 1.5; }
+.help-section p { max-width: 68em; margin: 0 0 20px; color: #4f5d73; font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
+.help-guide { display: flex; flex-direction: column; align-items: flex-start; }
+.help-guide .help-link { margin-top: auto; }
+.help-faq { margin-top: 24px; }
+.help-faq h3 { margin: 20px 0 8px; color: var(--console-text); font-size: 15px; font-weight: 600; line-height: 1.5; }
+.help-link { padding: 4px 0; border: 0; color: var(--console-brand-deep); background: transparent; font-size: 14px; font-weight: 500; line-height: 1.5; text-align: left; cursor: pointer; }
+.help-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.help-link:focus-visible { outline: 3px solid var(--el-color-primary-light-5); outline-offset: 4px; border-radius: 2px; }
+@container (min-width: 960px) {
+  .help-guides { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .help-guide:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@container (max-width: 479px) {
+  .help-heading { margin-bottom: 20px; }
+  .help-guides { gap: 16px; }
+  .help-section { padding: 20px 16px; }
+  .help-faq { margin-top: 16px; }
+}
 </style>

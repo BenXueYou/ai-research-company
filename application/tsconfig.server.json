@@ -1,5 +1,25 @@
-﻿{
+{
   "extends": "./tsconfig.json",
-  "compilerOptions": { "module": "NodeNext", "moduleResolution": "NodeNext", "outDir": "dist", "rootDir": ".", "sourceMap": true },
-  "include": ["server/**/*.ts", "tests/**/*.ts", "playwright.config.ts"]
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": ".",
+    "sourceMap": true
+  },
+  "include": [
+    "server/**/*.ts",
+    "tests/**/*.ts",
+    "playwright.config.ts"
+  ],
+  "exclude": [
+    "tests/integration-distribution/**",
+    "tests/integration-terminal/**",
+    "tests/issue38-tests/**",
+    "tests/issue45-tests/**",
+    "tests/issue46-tests/**",
+    "tests/issue57-tests/**",
+    "tests/reconciliation-route-tests/**",
+    "tests/verification/**"
+  ]
 }

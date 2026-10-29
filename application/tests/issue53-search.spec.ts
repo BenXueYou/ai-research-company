@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { selectCountries } from './helpers/countrySelect.js';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -20,6 +21,7 @@ async function freePort() {
 }
 
 test('Issue53 company search, confirmation, settlement, tenant gates and lifecycle', async ({ page, browser }) => {
+  page.setDefaultTimeout(10000);
   const databaseUrl = process.env.TEST_DATABASE_URL;
   if (!databaseUrl || !new URL(databaseUrl).pathname.endsWith('_test')) throw new Error('Dedicated test database required');
   const pool = database(databaseUrl);
@@ -105,12 +107,31 @@ test('Issue53 company search, confirmation, settlement, tenant gates and lifecyc
     const search = page.locator('.company-search');
     const runSearch = async (name: string) => {
       await search.getByLabel('公司名称', { exact: true }).fill(name);
-      await search.getByLabel('企业所在国家/地区（三位代码）', { exact: true }).fill('USA,TUR');
+      await selectCountries(page, search, 'USA,TUR');
       await search.getByRole('button', { name: '免费查询', exact: true }).click();
       await expect(search.getByText('第 1 页', { exact: true })).toBeVisible();
     };
     await search.getByLabel('公司名称', { exact: true }).fill('bad');
-    await search.getByLabel('企业所在国家/地区（三位代码）', { exact: true }).fill('TR');
+    await expect(search.locator('.country-select')).toContainText('中国 CHN');
+    const countryInput = search.locator('.country-select').getByRole('combobox');
+    await countryInput.fill('日本');
+    const japanOption = page.getByRole('option', { name: '日本 JPN', exact: true });
+    await expect(japanOption).toBeVisible();
+    expect(await japanOption.locator('img').evaluate(image => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0)).toBe(true);
+    await japanOption.click();
+    await expect(search.locator('.country-select')).toContainText('日本 JPN');
+    await countryInput.fill('united states');
+    await expect(page.getByRole('option', { name: '美国 USA', exact: true })).toBeVisible();
+    await countryInput.press('Escape');
+    while (await search.locator('.country-select .el-tag__close').count()) {
+      await search.locator('.country-select .el-tag__close').first().click();
+    }
+    await countryInput.press('Escape');
+    await search.getByLabel('公司名称', { exact: true }).click();
+    await search.getByRole('button', { name: '免费查询', exact: true }).click();
+    await expect(search.getByText('国家地区须使用三位大写代码，多个代码以英文逗号分隔', { exact: true })).toBeVisible();
+    expect(listCalls).toHaveLength(0);
+    await selectCountries(page, search, 'TR');
     await search.getByRole('button', { name: '免费查询', exact: true }).click();
     await expect(search.getByText('国家地区须使用三位大写代码，多个代码以英文逗号分隔', { exact: true })).toBeVisible();
     expect(listCalls).toHaveLength(0);
@@ -223,7 +244,7 @@ test('Issue53 company search, confirmation, settlement, tenant gates and lifecyc
       if (label === 'sales') {
         const ownSearch = tab.locator('.company-search');
         await ownSearch.getByLabel('公司名称', { exact: true }).fill('sales-success');
-        await ownSearch.getByLabel('企业所在国家/地区（三位代码）', { exact: true }).fill('TUR');
+        await selectCountries(tab, ownSearch, 'TUR');
         await ownSearch.getByRole('button', { name: '免费查询', exact: true }).click();
         const ownRow = ownSearch.locator('.candidate-row').nth(1);
         await ownRow.getByRole('button', { name: '确认是该企业' }).click();

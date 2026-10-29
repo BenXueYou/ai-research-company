@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: '../../reconciliation-route-tests',
+  testDir: '../../tests/reconciliation-route-tests',
   testMatch: 'reconciliation-route.spec.ts',
   outputDir: '../../.scratch/playwright-results/reconciliation-route',
   workers: 1,

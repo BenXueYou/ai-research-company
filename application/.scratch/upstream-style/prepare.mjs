@@ -1,7 +1,7 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import ts from 'typescript';
 const dir='.scratch/upstream-style';
-let recon=readFileSync('issue46-tests/reconciliation.spec.mjs','utf8').replaceAll('../.scratch/issue46-dist/', './compiled/').replaceAll('.scratch/issue46-web',`${dir}/web`).replaceAll('.scratch/issue46-evidence.json',`${dir}/evidence.json`);
+let recon=readFileSync('tests/issue46-tests/reconciliation.spec.mjs','utf8').replaceAll('../../.scratch/issue46-dist/', './compiled/').replaceAll('.scratch/issue46-web',`${dir}/web`).replaceAll('.scratch/issue46-evidence.json',`${dir}/evidence.json`);
 recon=recon.replace('  const readsBefore = reads.length;',`  await page.setViewportSize({width:1440,height:1050});
   await page.screenshot({path:'${dir}/reconciliation-desktop.png',fullPage:true});
   await page.locator('.reconciliation-form').scrollIntoViewIfNeeded();
@@ -17,7 +17,7 @@ recon=recon.replaceAll("getByRole('link', { name: '平台设置', exact: true })
 recon=recon.replaceAll("await other.getByRole('button', { name: '退出登录' }).click();", "await other.getByRole('button', { name: '账号菜单' }).click(); await other.getByRole('menuitem', { name: '退出登录' }).click();");
 recon=recon.replaceAll("await page.getByRole('button', { name: '退出登录' }).click();", "await page.getByRole('button', { name: '账号菜单' }).click(); await page.getByRole('menuitem', { name: '退出登录' }).click();");
 writeFileSync(`${dir}/reconciliation.spec.mjs`,recon);
-let upstream=ts.transpileModule(readFileSync('issue45-tests/upstream.spec.ts','utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText.replaceAll('../server/','./compiled/server/').replaceAll('../tests/','./compiled/tests/').replaceAll("resolve('issue45-test-web')",`resolve('${dir}/web')`);
+let upstream=ts.transpileModule(readFileSync('tests/issue45-tests/upstream.spec.ts','utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText.replaceAll('../../server/','./compiled/server/').replaceAll("from '../","from './compiled/tests/").replaceAll("resolve('issue45-test-web')",`resolve('${dir}/web')`);
 upstream=upstream.replaceAll("await expect(page.getByRole('button', { name: '退出登录' })).toBeVisible();", "await expect(page.getByRole('button', { name: '账号菜单' })).toBeVisible();").replaceAll("await page.getByRole('button', { name: '退出登录' }).click();", "await page.getByRole('button', { name: '账号菜单' }).click(); await page.getByRole('menuitem', { name: '退出登录' }).click();").replaceAll("getByRole('link', { name: '上游与对账', exact: true })", "getByRole('link', { name: '查询异常核对', exact: true })");
 upstream=upstream.replace("await expect(page.getByRole('link', { name: '查询异常核对', exact: true })).toHaveAttribute('aria-current', 'page');", "await expect(page.getByRole('link', { name: '上游账号监控', exact: true })).toHaveAttribute('aria-current', 'page');");
 upstream=upstream.replace('    usageFail = true;',`    await page.setViewportSize({width:1440,height:1050});

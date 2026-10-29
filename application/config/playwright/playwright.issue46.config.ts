@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 export default defineConfig({
-  testDir: '../../issue46-tests',
+  testDir: '../../tests/issue46-tests',
   testMatch: '*.spec.mjs',
   outputDir: '../../.scratch/playwright-results/issue46',
   workers: 1,

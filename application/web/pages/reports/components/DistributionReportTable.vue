@@ -32,10 +32,18 @@ function value(row: ReportRow, key: string) {
 </script>
 
 <style scoped>
-.report-card { margin-top: 20px; padding: 20px 24px; border: 1px solid #e5e7f1; border-radius: 12px; background: #fff; }
-h2 { margin: 0 0 16px; font-size: 16px; }
-p { color: #727d96; }
-.table-scroll { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th, td { padding: 10px 12px; border-bottom: 1px solid #edf0f6; text-align: left; white-space: nowrap; }
+.report-card { min-width: 0; margin-top: 20px; padding: 23px; border: 1px solid #e6e9f0; border-radius: 12px; background: #fff; box-shadow: 0 2px 5px #19234603; }
+h2 { margin: 0 0 16px; color: #1c2333; font-size: 16px; font-weight: 650; }
+p { margin: 0; padding: 28px 16px; border-radius: 8px; color: #8a95a6; background: #f8f9fc; font-size: 13px; text-align: center; }
+.table-scroll { max-width: 100%; overflow-x: auto; }
+.table-scroll:focus-visible { outline: 2px solid #8997ff; outline-offset: 3px; }
+table { width: 100%; border-collapse: collapse; color: #465064; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+th, td { padding: 15px 13px; border-bottom: 1px solid #edf0f6; text-align: left; vertical-align: top; white-space: nowrap; }
+th { color: #8b96a8; background: #f8f9fc; font-weight: 500; }
+td:first-child { color: #1c2333; font-weight: 500; }
+tbody tr:hover { background: #fafbff; }
+@media (max-width: 640px) {
+  .report-card { padding: 18px; }
+  th, td { padding: 11px 8px; }
+}
 </style>

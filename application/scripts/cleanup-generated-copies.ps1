@@ -23,7 +23,7 @@ function Get-NormalizedSource {
     param([string]$Path, [switch]$MovedCopy)
     $content = [IO.File]::ReadAllText($Path).Replace("`r`n", "`n")
     if ($MovedCopy) {
-        $content = $content.Replace('../../server/', '../server/').Replace('../../tests/', '../tests/')
+        $content = $content.Replace('../../tests/', '../')
     }
     return $content
 }
@@ -71,7 +71,7 @@ foreach ($name in $targetNames) {
             }
         } else {
             $relativePath = $file.FullName.Substring($target.Length + 1)
-            $retainedRoot = Join-Path $workspaceRoot "application/$name"
+            $retainedRoot = Join-Path $workspaceRoot "application/tests/$name"
             $retainedFile = Join-Path $retainedRoot $relativePath
             if (-not (Test-Path -LiteralPath $retainedFile -PathType Leaf)) {
                 throw "No retained source exists; duplicate directory retained: $retainedFile"

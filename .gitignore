@@ -101,3 +101,14 @@ application/.scratch/issue57/
 
 !application/tests/console-compat-exit.spec.ts
 application/.scratch/compat-exit/
+
+# Maintained acceptance sources consolidated under application/tests.
+!application/tests/integration-distribution/
+!application/tests/integration-terminal/
+!application/tests/issue38-tests/
+!application/tests/issue45-tests/
+!application/tests/issue46-tests/
+!application/tests/issue57-tests/
+!application/tests/reconciliation-route-tests/
+!application/tests/verification/
+!application/tests/helpers/

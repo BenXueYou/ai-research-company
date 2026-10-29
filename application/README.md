@@ -10,6 +10,31 @@ T03已提供终端企业“成员管理”：创建业务员/终端企业管理�
 
 本目录是 Vue 3 + TypeScript + Vite + Element Plus / NestJS / PostgreSQL 的最小真实身份闭环，不是原型账号模拟。规则以[身份决策](../docs/decisions/001-t01-identity.md)为准。实现与测试结果见[验收记录](../docs/delivery/application/VERIFICATION.md)。T02已实现直属组织开户，结果见[T02验收记录](../docs/delivery/application/T02-COMPLETION.md)。管理员重置密码、供应商接入及后续业务模块未实现。
 
+## 开发与验证目录
+
+| 目录 | 用途 |
+| --- | --- |
+| `web/`、`server/` | 前端页面与后端业务实现 |
+| `tests/` | 自动化测试源码、测试夹具及专项集成验证入口 |
+| `config/` | 专项 TypeScript、Playwright 等工程配置 |
+| `scripts/` | 部署、验证及维护命令 |
+| `.scratch/` | 临时构建、运行输出、截图及保留的历史验证材料；不是全部可删除 |
+| `dist/` | 常规应用构建产物，启动命令依赖该位置 |
+| `node_modules/` | 安装的第三方依赖 |
+
+原先散落的 `integration-distribution`、`integration-terminal`、`issue38-tests`、`issue45-tests`、`issue46-tests`、`issue57-tests`、`reconciliation-route-tests`、`verification` 已集中到 `tests/` 下同名子目录。它们是需要保留的业务验证源码，不是缓存。专项维持独立编译范围，不自动加入默认测试命令。
+
+所有命令仍在 `application/` 执行，例如：
+
+```sh
+node tests/integration-distribution/verify.mjs
+node tests/integration-terminal/verify.mjs
+node node_modules/typescript/bin/tsc -p tests/issue45-tests/tsconfig.json
+node node_modules/@playwright/test/cli.js test --config config/playwright/playwright.issue45.config.ts
+```
+
+集成入口会创建专用测试资源，先阅读相应交付记录和下文数据库说明。历史交付记录中的旧路径保持原样；当前目录及验证边界见[本次整理记录](../docs/delivery/application/TEST-DIRECTORY-CONSOLIDATION-2026-10-29.md)。T06 专项的新产物位置为 `.scratch/t06/compiled`，浏览器运行目录为 `.scratch/t06/runtime`；复验前分别用 `tsc -p tsconfig.server.json --outDir .scratch/t06/compiled` 和 `vite build --outDir .scratch/t06/runtime/dist/web` 重建。旧 `test-results/` 已保留到 `.scratch/playwright-results/legacy/`，当前 Playwright 配置继续使用各自的 `.scratch/playwright-results/` 子目录。
+
 ## 环境与安装
 
 验证环境：Windows 11、Node.js 22.14.0、npm 10.9.2、Docker Desktop、PostgreSQL 17.6。建议 Node.js 22 LTS。以下命令均在本目录执行；使用仓库根目录终端时先进入本目录。

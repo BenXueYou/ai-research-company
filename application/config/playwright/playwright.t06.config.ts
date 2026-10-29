@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test';
 process.env.PLAYWRIGHT_NO_COPY_PROMPT = '1';
 export default defineConfig({
-  testDir: '../../dist-t06/tests/browser',
+  testDir: '../../.scratch/t06/compiled/tests/browser',
   testMatch: 'procurement.spec.js',
   outputDir: '../../.scratch/playwright-results/t06',
   workers: 1,

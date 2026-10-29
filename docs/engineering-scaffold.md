@@ -14,7 +14,7 @@
 | `application/server/database.ts`、`cli.ts` | PostgreSQL 连接、当前新库初始化入口 | 数据结构变化先核对当前初始化路径；版本化迁移和回滚须单独设计验证 |
 | `application/server/{identity,organizations,commerce,companies,email,upstream}/` | 各业务域的控制器、服务、schema 与上游适配 | 保持服务端权限、事务和适配器边界；移动文件时逐批核对公开行为 |
 | `application/server/composition/services.ts` | 现有服务及适配器组装 | 只连接既有服务依赖；不在装配层改变请求字段和业务默认值 |
-| `application/tests/`、`tests/browser/` | 纯逻辑、真实 PostgreSQL/HTTP、浏览器场景 | 按受影响流程选择测试，并记录夹具与观察到的业务结果 |
+| `application/tests/`、`tests/browser/` 及 `tests/` 下各专项目录 | 纯逻辑、真实 PostgreSQL/HTTP、浏览器场景与专项验证源码 | 验证源码统一放在 tests；产物放 .scratch，按受影响流程选择测试并记录结果 |
 | `application/scripts/`、`compose.yaml`、`.env.example` | 部署入口、本地测试依赖和配置样例 | 新配置同时更新样例与运行说明；秘密只放受控环境或忽略的本地文件 |
 | `需求设计/`、`docs/decisions/`、`docs/delivery/application/` | 规格、已批准决策、各票交付证据 | 规格证明契约，交付记录证明实际执行；历史记录不能代替新验证 |
 

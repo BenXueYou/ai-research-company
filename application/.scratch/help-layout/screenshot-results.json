@@ -1,0 +1,148 @@
+{
+  "guideDataUnchanged": true,
+  "results": [
+    {
+      "role": "platform",
+      "width": 1920,
+      "images": 6,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "platform",
+      "width": 1440,
+      "images": 6,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "platform",
+      "width": 1024,
+      "images": 6,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "platform",
+      "width": 390,
+      "images": 6,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "platform",
+      "width": 320,
+      "images": 6,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "width": 1920,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "width": 1440,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "width": 1024,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "width": 390,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "distributor",
+      "width": 320,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "width": 1920,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "width": 1440,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "width": 1024,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "width": 390,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "width": 320,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "width": 1920,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "width": 1440,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "width": 1024,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "width": 390,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    },
+    {
+      "role": "sales",
+      "width": 320,
+      "images": 4,
+      "previewAndFocus": true,
+      "overflow": false
+    }
+  ],
+  "links": 17,
+  "writes": [],
+  "errors": []
+}

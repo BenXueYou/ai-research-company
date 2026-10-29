@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 export default defineConfig({
-  testDir: '../../.scratch/issue45-dist/issue45-tests',
+  testDir: '../../.scratch/issue45-dist/tests/issue45-tests',
   testMatch: 'upstream.spec.js',
   outputDir: '../../.scratch/playwright-results/issue45',
   workers: 1,

@@ -27,3 +27,6 @@ test-results-t06/
 /.scratch/**/compiled/
 /.scratch/platform-integration-vite-cache/
 /.vite/
+/.scratch/t06/compiled/
+/.scratch/t06/runtime/
+/.scratch/country-select/

@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: '../../.scratch/issue41-dist/verification',
+  testDir: '../../.scratch/issue41-dist/tests/verification',
   testMatch: 'issue41-procurement.spec.js',
   outputDir: '../../.scratch/issue41-results',
   preserveOutput: 'never',

@@ -4,7 +4,7 @@ import { procurementHttp } from '../procurement-helpers.js';
 
 test('T06 browser real purchasing, expense selection provenance and pricing', async ({ page }) => {
   const previousCwd = process.cwd();
-  process.chdir(resolve(previousCwd,'.t06-runtime'));
+  process.chdir(resolve(previousCwd, '.scratch/t06/runtime'));
   const { pool, name, app } = await procurementHttp(3096);
   console.log(`T06 UI isolated evidence database: ${name}`);
   const errors: string[] = [];
