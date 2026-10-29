@@ -6,16 +6,16 @@
       <el-form-item label="主营产品"><el-input v-model="mainProducts" :disabled="busy" maxlength="2000" /></el-form-item>
       <el-form-item label="采购需求"><el-input v-model="purchasingNeeds" :disabled="busy" maxlength="2000" /></el-form-item>
       <el-form-item label="合作意向"><el-input v-model="cooperationIntent" :disabled="busy" maxlength="2000" /></el-form-item>
-      <el-form-item label="下次跟进时间"><input v-model="nextFollowUpAt" type="datetime-local" :disabled="busy" /></el-form-item>
+      <el-form-item label="下次跟进时间"><el-date-picker v-model="nextFollowUpAt" type="datetime" value-format="YYYY-MM-DDTHH:mm" format="YYYY-MM-DD HH:mm" :clearable="false" :disabled="busy" /></el-form-item>
       <el-form-item label="客户状态">
-        <select v-model="customerStatus" :disabled="busy">
-          <option value="lead">线索</option><option value="following">跟进中</option>
-          <option value="replied">已回复</option><option value="invalid">无效</option>
-        </select>
+        <el-select :empty-values="[null, undefined]" v-model="customerStatus" :disabled="busy">
+          <el-option value="lead" label="线索" /><el-option value="following" label="跟进中" />
+          <el-option value="replied" label="已回复" /><el-option value="invalid" label="无效" />
+        </el-select>
       </el-form-item>
-      <el-form-item label="星级"><select v-model="starRating" :disabled="busy">
-        <option value="">未设置</option><option v-for="star in 5" :key="star" :value="String(star)">{{ star }} 星</option>
-      </select></el-form-item>
+      <el-form-item label="星级"><el-select :empty-values="[null, undefined]" v-model="starRating" :disabled="busy">
+        <el-option value="" label="未设置" /><el-option v-for="star in 5" :key="star" :value="String(star)" :label="(star) + ' 星'" />
+      </el-select></el-form-item>
       <el-form-item label="标签（英文逗号分隔）"><el-input v-model="tags" :disabled="busy" /></el-form-item>
       <el-button native-type="submit" :loading="busy">保存补充</el-button>
     </el-form>
@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus';
+import { ElDatePicker, ElOption, ElSelect, ElButton, ElForm, ElFormItem, ElInput } from 'element-plus';
 
 interface Profile {
   id: string;
@@ -123,3 +123,7 @@ function loadHistory() {
   });
 }
 </script>
+
+<style scoped>
+.el-date-editor.el-input { width: 100%; min-width: 0; }
+</style>

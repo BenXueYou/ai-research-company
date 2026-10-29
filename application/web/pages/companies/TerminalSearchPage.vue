@@ -1,108 +1,147 @@
 <template>
   <div class="terminal-search-page">
     <header class="search-page-heading">
-      <div class="search-page-intro">
-        <h1>找到目标企业，发现合作机会</h1>
-        <p>已知公司名称，查找并核实企业；只有产品线索，发现采购企业候选。</p>
-        <nav class="search-shortcuts" aria-label="查询方式">
-          <a href="#company-search">按公司名查找</a>
-          <a href="#product-search">按产品词发现</a>
-        </nav>
-      </div>
-      <svg
-        class="discovery-globe"
-        viewBox="0 0 160 120"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <ellipse
-          cx="80"
-          cy="62"
-          rx="75"
-          ry="26"
-          fill="none"
-          stroke="#b9c9e8"
-          stroke-dasharray="3 5"
-          transform="rotate(-20 80 62)"
-        />
-        <circle
-          cx="80"
-          cy="60"
-          r="48"
-          fill="#dcebf8"
-        />
-        <ellipse
-          cx="80"
-          cy="60"
-          rx="24"
-          ry="48"
-          fill="none"
-          stroke="#b3cfe9"
-        />
-        <path d="M34 47h92M34 75h92M80 12v96" fill="none" stroke="#b3cfe9" />
-        <path d="M51 29q16-10 30 4l-7 14-17 6-10-9zM90 56l19 2 6 13-15 17-12-8zM62 71l12 4 5 15-10 8-9-14z" fill="#6091d9" />
-        <circle
-          cx="116"
-          cy="31"
-          r="5"
-          fill="#4356e0"
-        />
-        <circle
-          cx="116"
-          cy="31"
-          r="10"
-          fill="none"
-          stroke="#4356e0"
-          opacity=".2"
-        />
-      </svg>
+      <p class="search-page-kicker">DISCOVER YOUR NEXT OPPORTUNITY</p>
+      <h1>从一个产品，找到采购企业</h1>
+      <p>产品词发现贸易企业候选，或使用公司名查找企业。候选身份由你核对。</p>
     </header>
-    <CompanySearch id="company-search" :request="request" />
-    <ProductSearch id="product-search" :request="request" />
+    <ol class="search-journey" aria-label="企业开发流程">
+      <li aria-current="step">搜索候选</li>
+      <li>核对身份 / 建档</li>
+      <li>档案内找联系人</li>
+      <li>预览并发送</li>
+    </ol>
+    <section class="search-workbench" aria-labelledby="search-workbench-title">
+      <header class="workbench-heading">
+        <h2 id="search-workbench-title">找企业</h2>
+        <span>{{ searchMode === 'product' ? '名单逐页确认费用' : '公司名免费查找候选' }}</span>
+      </header>
+      <CompanySearch v-show="searchMode === 'company'" id="company-search" :request="request">
+        <template #search-mode>
+          <label class="search-mode-field">
+            <span>搜索方式</span>
+            <el-select :empty-values="[null, undefined]" v-model="searchMode" aria-label="搜索方式">
+              <el-option value="product" label="按产品词" />
+              <el-option value="company" label="按公司名" />
+            </el-select>
+          </label>
+        </template>
+      </CompanySearch>
+      <ProductSearch v-show="searchMode === 'product'" id="product-search" :request="request">
+        <template #search-mode>
+          <label class="search-mode-field">
+            <span>搜索方式</span>
+            <el-select :empty-values="[null, undefined]" v-model="searchMode" aria-label="搜索方式">
+              <el-option value="product" label="按产品词" />
+              <el-option value="company" label="按公司名" />
+            </el-select>
+          </label>
+        </template>
+      </ProductSearch>
+      <section class="market-exploration" aria-labelledby="market-exploration-title">
+        <div class="market-label"><span>全球市场探索</span><b>GLOBAL OPPORTUNITIES</b></div>
+        <div class="market-caption">
+          <h2 id="market-exploration-title">让下一次连接，从这里开始</h2>
+          <p>用产品与贸易记录发现候选企业，再逐步核实身份、建立联系。</p>
+        </div>
+        <div class="globe-art" aria-hidden="true">
+          <svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg">
+          <defs>               <radialGradient id="search-market-sphere" cx="35%" cy="28%" r="80%">                 <stop offset="0%" stop-color="#ffffff"/>                 <stop offset="45%" stop-color="#dcebf8"/>                 <stop offset="80%" stop-color="#b3cfe9"/>                 <stop offset="100%" stop-color="#93b7dc"/>               </radialGradient>
+          </defs>
+          <ellipse cx="320" cy="320" rx="300" ry="96" fill="none" stroke="#b9c9e8" stroke-width="1" stroke-dasharray="4 6" transform="rotate(-16 320 320)"/>
+          <ellipse cx="320" cy="320" rx="286" ry="120" fill="none" stroke="#cdd9ef" stroke-width="1" stroke-dasharray="3 7" transform="rotate(22 320 320)"/>
+          <path d="M210 90 q60 -34 120 -10 q30 14 22 40 q-50 8 -84 26 q-46 22 -70 -6 q-16 -26 12 -50z" fill="none" stroke="#5b83d6" stroke-width="1.4"/>
+          <circle cx="320" cy="320" r="252" fill="url(#search-market-sphere)"/>
+          <g fill="#2f6fd0" opacity="0.9">               <path d="M196 168 q34 -26 78 -18 q40 8 52 34 q-8 26 -40 30 q-30 4 -44 22 q-16 20 -38 10 q-26 -12 -26 -38 q0 -24 18 -40z"/>               <path d="M330 132 q44 -16 84 4 q34 18 30 44 q-24 18 -58 12 q-40 -6 -60 -22 q-16 -20 4 -38z"/>               <path d="M392 214 q30 -6 46 12 q14 18 2 34 q-18 14 -40 6 q-24 -8 -24 -28 q0 -18 16 -24z"/>               <path d="M238 262 q22 -10 40 4 q16 14 8 34 q-10 22 -34 20 q-26 -2 -30 -26 q-4 -22 16 -32z"/>               <path d="M286 356 q18 -8 32 2 q14 12 8 28 q-8 18 -28 16 q-22 -2 -24 -22 q-2 -16 12 -24z"/>               <path d="M420 330 q16 -6 28 4 q10 10 4 22 q-8 14 -24 10 q-16 -4 -16 -18 q0 -12 8 -18z"/>
+          </g>
+          <g stroke="#2f6fd0" stroke-width="3" stroke-dasharray="10 8" fill="none" opacity="0.75">               <path d="M150 420 q60 60 150 74"/>               <path d="M360 470 q70 -10 118 -52"/>               <path d="M188 210 q-30 60 -22 130"/>
+          </g>
+          <path d="M120 250 q-24 60 -6 120" fill="none" stroke="#4d78cf" stroke-width="1.6"/>
+          <path d="M520 200 q30 70 10 140" fill="none" stroke="#4d78cf" stroke-width="1.6"/>           </svg>
+        </div>
+        <span class="market-note"><i aria-hidden="true"></i>选择市场，开始发现</span>
+      </section>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ElOption, ElSelect } from 'element-plus';
+import { ref } from 'vue';
 import type { CompanyRequest } from '../../api/companyProfiles';
 import CompanySearch from './CompanySearch.vue';
 import ProductSearch from './ProductSearch.vue';
 
 defineOptions({ name: 'TerminalSearchPage' });
 defineProps<{ request: CompanyRequest }>();
+const searchMode = ref<'product' | 'company'>('product');
 </script>
 
 <style scoped>
-.terminal-search-page {
-  --search-accent: #4356e0;
-  --search-line: #e6e9f0;
-  --search-muted: #738095;
-  display: grid;
-  max-width: 1440px;
-  min-width: 0;
-  gap: 22px;
-  margin: 0 auto;
-  color: #1c2333;
+.terminal-search-page { --search-accent: #4356e0; --search-line: #e3e7f1; display: grid; gap: 24px; max-width: 1440px; min-width: 0; margin: 0 auto; color: #1c2333; }
+.search-page-heading { padding-top: 4px; }
+.search-page-kicker { margin: 0 0 10px; color: #8b9ac4; font-size: 10px; letter-spacing: 1.5px; }
+.search-page-heading h1 { margin: 0 0 8px; font-size: 25px; font-weight: 650; line-height: 1.4; }
+.search-page-heading > p:last-child { margin: 0; color: #7b88a0; font-size: 13px; line-height: 1.7; }
+.search-journey { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 24px; margin: 2px 0 0; padding: 0; list-style: none; color: #8b97ad; font-size: 12px; }
+.search-journey li { display: flex; align-items: center; gap: 8px; }
+.search-journey li + li::before { content: ''; width: 24px; height: 1px; background: #d9dfed; }
+.search-journey [aria-current] { color: var(--search-accent); font-weight: 600; }
+.search-journey [aria-current]::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--search-accent); box-shadow: 0 0 0 4px #4356e00d; }
+.search-workbench { min-width: 0; overflow: hidden; border: 1px solid var(--search-line); border-radius: 12px; background: #fff; }
+.workbench-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0 26px; padding: 22px 0 18px; border-bottom: 1px solid #edf0f6; }
+.workbench-heading h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.workbench-heading > span { color: #8490a5; font-size: 11px; }
+.search-workbench :deep(.workspace-card) { min-width: 0; margin: 0; padding: 20px 26px 24px; border: 0; border-radius: 0; box-shadow: none; }
+.search-workbench :deep(.company-search-heading), .search-workbench :deep(.product-search-heading) { display: none; }
+.search-mode-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; color: #647087; font-size: 12px; line-height: 1.5; }
+.search-workbench :deep(.product-search-form) { grid-template-columns: minmax(130px, .9fr) minmax(160px, 1.15fr) minmax(180px, 1.3fr) repeat(2, minmax(145px, .9fr)); gap: 16px; }
+.search-workbench :deep(.company-search-form) { grid-template-columns: minmax(140px, .8fr) minmax(0, 1.6fr) minmax(0, 1.4fr); gap: 16px; }
+.search-workbench :deep(.search-intro), .search-workbench :deep(.product-intro) { grid-column: 1 / -2; align-self: stretch; display: flex; align-items: center; margin: 4px 0 0; padding: 10px 12px; border: 1px solid #dfe4ff; border-radius: 7px; color: #6275a5; background: #f5f6ff; font-size: 11px; line-height: 1.7; }
+.search-workbench :deep(.primary-button) { grid-column: -2 / -1; justify-self: end; width: 100%; min-width: 0; margin: 4px 0 0; }
+.market-exploration { position: relative; min-height: 240px; overflow: hidden; padding: 26px 32px; box-sizing: border-box; border-top: 1px solid var(--search-line); background: radial-gradient(ellipse at 48% 55%, #fff 10%, #f4f7fc 65%, #ecf0fa 100%); }
+.market-label { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 20px; color: #8394b4; font-size: 11px; }
+.market-label > span { padding: 6px 10px; border: 1px solid #e2e7f2; border-radius: 6px; background: #fff; }
+.market-label > b { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; }
+.market-caption { position: relative; z-index: 1; width: 44%; margin-top: 68px; }
+.market-caption h2 { margin: 0 0 6px; font-size: 19px; font-weight: 600; line-height: 1.5; }
+.market-caption p { max-width: 360px; margin: 0; color: #8b99b1; font-size: 12px; line-height: 1.7; }
+.globe-art { position: absolute; top: -34px; right: 3%; width: 350px; filter: drop-shadow(0 20px 25px #4f72bd13); }
+.globe-art svg { display: block; width: 100%; height: auto; }
+.market-note { position: absolute; top: 46%; right: 6%; display: flex; align-items: center; gap: 8px; padding: 12px 15px; border: 1px solid #fff; border-radius: 10px; color: #596a87; background: #ffffffed; box-shadow: 0 7px 24px #344e8c0a; font-size: 12px; }
+.market-note i { width: 7px; height: 7px; border-radius: 50%; background: var(--search-accent); }
+@media (max-width: 1100px) {
+  .search-workbench :deep(.product-search-form) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .search-workbench :deep(.product-search-form .search-mode-field) { grid-column: 1 / -1; }
+  .search-workbench :deep(.product-search-form .product-intro) { grid-column: 1 / -1; }
+  .search-workbench :deep(.product-search-form .primary-button) { grid-column: 2; }
 }
-.search-page-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 156px; box-sizing: border-box; padding: 24px 28px; border: 1px solid #e6ebf7; border-radius: 12px; background: #f5f7fd; }
-.search-page-intro { min-width: 0; }
-.search-page-heading h1 { margin: 0 0 8px; color: #3d4963; font-size: 24px; line-height: 1.4; }
-.search-page-heading p { margin: 0; color: #647087; font-size: 13px; line-height: 1.7; }
-.discovery-globe { flex: 0 0 140px; width: 140px; height: 105px; }
-.search-shortcuts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-.search-shortcuts a { padding: 8px 14px; border: 1px solid #dce2ff; border-radius: 8px; color: #4356e0; background: #fff; font-size: 13px; line-height: 1.5; text-decoration: none; }
-.search-shortcuts a:hover { border-color: #4356e0; background: #eef1ff; }
-.search-shortcuts a:focus-visible { outline: 2px solid #4356e0; outline-offset: 3px; }
-.terminal-search-page :deep(.workspace-card) { min-width: 0; margin: 0; padding: 26px; border: 1px solid var(--search-line); border-radius: 12px; box-shadow: none; scroll-margin-top: 90px; }
 @media (max-width: 760px) {
-  .terminal-search-page { gap: 18px; }
-  .search-page-heading { gap: 16px; padding: 20px; }
+  .terminal-search-page { gap: 20px; }
   .search-page-heading h1 { font-size: 22px; }
-  .discovery-globe { flex-basis: 100px; width: 100px; height: 75px; }
-  .terminal-search-page :deep(.workspace-card) { padding: 20px 16px; }
+  .search-journey { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; font-size: 11px; }
+  .search-journey li { gap: 12px; }
+  .search-journey li + li::before { display: none; }
+  .workbench-heading { margin: 0 18px; padding: 18px 0 16px; }
+  .search-workbench :deep(.workspace-card) { padding: 18px; }
+  .search-workbench :deep(.company-search-form) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .search-workbench :deep(.company-search-form .search-mode-field), .search-workbench :deep(.search-intro) { grid-column: 1 / -1; }
+  .market-exploration { min-height: 260px; padding: 22px 18px; }
+  .market-label { gap: 10px; }
+  .market-label > b { font-size: 9px; }
+  .market-caption { width: 55%; margin-top: 60px; }
+  .market-caption h2 { font-size: 16px; }
+  .globe-art { top: 65px; right: -50px; width: 250px; opacity: .65; }
+  .market-note { display: none; }
 }
-@media (max-width: 600px) {
-  .search-page-heading { padding: 20px 16px; }
-  .search-page-heading h1 { font-size: 20px; }
-  .discovery-globe { display: none; }
+@media (max-width: 480px) {
+  .search-workbench :deep(.product-search-form), .search-workbench :deep(.company-search-form) { grid-template-columns: minmax(0, 1fr); }
+  .search-workbench :deep(.product-search-form .primary-button), .search-workbench :deep(.company-search-form .primary-button) { grid-column: 1; }
+  .market-caption { width: 70%; }
+  .globe-art { right: -100px; opacity: .4; }
 }
+
+/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
+:deep(.el-select) { min-width: 0; }
+.search-mode-field :deep(.el-select__wrapper) { min-height: 42px; border-radius: 8px; }
 </style>

@@ -1,9 +1,9 @@
 <div id="app"></div><script type="module">
-import { createApp, h } from '/node_modules/.vite/deps/vue.js';
-import { createPinia } from '/node_modules/.vite/deps/pinia.js';
-import { createRouter, createMemoryHistory } from '/node_modules/.vite/deps/vue-router.js';
-import ElementPlus from '/node_modules/element-plus/es/index.mjs';
-import '/node_modules/element-plus/dist/index.css';
+import { createApp, h } from 'vue';
+import { createPinia } from 'pinia';
+import { createRouter, createMemoryHistory } from 'vue-router';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
 import Page from '/web/pages/companies/CompanyProfilesPage.vue';
 import { useSessionStore } from '/web/stores/session.ts';
 window.requests=[];

@@ -9,12 +9,12 @@
       <span class="profiles-count">当前列表 <strong>{{ profiles.length }}</strong> 家企业</span>
     </header>
     <form class="profiles-filters" @submit.prevent="load">
-      <label>客户状态 <select v-model="statusFilter">
-        <option value="">全部</option><option value="lead">线索</option><option value="following">跟进中</option>
-        <option value="replied">已回复</option><option value="invalid">无效</option>
-      </select></label>
-      <label>跟进开始 <input v-model="followUpFrom" type="date" /></label>
-      <label>跟进结束 <input v-model="followUpTo" type="date" /></label>
+      <label>客户状态 <el-select :empty-values="[null, undefined]" v-model="statusFilter">
+        <el-option value="" label="全部" /><el-option value="lead" label="线索" /><el-option value="following" label="跟进中" />
+        <el-option value="replied" label="已回复" /><el-option value="invalid" label="无效" />
+      </el-select></label>
+      <label>跟进开始 <el-date-picker v-model="followUpFrom" type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false" /></label>
+      <label>跟进结束 <el-date-picker v-model="followUpTo" type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false" /></label>
       <label v-if="auth.session?.role === 'admin'" class="deleted-filter"><input v-model="showDeleted" type="checkbox" />查看已删除</label>
       <button class="filter-primary" type="submit" :disabled="loading">筛选档案</button>
       <button type="button" :disabled="loading" @click="load">刷新列表</button>
@@ -63,6 +63,7 @@
 </template>
 
 <script setup lang="ts">
+import { ElDatePicker, ElOption, ElSelect } from 'element-plus';
 import { computed, ref, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { useSessionStore } from '../../stores/session';
@@ -136,8 +137,7 @@ void load();
 .profiles-count strong { margin: 0 5px; color: #4356e0; font-size: 22px; font-variant-numeric: tabular-nums; }
 .profiles-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; padding: 20px; margin-bottom: 24px; border: 1px solid var(--profile-line); border-radius: 12px; background: #fff; }
 .profiles-filters label { display: grid; gap: 7px; color: #647087; font-size: 12px; }
-.profiles-filters input, .profiles-filters select { min-width: 0; min-height: 38px; padding: 8px 11px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #263052; font: inherit; }
-.profiles-filters select { min-width: 128px; }
+.profiles-filters input[type="checkbox"] { min-width: 0; min-height: 38px; padding: 8px 11px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #263052; font: inherit; }
 .profiles-filters .deleted-filter { display: flex; align-items: center; align-self: center; gap: 7px; padding-top: 20px; }
 .deleted-filter input { min-height: auto; margin: 0; accent-color: #4356e0; }
 .profiles-filters button { min-height: 38px; padding: 8px 15px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #465064; font: inherit; font-size: 12px; cursor: pointer; }
@@ -145,7 +145,7 @@ void load();
 .profiles-filters button:hover { border-color: #b5bff6; background: #f4f6ff; color: #4356e0; }
 .profiles-filters .filter-primary:hover { background: #3343c9; color: #fff; }
 .profiles-filters button:disabled { opacity: .5; cursor: not-allowed; }
-.profiles-filters input:focus-visible, .profiles-filters select:focus-visible { outline: 2px solid #b5bff6; outline-offset: 2px; }
+.profiles-filters input:focus-visible { outline: 2px solid #b5bff6; outline-offset: 2px; }
 .profiles-content { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: start; }
 .profiles-empty { padding: 32px 20px; border: 1px solid var(--profile-line); border-radius: 12px; background: #fff; text-align: center; }
 .profiles-empty h2 { margin: 0 0 12px; color: #263052; font-size: 18px; font-weight: 600; }
@@ -189,4 +189,12 @@ void load();
   .profiles-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
   .profiles-list li + li { margin-top: 0; }
 }
+
+/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
+:deep(.el-select) { min-width: 0; }
+.profiles-filters :deep(.el-select) { width: 128px; }
+.profiles-filters :deep(.el-select__wrapper) { min-height: 38px; border-radius: 8px; }
+.el-date-editor.el-input { width: 100%; min-width: 0; }
+.profiles-filters :deep(.el-date-editor) { width: 160px; }
+.profiles-filters :deep(.el-date-editor .el-input__wrapper) { min-height: 38px; border-radius: 8px; }
 </style>

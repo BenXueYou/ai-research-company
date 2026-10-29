@@ -68,12 +68,9 @@ defineProps<{ request: SettingsRequest }>();
 .platform-settings-page :deep(.el-form-item__label) { height: auto; margin-bottom: 8px; color: #647087; font-size: 12px; line-height: 1.6; }
 .platform-settings-page :deep(.el-input__wrapper) { min-height: 40px; border-radius: 8px; box-shadow: 0 0 0 1px #dfe4ee inset; }
 .platform-settings-page :deep(.el-input__wrapper.is-focus) { box-shadow: 0 0 0 1px var(--settings-accent) inset; }
-.platform-settings-page :deep(select),
-.platform-settings-page :deep(input[type='datetime-local']) { box-sizing: border-box; width: 100%; min-width: 0; min-height: 42px; padding: 8px 12px; border: 1px solid #dfe4ee; border-radius: 8px; color: #1c2333; background: #fff; font: inherit; font-size: 13px; }
-.platform-settings-page :deep(select:focus-visible),
-.platform-settings-page :deep(input[type='datetime-local']:focus-visible) { outline: 2px solid #4356e040; outline-offset: 2px; border-color: var(--settings-accent); }
-.platform-settings-page :deep(select:disabled),
-.platform-settings-page :deep(input[type='datetime-local']:disabled) { color: #a8abb2; background: #f5f7fa; cursor: not-allowed; }
+.platform-settings-page :deep(select) { box-sizing: border-box; width: 100%; min-width: 0; min-height: 42px; padding: 8px 12px; border: 1px solid #dfe4ee; border-radius: 8px; color: #1c2333; background: #fff; font: inherit; font-size: 13px; }
+.platform-settings-page :deep(select:focus-visible) { outline: 2px solid #4356e040; outline-offset: 2px; border-color: var(--settings-accent); }
+.platform-settings-page :deep(select:disabled) { color: #a8abb2; background: #f5f7fa; cursor: not-allowed; }
 .platform-settings-page :deep(.settings-form > .el-button) { grid-column: 1 / -1; justify-self: start; margin: 0 0 8px; }
 .platform-settings-page :deep(.el-button) { min-height: 38px; padding: 9px 16px; border-radius: 8px; font-size: 13px; }
 .platform-settings-page :deep(.settings-primary:not(:disabled)) { border-color: var(--settings-accent); color: #fff; background: var(--settings-accent); }

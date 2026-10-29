@@ -8,6 +8,8 @@ import {
 import { useFormLeave } from '../../../router/formLeave';
 import { HttpError } from '../../../api/http';
 import {
+  ElOption,
+  ElSelect,
   ElAlert,
   ElButton,
   ElForm,
@@ -148,14 +150,14 @@ onMounted(reload);
           <ElInput id="settings-pricing-evidence" v-model="pricing.evidence" required />
         </ElFormItem>
         <ElFormItem label="计价依据类型" for="settings-pricing-evidence-type">
-          <select
+          <el-select :empty-values="[null, undefined]"
             id="settings-pricing-evidence-type"
             v-model="pricing.evidenceType"
             :disabled="busy || unknown"
           >
-            <option value="supplier_verified">已核实供应商商务依据</option>
-            <option value="controlled_test">受控测试价格（生产环境禁止）</option>
-          </select>
+            <el-option value="supplier_verified" label="已核实供应商商务依据" />
+            <el-option value="controlled_test" label="受控测试价格（生产环境禁止）" />
+          </el-select>
         </ElFormItem>
         <ElButton class="settings-primary" native-type="submit" :disabled="busy">保存计价设置</ElButton>
       </ElForm>
@@ -195,10 +197,7 @@ onMounted(reload);
   background: #fff;
 }
 
-select {
-  width: 100%;
-  min-height: 36px;
-  border: 1px solid #b5c5ce;
-  border-radius: 4px;
-}
+/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
+:deep(.el-select) { min-width: 0; }
+:deep(.el-select__wrapper) { min-height: 36px; border-radius: 4px; }
 </style>

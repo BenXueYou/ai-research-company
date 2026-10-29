@@ -62,11 +62,11 @@
       <h3>{{ late ? '登记迟到结果' : '核对结果确认中查询' }}：{{ selected.name }}（{{ kindLabel(selected.kind) }}）</h3>
       <p>查询标识：{{ selected.queryId }}；锁定系数：{{ selected.coefficient }}；最高扣点：{{ selected.maximumPoints }}</p>
       <el-form-item v-if="!late" label="核对结论" for="detail-outcome">
-        <select
+        <el-select :empty-values="[null, undefined]"
           id="detail-outcome"
           v-model="form.outcome"
           :disabled="busy || unknown"
-        ><option value="settled">可查看结果，结算</option><option value="zero">真实零结果，释放</option><option value="failed">最终失败，释放</option></select>
+        ><el-option value="settled" label="可查看结果，结算" /><el-option value="zero" label="真实零结果，释放" /><el-option value="failed" label="最终失败，释放" /></el-select>
       </el-form-item>
       <el-form-item label="供应商账单引用" for="detail-bill">
         <el-input
@@ -136,6 +136,8 @@ import {
 import { useFormLeave } from '../../../router/formLeave';
 import { HttpError } from '../../../api/http';
 import {
+  ElOption,
+  ElSelect,
   ElButton,
   ElForm,
   ElFormItem,
@@ -323,8 +325,6 @@ summary { cursor: pointer; color: var(--console-brand); }
 .reconciliation-form > p { margin: 0 0 22px; font-size: 12px; overflow-wrap: anywhere; }
 .reconciliation-form :deep(.el-form-item) { min-width: 0; }
 .reconciliation-form :deep(.el-form-item__label) { font-size: 12px; }
-.reconciliation-form select { width: 100%; min-height: 34px; padding: 6px 12px; border: 1px solid var(--console-line-strong); border-radius: 8px; color: var(--console-text); background: #fff; }
-.reconciliation-form select:focus-visible { outline: 2px solid #aeb7f4; outline-offset: 2px; }
 .reconciliation-form > .el-button { grid-column: 1 / -1; justify-self: end; margin-top: 4px; }
 .reconciliation-error, .reconciliation-notice, .reconciliation-warning { margin: 16px 0 0; padding: 12px 15px; border: 1px solid #f0d2d6; border-radius: 8px; font-size: 12px; }
 .reconciliation-card .reconciliation-error { color: var(--console-danger); background: #fff4f4; }
@@ -378,4 +378,8 @@ summary { cursor: pointer; color: var(--console-brand); }
     margin-top: 16px;
   }
 }
+
+/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
+:deep(.el-select) { min-width: 0; }
+.reconciliation-form :deep(.el-select__wrapper) { min-height: 34px; border-radius: 8px; }
 </style>

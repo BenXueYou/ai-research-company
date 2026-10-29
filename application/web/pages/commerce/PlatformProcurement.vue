@@ -7,6 +7,8 @@ import {
   shallowRef
 } from 'vue';
 import {
+  ElOption,
+  ElSelect,
   ElAlert,
   ElButton,
   ElForm,
@@ -246,16 +248,16 @@ onMounted(reload);
             <p>登记采购凭证与支付金额</p>
           </header>
           <ElFormItem label="采购用途" for="purchase-purpose">
-            <select
+            <el-select :empty-values="[null, undefined]"
               id="purchase-purpose"
               v-model="purchase.purpose"
               :disabled="busy"
             >
-              <option value="sale">销售库存</option>
-              <option value="coverage">补足额度</option>
-              <option value="failure">失败费用</option>
-              <option value="excess">超额费用</option>
-            </select>
+              <el-option value="sale" label="销售库存" />
+              <el-option value="coverage" label="补足额度" />
+              <el-option value="failure" label="失败费用" />
+              <el-option value="excess" label="超额费用" />
+            </el-select>
           </ElFormItem>
           <div class="field-row">
             <ElFormItem label="采购上游点数" for="purchase-points">
@@ -294,17 +296,16 @@ onMounted(reload);
             />
           </ElFormItem>
           <ElFormItem v-if="purchase.purpose !== 'sale'" label="关联已记费用" for="purchase-expense">
-            <select
+            <el-select :empty-values="[null, undefined]"
               id="purchase-expense"
               v-model="purchase.expenseId"
               :disabled="busy"
             >
-              <option value="">{{ purchase.purpose === 'coverage' ? '本次确认新费用' : '请先登记费用并选择关联' }}</option>
+              <el-option value="" :label="(purchase.purpose === 'coverage' ? '本次确认新费用' : '请先登记费用并选择关联')" />
               <template v-for="item in snapshot.expenses" :key="item.id">
-                <option v-if="item.purpose === purchase.purpose" :value="item.id">{{ item.source_reference }} · {{
-                  item.amount }}元</option>
+                <el-option v-if="item.purpose === purchase.purpose" :value="item.id" :label="(item.source_reference) + ' · ' + (item.amount) + '元'" />
               </template>
-            </select>
+            </el-select>
           </ElFormItem>
           <div class="form-guidance">
             <p v-if="purchase.purpose === 'sale'">按当前入账系数生成内部库存点数。</p>
@@ -330,15 +331,15 @@ onMounted(reload);
             <p>登记费用来源与核对依据</p>
           </header>
           <ElFormItem label="费用用途" for="expense-purpose">
-            <select
+            <el-select :empty-values="[null, undefined]"
               id="expense-purpose"
               v-model="expense.purpose"
               :disabled="busy"
             >
-              <option value="failure">失败费用</option>
-              <option value="excess">超额费用</option>
-              <option value="coverage">补足额度</option>
-            </select>
+              <el-option value="failure" label="失败费用" />
+              <el-option value="excess" label="超额费用" />
+              <el-option value="coverage" label="补足额度" />
+            </el-select>
           </ElFormItem>
           <div class="field-row">
             <ElFormItem label="费用人民币金额" for="expense-amount">
@@ -693,23 +694,6 @@ onMounted(reload);
 .entry-card :deep(.el-input__wrapper.is-focus) {
   box-shadow: 0 0 0 1px var(--el-color-primary) inset, 0 0 0 3px var(--el-color-primary-light-9);
 }
-.entry-card select {
-  width: 100%;
-  min-width: 0; height: 40px; padding: 0 12px;
-  border: 1px solid var(--console-line-strong);
-  border-radius: 7px;
-  color: var(--console-text);
-  background: var(--console-surface); font: inherit;
-}
-
-.entry-card select:focus-visible {
-  outline: 3px solid var(--el-color-primary-light-7);
-  outline-offset: 2px;
-}
-.entry-card select:disabled {
-  cursor: not-allowed;
-  background: var(--el-disabled-bg-color);
-}
 .form-guidance {
   margin-bottom: 20px;
   padding: 12px 14px;
@@ -900,4 +884,8 @@ tbody tr:hover {
   padding: 12px;
 }
 }
+
+/* Element Plus 下拉框沿用页面控件尺寸，状态样式由组件提供。 */
+:deep(.el-select) { min-width: 0; }
+.entry-card :deep(.el-select__wrapper) { min-height: 40px; border-radius: 7px; }
 </style>

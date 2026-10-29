@@ -6,8 +6,8 @@
       </div>
       <span class="search-free-badge">免费查找候选</span>
     </header>
-    <p class="hint search-intro">输入公司名和国家，逐页查找并核实企业，再单独确认详情费用。免费查询不扣查询点数。</p>
     <el-form class="company-search-form" label-position="top" @submit.prevent="startSearch">
+      <slot name="search-mode" />
       <el-form-item label="公司名称" for="company-name">
         <el-input
           id="company-name"
@@ -23,6 +23,7 @@
           :disabled="locked"
         />
       </el-form-item>
+      <p class="hint search-intro">输入公司名和国家，逐页查找并核实企业，再单独确认详情费用。免费查询不扣查询点数。</p>
       <el-button
         class="primary-button"
         native-type="submit"

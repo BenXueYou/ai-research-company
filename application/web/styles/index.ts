@@ -1,3 +1,4 @@
+import 'element-plus/es/components/date-picker/style/css';
 import 'element-plus/es/components/alert/style/css';
 import 'element-plus/es/components/button/style/css';
 import 'element-plus/es/components/empty/style/css';

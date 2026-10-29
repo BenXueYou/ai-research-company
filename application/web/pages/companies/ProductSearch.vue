@@ -6,16 +6,8 @@
       </div>
       <span class="product-fee-badge">逐页确认费用</span>
     </header>
-    <p class="hint product-intro">输入产品词，选择采购企业所在国与贸易时间，查看本页报价后确认查询。名单仅含企业名称，身份须另行核实。</p>
     <el-form class="product-search-form" label-position="top" @submit.prevent="prepare(1)">
-      <el-form-item label="产品词" for="product-desc">
-        <el-input
-          id="product-desc"
-          v-model="productDesc"
-          :disabled="locked"
-          placeholder="至少两个字符"
-        />
-      </el-form-item>
+      <slot name="search-mode" />
       <el-form-item label="采购企业所在国（三位代码）" for="buyer-country">
         <CountrySelect
           id="buyer-country"
@@ -24,22 +16,31 @@
           :multiple="false"
         />
       </el-form-item>
-      <el-form-item label="贸易开始日期" for="trade-start">
+      <el-form-item label="产品词" for="product-desc">
         <el-input
+          id="product-desc"
+          v-model="productDesc"
+          :disabled="locked"
+          placeholder="至少两个字符"
+        />
+      </el-form-item>
+      <el-form-item label="贸易开始日期" for="trade-start">
+        <el-date-picker
           id="trade-start"
           v-model="startDate"
-          type="date"
+          type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false"
           :disabled="locked"
         />
       </el-form-item>
       <el-form-item label="贸易结束日期" for="trade-end">
-        <el-input
+        <el-date-picker
           id="trade-end"
           v-model="endDate"
-          type="date"
+          type="date" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :clearable="false"
           :disabled="locked"
         />
       </el-form-item>
+      <p class="hint product-intro">输入产品词，选择采购企业所在国与贸易时间，查看本页报价后确认查询。名单仅含企业名称，身份须另行核实。</p>
       <el-button
         class="primary-button"
         native-type="submit"
@@ -131,6 +132,7 @@ import {
   ref,
   watch
 } from 'vue';
+import { ElDatePicker } from 'element-plus';
 import { RouterLink } from 'vue-router';
 import { useFormLeave } from '../../router/formLeave';
 import CompanyIdentity from './components/CompanyIdentity.vue';
@@ -378,4 +380,5 @@ async function applyDetailResult(result: DetailResult) {
   .product-search .candidate-row { padding: 16px 0; }
   .product-search .candidate-row > strong, .product-search .candidate-row > div { flex-basis: 100%; min-width: 0; }
 }
+.el-date-editor.el-input { width: 100%; min-width: 0; }
 </style>

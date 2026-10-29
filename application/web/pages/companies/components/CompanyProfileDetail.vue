@@ -189,7 +189,7 @@ async function executeRefresh() {
 .profile-detail :deep(.el-form-item) { min-width: 0; margin-bottom: 16px; }
 .profile-detail :deep(.el-form-item__content), .profile-detail :deep(.el-select) { min-width: 0; }
 .profile-detail :deep(.el-input__wrapper), .profile-detail :deep(.el-textarea__inner), .profile-detail :deep(.el-select__wrapper) { border-radius: 8px; }
-.profile-detail :deep(select), .profile-detail :deep(input[type="datetime-local"]) { width: 100%; min-width: 0; min-height: 34px; padding: 6px 10px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #465064; font: inherit; font-size: 12px; }
+.profile-detail :deep(select) { width: 100%; min-width: 0; min-height: 34px; padding: 6px 10px; border: 1px solid #dfe4ee; border-radius: 8px; background: #fff; color: #465064; font: inherit; font-size: 12px; }
 .profile-detail :deep(button) { max-width: 100%; font-size: 12px; white-space: normal; }
 .source-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
 .source-heading > div { min-width: 0; }

@@ -4,24 +4,28 @@ try {
  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
  const errors=[]; page.on('pageerror', e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:5187/.scratch/search-banner/index.html');
- await expect(page.getByRole('heading',{level:1})).toHaveText('找到目标企业，发现合作机会');
- await page.screenshot({path:'.scratch/search-banner/desktop.png',fullPage:true});
+ await expect(page.getByRole('heading',{level:1})).toHaveText('从一个产品，找到采购企业');
+ await page.screenshot({path:'.scratch/search-banner/b-desktop.png',fullPage:true});
+ await page.locator('select[aria-label="搜索方式"]:visible').selectOption('company');
  await page.locator('#company-name').fill('Sample Company');
- await page.getByRole('link',{name:'按产品词发现',exact:true}).click();
- await expect(page.locator('#product-search h2')).toBeInViewport();
+ await page.locator('select[aria-label="搜索方式"]:visible').selectOption('product');
+ await expect(page.locator('#product-desc')).toBeVisible();
  await page.locator('#product-desc').fill('ceramic pump');
  await page.locator('#trade-start').fill('2026-01-01');
  await page.locator('#trade-end').fill('2026-06-30');
  const country=page.locator('#product-search .el-select');
  await country.click();
  await page.getByRole('option').filter({hasText:'土耳其'}).click();
- await page.getByRole('link',{name:'按公司名查找',exact:true}).click();
+ await page.locator('select[aria-label="搜索方式"]:visible').selectOption('company');
  await expect(page.locator('#company-name')).toHaveValue('Sample Company');
  await page.getByRole('button',{name:'免费查询',exact:true}).click();
  await expect(page.getByText('本页没有匹配企业',{exact:true})).toBeVisible();
- await page.getByRole('link',{name:'按产品词发现',exact:true}).click();
+ await page.locator('select[aria-label="搜索方式"]:visible').selectOption('product');
  await expect(page.locator('#product-desc')).toHaveValue('ceramic pump');
  await page.getByRole('button',{name:'查看第 1 页报价',exact:true}).click();
+ await expect(page.getByRole('button',{name:'确认本页费用并查询'})).toBeVisible();
+ await page.locator('select[aria-label="搜索方式"]:visible').selectOption('company');
+ await page.locator('select[aria-label="搜索方式"]:visible').selectOption('product');
  await expect(page.getByRole('button',{name:'确认本页费用并查询'})).toBeVisible();
  await page.getByRole('button',{name:'取消',exact:true}).click();
  const calls=await page.evaluate(()=>window.calls);
@@ -30,8 +34,8 @@ try {
   await page.setViewportSize({width,height:844});
   await page.evaluate(()=>window.scrollTo(0,0));
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  if(width===390) await page.screenshot({path:'.scratch/search-banner/mobile.png',fullPage:true});
+  if(width===390) await page.screenshot({path:'.scratch/search-banner/b-mobile.png',fullPage:true});
  }
  expect(errors).toEqual([]);
- console.log('PASS: desktop/mobile layout, anchors preserve both forms, CHN free search, TUR product quote, cancel without execution; no page errors.');
+ console.log('PASS: desktop/mobile layout, mode switching preserves both forms, CHN free search, TUR product quote, cancel without execution; no page errors.');
 } finally { await browser.close(); }

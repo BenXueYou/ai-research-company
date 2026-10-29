@@ -11,7 +11,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="发生时间">
-        <el-input v-model="form.eventTime" type="datetime-local" :disabled="busy" />
+        <el-date-picker v-model="form.eventTime" type="datetime" value-format="YYYY-MM-DDTHH:mm" format="YYYY-MM-DD HH:mm" :clearable="false" :disabled="busy" />
       </el-form-item>
       <el-form-item v-if="form.type !== 'note'" label="联系人或号码">
         <el-input v-model="form.contactOrPhone" :disabled="busy" placeholder="号码将加密保存并脱敏显示" />
@@ -90,6 +90,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 import {
+  ElDatePicker,
   ElAlert,
   ElButton,
   ElEmpty,
@@ -318,4 +319,5 @@ onMounted(() => { void load(); });
 .attachment-panel { border-top: 1px solid #ddd; margin-top: 1rem; padding-top: 1rem; }
 .attachment-row { display: flex; align-items: center; gap: .5rem; margin: .25rem 0; }
 .record-upload { display: inline-block; margin: .5rem; }
+.el-date-editor.el-input { width: 100%; min-width: 0; }
 </style>

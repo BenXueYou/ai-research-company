@@ -149,7 +149,7 @@ onUnmounted(stopClock);
         <ElInput id="coefficient-value" v-model="form.coefficient" required />
       </ElFormItem>
       <ElFormItem label="告知生效时间" for="coefficient-time">
-        <input
+        <ElInput
           id="coefficient-time"
           v-model="form.effectiveAt"
           type="datetime-local"
