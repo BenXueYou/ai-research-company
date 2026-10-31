@@ -65,7 +65,8 @@
 }
 
 .search-module { display: grid; gap: 20px; min-width: 0; margin: 0; }
-.search-filter-panel { padding: 0 26px 24px; border: 1px solid var(--console-line); border-top: 0; border-radius: 0 0 12px 12px; background: var(--console-surface); }
+.search-filter-panel { padding: 16px 26px 24px; border: 1px solid var(--console-line); border-top: 0; border-radius: 0 0 12px 12px; background: var(--console-surface); }
+.search-filter-panel > .search-form { margin-top: 8px; }
 .search-results-panel { min-width: 0; padding: 22px 26px; border: 1px solid var(--console-line); border-radius: 12px; background: var(--console-surface); }
 .search-results-heading { margin: 0; padding-bottom: 14px; border-bottom: 1px solid var(--console-line); font-size: 17px; font-weight: 600; }
 .search-results-placeholder { margin: 24px 0; text-align: center; }

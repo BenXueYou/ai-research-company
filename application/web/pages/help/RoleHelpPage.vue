@@ -16,6 +16,12 @@ interface Guide {
 
 const guides: Record<string, Guide[]> = {
   platform: [
+    {
+      title: '平台初始化与下级点数配置',
+      text: '适用于平台运营管理员。新环境先完成初始账号改密、接口单价与换算系数配置，并准备平台内部点数库存；直属企业开户后，通过点数订单确认收款、预留库存和完整划拨建立或增加下级账户余额。下级账户页面只读，不能直接激活点数。',
+      path: '/platform/organizations?view=accounts',
+      link: '查看下级账户'
+    },
     { title: '直属开户与账号交付', text: '在下级管理中为直属下级开户，核对组织和管理员信息。开户后及时安全交付临时凭据；临时密码有效期 72 小时，首次登录必须改密。直属管理员密码重置也在授权范围内进行。', path: '/platform/organizations', link: '进入下级管理' },
     { title: '直属点数交易', text: '为直属下级建立点数订单，核对数量、价格和线下收款，再依订单状态处理预留、完整划拨或退款。库存不足、结果待确认等情况以订单现场提示和核对结果为准。', path: '/platform/ledger', link: '进入点数与账务' },
     {
@@ -58,7 +64,7 @@ const roleName = computed(() => roleNames[props.role] ?? '当前账号');
     <header class="help-heading">
       <h1>帮助中心</h1>
       <p>{{ roleName }}操作指南</p>
-      <p>对照页面截图了解操作步骤，点击图片可放大查看。截图使用示例数据，具体状态与可用操作以当前页面为准。</p>
+      <p>对照页面截图了解操作步骤，点击图片可放大查看。截图使用示例数据，具体状态与可用操作以当前页面为准。平台运营管理员的点数配置涉及计价、库存、订单和划拨多个页面，请按顺序操作。</p>
     </header>
     <div class="help-guides">
       <section v-for="guide in currentGuides" :key="guide.title" class="help-section help-guide">

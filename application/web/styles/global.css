@@ -190,7 +190,6 @@ p {
 .workspace-mode .page-heading { max-width: 1160px; }
 .workspace-mode .company-search {
   max-width: 1160px;
-  padding: 26px;
   border-radius: 12px;
 }
 .workspace-mode .company-search > form {

@@ -6,6 +6,12 @@
         <h1 id="market-exploration-title">让下一次连接，从这里开始</h1>
         <p>用产品与贸易记录发现候选企业，再逐步核实身份、建立联系。</p>
       </div>
+      <ol class="search-journey" aria-label="企业开发流程">
+        <li aria-current="step">搜索候选</li>
+        <li>核对身份 / 建档</li>
+        <li>档案内找联系人</li>
+        <li>预览并发送</li>
+      </ol>
       <div class="globe-art" aria-hidden="true">
         <svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg">
         <defs>               <radialGradient id="search-market-sphere" cx="35%" cy="28%" r="80%">                 <stop offset="0%" stop-color="#ffffff"/>                 <stop offset="45%" stop-color="#dcebf8"/>                 <stop offset="80%" stop-color="#b3cfe9"/>                 <stop offset="100%" stop-color="#93b7dc"/>               </radialGradient>
@@ -23,12 +29,6 @@
       </div>
       <span class="market-note"><i aria-hidden="true"></i>选择市场，开始发现</span>
     </section>
-    <ol class="search-journey" aria-label="企业开发流程">
-      <li aria-current="step">搜索候选</li>
-      <li>核对身份 / 建档</li>
-      <li>档案内找联系人</li>
-      <li>预览并发送</li>
-    </ol>
     <section class="search-workbench" aria-label="找企业">
       <div class="search-mode-tabs">
         <el-tabs v-model="searchMode" aria-label="搜索方式">
@@ -56,7 +56,7 @@ const searchMode = ref<'product' | 'company'>('product');
 
 <style scoped>
 .terminal-search-page { --search-accent: #4356e0; --search-line: #e3e7f1; display: grid; gap: 24px; max-width: 1440px; min-width: 0; margin: 0 auto; color: #1c2333; }
-.search-journey { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 24px; margin: 2px 0 0; padding: 0; list-style: none; color: #8b97ad; font-size: 12px; }
+.search-journey { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 14px 24px; margin: 42px 0 0; padding: 0; list-style: none; color: #8b97ad; font-size: 12px; }
 .search-journey li { display: flex; align-items: center; gap: 8px; }
 .search-journey li + li::before { content: ''; width: 24px; height: 1px; background: #d9dfed; }
 .search-journey [aria-current] { color: var(--search-accent); font-weight: 600; }
@@ -76,7 +76,7 @@ const searchMode = ref<'product' | 'company'>('product');
 .market-note i { width: 7px; height: 7px; border-radius: 50%; background: var(--search-accent); }
 @media (max-width: 760px) {
   .terminal-search-page { gap: 20px; }
-  .search-journey { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; font-size: 11px; }
+  .search-journey { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; margin-top: 28px; font-size: 11px; }
   .search-journey li { gap: 12px; }
   .search-journey li + li::before { display: none; }
   .search-mode-tabs { padding: 8px 18px 0; }
