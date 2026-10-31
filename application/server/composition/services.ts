@@ -11,6 +11,7 @@ import { CompanySearchService } from '../companies/company-search.js';
 import { ProductSearchService, type ImporterNameClient } from '../companies/product-search.js';
 import { CompanyDetailService, type CompanyDetailClient } from '../companies/company-detail.js';
 import { CompanyProfileService } from '../companies/company-profiles.js';
+import { CompanyProfileImportService } from '../companies/company-profile-imports.js';
 import { CompanyTimelineService } from '../companies/company-timeline.js';
 import { CompanyAttachmentService } from '../companies/company-attachments.js';
 import { DetailReconciliationService } from '../companies/detail-reconciliation.js';
@@ -61,6 +62,7 @@ export async function createServices(
   const productSearch = new ProductSearchService(pool, importerAdapter, companySearch, production);
   const companyDetail = new CompanyDetailService(pool, detailAdapter, production);
   const companyProfiles = new CompanyProfileService(pool);
+  const companyProfileImports = new CompanyProfileImportService(pool);
   const companyTimeline = new CompanyTimelineService(pool, key);
   const companyAttachments = new CompanyAttachmentService(pool);
   const detailReconciliation = new DetailReconciliationService(pool);
@@ -77,7 +79,7 @@ export async function createServices(
   return {
     service, organizations, procurement, coefficient, pointOrders, reporting,
     members, passwordResets, companySearch, productSearch, companyDetail,
-    companyProfiles, companyTimeline, companyAttachments, detailReconciliation,
+    companyProfiles, companyProfileImports, companyTimeline, companyAttachments, detailReconciliation,
     contactReconciliation, productReconciliation, companyContacts, emailPreview,
     upstreamMonitor, smtpChannels, emailSend, umail
   };

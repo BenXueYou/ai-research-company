@@ -7,6 +7,7 @@ import { migratePasswordResets } from './identity/password-resets-schema.js';
 import { migrateCompanySearch } from './companies/company-search-schema.js';
 import { migrateProductSearch } from './companies/product-search-schema.js';
 import { migrateCompanyDetail } from './companies/company-detail-schema.js';
+import { migrateCompanyProfileImports } from './companies/company-profile-import-schema.js';
 import { migrateCompanyTimeline } from './companies/company-timeline-schema.js';
 import { migrateCompanyAttachments } from './companies/company-attachments-schema.js';
 import { migrateCompanyContacts } from './companies/company-contacts-schema.js';
@@ -120,6 +121,7 @@ export async function migrate(pool: pg.Pool): Promise<void> {
     await migratePasswordResets(client);
     await migrateCompanySearch(client);
     await migrateCompanyDetail(client);
+    await migrateCompanyProfileImports(client);
     await migrateCompanyTimeline(client);
     await migrateCompanyAttachments(client);
     await migrateProductSearch(client);

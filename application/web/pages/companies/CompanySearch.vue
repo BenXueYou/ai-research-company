@@ -49,7 +49,8 @@
           :closable="false"
         />
         <el-empty v-if="result.content.length === 0" description="本页没有匹配企业" />
-        <div
+        <el-checkbox-group
+          v-model="selectedCandidateIds"
           class="candidate-results"
           role="region"
           aria-label="企业查询结果"
@@ -60,6 +61,11 @@
             :key="candidate.candidateId"
             class="candidate-row"
           >
+            <el-checkbox
+              :value="candidate.candidateId"
+              :disabled="locked"
+              :aria-label="`选择 ${candidate.name}`"
+            />
             <CompanyIdentity
               :name="candidate.name"
               :country="candidate.country"
@@ -80,7 +86,29 @@
               :closable="false"
             />
           </div>
+        </el-checkbox-group>
+        <div class="form-actions import-actions">
+          <span>已选择 {{ selectedCandidateIds.length }} 家；保存只使用本页已取得名单，不查询详情、不扣点。</span>
+          <el-button
+            type="primary"
+            :disabled="locked || selectedCandidateIds.length === 0"
+            @click="saveSelected"
+          >保存选中企业</el-button>
         </div>
+        <div v-if="savedProfiles.length" class="saved-profiles" role="status">
+          <strong>已保存到企业档案库</strong>
+          <RouterLink
+            v-for="profile in savedProfiles"
+            :key="profile.profileId"
+            :to="{ path: '/terminal/profiles', query: { id: profile.profileId } }"
+          >打开初始档案 · {{ profile.name }}</RouterLink>
+        </div>
+        <el-alert
+          v-if="failedImports.length"
+          type="warning"
+          :title="`有 ${failedImports.length} 家企业未保存：${failedImports.join('、')}。请刷新当前页后重试。`"
+          :closable="false"
+        />
         <div class="pager">
           <el-button :disabled="locked || result.page <= 1" @click="changePage(result.page - 1)">上一页</el-button>
           <el-button :disabled="locked || result.page * result.size >= result.total" @click="changePage(result.page + 1)">下一页</el-button>
@@ -128,6 +156,8 @@ import { RouterLink } from 'vue-router';
 import {
   ElAlert,
   ElButton,
+  ElCheckbox,
+  ElCheckboxGroup,
   ElEmpty,
   ElForm,
   ElFormItem,
@@ -141,6 +171,7 @@ import {
   type SearchResult,
   type SearchSnapshot
 } from '../../api/companySearch';
+import { importCompanyProfiles } from '../../api/companyProfileImports';
 import type { CompanyRequest } from '../../api/companyProfiles';
 import { HttpError } from '../../api/http';
 import { useFormLeave } from '../../router/formLeave';
@@ -169,6 +200,11 @@ const pointLedger = ref<SearchSnapshot['ledger']>([]);
 const detailStatus = ref('');
 const pendingQuery = ref('');
 const profileId = ref('');
+const selectedCandidateIds = ref<string[]>([]);
+const savedProfiles = ref<Array<{ profileId: string; name: string }>>([]);
+const failedImports = ref<string[]>([]);
+const importRequestId = ref('');
+watch(selectedCandidateIds, () => { importRequestId.value = ''; }, { deep: true });
 const searchedInput = ref('');
 const locked = computed(() => busy.value || !!pendingQuery.value);
 const inputKey = () => JSON.stringify([name.value, countryCodes.value]);
@@ -206,6 +242,12 @@ async function loadPage(pageNo: number) {
   quote.value = null;
   profileId.value = '';
   detailStatus.value = '';
+  selectedCandidateIds.value = result.value.content.map(candidate =>
+    candidate.candidateId
+  );
+  savedProfiles.value = [];
+  failedImports.value = [];
+  importRequestId.value = '';
 }
 async function run(action: () => Promise<void>, candidateId = '') {
   if (busy.value) return;
@@ -229,6 +271,30 @@ function startSearch() {
 function changePage(pageNo: number) {
   if (pendingQuery.value) return;
   void run(() => loadPage(pageNo));
+}
+function saveSelected() {
+  if (!result.value || !selectedCandidateIds.value.length || pendingQuery.value)
+    return;
+  const selected = [...selectedCandidateIds.value];
+  importRequestId.value ||= crypto.randomUUID();
+  void run(async () => {
+    const response = await importCompanyProfiles(props.request, importRequestId.value, 'company_candidate', selected);
+    const byId = new Map(result.value!.content.map(candidate =>
+      [candidate.candidateId, candidate.name]
+    ));
+    savedProfiles.value = response.items.flatMap(item =>
+      item.profileId ? [{
+        profileId: item.profileId,
+        name: byId.get(item.sourceRecordId) ?? '企业'
+      }] : []
+    );
+    failedImports.value = response.items.flatMap(item =>
+      item.status === 'rejected'
+        ? [byId.get(item.sourceRecordId) ?? '未知企业']
+        : []
+    );
+    await loadProfiles();
+  });
 }
 function verify(candidate: Candidate) {
   if (pendingQuery.value) return;
@@ -271,7 +337,7 @@ async function showOutcome(response: DetailOutcome) {
   if (response.state === 'settled') {
     const profiles = await loadProfiles();
     const saved = profiles.find(profile =>
-      profile.detail.id === response.result?.id
+      profile.detail?.id === response.result?.id
     );
     if (!saved) throw new Error('详情已完成，请在档案库核实保存结果');
     profileId.value = saved.id;
@@ -326,6 +392,11 @@ onMounted(() => {
 .company-search .candidate-row small { color: #8490a5; font-size: 11px; }
 .company-search .status-pill { margin: 0; padding: 4px 10px; font-size: 11px; }
 .company-search .pager { justify-content: flex-end; gap: 10px; margin: 20px 0; }
+.company-search .import-actions { align-items: center; justify-content: space-between; margin-top: 18px; }
+.import-actions > span { color: #738095; font-size: 12px; }
+.saved-profiles { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 16px; padding: 14px; border: 1px solid #dce1fc; border-radius: 8px; background: #f5f7ff; font-size: 12px; }
+.saved-profiles > strong { flex-basis: 100%; color: #263052; }
+.saved-profiles a { color: #4356e0; text-decoration: none; }
 .company-search .detail-quote {
   display: grid;
   grid-template-columns: 1fr auto auto;

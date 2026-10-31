@@ -72,10 +72,39 @@
       <template v-if="page && ['settled', 'zero'].includes(page.state)">
         <p class="product-results-caption">共 {{ page.total }} 个候选；当前页只显示名称，不自动建档。</p>
         <el-empty v-if="!page.content.length" description="本页没有采购企业候选" />
-        <div v-for="candidate in page.content" :key="candidate.candidateId" class="candidate-row">
-          <strong>{{ candidate.name }}</strong>
-          <el-button :disabled="locked" @click="checkCandidate(candidate)">免费核实企业身份</el-button>
+        <el-checkbox-group v-model="selectedCandidateIds">
+          <div v-for="candidate in page.content" :key="candidate.candidateId" class="candidate-row">
+            <el-checkbox
+              :value="candidate.candidateId"
+              :disabled="locked"
+              :aria-label="`选择 ${candidate.name}`"
+            />
+            <strong>{{ candidate.name }}</strong>
+            <el-button :disabled="locked" @click="checkCandidate(candidate)">免费核实企业身份</el-button>
+          </div>
+        </el-checkbox-group>
+        <div class="form-actions product-import-actions">
+          <span>已选择 {{ selectedCandidateIds.length }} 家；保存名单不会再次调用上游，也不会查询详情。</span>
+          <el-button
+            type="primary"
+            :disabled="locked || selectedCandidateIds.length === 0"
+            @click="saveSelected"
+          >保存选中企业</el-button>
         </div>
+        <div v-if="savedProfiles.length" class="product-saved-profiles" role="status">
+          <strong>已保存到企业档案库</strong>
+          <RouterLink
+            v-for="profile in savedProfiles"
+            :key="profile.profileId"
+            :to="{ path: '/terminal/profiles', query: { id: profile.profileId } }"
+          >打开初始档案 · {{ profile.name }}</RouterLink>
+        </div>
+        <el-alert
+          v-if="failedImports.length"
+          type="warning"
+          :title="`有 ${failedImports.length} 家企业未保存：${failedImports.join('、')}。请刷新当前页后重试。`"
+          :closable="false"
+        />
         <div class="pager">
           <el-button :disabled="locked || page.pageNo <= 1" @click="prepare(page.pageNo - 1, page)">上一页报价</el-button>
           <el-button :disabled="locked || page.pageNo * page.pageSize >= (page.total ?? 0)" @click="prepare(page.pageNo + 1, page)">下一页报价</el-button>
@@ -135,6 +164,7 @@ import {
 import { ElDatePicker } from 'element-plus';
 import { RouterLink } from 'vue-router';
 import { useFormLeave } from '../../router/formLeave';
+import { importCompanyProfiles } from '../../api/companyProfileImports';
 import CompanyIdentity from './components/CompanyIdentity.vue';
 import CountrySelect from './components/CountrySelect.vue';
 import {
@@ -157,6 +187,8 @@ import {
 import {
   ElAlert,
   ElButton,
+  ElCheckbox,
+  ElCheckboxGroup,
   ElEmpty,
   ElForm,
   ElFormItem,
@@ -179,6 +211,11 @@ const localProfile = ref<LocalProfile | null>(null);
 const pageUnknown = ref(false);
 const detailUnknown = ref(false);
 const detailStatus = ref('');
+const selectedCandidateIds = ref<string[]>([]);
+const savedProfiles = ref<Array<{ profileId: string; name: string }>>([]);
+const failedImports = ref<string[]>([]);
+const importRequestId = ref('');
+watch(selectedCandidateIds, () => { importRequestId.value = ''; }, { deep: true });
 const busy = ref(false);
 const error = ref('');
 const candidateError = ref<{ candidateId: string; message: string } | null>(null);
@@ -244,6 +281,7 @@ function prepare(pageNo: number, source?: ProductPage) {
     detailQuote.value = null;
     detailStatus.value = '';
     localProfile.value = null;
+    selectCurrentPage();
   });
 }
 function execute() {
@@ -253,6 +291,7 @@ function execute() {
     pageUnknown.value = true;
     page.value = await executeProductPage(props.request, pageId);
     pageUnknown.value = false;
+    selectCurrentPage();
   });
 }
 function refreshPage() {
@@ -261,6 +300,38 @@ function refreshPage() {
   void run(async () => {
     page.value = await readProductPage(props.request, pageId);
     pageUnknown.value = false;
+    selectCurrentPage();
+  });
+}
+function selectCurrentPage() {
+  selectedCandidateIds.value = page.value?.content.map(candidate =>
+    candidate.candidateId
+  ) ?? [];
+  savedProfiles.value = [];
+  failedImports.value = [];
+  importRequestId.value = '';
+}
+function saveSelected() {
+  if (!page.value || !selectedCandidateIds.value.length || locked.value)
+    return;
+  const selected = [...selectedCandidateIds.value];
+  importRequestId.value ||= crypto.randomUUID();
+  void run(async () => {
+    const response = await importCompanyProfiles(props.request, importRequestId.value, 'product_candidate', selected);
+    const byId = new Map(page.value!.content.map(candidate =>
+      [candidate.candidateId, candidate.name]
+    ));
+    savedProfiles.value = response.items.flatMap(item =>
+      item.profileId ? [{
+        profileId: item.profileId,
+        name: byId.get(item.sourceRecordId) ?? '企业'
+      }] : []
+    );
+    failedImports.value = response.items.flatMap(item =>
+      item.status === 'rejected'
+        ? [byId.get(item.sourceRecordId) ?? '未知企业']
+        : []
+    );
   });
 }
 function checkCandidate(candidate: ProductCandidate) {
@@ -342,6 +413,11 @@ async function applyDetailResult(result: DetailResult) {
 .product-search .candidate-row strong { color: #28334b; font-size: 14px; font-weight: 600; }
 .product-search .candidate-row small { color: #8490a5; font-size: 11px; }
 .product-search .pager { justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+.product-import-actions { align-items: center; justify-content: space-between; margin-top: 18px; }
+.product-import-actions > span { color: #738095; font-size: 12px; }
+.product-saved-profiles { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 16px; padding: 14px; border: 1px solid #dce1fc; border-radius: 8px; background: #f5f7ff; font-size: 12px; }
+.product-saved-profiles > strong { flex-basis: 100%; color: #263052; }
+.product-saved-profiles a { color: #4356e0; text-decoration: none; }
 .verification-heading { margin: 28px 0 10px; padding-top: 22px; border-top: 1px solid #e6e9f0; color: #28334b; font-size: 15px; overflow-wrap: anywhere; }
 .product-detail-outcome { margin: 20px 0 12px; padding: 12px 14px; border-radius: 8px; color: #4356e0; background: #f3f5ff; overflow-wrap: anywhere; }
 .product-profile-link { display: inline-block; margin-top: 8px; color: #4356e0; font-size: 12px; text-decoration: none; overflow-wrap: anywhere; }

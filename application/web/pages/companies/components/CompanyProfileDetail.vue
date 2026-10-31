@@ -3,8 +3,8 @@
     <header class="profile-detail-heading">
       <span class="profile-avatar" aria-hidden="true">{{ profile.name.slice(0, 1).toUpperCase() }}</span>
       <div>
-        <p>企业档案 / {{ profile.countryCode3 }}</p>
-        <h2>{{ profile.name }} · {{ profile.countryCode3 }}</h2>
+        <p>企业档案 / {{ profile.identityState === 'pending' ? '身份待核实' : profile.countryCode3 }}</p>
+        <h2>{{ profile.name }} · {{ profile.countryCode3 ?? '国家待核实' }}</h2>
       </div>
     </header>
     <p v-if="error" role="alert">{{ error }}</p>
@@ -20,7 +20,7 @@
         />
       </div>
       <template v-if="!profile.deletedAt">
-        <section class="profile-source">
+        <section v-if="profile.detailState === 'ready'" class="profile-source">
         <div class="source-heading">
           <div>
             <p class="source-kicker">企业信息</p>
@@ -46,7 +46,23 @@
           <pre>{{ JSON.stringify(profile.detail, null, 2) }}</pre>
         </details>
         </section>
-        <div data-draft="contacts">
+        <section v-else class="profile-source initial-profile-source">
+          <div class="source-heading">
+            <div>
+              <p class="source-kicker">初始企业档案</p>
+              <h3>企业详情未获取</h3>
+              <p class="source-fetched">当前仅保存已取得的名称线索，身份仍待核实。</p>
+            </div>
+          </div>
+          <details v-if="profile.sources.length" class="profile-source-data">
+            <summary>查看名单来源</summary>
+            <div v-for="source in profile.sources" :key="source.sourceRecordId" class="profile-source-record">
+              <span>{{ source.sourceKind === 'company_candidate' ? '公司名搜索' : '产品词名单' }} · 第 {{ source.pageNo }} 页</span>
+              <pre>{{ JSON.stringify(source.searchConditions, null, 2) }}</pre>
+            </div>
+          </details>
+        </section>
+        <div v-if="profile.identityState === 'verified'" data-draft="contacts">
           <CompanyContacts :profile="profile" :request="trackedRequest" @updated="changed" />
         </div>
         <div data-draft="timeline">
@@ -197,6 +213,7 @@ async function executeRefresh() {
 .source-quote-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
 .profile-detail :deep(.search-summary) { flex-wrap: wrap; gap: 10px; padding: 12px; border: 1px solid #e1e6fc; border-radius: 8px; background: #f6f8ff; color: #53617e; font-size: 12px; }
 .profile-source-data { margin-top: 16px; border-top: 1px solid #eef0f6; padding-top: 14px; color: #647087; font-size: 12px; }
+.profile-source-record { margin-top: 12px; }
 .profile-detail :deep(summary) { cursor: pointer; }
 .profile-detail :deep(pre) { max-width: 100%; overflow: auto; padding: 14px; border: 1px solid #e9edf5; border-radius: 8px; background: #f7f9fc; color: #53617e; font: 11px/1.8 Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
 .profile-detail :deep(.email-composer) { padding-top: 22px; margin-top: 22px; border-top: 1px solid #e6e9f0; }

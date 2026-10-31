@@ -35,9 +35,12 @@
     <div class="profiles-content">
     <ul v-if="!error && profiles.length" class="profiles-list" aria-label="企业档案列表">
       <li v-for="profile in profiles" :key="profile.id" :class="{ 'is-selected': selectedId === profile.id }">
-        <RouterLink :to="{ path: '/terminal/profiles', query: { id: profile.id } }">{{ profile.name }} · {{ profile.countryCode3 }}</RouterLink>
+        <RouterLink :to="{ path: '/terminal/profiles', query: { id: profile.id } }">{{ profile.name }} · {{ profile.countryCode3 ?? '国家待核实' }}</RouterLink>
         <div class="profile-list-meta">
-          <span class="profile-status" :data-status="profile.customerStatus">{{ statusLabels[profile.customerStatus] }}</span>
+          <span
+            class="profile-status"
+            :data-status="profile.identityState === 'pending' ? 'pending' : profile.customerStatus"
+          >{{ profile.identityState === 'pending' ? '身份待核实' : statusLabels[profile.customerStatus] }}</span>
           <span class="profile-rating">星级 {{ profile.starRating ?? '未设置' }}</span>
         </div>
       </li>
@@ -159,6 +162,7 @@ void load();
 .profile-status[data-status="following"] { background: #e9edff; color: #4356e0; }
 .profile-status[data-status="replied"] { background: #e5f5ee; color: #16885e; }
 .profile-status[data-status="invalid"] { background: #fff0f0; color: #b24747; }
+.profile-status[data-status="pending"] { background: #fff8e9; color: #946b26; }
 .profile-rating { color: #8b754d; }
 .profiles-content > :deep(.profile-detail), .profile-placeholder { grid-column: 2; grid-row: 1; min-width: 0; }
 .profile-placeholder { padding: 72px 28px; border: 1px dashed #dce1ee; border-radius: 12px; background: #ffffff80; text-align: center; }

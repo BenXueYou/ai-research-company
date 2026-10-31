@@ -59,15 +59,20 @@ export class CompanyProfileService {
     if (from && to && from > to) throw new BadRequestException('跟进日期范围无效');
     if (input.deleted !== undefined && typeof input.deleted !== 'boolean') throw new BadRequestException('删除筛选无效');
     if (input.deleted === true && identity.role !== 'admin') throw new ForbiddenException('仅管理员可查看已删除档案');
-    return (await this.pool.query(`SELECT id,name,country_code3 AS "countryCode3",detail,fetched_at AS "fetchedAt",
+    return (await this.pool.query(`SELECT p.id,p.name,p.country_code3 AS "countryCode3",p.detail,p.fetched_at AS "fetchedAt",
       main_products AS "mainProducts",purchasing_needs AS "purchasingNeeds",cooperation_intent AS "cooperationIntent",
       next_follow_up_at AS "nextFollowUpAt",customer_status AS "customerStatus",star_rating AS "starRating",tags,
-      deleted_at AS "deletedAt"
-      FROM company_profiles WHERE organization_id=$1 AND customer_status=COALESCE($2,customer_status)
+      deleted_at AS "deletedAt",identity_state AS "identityState",detail_state AS "detailState",
+      COALESCE((SELECT jsonb_agg(jsonb_build_object(
+        'sourceKind',s.source_kind,'sourceRecordId',s.source_record_id,'sourcePayload',s.source_payload,
+        'searchConditions',s.search_conditions,'pageNo',s.page_no,'createdAt',s.created_at
+      ) ORDER BY s.created_at,s.id) FROM company_profile_sources s
+        WHERE s.organization_id=p.organization_id AND s.profile_id=p.id),'[]'::jsonb) AS sources
+      FROM company_profiles p WHERE p.organization_id=$1 AND customer_status=COALESCE($2,customer_status)
       AND deleted_at IS ${input.deleted === true ? 'NOT NULL' : 'NULL'}
       AND ($3::date IS NULL OR (next_follow_up_at AT TIME ZONE 'Asia/Shanghai')::date >= $3::date)
       AND ($4::date IS NULL OR (next_follow_up_at AT TIME ZONE 'Asia/Shanghai')::date <= $4::date)
-      ORDER BY name,id`, [identity.organization_id, status, from, to])).rows;
+      ORDER BY p.name,p.id`, [identity.organization_id, status, from, to])).rows;
   }
   async update(identity: Identity, body: unknown) {
     await this.authorize(identity);

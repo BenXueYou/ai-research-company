@@ -3,7 +3,7 @@ import type { AuthRequest } from '../identity/guard.js';
 import type { Services } from '../composition/services.js';
 
 export function createCompaniesController(services: Services) {
-  const { companySearch, productSearch, companyDetail, companyProfiles, companyTimeline, companyAttachments, detailReconciliation, contactReconciliation, productReconciliation, companyContacts, emailPreview } = services;
+  const { companySearch, productSearch, companyDetail, companyProfiles, companyProfileImports, companyTimeline, companyAttachments, detailReconciliation, contactReconciliation, productReconciliation, companyContacts, emailPreview } = services;
   @Controller('api')
   class CompaniesController {
     @Post('company-searches')
@@ -78,6 +78,11 @@ export function createCompaniesController(services: Services) {
     @HttpCode(200)
     listCompanyProfiles(@Req() request: AuthRequest) {
       return companyProfiles.list(request.identity, request.body ?? {});
+    }
+    @Post('company-profile-imports')
+    @HttpCode(200)
+    importCompanyProfiles(@Req() request: AuthRequest) {
+      return companyProfileImports.import(request.identity, request.body ?? {});
     }
     @Post('company-profiles/update')
     @HttpCode(200)

@@ -11,6 +11,7 @@
     "typecheck": "vue-tsc --noEmit && tsc -p tsconfig.server.json --noEmit",
     "db:migrate": "node --env-file-if-exists=.env node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.server.json server/cli.ts migrate",
     "bootstrap": "node --env-file-if-exists=.env node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.server.json server/cli.ts bootstrap",
+    "upgrade": "node --env-file-if-exists=.env node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.server.json server/upgrade-cli.ts",
     "test": "tsx --test tests/policy.test.ts",
     "test:members": "tsc -p tsconfig.server.json && node --env-file-if-exists=.env.test --test dist/tests/members.test.js",
     "test:integration": "tsc -p tsconfig.server.json && node --env-file-if-exists=.env.test --test --test-concurrency=1 dist/tests/identity.test.js dist/tests/organizations.test.js dist/tests/members.test.js dist/tests/smtp-channel.test.js dist/tests/umail.test.js dist/tests/company-search.test.js",
