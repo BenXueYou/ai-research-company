@@ -62,7 +62,7 @@ export class CompanyProfileService {
     return (await this.pool.query(`SELECT p.id,p.name,p.country_code3 AS "countryCode3",p.detail,p.fetched_at AS "fetchedAt",
       main_products AS "mainProducts",purchasing_needs AS "purchasingNeeds",cooperation_intent AS "cooperationIntent",
       next_follow_up_at AS "nextFollowUpAt",customer_status AS "customerStatus",star_rating AS "starRating",tags,
-      deleted_at AS "deletedAt",identity_state AS "identityState",detail_state AS "detailState",
+      deleted_at AS "deletedAt",identity_state AS "identityState",detail_state AS "detailState",source_version AS "sourceVersion",
       COALESCE((SELECT jsonb_agg(jsonb_build_object(
         'sourceKind',s.source_kind,'sourceRecordId',s.source_record_id,'sourcePayload',s.source_payload,
         'searchConditions',s.search_conditions,'pageNo',s.page_no,'createdAt',s.created_at

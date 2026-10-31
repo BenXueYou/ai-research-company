@@ -6,6 +6,42 @@ export function createCompaniesController(services: Services) {
   const { companySearch, productSearch, companyDetail, companyProfiles, companyProfileImports, companyTimeline, companyAttachments, detailReconciliation, contactReconciliation, productReconciliation, companyContacts, emailPreview } = services;
   @Controller('api')
   class CompaniesController {
+    @Post('company-sources/list')
+    @HttpCode(200)
+    companySourceslist(@Req() request: AuthRequest) {
+      return services.companySources.list(request.identity, request.body ?? {});
+    }
+
+    @Post('company-sources/select')
+    @HttpCode(200)
+    companySourcesselect(@Req() request: AuthRequest) {
+      return services.companySources.select(request.identity, request.body ?? {});
+    }
+
+    @Post('company-sources/display')
+    @HttpCode(200)
+    companySourcesdisplay(@Req() request: AuthRequest) {
+      return services.companySources.display(request.identity, request.body ?? {});
+    }
+
+    @Post('company-source-details/quote')
+    @HttpCode(200)
+    companySourceDetailsquote(@Req() request: AuthRequest) {
+      return services.companySourceDetails.quote(request.identity, request.body ?? {});
+    }
+
+    @Post('company-source-details/execute')
+    @HttpCode(200)
+    companySourceDetailsexecute(@Req() request: AuthRequest) {
+      return services.companySourceDetails.execute(request.identity, request.body ?? {});
+    }
+
+    @Post('company-source-details/status')
+    @HttpCode(200)
+    companySourceDetailsstatus(@Req() request: AuthRequest) {
+      return services.companySourceDetails.status(request.identity, request.body ?? {});
+    }
+
     @Post('company-searches')
     @HttpCode(200)
     searchCompanies(@Req() request: AuthRequest) {
@@ -83,6 +119,11 @@ export function createCompaniesController(services: Services) {
     @HttpCode(200)
     importCompanyProfiles(@Req() request: AuthRequest) {
       return companyProfileImports.import(request.identity, request.body ?? {});
+    }
+    @Post('company-profile-import-resolutions')
+    @HttpCode(200)
+    resolveCompanyProfileImport(@Req() request: AuthRequest) {
+      return companyProfileImports.import(request.identity, request.body ?? {}, true);
     }
     @Post('company-profiles/update')
     @HttpCode(200)

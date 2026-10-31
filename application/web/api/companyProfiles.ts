@@ -14,6 +14,7 @@ export interface CompanyProfile {
   deletedAt: string | null;
   identityState: 'pending' | 'verified' | 'conflict';
   detailState: 'absent' | 'ready';
+  sourceVersion?: number;
   sources: Array<{
     sourceKind: 'company_candidate' | 'product_candidate' | 'legacy_detail';
     sourceRecordId: string;

@@ -1,3 +1,4 @@
+import { assertCompanyOperation } from '../companies/company-sources.js';
 import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { createHash, randomUUID } from 'node:crypto';
 import type pg from 'pg';
@@ -34,7 +35,7 @@ function unresolved(value: string) {
   return [...value.matchAll(placeholder)].map(match => match[1]);
 }
 export class EmailPreviewService {
-  constructor(private readonly pool: pg.Pool) {}
+  constructor(private readonly pool: pg.Pool, private readonly production = true) {}
   private async terminal(identity: Identity) {
     if (!['admin', 'sales'].includes(identity.role)) throw new ForbiddenException('仅终端企业成员可写邮件');
     const org = (await this.pool.query('SELECT kind,active FROM organizations WHERE id=$1', [identity.organization_id])).rows[0];
@@ -213,6 +214,7 @@ export class EmailPreviewService {
       const profile = (await db.query('SELECT name FROM company_profiles WHERE id=$1 AND organization_id=$2 AND deleted_at IS NULL',
         [draft.profile_id, identity.organization_id])).rows[0];
       if (!profile) throw new NotFoundException('档案不存在');
+      const identityVersion = await assertCompanyOperation(db, identity.organization_id, draft.profile_id, 'email', undefined, this.production);
       const version = (await db.query('SELECT attachment_ids FROM public_template_versions WHERE template_id=$1 AND version=$2',
         [draft.template_id, draft.template_version])).rows[0];
       if (!version) throw new NotFoundException('模板版本不存在');
@@ -268,10 +270,10 @@ export class EmailPreviewService {
       }
       const previewId = randomUUID();
       await db.query(`INSERT INTO email_previews(id,draft_id,organization_id,actor_id,profile_id,template_id,template_version,
-        subject,content,attachment_ids,recipient_snapshot,preview_snapshot)
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+        subject,content,attachment_ids,recipient_snapshot,preview_snapshot,identity_version)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
       [previewId, draft.id, identity.organization_id, identity.id, draft.profile_id, draft.template_id, draft.template_version,
-        draft.subject, draft.content, version.attachment_ids, JSON.stringify(selections), JSON.stringify(recipients)]);
+        draft.subject, draft.content, version.attachment_ids, JSON.stringify(selections), JSON.stringify(recipients), identityVersion]);
       return { previewId, templateId: draft.template_id, templateVersion: draft.template_version,
         profileId: draft.profile_id, attachmentIds: version.attachment_ids, attachments, recipients };
     });
@@ -283,11 +285,12 @@ export class EmailPreviewService {
     if (typeof input.previewId !== 'string' || !uuid.test(input.previewId)) throw new BadRequestException('预览标识无效');
     return transaction(this.pool, async db => {
       const preview = (await db.query(`SELECT p.id,p.draft_id,p.profile_id,p.created_at,p.confirmed_at,p.attachment_ids,
-        p.recipient_snapshot,p.preview_snapshot,
+        p.recipient_snapshot,p.preview_snapshot,p.identity_version,
         d.updated_at FROM email_previews p JOIN email_drafts d ON d.id=p.draft_id
         WHERE p.id=$1 AND p.organization_id=$2 AND p.actor_id=$3 FOR UPDATE OF p`,
       [input.previewId, identity.organization_id, identity.id])).rows[0];
       if (!preview) throw new NotFoundException('本人的预览不存在');
+      await assertCompanyOperation(db, identity.organization_id, preview.profile_id, 'email', preview.identity_version, this.production);
       if (preview.confirmed_at) return { previewId: preview.id, confirmed: true };
       if (new Date(preview.updated_at).getTime() > new Date(preview.created_at).getTime())
         throw new ConflictException('草稿已修改，请重新预览后确认');

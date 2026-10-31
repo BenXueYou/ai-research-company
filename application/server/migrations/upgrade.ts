@@ -1,3 +1,4 @@
+import { migrateCompanySources } from '../companies/company-source-schema.js';
 import { createHash } from 'node:crypto';
 import { mkdir, stat } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -7,7 +8,8 @@ import { transaction } from '../database.js';
 import { migrateCompanyProfileImports } from '../companies/company-profile-import-schema.js';
 
 export const BASELINE_VERSION = '2026-10-31.current';
-export const CURRENT_VERSION = '2026-10-31.issue-02-initial-profiles';
+export const IMPORT_VERSION = '2026-10-31.issue-02-initial-profiles';
+export const CURRENT_VERSION = '2026-10-31.issue-04-05-sources';
 export const UPGRADE_LOCK_KEY = 712011;
 
 // This is deliberately a list of the structure owned by the current release. New
@@ -31,7 +33,7 @@ export const KNOWN_TABLES = [
   'team_sending_channels', 'tengdao_call_audit', 'timeline_manual_audit', 'timeline_manual_records', 'umail_audit_events',
   'umail_channel_requests', 'umail_resource_requests', 'umail_resources', 'upstream_account_snapshot', 'upstream_monitor_events',
 ].sort();
-export const CURRENT_TABLES = [...KNOWN_TABLES,
+export const IMPORT_TABLES = [...KNOWN_TABLES,
   'company_profile_import_requests', 'company_profile_sources'
 ].sort();
 
@@ -51,12 +53,15 @@ const REQUIRED_COLUMNS: Record<string, string[]> = {
   query_point_ledger: ['id', 'organization_id'],
   procurement_ledger: ['id', 'event', 'reference'],
 };
-const CURRENT_REQUIRED_COLUMNS: Record<string, string[]> = {
+const IMPORT_REQUIRED_COLUMNS: Record<string, string[]> = {
   ...REQUIRED_COLUMNS,
   company_profiles: ['id', 'organization_id', 'identity_state', 'detail_state'],
   company_profile_sources: ['id', 'organization_id', 'profile_id', 'source_kind', 'source_record_id'],
   company_profile_import_requests: ['organization_id', 'actor_id', 'request_id', 'request_hash', 'response'],
 };
+
+export const CURRENT_TABLES = [...IMPORT_TABLES, 'company_source_selections', 'company_operation_evidence', 'company_detail_snapshots', 'company_detail_display_events'].sort();
+const CURRENT_REQUIRED_COLUMNS = { ...IMPORT_REQUIRED_COLUMNS, company_profiles: ['id', 'organization_id', 'source_version', 'displayed_snapshot_id'], company_source_selections: ['id', 'version', 'record_id'], company_detail_snapshots: ['id', 'query_id', 'state'] };
 
 type Fingerprint = { schema: string; data: Record<string, { count: number; digest: string }> };
 export type UpgradePlan = { version: string; baseline: boolean; pending: string[]; checksum?: string; snapshot?: Fingerprint };
@@ -141,28 +146,28 @@ async function snapshot(client: pg.PoolClient): Promise<Fingerprint | undefined>
   return result.rows[0]?.fingerprint;
 }
 
-export async function planUpgrade(pool: pg.Pool): Promise<UpgradePlan> {
+async function planImportsUpgrade(pool: pg.Pool): Promise<UpgradePlan> {
   const client = await pool.connect();
   try {
     const migration = await metadata(client);
-    if (migration && ![BASELINE_VERSION, CURRENT_VERSION].includes(migration.version))
+    if (migration && ![BASELINE_VERSION, IMPORT_VERSION].includes(migration.version))
       throw new Error(`未知迁移版本: ${migration.version}`);
     if (migration?.version === BASELINE_VERSION) {
       const baseline = await fingerprint(client, KNOWN_TABLES, REQUIRED_COLUMNS);
       if (migration.checksum !== checksum(baseline)) throw new Error('baseline校验和不符；拒绝继续升级');
       return {
-        version: CURRENT_VERSION,
+        version: IMPORT_VERSION,
         baseline: true,
-        pending: [CURRENT_VERSION],
+        pending: [IMPORT_VERSION],
         checksum: checksum(baseline),
         snapshot: baseline,
       };
     }
-    if (migration?.version === CURRENT_VERSION) {
-      const current = await fingerprint(client, CURRENT_TABLES, CURRENT_REQUIRED_COLUMNS);
+    if (migration?.version === IMPORT_VERSION) {
+      const current = await fingerprint(client, IMPORT_TABLES, IMPORT_REQUIRED_COLUMNS);
       if (migration.checksum !== checksum(current)) throw new Error('当前版本校验和不符；拒绝继续升级');
       return {
-        version: CURRENT_VERSION,
+        version: IMPORT_VERSION,
         baseline: false,
         pending: [],
         checksum: checksum(current),
@@ -173,26 +178,26 @@ export async function planUpgrade(pool: pg.Pool): Promise<UpgradePlan> {
     try {
       const baseline = await fingerprint(client, KNOWN_TABLES, REQUIRED_COLUMNS);
       return {
-        version: CURRENT_VERSION,
+        version: IMPORT_VERSION,
         baseline: false,
-        pending: [BASELINE_VERSION, CURRENT_VERSION],
+        pending: [BASELINE_VERSION, IMPORT_VERSION],
         checksum: checksum(baseline),
         snapshot: baseline,
       };
     } catch {
-      current = await fingerprint(client, CURRENT_TABLES, CURRENT_REQUIRED_COLUMNS);
+      current = await fingerprint(client, IMPORT_TABLES, IMPORT_REQUIRED_COLUMNS);
     }
     return {
-      version: CURRENT_VERSION,
+      version: IMPORT_VERSION,
       baseline: false,
-      pending: [CURRENT_VERSION],
+      pending: [IMPORT_VERSION],
       checksum: checksum(current),
       snapshot: current,
     };
   } finally { client.release(); }
 }
 
-export async function applyUpgrade(pool: pg.Pool, options: { backupDir?: string; failAfterBaseline?: boolean } = {}): Promise<UpgradePlan> {
+async function applyImportsUpgrade(pool: pg.Pool, options: { backupDir?: string; failAfterBaseline?: boolean } = {}): Promise<UpgradePlan> {
   let applied: UpgradePlan | undefined;
   if (options.backupDir) await writeBackup(options.backupDir);
   await transaction(pool, async client => {
@@ -201,11 +206,11 @@ export async function applyUpgrade(pool: pg.Pool, options: { backupDir?: string;
     await client.query(`CREATE TABLE IF NOT EXISTS upgrade_snapshots (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, version text NOT NULL, fingerprint jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT clock_timestamp())`);
     const existing = await client.query<{ version: string; checksum: string; baseline: boolean }>(`SELECT version,checksum,baseline FROM schema_migrations ORDER BY applied_at DESC LIMIT 1`);
     const latest = existing.rows[0];
-    if (latest?.version === CURRENT_VERSION) {
-      const current = await fingerprint(client, CURRENT_TABLES, CURRENT_REQUIRED_COLUMNS);
+    if (latest?.version === IMPORT_VERSION) {
+      const current = await fingerprint(client, IMPORT_TABLES, IMPORT_REQUIRED_COLUMNS);
       const currentChecksum = checksum(current);
       if (latest.checksum !== currentChecksum) throw new Error('当前版本校验和不符；拒绝继续升级');
-      applied = { version: CURRENT_VERSION, baseline: false, pending: [], checksum: currentChecksum, snapshot: current };
+      applied = { version: IMPORT_VERSION, baseline: false, pending: [], checksum: currentChecksum, snapshot: current };
       return;
     }
     if (latest && latest.version !== BASELINE_VERSION) throw new Error(`未知迁移版本: ${latest.version}`);
@@ -224,18 +229,18 @@ export async function applyUpgrade(pool: pg.Pool, options: { backupDir?: string;
         if (options.failAfterBaseline) throw new Error('测试故障：baseline后故意失败，事务应回滚');
       } catch (error) {
         if (options.failAfterBaseline) throw error;
-        await fingerprint(client, CURRENT_TABLES, CURRENT_REQUIRED_COLUMNS);
+        await fingerprint(client, IMPORT_TABLES, IMPORT_REQUIRED_COLUMNS);
         needsMigration = false;
       }
     }
     if (needsMigration) await migrateCompanyProfileImports(client);
-    const current = await fingerprint(client, CURRENT_TABLES, CURRENT_REQUIRED_COLUMNS);
+    const current = await fingerprint(client, IMPORT_TABLES, IMPORT_REQUIRED_COLUMNS);
     const currentChecksum = checksum(current);
     await client.query(`INSERT INTO schema_migrations(version,checksum,baseline) VALUES($1,$2,false)
-      ON CONFLICT(version) DO NOTHING`, [CURRENT_VERSION, currentChecksum]);
+      ON CONFLICT(version) DO NOTHING`, [IMPORT_VERSION, currentChecksum]);
     await client.query(`INSERT INTO upgrade_snapshots(version,fingerprint) VALUES($1,$2)`,
-      [CURRENT_VERSION, JSON.stringify(current)]);
-    applied = { version: CURRENT_VERSION, baseline: false, pending: [], checksum: currentChecksum, snapshot: current };
+      [IMPORT_VERSION, JSON.stringify(current)]);
+    applied = { version: IMPORT_VERSION, baseline: false, pending: [], checksum: currentChecksum, snapshot: current };
   });
   return applied as UpgradePlan;
 }
@@ -270,4 +275,49 @@ async function writeBackup(backupDir: string): Promise<void> {
   const info = await stat(file);
   if (!info.size) throw new Error('备份文件为空');
   await stat(dirname(file));
+}
+
+export async function planUpgrade(pool: pg.Pool): Promise<UpgradePlan> {
+  const client = await pool.connect();
+  try {
+    const latest = await metadata(client);
+    if (latest?.version === CURRENT_VERSION || (!latest && (await tableNames(client)).includes('company_source_selections'))) {
+      const current = await fingerprint(client, CURRENT_TABLES, CURRENT_REQUIRED_COLUMNS);
+      if (latest && latest.checksum !== checksum(current)) throw new Error('当前版本校验和不符');
+      return { version: CURRENT_VERSION, baseline: false, pending: latest ? [] : [CURRENT_VERSION], checksum: checksum(current), snapshot: current };
+    }
+  } finally { client.release(); }
+  const old = await planImportsUpgrade(pool);
+  return { ...old, version: CURRENT_VERSION, pending: [...old.pending, CURRENT_VERSION] };
+}
+export async function applyUpgrade(pool: pg.Pool, options: { backupDir?: string; failAfterBaseline?: boolean } = {}): Promise<UpgradePlan> {
+  const plan = await planUpgrade(pool);
+  if (!plan.pending.length) return plan;
+  const probe = await pool.connect();
+  let latestVersion: string | undefined;
+  try { latestVersion = (await metadata(probe))?.version; } finally { probe.release(); }
+  if (plan.pending.some(version => version !== CURRENT_VERSION) || latestVersion === IMPORT_VERSION) await applyImportsUpgrade(pool, options);
+  else if (options.backupDir) await writeBackup(options.backupDir);
+  return transaction(pool, async client => {
+    await client.query(`SELECT pg_advisory_xact_lock(${UPGRADE_LOCK_KEY})`);
+    const latest = await metadata(client);
+    if (latest?.version === CURRENT_VERSION) {
+      const current = await fingerprint(client, CURRENT_TABLES, CURRENT_REQUIRED_COLUMNS);
+      if (latest.checksum !== checksum(current)) throw new Error('当前版本校验和不符');
+      return { version: CURRENT_VERSION, baseline: false, pending: [], checksum: checksum(current), snapshot: current };
+    }
+    if (latest && latest.version !== IMPORT_VERSION) throw new Error('来源升级前置版本无效');
+    if (latest) {
+      const old = await fingerprint(client, IMPORT_TABLES, IMPORT_REQUIRED_COLUMNS);
+      if (latest.checksum !== checksum(old)) throw new Error('来源升级前旧版本校验和不符');
+      await client.query('INSERT INTO upgrade_snapshots(version,fingerprint) VALUES($1,$2)', [IMPORT_VERSION, JSON.stringify(old)]);
+      await migrateCompanySources(client);
+    }
+    const current = await fingerprint(client, CURRENT_TABLES, CURRENT_REQUIRED_COLUMNS);
+    await client.query(`CREATE TABLE IF NOT EXISTS schema_migrations (version text PRIMARY KEY, checksum text NOT NULL, applied_at timestamptz NOT NULL DEFAULT clock_timestamp(), baseline boolean NOT NULL DEFAULT false)`);
+    await client.query(`CREATE TABLE IF NOT EXISTS upgrade_snapshots (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, version text NOT NULL, fingerprint jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT clock_timestamp())`);
+    await client.query('INSERT INTO schema_migrations(version,checksum) VALUES($1,$2)', [CURRENT_VERSION, checksum(current)]);
+    await client.query('INSERT INTO upgrade_snapshots(version,fingerprint) VALUES($1,$2)', [CURRENT_VERSION, JSON.stringify(current)]);
+    return { version: CURRENT_VERSION, baseline: false, pending: [], checksum: checksum(current), snapshot: current };
+  });
 }

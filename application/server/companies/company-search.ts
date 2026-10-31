@@ -73,13 +73,15 @@ export class CompanySearchService {
       [candidate.search_id])).rows[0]?.buyer_country_code3;
       if (productCountry && candidate.source_country !== productCountry)
         throw new ConflictException('返回企业国家与所选采购企业所在国不一致');
+      if (candidate.verification_status === 'not_selected')
+        throw new ConflictException('此线索已选择其他身份候选');
       if (candidate.verification_status !== 'verified') {
-        await db.query(`UPDATE company_candidates SET verification_status='not_selected'
+        if (productCountry) await db.query(`UPDATE company_candidates SET verification_status='not_selected'
           WHERE search_id=$1 AND id<>$2 AND verification_status='pending'`, [candidate.search_id, candidate.id]);
         await db.query(`UPDATE company_candidates SET verification_status='verified',verified_by=$1,verified_at=clock_timestamp() WHERE id=$2`, [identity.id, candidate.id]);
         await db.query("UPDATE company_searches SET status='verified' WHERE id=$1", [candidate.search_id]);
       }
-      return { candidateId: candidate.id, sourceId: candidate.source_id, name: candidate.source_name, country: candidate.source_country, verificationStatus: 'verified', identityGateBlocksContacts: false, identityGateBlocksEmail: false };
+      return { candidateId: candidate.id, sourceId: candidate.source_id, name: candidate.source_name, country: candidate.source_country, verificationStatus: 'verified', identityGateBlocksContacts: true, identityGateBlocksEmail: true };
     });
   }
   async assertVerifiedCandidate(organizationId: string, candidateId: string) {

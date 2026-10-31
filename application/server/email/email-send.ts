@@ -1,3 +1,4 @@
+import { assertCompanyOperation } from '../companies/company-sources.js';
 import { BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { createDecipheriv, randomUUID } from 'node:crypto';
 import type pg from 'pg';
@@ -84,7 +85,8 @@ export class EmailSendService {
   constructor(private readonly pool: pg.Pool, private readonly key: Buffer,
     private readonly sender: DomesticSmtpSender = new DeferredDomesticSmtpSender(),
     private readonly umailSender: UMailSender = new DeferredUMailSender(),
-    private readonly evidenceProvider: DeliveryEvidenceProvider = new DeferredDeliveryEvidenceProvider()) {}
+    private readonly evidenceProvider: DeliveryEvidenceProvider = new DeferredDeliveryEvidenceProvider(),
+    private readonly production = true) {}
   async pauseExpired(organizationId?: string) {
     return transaction(this.pool, async db => {
       const today = (await db.query(`SELECT ${daySql()} AS day`)).rows[0].day;
@@ -149,6 +151,7 @@ export class EmailSendService {
         WHERE p.id=$1 AND p.organization_id=$2 AND p.actor_id=$3 FOR UPDATE OF p`,
       [previewId, identity.organization_id, identity.id])).rows[0];
       if (!preview) throw new NotFoundException('本人的预览不存在');
+      await assertCompanyOperation(db, identity.organization_id, preview.profile_id, 'email', preview.identity_version, this.production);
       const prior = (await db.query('SELECT id FROM email_batches WHERE preview_id=$1', [previewId])).rows[0];
       if (prior) return { batchId: prior.id, queued: false };
       if (!preview.confirmed_at || new Date(preview.updated_at).getTime() > new Date(preview.created_at).getTime())
@@ -189,11 +192,11 @@ export class EmailSendService {
         throw new ConflictException('企业今日邮件额度不足');
       const batchId = randomUUID();
       await db.query(`INSERT INTO email_batches(id,preview_id,organization_id,actor_id,profile_id,channel_id,channel_kind,
-        reply_to,usage_day,attachment_ids,umail_resource_id,umail_sender_address)
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+        reply_to,usage_day,attachment_ids,umail_resource_id,umail_sender_address,identity_version)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
       [batchId, previewId, identity.organization_id, identity.id, preview.profile_id, channelId,
         channel.kind, channel.reply_to, day, preview.attachment_ids, resource?.external_resource_id ?? null,
-        channel.kind === 'UMAIL' ? channel.umail_sender_address : null]);
+        channel.kind === 'UMAIL' ? channel.umail_sender_address : null, preview.identity_version]);
       for (const item of recipients) {
         const recipientId = randomUUID();
         await db.query(`INSERT INTO email_recipients(id,batch_id,organization_id,profile_id,email,email_key,contact_id,
@@ -244,10 +247,11 @@ export class EmailSendService {
           [identity.organization_id])).rows[0];
         if (!organization?.active) return null;
         const row = (await db.query(`SELECT r.*,coalesce(r.retry_usage_day,b.usage_day) AS usage_day,b.attachment_ids,b.reply_to,b.channel_id,
-          b.channel_kind,b.umail_resource_id,b.umail_sender_address AS batch_sender_address FROM email_recipients r
+          b.identity_version,b.channel_kind,b.umail_resource_id,b.umail_sender_address AS batch_sender_address FROM email_recipients r
           JOIN email_batches b ON b.id=r.batch_id WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
         [entry.id, identity.organization_id])).rows[0];
         if (!row || row.status !== 'queued') return null;
+        await assertCompanyOperation(db, identity.organization_id, row.profile_id, 'email', row.identity_version, this.production);
         const today = (await db.query(`SELECT ${daySql()} AS day`)).rows[0].day;
         if (String(today).slice(0, 10) !== String(row.usage_day).slice(0, 10)) {
           await db.query("UPDATE email_recipients SET status='paused',resolved_at=clock_timestamp(),detail='跨日未执行，等待后续重新确认' WHERE id=$1", [row.id]);
@@ -392,12 +396,13 @@ export class EmailSendService {
     const created = await transaction(this.pool, async db => {
       const organization = (await db.query('SELECT active FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id])).rows[0];
       if (!organization?.active) throw new ForbiddenException('企业已停用');
-      const original = (await db.query(`SELECT r.*,b.actor_id,b.usage_day,b.channel_id,b.channel_kind,b.reply_to,
+      const original = (await db.query(`SELECT r.*,b.identity_version,b.actor_id,b.usage_day,b.channel_id,b.channel_kind,b.reply_to,
         b.umail_resource_id,b.umail_sender_address FROM email_recipients r
         JOIN email_batches b ON b.id=r.batch_id WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
       [recipientId, identity.organization_id])).rows[0];
       if (!original) throw new NotFoundException('收件人记录不存在');
       if (original.actor_id !== identity.id) throw new ForbiddenException('仅原发送人可决定重发');
+      await assertCompanyOperation(db, identity.organization_id, original.profile_id, 'email', original.identity_version, this.production);
       const prior = (await db.query('SELECT id FROM email_recipients WHERE parent_recipient_id=$1', [recipientId])).rows[0];
       if (prior) return { id: prior.id, batchId: original.batch_id, created: false };
       if (original.status !== 'uncertain' || !original.checked_at)
@@ -447,13 +452,14 @@ export class EmailSendService {
     return transaction(this.pool, async db => {
       const organization = (await db.query('SELECT active FROM organizations WHERE id=$1 FOR UPDATE', [identity.organization_id])).rows[0];
       if (!organization?.active) throw new ForbiddenException('企业已停用');
-      const row = (await db.query(`SELECT r.*,b.actor_id,b.preview_id,b.usage_day,b.channel_id,b.channel_kind,
+      const row = (await db.query(`SELECT r.*,b.identity_version,b.actor_id,b.preview_id,b.usage_day,b.channel_id,b.channel_kind,
         b.reply_to,b.attachment_ids,b.umail_resource_id,b.umail_sender_address
         FROM email_recipients r JOIN email_batches b ON b.id=r.batch_id
         WHERE r.id=$1 AND r.organization_id=$2 FOR UPDATE OF r`,
       [recipientId, identity.organization_id])).rows[0];
       if (!row) throw new NotFoundException('收件人记录不存在');
       if (row.actor_id !== identity.id) throw new ForbiddenException('仅原发送人可重新确认');
+      await assertCompanyOperation(db, identity.organization_id, row.profile_id, 'email', row.identity_version, this.production);
       if (row.status !== 'paused') throw new ConflictException('仅暂停的收件人可重新确认');
       const oldDay = row.retry_usage_day ?? row.usage_day;
       const today = (await db.query(`SELECT ${daySql()} AS day`)).rows[0].day;

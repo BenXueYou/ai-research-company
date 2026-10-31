@@ -189,3 +189,16 @@ docker compose --env-file .env.test down
 部署及启动必须配置独立的`SMTP_CREDENTIAL_KEY`：32字节密码学随机值，以64位十六进制表示。该密钥用于AES-256-GCM加密SMTP授权凭据，组织ID和渠道类型作为关联数据；数据库保存密钥指纹并拒绝直接换钥。密钥不得复用`ORG_CONTACT_KEY`、提交、记录日志或放入前端配置，须由受控密钥配置提供并安全备份。
 
 当前默认适配器不会连接真实SMTP，而明确保存`not_live_verified`结果；测试通过注入受控适配器验证可用、不可用及异常结果。真实SMTP认证/连接、DNS、发信投递、退信和回复实收属于T31，当前配置页和本地验证不能作为生产联调证据。完整实现、参数来源及验收边界见 [T19交付记录](../docs/delivery/application/T19-COMPLETION.md)。
+
+## 企业来源与精确详情专项
+
+设计规则见[来源定位决策](../docs/decisions/002-company-source-identity.md)。来源选择、人工归档、联系人/邮件准入分别管理。旧 identity_state 默认值不会自动生成操作证据；现有记录需具备独立、可追溯的准入依据，不能通过直接改 verified 放行。当前尚无正式证据登记工作流，未具备依据的联系人/发送保持拒绝；上线前须完成证据登记与存量准入验收。
+
+正式腾道适配器尚未配置 recordLookup：缺少精确请求原文契约时，来源详情报价在冻结前拒绝。测试注入的 recordLookup 只用于受控验证，不能通过将 supplierVerified 改为 true 代替证据。费用未知时资料可读，自动获取费用证据仍由后续账务票实现。
+
+以下命令要求显式设置 TEST_DATABASE_URL，库名以 `_test` 结尾且必须专用、可丢弃。浏览器命令会清空该专用库的 public schema；不要与其他测试并行共用库。
+
+- `npm run test:company-sources`：真实HTTP、来源/详情/邮件准入、迁移及票03/04专项。
+- `npm run test:company-sources:browser`：构建专项页面后，执行公司名/产品词关联和档案来源详情流程，输出截图到 `.scratch/company-sources/`。
+
+实际结果和未验证边界见[本轮交付记录](../docs/delivery/application/SOURCE-IDENTITY-2026-10-31.md)。

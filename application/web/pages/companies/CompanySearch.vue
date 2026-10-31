@@ -88,13 +88,22 @@
           </div>
         </el-checkbox-group>
         <div class="form-actions import-actions">
-          <span>已选择 {{ selectedCandidateIds.length }} 家；保存只使用本页已取得名单，不查询详情、不扣点。</span>
+          <span>不同来源的企业暂不能自动识别为同一家。已选择 {{ selectedCandidateIds.length }} 家；保存只使用本页已取得名单，不查询详情、不扣点。</span>
           <el-button
             type="primary"
             :disabled="locked || selectedCandidateIds.length === 0"
             @click="saveSelected"
           >保存选中企业</el-button>
         </div>
+        <ProfileAssociationChoices
+          v-if="ambiguousImports.length"
+          :request="request"
+          :items="ambiguousImports"
+          :names="importNames"
+          :busy="locked"
+          @resolved="associationResolved"
+          @pending="associationPending = $event"
+        />
         <div v-if="savedProfiles.length" class="saved-profiles" role="status">
           <strong>已保存到企业档案库</strong>
           <RouterLink
@@ -171,7 +180,8 @@ import {
   type SearchResult,
   type SearchSnapshot
 } from '../../api/companySearch';
-import { importCompanyProfiles } from '../../api/companyProfileImports';
+import { importCompanyProfiles, type ProfileImportResult } from '../../api/companyProfileImports';
+import ProfileAssociationChoices from './components/ProfileAssociationChoices.vue';
 import type { CompanyRequest } from '../../api/companyProfiles';
 import { HttpError } from '../../api/http';
 import { useFormLeave } from '../../router/formLeave';
@@ -203,10 +213,13 @@ const profileId = ref('');
 const selectedCandidateIds = ref<string[]>([]);
 const savedProfiles = ref<Array<{ profileId: string; name: string }>>([]);
 const failedImports = ref<string[]>([]);
+const ambiguousImports = ref<ProfileImportResult[]>([]);
+const associationPending = ref(false);
+const importNames = ref<Record<string, string>>({});
 const importRequestId = ref('');
 watch(selectedCandidateIds, () => { importRequestId.value = ''; }, { deep: true });
 const searchedInput = ref('');
-const locked = computed(() => busy.value || !!pendingQuery.value);
+const locked = computed(() => associationPending.value || busy.value || !!pendingQuery.value);
 const inputKey = () => JSON.stringify([name.value, countryCodes.value]);
 useFormLeave({
   state: () => {
@@ -247,6 +260,8 @@ async function loadPage(pageNo: number) {
   );
   savedProfiles.value = [];
   failedImports.value = [];
+  ambiguousImports.value = [];
+  importNames.value = {};
   importRequestId.value = '';
 }
 async function run(action: () => Promise<void>, candidateId = '') {
@@ -282,6 +297,10 @@ function saveSelected() {
     const byId = new Map(result.value!.content.map(candidate =>
       [candidate.candidateId, candidate.name]
     ));
+    importNames.value = Object.fromEntries(byId);
+    ambiguousImports.value = response.items.filter(item =>
+      item.status === 'needs_resolution'
+    );
     savedProfiles.value = response.items.flatMap(item =>
       item.profileId ? [{
         profileId: item.profileId,
@@ -294,6 +313,16 @@ function saveSelected() {
         : []
     );
     await loadProfiles();
+  });
+}
+function associationResolved(item: ProfileImportResult) {
+  importRequestId.value = '';
+  ambiguousImports.value = ambiguousImports.value.filter(pending =>
+    pending.sourceRecordId !== item.sourceRecordId
+  );
+  if (item.profileId) savedProfiles.value.push({
+    profileId: item.profileId,
+    name: importNames.value[item.sourceRecordId] ?? '企业'
   });
 }
 function verify(candidate: Candidate) {

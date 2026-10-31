@@ -20,7 +20,9 @@
     "test:t20": "tsc -p tsconfig.server.json && node --env-file-if-exists=.env.test --test dist/tests/umail.test.js",
     "test:e2e:t20": "tsc -p tsconfig.server.json && vite build && node --env-file-if-exists=.env.test node_modules/@playwright/test/cli.js test --config config/playwright/playwright.t20.config.ts",
     "deploy": "node scripts/deploy.mjs",
-    "test:deployment": "node --env-file-if-exists=.env.test tests/deployment.mjs"
+    "test:deployment": "node --env-file-if-exists=.env.test tests/deployment.mjs",
+    "test:company-sources": "tsx --tsconfig tsconfig.server.json --test --test-concurrency=1 tests/company-sources.test.ts server/issue03-profile-association.test.ts tests/issue04-candidate-groups.test.ts",
+    "test:company-sources:browser": "vite build --outDir .scratch/company-sources/web && tsx --tsconfig tsconfig.server.json tests/company-source-browser.test.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.0",

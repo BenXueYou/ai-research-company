@@ -1,3 +1,4 @@
+import { assertCompanyOperation } from './company-sources.js';
 import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import type pg from 'pg';
@@ -48,9 +49,10 @@ export class CompanyContactService {
     const positionTags = input.positionTags as string[];
     return transaction(this.pool, async db => {
       const profile = (await db.query(`SELECT p.id,p.name,p.detail_id,p.query_id FROM company_profiles p
-        JOIN company_detail_queries q ON q.id=p.query_id AND q.state='settled'
+
         WHERE p.id=$1 AND p.organization_id=$2 AND p.deleted_at IS NULL FOR UPDATE OF p`, [input.profileId, identity.organization_id])).rows[0];
       if (!profile) throw new NotFoundException('已确认档案不存在');
+      const identityVersion = await assertCompanyOperation(db, identity.organization_id, profile.id, 'contacts', undefined, this.production);
       const previous = (await db.query(`SELECT q.id AS "queryId",q.state,q.company_name AS "companyName",
         q.position_tags AS "positionTags",q.page_no AS "pageNo",q.page_size AS "pageSize",
         q.coefficient,q.maximum_points AS "maximumPoints" FROM company_contact_queries q
@@ -79,9 +81,9 @@ export class CompanyContactService {
       if (Number(maximum) <= 0) throw new ConflictException('联系人本页最高扣点额度不可证明');
       const id = randomUUID();
       await db.query(`INSERT INTO company_contact_queries(id,organization_id,actor_id,profile_id,company_name,
-        position_tags,page_no,page_size,coefficient,maximum_points,price_version,state,refresh_requested)
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'quoted',$12)`,
-      [id, identity.organization_id, identity.id, profile.id, profile.name, positionTags, input.pageNo, input.pageSize, coefficient, maximum, price.version, refresh]);
+        position_tags,page_no,page_size,coefficient,maximum_points,price_version,state,refresh_requested,identity_version)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'quoted',$12,$13)`,
+      [id, identity.organization_id, identity.id, profile.id, profile.name, positionTags, input.pageNo, input.pageSize, coefficient, maximum, price.version, refresh, identityVersion]);
       return { queryId: id, companyName: profile.name, positionTags, pageNo: input.pageNo,
         pageSize: input.pageSize, coefficient, maximumPoints: maximum };
     });
@@ -116,10 +118,10 @@ export class CompanyContactService {
       if (query.state !== 'quoted') return { duplicate: true, query };
       const currentCoefficient = (await db.query('SELECT coefficient FROM platform_pricing')).rows[0].coefficient as string;
       if (Number(query.coefficient) !== Number(currentCoefficient)) throw new ConflictException('报价系数已变化，请重新报价确认');
-      const profile = (await db.query(`SELECT p.name FROM company_profiles p JOIN company_detail_queries q
-        ON q.id=p.query_id AND q.state='settled' WHERE p.id=$1 AND p.organization_id=$2 AND p.deleted_at IS NULL`,
+      const profile = (await db.query(`SELECT p.name FROM company_profiles p WHERE p.id=$1 AND p.organization_id=$2 AND p.deleted_at IS NULL`,
       [query.profile_id, identity.organization_id])).rows[0];
       if (!profile || profile.name !== query.company_name) throw new ConflictException('已确认档案发生变化');
+      await assertCompanyOperation(db, identity.organization_id, query.profile_id, 'contacts', query.identity_version, this.production);
       const account = (await db.query('SELECT * FROM internal_point_accounts WHERE organization_id=$1 FOR UPDATE',
         [identity.organization_id])).rows[0];
       if (!account || Number(account.balance) - Number(account.query_frozen) - Number(account.sales_reserved) < Number(query.maximum_points))

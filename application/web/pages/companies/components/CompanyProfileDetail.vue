@@ -20,6 +20,12 @@
         />
       </div>
       <template v-if="!profile.deletedAt">
+        <CompanySourcePanel
+          :profile-id="profile.id"
+          :visible="visible"
+          :request="request"
+          @changed="changed"
+        />
         <section v-if="profile.detailState === 'ready'" class="profile-source">
         <div class="source-heading">
           <div>
@@ -27,7 +33,12 @@
             <h3>企业详情</h3>
             <p class="source-fetched">最近获取 <strong>{{ formatFetchedAt(profile.fetchedAt, '历史获取时间未知') }}</strong></p>
           </div>
-          <el-button class="source-refresh" :disabled="!!inFlight || unknown" @click="quoteRefresh">主动更新企业详情</el-button>
+          <el-button
+            v-if="!profile.sourceVersion"
+            class="source-refresh"
+            :disabled="!!inFlight || unknown"
+            @click="quoteRefresh"
+          >主动更新企业详情</el-button>
         </div>
         <div v-if="refreshQuote" class="search-summary source-quote">
           <div class="source-quote-copy">
@@ -88,6 +99,7 @@ import { formatFetchedAt } from '../../../utils/formatFetchedAt';
 import CompanyProfileEditor from './CompanyProfileEditor.vue';
 import CompanyContacts from './CompanyContacts.vue';
 import CompanyTimeline from './CompanyTimeline.vue';
+import CompanySourcePanel from './CompanySourcePanel.vue';
 
 const props = defineProps<{
   profile: CompanyProfile;

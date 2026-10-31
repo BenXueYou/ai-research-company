@@ -1,3 +1,5 @@
+import { CompanySourceService } from '../companies/company-sources.js';
+import { CompanySourceDetailService } from '../companies/company-source-details.js';
 import type pg from 'pg';
 import { IdentityService } from '../identity/identity.js';
 import { bindContactKey, contactKey, OrganizationService } from '../organizations/organizations.js';
@@ -61,6 +63,8 @@ export async function createServices(
   const companySearch = new CompanySearchService(pool, tengdao);
   const productSearch = new ProductSearchService(pool, importerAdapter, companySearch, production);
   const companyDetail = new CompanyDetailService(pool, detailAdapter, production);
+  const companySources = new CompanySourceService(pool);
+  const companySourceDetails = new CompanySourceDetailService(pool, detailAdapter, production);
   const companyProfiles = new CompanyProfileService(pool);
   const companyProfileImports = new CompanyProfileImportService(pool);
   const companyTimeline = new CompanyTimelineService(pool, key);
@@ -69,17 +73,17 @@ export async function createServices(
   const contactReconciliation = new ContactReconciliationService(pool);
   const productReconciliation = new ProductReconciliationService(pool);
   const companyContacts = new CompanyContactService(pool, contactAdapter, production);
-  const emailPreview = new EmailPreviewService(pool);
+  const emailPreview = new EmailPreviewService(pool, production);
   const upstreamMonitor = new UpstreamMonitorService(pool, accountClient);
   const smtpKey = smtpCredentialKey();
   await bindSmtpCredentialKey(pool, smtpKey);
   const smtpChannels = new SmtpChannelService(pool, smtpKey, smtpAdapter);
-  const emailSend = new EmailSendService(pool, smtpKey, smtpSender, umailSender, evidenceProvider);
+  const emailSend = new EmailSendService(pool, smtpKey, smtpSender, umailSender, evidenceProvider, production);
   const umail = new UMailService(pool, umailAdapter);
   return {
     service, organizations, procurement, coefficient, pointOrders, reporting,
     members, passwordResets, companySearch, productSearch, companyDetail,
-    companyProfiles, companyProfileImports, companyTimeline, companyAttachments, detailReconciliation,
+    companySources, companySourceDetails, companyProfiles, companyProfileImports, companyTimeline, companyAttachments, detailReconciliation,
     contactReconciliation, productReconciliation, companyContacts, emailPreview,
     upstreamMonitor, smtpChannels, emailSend, umail
   };

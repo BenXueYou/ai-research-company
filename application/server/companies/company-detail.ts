@@ -11,6 +11,12 @@ export interface DetailResult {
 }
 export interface CompanyDetailClient {
   detail(input: { name: string; countryCode3: string }): Promise<DetailResult>;
+  recordLookup?: {
+    interfacePath: string;
+    evidenceReference: string;
+    supplierVerified: boolean;
+    detail(input: { recordId: string; name: string; countryCode3: string }): Promise<DetailResult>;
+  };
 }
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function exact(body: unknown, field: string): string {
@@ -34,6 +40,9 @@ export class CompanyDetailService {
       const candidate = (await db.query(`SELECT source_name,source_country FROM company_candidates
         WHERE id=$1 AND organization_id=$2 AND verification_status='verified' FOR UPDATE`, [candidateId, identity.organization_id])).rows[0];
       if (!candidate) throw new NotFoundException('已核实候选不存在');
+      const selectedSource = (await db.query(`SELECT 1 FROM company_source_selections WHERE organization_id=$1 AND candidate_id=$2 LIMIT 1`,
+        [identity.organization_id, candidateId])).rowCount;
+      if (selectedSource) throw new ConflictException('请从档案所选资料入口查询详情');
       if (!/^[A-Z]{3}$/.test(candidate.source_country)) throw new ConflictException('候选国家需要核实');
       const existing = (await db.query(`SELECT p.id,p.name,p.country_code3,p.deleted_at FROM company_profiles p
         JOIN company_detail_queries q ON q.id=p.query_id WHERE q.candidate_id=$1 AND p.organization_id=$2`,
@@ -63,10 +72,11 @@ export class CompanyDetailService {
     await this.authorize(identity);
     const profileId = exact(body, 'profileId');
     return transaction(this.pool, async db => {
-      const profile = (await db.query(`SELECT p.id,p.name,p.country_code3,p.query_id,q.candidate_id
+      const profile = (await db.query(`SELECT p.id,p.name,p.country_code3,p.query_id,p.source_version,q.candidate_id
         FROM company_profiles p JOIN company_detail_queries q ON q.id=p.query_id
         WHERE p.id=$1 AND p.organization_id=$2 AND p.deleted_at IS NULL FOR UPDATE OF p`, [profileId, identity.organization_id])).rows[0];
       if (!profile) throw new NotFoundException('本企业档案不存在');
+      if (profile.source_version > 0) throw new ConflictException('请从所选资料入口更新详情');
       const active = (await db.query(`SELECT id AS "queryId",name,country_code3 AS "countryCode3",coefficient,
         maximum_points AS "maximumPoints",state FROM company_detail_queries
         WHERE organization_id=$1 AND candidate_id=$2 AND refresh_profile_id=$3 AND
@@ -102,8 +112,11 @@ export class CompanyDetailService {
       if (!organization?.active) throw new ForbiddenException('终端企业已停用');
       const query = (await db.query('SELECT * FROM company_detail_queries WHERE id=$1 AND organization_id=$2 FOR UPDATE', [queryId, identity.organization_id])).rows[0];
       if (!query) throw new NotFoundException('查询授权不存在');
+      if (query.target_profile_id) throw new ConflictException('请从所选资料的查询入口继续');
       if (query.state === 'expired') throw new ConflictException('报价系数已变化，请重新报价确认');
       if (query.state !== 'quoted') return { duplicate: true, query };
+      if ((await db.query('SELECT 1 FROM company_source_selections WHERE organization_id=$1 AND candidate_id=$2 LIMIT 1',
+        [identity.organization_id, query.candidate_id])).rowCount) throw new ConflictException('资料已重新选择，请从档案所选资料入口查询');
       const currentCoefficient = (await db.query('SELECT coefficient FROM platform_pricing')).rows[0].coefficient as string;
       if (Number(query.coefficient) !== Number(currentCoefficient)) throw new ConflictException('报价系数已变化，请重新报价确认');
       const candidate = (await db.query(`SELECT source_name,source_country,verification_status FROM company_candidates

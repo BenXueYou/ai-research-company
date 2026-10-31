@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createApplication } from './app.js';
 import { hashPassword } from './identity/policy.js';
-import { applyUpgrade, CURRENT_VERSION, planUpgrade, verifyUpgrade } from './migrations/upgrade.js';
+import { applyUpgrade, CURRENT_VERSION, IMPORT_VERSION, planUpgrade, verifyUpgrade } from './migrations/upgrade.js';
 import type { CompanyListRequestDto, TengdaoCompanyClient } from './upstream/tengdao.js';
 import { testDatabase } from '../tests/helpers.js';
 
@@ -13,6 +13,16 @@ test('票02 升级：从票01 baseline 增量升级并保留既有详情档案',
   const { pool } = await testDatabase();
   try {
     await pool.query(`
+      ALTER TABLE company_profiles DROP CONSTRAINT IF EXISTS profile_display_tenant_fk;
+      ALTER TABLE company_detail_queries DROP CONSTRAINT IF EXISTS detail_selection_tenant_fk;
+      ALTER TABLE company_detail_queries DROP CONSTRAINT IF EXISTS detail_target_tenant_fk;
+      DROP TABLE IF EXISTS company_detail_display_events,company_detail_snapshots,company_operation_evidence,company_source_selections;
+      ALTER TABLE company_profiles DROP COLUMN IF EXISTS source_version,DROP COLUMN IF EXISTS displayed_snapshot_id;
+      ALTER TABLE company_detail_queries DROP COLUMN IF EXISTS target_profile_id,DROP COLUMN IF EXISTS selection_id,
+        DROP COLUMN IF EXISTS result_state,DROP COLUMN IF EXISTS request_snapshot;
+      ALTER TABLE company_contact_queries DROP COLUMN IF EXISTS identity_version;
+      ALTER TABLE email_previews DROP COLUMN IF EXISTS identity_version;
+      ALTER TABLE email_batches DROP COLUMN IF EXISTS identity_version;
       DROP TABLE IF EXISTS company_profile_import_requests;
       DROP TABLE IF EXISTS company_profile_sources;
       DROP TABLE IF EXISTS schema_migrations;
@@ -49,7 +59,7 @@ test('票02 升级：从票01 baseline 增量升级并保留既有详情档案',
     [profileId, organizationId, { id: 'baseline-detail-id', countryCode3: 'DEU', preserved: true }, queryId]);
 
     const plan = await planUpgrade(pool);
-    assert.deepEqual(plan.pending, ['2026-10-31.current', CURRENT_VERSION]);
+    assert.deepEqual(plan.pending, ['2026-10-31.current', IMPORT_VERSION, CURRENT_VERSION]);
     const applied = await applyUpgrade(pool);
     assert.equal(applied.version, CURRENT_VERSION);
     assert.deepEqual(applied.pending, []);
@@ -236,6 +246,32 @@ test('票02 HTTP：显式保存已取得名单为待核实初始档案，保持�
     assert.equal(Number((await pool.query('SELECT count(*) FROM query_point_ledger')).rows[0].count), ledgerBefore);
     const accountAfter = await pool.query('SELECT balance,query_frozen FROM internal_point_accounts WHERE organization_id=$1', [alpha.organizationId]);
     assert.deepEqual(accountAfter.rows, accountBefore.rows);
+
+    // A second local candidate has the same name but a different upstream list ID.
+    const duplicateId = randomUUID();
+    await pool.query(`INSERT INTO company_candidates(id,search_id,organization_id,source_id,source_name,source_country,verification_status)
+      SELECT $1,search_id,organization_id,'another-list-id',source_name,source_country,'pending'
+      FROM company_candidates WHERE id=$2`, [duplicateId, selectedCandidateId]);
+    const duplicate = { sourceKind: 'company_candidate', sourceRecordId: duplicateId, decision: 'create' };
+    const ambiguousResponse = await post(alphaSession, 'company-profile-imports', { requestId: randomUUID(), items: [duplicate] });
+    assert.equal(ambiguousResponse.status, 200);
+    const ambiguous = await ambiguousResponse.json() as { items: Array<{ status: string }> };
+    assert.equal(ambiguous.items[0]!.status, 'needs_resolution');
+    const resolution = { requestId: randomUUID(), items: [{ ...duplicate, decision: 'link', profileId }] };
+    const noCsrf = await fetch(`${origin}/api/company-profile-import-resolutions`, {
+      method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json', Cookie: alphaSession.cookie },
+      body: JSON.stringify(resolution)
+    });
+    assert.notEqual(noCsrf.status, 200);
+    const resolutionResponse = await post(alphaSession, 'company-profile-import-resolutions', resolution);
+    assert.equal(resolutionResponse.status, 200);
+    const resolved = await resolutionResponse.json() as typeof first;
+    assert.equal(resolved.items[0]!.status, 'linked');
+    assert.equal(resolved.items[0]!.profileId, profileId);
+    assert.deepEqual(await (await post(alphaSession, 'company-profile-import-resolutions', resolution)).json(), resolved);
+    assert.equal(vendorCalls.length, vendorCallsBeforeImport);
+    assert.equal(Number((await pool.query('SELECT count(*) FROM query_point_ledger')).rows[0].count), ledgerBefore);
+    assert.deepEqual((await pool.query('SELECT balance,query_frozen FROM internal_point_accounts WHERE organization_id=$1', [alpha.organizationId])).rows, accountBefore.rows);
 
     const crossTenantResponse = await post(betaSession, 'company-profile-imports', {
       requestId: randomUUID(),

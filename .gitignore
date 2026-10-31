@@ -103,6 +103,11 @@ application/.scratch/issue57/
 application/.scratch/compat-exit/
 
 # Maintained acceptance sources consolidated under application/tests.
+!application/tests/policy.test.ts
+!application/tests/procurement-helpers.ts
+!application/tests/issue04-candidate-groups.test.ts
+!application/tests/company-sources.test.ts
+!application/tests/company-source-browser.test.ts
 !application/tests/integration-distribution/
 !application/tests/integration-terminal/
 !application/tests/issue38-tests/

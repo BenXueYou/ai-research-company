@@ -1,3 +1,4 @@
+import { migrateCompanySources } from './companies/company-source-schema.js';
 import { randomUUID } from 'node:crypto';
 import { hashPassword } from './identity/policy.js';
 import pg, { type PoolClient } from 'pg';
@@ -133,6 +134,7 @@ export async function migrate(pool: pg.Pool): Promise<void> {
     await migrateUMail(client);
     await migrateEmailSend(client);
     await migrateOrganizationState(client);
+    await migrateCompanySources(client);
     // The migration lock covers schema and seed together, including concurrent deployments.
     // This release targets new databases, not the earlier disposable email-only schema.
     await client.query('SELECT username FROM accounts LIMIT 0');

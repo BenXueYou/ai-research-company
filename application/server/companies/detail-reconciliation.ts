@@ -1,3 +1,4 @@
+import { publishSourceDetail } from './company-source-details.js';
 import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import type pg from 'pg';
@@ -74,6 +75,15 @@ export class DetailReconciliationService {
         } else if (typeof result.id !== 'string' || !result.id || result.countryCode3 !== query.country_code3)
           throw new BadRequestException('结果标识或国家与已确认查询不一致');
       }
+      if (query.target_profile_id && result) {
+        const previous = (await db.query('SELECT payload FROM company_detail_snapshots WHERE query_id=$1', [query.id])).rows[0];
+        if (previous && !(await db.query('SELECT $1::jsonb=$2::jsonb AS same', [previous.payload, result])).rows[0].same)
+          throw new ConflictException('结算证据与已保存资料不一致');
+        if (query.result_state === 'conflict') throw new ConflictException('资料归属冲突须先核实，不能用结算覆盖');
+        if (result.id !== null && result.id !== query.request_snapshot.recordId) throw new ConflictException('返回ID与所选资料不一致');
+        const published = await publishSourceDetail(db, query, result);
+        if (published === 'conflict') throw new ConflictException('资料归属冲突，不能发布');
+      }
       const charge = input.outcome === 'settled'
         ? (await db.query('SELECT least(round($1::numeric*$2::numeric,4),$3::numeric)::numeric(20,4) AS amount',
           [input.upstreamPoints, query.coefficient, query.maximum_points])).rows[0].amount as string
@@ -82,7 +92,8 @@ export class DetailReconciliationService {
         query_frozen=query_frozen-$3::numeric WHERE organization_id=$1 RETURNING balance,query_frozen`,
       [query.organization_id, charge, query.maximum_points])).rows[0];
       await db.query(`UPDATE company_detail_queries SET state=$2,charged_points=$3,actual_upstream_points=$4,
-        detail_id=$5,result=$6,trace_id=$7,billing_reference=$8,updated_at=clock_timestamp() WHERE id=$1`,
+        detail_id=$5,result=CASE WHEN target_profile_id IS NOT NULL AND result_state='ready' AND $6::jsonb IS NULL
+          THEN result ELSE $6::jsonb END,trace_id=$7,billing_reference=$8,updated_at=clock_timestamp() WHERE id=$1`,
       [query.id, input.outcome, charge, input.upstreamPoints ?? null, result?.id ?? null,
         result ? JSON.stringify(result) : null, traceId, billingReference]);
       if (input.outcome !== 'failed') await db.query(`INSERT INTO query_point_ledger(query_id,organization_id,actor_id,event,amount,balance_after,frozen_after)
@@ -93,11 +104,11 @@ export class DetailReconciliationService {
       await db.query(`INSERT INTO company_detail_reconciliations(query_id,actor_id,evidence,outcome,billing_reference,trace_id,result_evidence)
         VALUES($1,$2,$3,$4,$5,$6,$7)`,
       [query.id, identity.id, evidence, input.outcome, billingReference, traceId, result ? JSON.stringify(result) : null]);
-      if (input.outcome === 'settled' && query.refresh_profile_id) {
+      if (!query.target_profile_id && input.outcome === 'settled' && query.refresh_profile_id) {
         await db.query(`UPDATE company_profiles SET detail_id=$3,detail=$4,query_id=$5,fetched_at=clock_timestamp()
           WHERE id=$1 AND organization_id=$2`, [query.refresh_profile_id, query.organization_id,
           result!.id, JSON.stringify(result), query.id]);
-      } else if (input.outcome === 'settled') await db.query(`INSERT INTO company_profiles(id,organization_id,detail_id,name,country_code3,detail,query_id,fetched_at)
+      } else if (!query.target_profile_id && input.outcome === 'settled') await db.query(`INSERT INTO company_profiles(id,organization_id,detail_id,name,country_code3,detail,query_id,fetched_at)
         VALUES($1,$2,$3,$4,$5,$6,$7,clock_timestamp()) ON CONFLICT(organization_id,detail_id) DO NOTHING`,
       [randomUUID(), query.organization_id, result!.id, query.name, query.country_code3, JSON.stringify(result), query.id]);
       const loss = input.outcome === 'settled'
